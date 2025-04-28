@@ -4,7 +4,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
 // Importa os componentes das páginas/interfaces
 import ChatInterface from './components/ChatInterface'; // Interface principal do Chat
-import QuestionBankPage from './src/components/QuestionBankPage'; // Nova página do Banco de Questões
+import QuestionBankPage from './components/QuestionBankPage'; // Nova página do Banco de Questões
 
 // Importa o CSS global (se não estiver em main.jsx)
 // import './style.css';
