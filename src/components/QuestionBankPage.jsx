@@ -14,7 +14,7 @@ function QuestionBankPage() {
   // Estado para armazenar mensagens de erro
   const [error, setError] = useState(null);
 
-  // --- Efeito para Buscar Todas as Questões (Modificado para usar /api/ask) ---
+  // --- Efeito para Buscar Todas as Questões ---
   // Roda apenas uma vez quando o componente é montado
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -24,7 +24,7 @@ function QuestionBankPage() {
       try {
         // Chama /api/ask com método POST e corpo especial para indicar que quer todas as questões
         const response = await fetch('/api/ask', {
-          method: 'POST', // <<< USA POST
+          method: 'POST', // <<< Usa POST
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ getAll: true }) // <<< Envia o parâmetro especial
         });
@@ -135,8 +135,8 @@ function QuestionBankPage() {
   return (
     // Container principal da página do banco de questões
     <div className="question-bank-container">
-      {/* Título da página */}
-      <h2>Banco de Questões PAVE</h2>
+      {/* Título removido conforme solicitado */}
+      {/* <h2>Banco de Questões PAVE</h2> */}
 
       {/* Componente de Filtros */}
       {/* Passa as opções disponíveis, os valores atuais e a função de callback */}
@@ -156,7 +156,7 @@ function QuestionBankPage() {
 
       {/* Exibe a lista de questões filtradas APENAS se não estiver carregando e não houver erro */}
       {!isLoading && !error && (
-        <div className="question-list">
+        <div className="question-list" id="question-bank-list"> {/* Adiciona ID para especificidade CSS se necessário */}
           {/* Mostra a contagem de resultados */}
           <p className="results-count">{filteredQuestions.length} questão(ões) encontrada(s).</p>
           {/* Renderiza o componente QuestionList, passando as questões filtradas */}
