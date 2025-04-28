@@ -93,12 +93,14 @@ function App() {
       // Processa os dados recebidos da API
       const botResponses = [];
       // Adiciona o comentário do bot se ele existir e for uma string não vazia
-      if (data && typeof data.commentary === 'string' && data.commentary && data.commentary.trim().length > 0) {
+      // CORREÇÃO: Adicionada verificação se data.commentary existe antes de acessar .trim()
+      if (data?.commentary && typeof data.commentary === 'string' && data.commentary.trim().length > 0) {
         botResponses.push({ type: 'text', sender: 'bot', content: data.commentary });
       }
 
       // Adiciona as questões se 'data.questions' for um array válido e não vazio
-      if (data && Array.isArray(data.questions) && data.questions && data.questions.length > 0) {
+      // CORREÇÃO: Acessa data.questions.length apenas se data.questions for um array
+      if (data?.questions && Array.isArray(data.questions) && data.questions.length > 0) {
         data.questions.forEach(q => {
           // Valida cada objeto de questão antes de adicioná-lo
           if (q && q.alternativas && q.resposta_letra) {
@@ -108,25 +110,23 @@ function App() {
             botResponses.push({ type: 'text', sender: 'bot', content: `(Recebi dados de questão incompletos.)` });
           }
         });
-      } else if (data && data.questions !== undefined && data.questions !== null) {
+      } else if (data?.questions !== undefined && data.questions !== null) {
         // Loga um aviso se 'questions' foi retornado mas não é um array válido/populado
         console.warn("Backend retornou 'questions', mas não é um array válido ou está vazio:", data.questions);
       }
 
       // Adiciona uma mensagem padrão se NADA foi retornado (nem comentário, nem questões)
-      if (
-        botResponses.length === 0 &&
-        !(data && typeof data.commentary === 'string' && data.commentary && data.commentary.trim().length > 0)
-      ) {
+      // CORREÇÃO: Simplificada a condição para verificar se botResponses está vazio após processar dados
+      if (botResponses.length === 0) {
           console.log("Nenhum comentário ou questão válida recebida da API.");
           botResponses.push({ type: 'text', sender: 'bot', content: 'Não encontrei informações relevantes para sua busca nos dados atuais.' });
       }
 
       // Adiciona as respostas preparadas (comentário e/ou questões) ao estado
       // Só atualiza se houver respostas novas para evitar renderização desnecessária
-      if (botResponses.length > 0) {
-         setMessages(prevMessages => [...prevMessages, ...botResponses]);
-      }
+      // CORREÇÃO: A verificação if (botResponses.length > 0) aqui era redundante devido à adição da mensagem padrão acima. Removida.
+      setMessages(prevMessages => [...prevMessages, ...botResponses]);
+
 
     } catch (error) {
       // Captura qualquer erro ocorrido no try (fetch, parse, etc.)
@@ -141,7 +141,6 @@ function App() {
   };
 
   // --- JSX para Renderização da UI ---
-  // --- Renderização da UI ---
   return (
     <div className="app-container">
       {/* Barra Lateral Esquerda */}
