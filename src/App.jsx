@@ -45,20 +45,51 @@ function App() {
     ]);
   }, []); // Array de dependências vazio garante execução única
 
-  // --- Handler para Enviar Mensagem ---
+  // --- Handler para Enviar Mensagem (Atualizado para enviar histórico) ---
   // Função assíncrona chamada quando o usuário envia uma mensagem pelo InputArea
   const handleSendMessage = async (userQuery) => {
     // Adiciona a mensagem do usuário à UI imediatamente
     const newUserMessage = { type: 'text', sender: 'user', content: userQuery };
-    setMessages(prevMessages => [...prevMessages, newUserMessage]);
+    // Cria o novo estado de mensagens incluindo a do usuário ANTES de fazer a chamada API
+    // É importante fazer isso aqui para que o histórico enviado inclua a última pergunta
+    const updatedMessages = [...messages, newUserMessage];
+    setMessages(updatedMessages);
     setIsLoading(true); // Ativa o feedback visual de carregamento
 
+    // --- Prepara Histórico para API ---
+    // Mapeia as mensagens para o formato esperado pela API Gemini (role: 'user' ou 'model')
+    // Pega as últimas N mensagens para evitar contexto muito longo (ajuste N conforme necessário)
+    const HISTORY_LENGTH = 8; // Ex: Enviar as últimas 8 mensagens (4 pares user/bot)
+    const historyForAPI = updatedMessages.slice(-HISTORY_LENGTH).map(msg => {
+        // Valida se a mensagem tem o formato esperado antes de mapear
+        if (msg && typeof msg.sender === 'string' && typeof msg.content === 'string') {
+            return {
+                role: msg.sender === 'user' ? 'user' : 'model', // 'model' para respostas do bot
+                parts: [{ text: msg.content }]
+            };
+        }
+        // Retorna null ou um objeto vazio se a mensagem for inválida (será filtrado depois)
+        console.warn("Mensagem inválida encontrada no histórico:", msg);
+        return null;
+    }).filter(Boolean); // Remove quaisquer entradas nulas do histórico
+
+    // Não prossegue se o histórico formatado estiver vazio (improvável, mas seguro)
+    if (historyForAPI.length === 0) {
+        console.error("Não foi possível formatar um histórico válido para a API.");
+        setIsLoading(false);
+        // Pode adicionar uma mensagem de erro na UI aqui se desejar
+        // setMessages(prev => [...prev, { type: 'text', sender: 'bot', content: '(Erro ao preparar histórico)'}]);
+        return;
+    }
+    // --- Fim da Preparação do Histórico ---
+
+
     try {
-      // Chama a API backend na rota /api/ask
+      // Chama a API backend na rota /api/ask, enviando o histórico formatado
       const response = await fetch('/api/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: userQuery }),
+        body: JSON.stringify({ history: historyForAPI }), // <<< ENVIA HISTÓRICO
       });
 
       // Lê o corpo da resposta como texto primeiro para análise segura
@@ -93,13 +124,11 @@ function App() {
       // Processa os dados recebidos da API
       const botResponses = [];
       // Adiciona o comentário do bot se ele existir e for uma string não vazia
-      // CORREÇÃO: Adicionada verificação se data.commentary existe antes de acessar .trim()
       if (data?.commentary && typeof data.commentary === 'string' && data.commentary.trim().length > 0) {
         botResponses.push({ type: 'text', sender: 'bot', content: data.commentary });
       }
 
       // Adiciona as questões se 'data.questions' for um array válido e não vazio
-      // CORREÇÃO: Acessa data.questions.length apenas se data.questions for um array
       if (data?.questions && Array.isArray(data.questions) && data.questions.length > 0) {
         data.questions.forEach(q => {
           // Valida cada objeto de questão antes de adicioná-lo
@@ -110,23 +139,19 @@ function App() {
             botResponses.push({ type: 'text', sender: 'bot', content: `(Recebi dados de questão incompletos.)` });
           }
         });
-      } else if (data?.questions !== undefined && data.questions !== null) {
-        // Loga um aviso se 'questions' foi retornado mas não é um array válido/populado
-        console.warn("Backend retornou 'questions', mas não é um array válido ou está vazio:", data.questions);
       }
 
       // Adiciona uma mensagem padrão se NADA foi retornado (nem comentário, nem questões)
-      // CORREÇÃO: Simplificada a condição para verificar se botResponses está vazio após processar dados
-      if (botResponses.length === 0) {
+      // E a resposta da API foi OK (evita sobrescrever mensagens de erro anteriores)
+      if (botResponses.length === 0 && response.ok) {
           console.log("Nenhum comentário ou questão válida recebida da API.");
-          botResponses.push({ type: 'text', sender: 'bot', content: 'Não encontrei informações relevantes para sua busca nos dados atuais.' });
+          botResponses.push({ type: 'text', sender: 'bot', content: 'Entendido. Como posso ajudar mais?' }); // Mensagem mais neutra
       }
 
       // Adiciona as respostas preparadas (comentário e/ou questões) ao estado
-      // Só atualiza se houver respostas novas para evitar renderização desnecessária
-      // CORREÇÃO: A verificação if (botResponses.length > 0) aqui era redundante devido à adição da mensagem padrão acima. Removida.
-      setMessages(prevMessages => [...prevMessages, ...botResponses]);
-
+      if (botResponses.length > 0) {
+         setMessages(prevMessages => [...prevMessages, ...botResponses]);
+      }
 
     } catch (error) {
       // Captura qualquer erro ocorrido no try (fetch, parse, etc.)
