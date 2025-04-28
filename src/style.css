@@ -45,7 +45,6 @@ input { font-family: inherit; }
     transition: width 0.3s ease;
     flex-shrink: 0;
 }
-/* ... (Resto dos estilos da .sidebar, .sidebar-header, .sidebar-nav, .sidebar-footer como na versão anterior) ... */
 .sidebar-header { padding: 15px; text-align: left; border-bottom: 1px solid #f3f4f6; margin-bottom: 15px; }
 .logo-placeholder { font-size: 1.2em; font-weight: 500; color: #10a37f; padding-left: 5px; }
 .sidebar-nav { flex-grow: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #d1d5db #ffffff; }
@@ -70,31 +69,32 @@ input { font-family: inherit; }
 .main-content {
     flex-grow: 1;
     height: 100%;
-    display: flex;
+    display: flex; /* Para centralizar o filho */
     flex-direction: column;
-    overflow: hidden;
+    overflow: hidden; /* Scroll controlado internamente */
     background-color: #f7f7f8; /* Fundo geral claro */
-    padding: 20px; /* Padding geral */
+    /* Removido padding daqui */
 }
 
-/* Container que limita largura e centraliza o conteúdo */
+/* Container que limita largura e centraliza o conteúdo da página ativa */
 .chat-interface-container,
-.question-bank-page-content { /* Aplica a ambos os conteúdos */
+.question-bank-page-content {
     width: 100%;
-    max-width: 800px; /* Largura máxima */
-    margin: 0 auto; /* Centraliza */
+    max-width: 800px; /* <<< LARGURA MÁXIMA DO CONTEÚDO CENTRAL */
+    margin: 0 auto;   /* <<< CENTRALIZA HORIZONTALMENTE */
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* Ocupa espaço vertical */
-    min-height: 0;
-    /* Removido padding daqui, já está em .main-content */
+    flex-grow: 1;    /* Ocupa espaço vertical disponível em .main-content */
+    min-height: 0;   /* Ajuda flex-grow a funcionar */
+    padding: 20px;   /* <<< PADDING INTERNO AQUI (espaço em volta do conteúdo) */
+    overflow: hidden; /* Scroll será controlado internamente por filhos */
 }
 
 /* --- Estilos do Chat Box e Input (Rota '/') --- */
 .chat-box {
     flex-grow: 1;
-    overflow-y: auto;
-    padding: 20px 5px;
+    overflow-y: auto; /* Scroll para as mensagens */
+    padding: 0 5px 15px 5px; /* Padding (sem superior, direito menor) */
     margin-bottom: 15px;
     background-color: transparent;
     display: flex;
@@ -109,10 +109,11 @@ input { font-family: inherit; }
 
 .input-area {
     display: flex;
-    padding: 15px 0 0 0; /* Remove padding inferior, ajusta superior */
+    padding: 15px 0 0 0; /* Padding acima do input */
     background-color: transparent;
     position: relative;
     box-shadow: 0 -8px 20px -15px rgba(0, 0, 0, 0.08);
+    flex-shrink: 0; /* Não encolhe */
 }
 #user-input {
     flex-grow: 1; padding: 14px 20px; border: 1px solid #e5e5e5;
@@ -148,15 +149,10 @@ input { font-family: inherit; }
     border-bottom-left-radius: 6px; font-style: italic; max-width: 80%;
 }
 
-/* --- Estilos para Banco de Questões --- */
-.question-bank-page-content { /* Container específico da página */
-    /* Herda max-width e margin: auto de .chat-interface-container */
-    /* Adiciona flex para organizar filtros e lista */
-     display: flex;
-     flex-direction: column;
-     height: 100%; /* Ocupa altura disponível */
-     overflow: hidden; /* Controla scroll interno */
-}
+
+/* --- Estilos para Banco de Questões (Página /banco-questoes) --- */
+
+/* Container da página já estilizado acima com .question-bank-page-content */
 
 /* Estilos para a Seção de Filtros */
 .filter-section {
@@ -167,7 +163,7 @@ input { font-family: inherit; }
     background-color: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    margin-bottom: 20px; /* Espaço antes da lista */
+    margin-bottom: 20px;
     align-items: flex-end;
     flex-shrink: 0; /* Impede que os filtros encolham */
 }
@@ -179,42 +175,62 @@ input { font-family: inherit; }
 }
 .filter-group select:focus { outline: none; border-color: #10a37f; box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2); }
 
-/* Botão Filtrar removido, então estilos removidos */
-/* #apply-filters-btn { ... } */
-/* #apply-filters-btn:hover { ... } */
-
-/* Área da Lista de Questões */
+/* Área que CONTÉM a lista e a contagem - Ocupa espaço e permite scroll */
 .question-list-area {
-    flex-grow: 1; /* Ocupa o espaço restante */
-    overflow-y: auto; /* Scroll SÓ para a lista */
-    padding-top: 0; /* Remove padding extra */
-    padding-right: 10px;
+    flex-grow: 1;         /* <<< FAZ OCUPAR ESPAÇO VERTICAL */
+    overflow-y: auto;     /* <<< HABILITA SCROLL VERTICAL */
+    min-height: 0;        /* <<< IMPORTANTE PARA FLEX+OVERFLOW */
+    padding-top: 10px;
+    padding-right: 10px; /* Espaço para scrollbar */
+    margin: 0 -5px 0 0;   /* Compensa padding direito para alinhar scroll */
     /* Sem fundo ou borda própria */
     scrollbar-width: thin;
-    scrollbar-color: #d1d1d6 #f7f7f8;
+    scrollbar-color: #c5c5d2 #f7f7f8; /* Ajusta cores do scrollbar */
 }
-.question-list-area::-webkit-scrollbar { width: 6px; }
+.question-list-area::-webkit-scrollbar { width: 8px; }
 .question-list-area::-webkit-scrollbar-track { background: transparent; }
-.question-list-area::-webkit-scrollbar-thumb { background-color: #d1d1d6; border-radius: 3px; }
+.question-list-area::-webkit-scrollbar-thumb { background-color: #c5c5d2; border-radius: 4px; border: 2px solid #f7f7f8; } /* Borda para parecer mais fino */
 
+
+.results-count {
+    font-size: 0.9em;
+    color: #6b7280;
+    margin-bottom: 15px;
+    padding-left: 0; /* Remove padding extra */
+    flex-shrink: 0; /* Garante que não seja espremido */
+}
+
+/* Container interno da lista - Centraliza os cards */
+.question-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaço entre os cards */
+    /* max-width e margin: auto removidos daqui, o pai (.question-bank-page-content) já centraliza */
+}
+
+/* Mensagens de feedback */
 .loading-message,
-.error-message { text-align: center; padding: 30px; font-style: italic; color: #6b7280; }
+.error-message,
+.no-results-message {
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+    color: #6b7280;
+}
 .error-message { color: #ef4444; }
 
-.results-count { font-size: 0.9em; color: #6b7280; margin-bottom: 15px; padding-left: 5px; }
 
-/* Container interno da lista (se QuestionList.jsx o usar) */
-.question-list-container { display: flex; flex-direction: column; gap: 20px; }
-
-/* --- Estilos Card da Questão (Banco e Chat) --- */
+/* Card individual da questão (Banco e Chat) */
 .question-layout {
-    border: 1px solid #e5e7eb; border-radius: 8px; padding: 0; margin-top: 0; /* Removido margin-top */
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0;
     background-color: #ffffff; /* Fundo branco do card */
-    align-self: stretch; max-width: 100%; width: auto; box-sizing: border-box;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06); /* Sombra mais suave */
-    /* margin-left: 0; */ /* Removido */
+    width: 100%; /* Ocupa largura do container pai (.question-list-container) */
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    flex-shrink: 0; /* Impede encolhimento estranho */
 }
-/* .question-layout::before { display: none; } */ /* Garante sem ícone */
 
 /* Estilos internos do card (mantidos/ajustados minimamente) */
 .question-header {
@@ -225,9 +241,9 @@ input { font-family: inherit; }
     background-color: #e5e7eb; color: #4b5563; font-size: 0.8em;
     padding: 3px 8px; border-radius: 4px; white-space: nowrap;
 }
-.question-tag.pave-tag { background-color: #10a37f; color: #fff; font-weight: 500; } /* Estilo opcional tag PAVE */
+.question-tag.pave-tag { background-color: #10a37f; color: #fff; font-weight: 500; }
 
-.question-body { padding: 15px; font-size: 1em; color: #1f2937; } /* Ajustado padding */
+.question-body { padding: 15px; font-size: 1em; color: #1f2937; }
 .question-body p:not(.question-reference) {
     margin: 0 0 10px 0; line-height: 1.6; white-space: pre-wrap; /* Mantém para quebras de linha no corpo */
 }
