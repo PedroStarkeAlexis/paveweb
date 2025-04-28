@@ -37,8 +37,8 @@ input { font-family: inherit; }
 .sidebar {
     width: 260px;
     height: 100%;
-    background-color: #ffffff; /* <<< FUNDO BRANCO */
-    border-right: 1px solid #e5e7eb; /* <<< Borda cinza clara */
+    background-color: #ffffff; /* Fundo branco */
+    border-right: 1px solid #e5e7eb; /* Borda cinza clara */
     display: flex;
     flex-direction: column;
     padding: 10px 0;
@@ -56,7 +56,7 @@ input { font-family: inherit; }
 .logo-placeholder {
     font-size: 1.2em;
     font-weight: 500;
-    color: #10a37f; /* <<< Cor destaque (verde) para logo */
+    color: #10a37f; /* Cor destaque (verde) para logo */
     padding-left: 5px;
 }
 
@@ -79,7 +79,7 @@ input { font-family: inherit; }
     display: flex;
     align-items: center;
     padding: 10px 15px;
-    color: #374151; /* <<< TEXTO ESCURO */
+    color: #374151; /* Texto escuro */
     font-weight: 500; /* Levemente mais pesado */
     font-size: 0.9em;
     border-radius: 6px;
@@ -98,11 +98,11 @@ input { font-family: inherit; }
     color: #6b7280; /* Ícone cinza */
 }
 .sidebar-nav a:hover {
-    background-color: #f3f4f6; /* <<< Cinza claro no HOVER */
+    background-color: #f3f4f6; /* Cinza claro no HOVER */
     color: #111827;
 }
 .sidebar-nav a.active {
-    background-color: #e0f2fe; /* <<< Azul claro para ATIVO (estilo Gemini) */
+    background-color: #e0f2fe; /* Azul claro para ATIVO (estilo Gemini) */
     color: #0c4a6e; /* Azul escuro */
     font-weight: 500;
 }
@@ -120,7 +120,7 @@ input { font-family: inherit; }
 .sidebar-footer a {
     font-weight: 400;
     font-size: 0.9em;
-    color: #6b7280; /* <<< Cinza para footer */
+    color: #6b7280; /* Cinza para footer */
 }
 .sidebar-footer a:hover {
     background-color: #f3f4f6;
@@ -128,7 +128,7 @@ input { font-family: inherit; }
 }
 .copyright {
     font-size: 0.75em;
-    color: #9ca3af; /* <<< Cinza claro */
+    color: #9ca3af; /* Cinza claro */
     text-align: center;
     padding: 0 15px;
     margin-top: 10px;
@@ -145,40 +145,39 @@ input { font-family: inherit; }
     background-color: #f7f7f8; /* Fundo geral claro */
 }
 
-/* Container que limita largura e centraliza o chat */
-.chat-interface-container {
+/* Container que limita largura e centraliza o chat/banco */
+.chat-interface-container,
+.question-bank-container { /* Aplica a ambos os containers */
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 800px; /* Largura máxima do conteúdo */
+    margin: 0 auto; /* Centraliza horizontalmente */
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    min-height: 0;
+    flex-grow: 1; /* Ocupa espaço vertical disponível */
+    min-height: 0; /* Ajuda flex-grow */
     padding: 0 15px; /* Padding lateral */
 }
 
-
-/* --- Estilos do Chat Box e Input --- */
+/* --- Estilos do Chat Box e Input (Para a página do Chat) --- */
 .chat-box {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 20px 5px;
+    padding: 20px 5px; /* Padding vertical, pouco horizontal */
     margin-bottom: 15px;
-    background-color: transparent;
+    background-color: transparent; /* Fundo transparente */
     display: flex;
     flex-direction: column;
-    gap: 10px; /* <<< Reduz gap para bolhas ficarem mais próximas */
+    gap: 10px; /* Gap entre bolhas */
     scrollbar-width: thin;
-    scrollbar-color: #d1d1d600 #f7f7f800;
+    scrollbar-color: #d1d1d6 #f7f7f8; /* Scrollbar claro */
 }
 .chat-box::-webkit-scrollbar { width: 6px; }
 .chat-box::-webkit-scrollbar-track { background: transparent; }
 .chat-box::-webkit-scrollbar-thumb { background-color: #d1d1d6; border-radius: 3px; }
 
-/* Área de Input */
 .input-area {
     display: flex;
-    padding: 15px 0 25px 0;
+    padding: 15px 0 25px 0; /* Mais padding inferior */
     background-color: transparent;
     position: relative;
     box-shadow: 0 -8px 20px -15px rgba(0, 0, 0, 0.08); /* Sombra superior */
@@ -219,49 +218,40 @@ input { font-family: inherit; }
 }
 
 
-/* --- Estilos das Mensagens (COM BOLHAS, SEM ÍCONES) --- */
+/* --- Estilos das Mensagens (Bolhas, Sem Ícones) --- */
 .message {
-    /* Remove flex e gap que eram para o ícone */
-    /* display: flex; */
-    /* gap: 15px; */
-    max-width: 80%; /* Largura máxima da bolha */
-    padding: 10px 15px; /* Padding INTERNO da bolha */
-    border-radius: 18px; /* Cantos arredondados */
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
     line-height: 1.6;
     font-size: 1em;
     word-wrap: break-word;
 }
 
-/* REMOVER regra ::before para os ícones */
-/* .message::before { display: none; } */
-/* .user-message::before { display: none; } */
-
 .user-message {
-    align-self: flex-end; /* <<< Alinha bolha à direita */
-    background-color: #e0f2fe; /* <<< Fundo azul claro (Gemini/Glau) */
-    color: #0c4a6e; /* Texto escuro */
-    border-bottom-right-radius: 6px; /* Canto inferior direito menos redondo */
+    align-self: flex-end;
+    background-color: #e0f2fe; /* Fundo azul claro */
+    color: #0c4a6e;
+    border-bottom-right-radius: 6px;
 }
 
-.bot-message {
-    align-self: flex-start; /* <<< Alinha bolha à esquerda */
-    background-color: #ffffff; /* <<< Fundo BRANCO para bot (contraste) */
-    color: #374151; /* Texto escuro */
+.bot-message:not(.question-layout):not(.typing-indicator) { /* Aplica só a msg de texto do bot */
+    align-self: flex-start;
+    background-color: #ffffff; /* Fundo BRANCO para bot */
+    color: #374151;
     border: 1px solid #e5e7eb; /* Borda sutil */
-    border-bottom-left-radius: 3px; /* Canto inferior esquerdo menos redondo */
+    border-bottom-left-radius: 6px;
 }
 
-/* Estilo do parágrafo dentro da bolha */
 .message p {
     margin: 0;
-    padding: 0; /* Remove padding-top antigo */
-    color: inherit; /* Herda cor da bolha */
+    padding: 0;
+    color: inherit;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
 
 .typing-indicator {
-    /* Faz o indicador parecer uma bolha de bot */
     align-self: flex-start;
     background-color: #ffffff;
     color: #6b7280;
@@ -272,193 +262,38 @@ input { font-family: inherit; }
     font-style: italic;
     max-width: 80%;
 }
-/* .typing-indicator::before { display: none; } */
 
 
-/* --- Estilos Card da Questão (Ajustado para contexto) --- */
-/* Dentro da seção --- Estilos Card da Questão --- */
-    /* Dentro da seção --- Estilos Card da Questão --- */
+/* --- Estilos para Banco de Questões --- */
 
-    .question-body {
-        padding: 15px 15px 10px 15px;
-        font-size: 1em;
-        color: #1f2937;
-    }
-
-    .question-body p:not(.question-reference) { /* Aplica a parágrafos que NÃO são a referência */
-       margin: 0 0 10px 0;
-       line-height: 1.6;
-       white-space: pre-wrap; /* <<< READICIONAR ESTA LINHA AQUI */
-    }
-    .question-body p:last-of-type:not(.question-reference) {
-        margin-bottom: 0;
-    }
-
-    /* Regra para a referência (mantém a mesma) */
-    .question-reference {
-        font-size: 0.8em;
-        color: #6b7280;
-        text-align: right;
-        margin-top: 15px;
-        margin-bottom: 0;
-        line-height: 1.4;
-        /* Não precisa de white-space aqui, pois é uma string única */
-    }
-
-
-.question-body p {
-   margin: 0;
-   line-height: 1.6;
-   white-space: pre-wrap; /* <<< ADICIONAR ESTA LINHA */
-}
-.question-layout {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 0;
-    margin-top: 5px;
-    background-color: #ffffff; /* Fundo branco */
-    align-self: flex-start; /* <<< Alinha card à esquerda como bot */
-    max-width: 95%; /* Pode ser mais largo que bolhas normais */
-    width: auto; /* Largura conforme conteúdo */
-    box-sizing: border-box;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-    /* margin-left: 0; */ /* <<< Remove margem esquerda */
-}
-/* .question-layout::before { display: none; } */ /* Garante sem ícone */
-
-/* Mantém estilos internos do card */
-.question-header {
-    padding: 10px 15px; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb;
-    display: flex; flex-wrap: wrap; gap: 8px; border-radius: 8px 8px 0 0;
-}
-.question-tag {
-    .question-tag.pave-tag {
-    background-color: #10a37f; /* Ou outra cor de destaque */
-    color: #fff;
-    font-weight: 500;
-}
-    background-color: #e5e7eb; color: #4b5563; font-size: 0.8em;
-    padding: 3px 8px; border-radius: 4px; white-space: nowrap;
-}
-.question-tag.pave-tag {
-    background-color: #10a37f; /* Ou outra cor de destaque */
-    color: #fff;
-    font-weight: 500;
-}
-.question-body { padding: 15px 15px 10px 15px; font-size: 1em; color: #1f2937; }
-.question-body p { margin: 0; line-height: 1.6; }
-.alternatives-container { padding: 10px 15px 5px 15px; display: flex; flex-direction: column; gap: 8px; }
-.alternative-item {
-    display: flex; align-items: stretch; border: 1px solid #d1d5db;
-    border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease;
-    background-color: #fff; overflow: hidden;
-}
-.question-layout.answered .alternative-item { cursor: default; }
-.question-layout:not(.answered) .alternative-item:hover { background-color: #f9fafb; border-color: #9ca3af; }
-.alternative-letter {
-    font-weight: bold; border-right: 1px solid #d1d5db; min-width: 45px;
-    padding: 10px 0; display: inline-flex; justify-content: center; align-items: center;
-    background-color: #f9fafb; color: #4b5563; font-size: 1em;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-    align-self: stretch;
-}
-.alternative-text { flex-grow: 1; color: #1f2937; font-size: 0.95em; padding: 12px 15px; }
-
-/* Feedback Visual (Mantido igual) */
-.alternative-letter.feedback-correct { background-color: #10a37f; color: #fff; border-color: #10a37f;}
-.alternative-letter.feedback-incorrect { background-color: #ef4444; color: #fff; border-color: #ef4444;}
-.alternative-item.correct-answer { border-color: #a7f3d0; background-color: #f0fdf4; }
-.alternative-item.correct-answer .alternative-text { color: #065f46; }
-.alternative-item.correct-answer .alternative-letter { border-right-color: #a7f3d0; }
-.alternative-item.incorrect-choice { border-color: #fecaca; background-color: #fef2f2; }
-.alternative-item.incorrect-choice .alternative-text { color: #991b1b; }
-.alternative-item.incorrect-choice .alternative-letter { border-right-color: #fecaca; }
-
-/* Footer do Card (Mantido igual) */
-.question-footer {
-    padding: 10px 15px; border-top: 1px solid #f3f4f6; background-color: #f9fafb;
-    border-radius: 0 0 8px 8px; display: flex; justify-content: flex-end;
-    align-items: center; min-height: 40px;
-}
-.show-answer-btn {
-    background-color: #fff; border: 1px solid #d1d5db; color: #4b5563;
-    padding: 5px 12px; border-radius: 6px; font-size: 0.85em;
-    transition: background-color 0.2s, border-color 0.2s;
-}
-.question-layout.answered .show-answer-btn { display: none; }
-.show-answer-btn:hover { background-color: #f9fafb; border-color: #9ca3af; }
-.correct-answer-text { font-size: 0.9em; color: #065f46; font-weight: 500; }
-/* --- Estilos para a Página do Banco de Questões --- */
+/* Container da página */
 .question-bank-container {
-    width: 100%;
-    max-width: 850px; /* Pode ser um pouco mais largo que o chat */
-    margin: 0 auto; /* Centraliza */
-    padding: 20px 15px; /* Espaçamento interno */
-    background-color: #fff; /* Fundo branco para a área de conteúdo */
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e0e0e0;
-    height: calc(100% - 30px); /* Ajusta altura descontando padding da main */
-    overflow-y: auto; /* Scroll para a lista de questões */
-    scrollbar-width: thin;
-    scrollbar-color: #d1d5db #ffffff;
-}
-.question-bank-container::-webkit-scrollbar { width: 6px; }
-.question-bank-container::-webkit-scrollbar-track { background: #ffffff; }
-.question-bank-container::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 3px; }
-
-
-.question-bank-container h1 {
-    font-size: 1.4em;
-    font-weight: 500;
-    color: #1f2937;
-    margin-bottom: 25px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e5e7eb;
-    display: block; /* Garante que h1 seja bloco */
-}
-
-#question-bank-list {
+    padding: 20px 0; /* <<< Remove padding lateral daqui, já tem no container pai */
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 25px; /* Espaço entre os cards de questão */
+    overflow: hidden;
+}
+/* Título H2 (removido do JSX, mas estilo mantido) */
+.question-bank-container h2 {
+    margin-bottom: 20px;
+    color: #1f2937;
+    font-weight: 500;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 10px;
 }
 
-/* Ajuste para remover cursor pointer das alternativas estáticas */
-#question-bank-list .alternative-item {
-    cursor: default;
-}
- #question-bank-list .alternative-item:hover { /* Remove efeito hover */
-    background-color: #fff;
-    border-color: #d1d5db;
-}
-
-/* Estilo para destacar a alternativa correta estaticamente */
-#question-bank-list .alternative-item.correct-answer-static {
-    border-color: #a7f3d0;
-    background-color: #f0fdf4;
-}
-#question-bank-list .alternative-item.correct-answer-static .alternative-text {
-     color: #065f46;
-     font-weight: 500; /* Opcional: leve negrito na correta */
-}
- /* Estilo para o V na letra correta */
-#question-bank-list .alternative-item .alternative-letter.feedback-correct {
-     background-color: #10a37f;
-     color: #fff;
-     border-color: #10a37f;
-}
-/* --- Estilos para a Seção de Filtros (Banco de Questões) --- */
+/* --- ESTILOS PARA FILTROS --- */
 .filter-section {
     display: flex;
-    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
-    gap: 15px; /* Espaço entre os grupos de filtro */
+    flex-wrap: wrap;
+    gap: 15px;
     padding: 15px;
-    background-color: #f9fafb; /* Fundo levemente diferente */
+    background-color: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    margin-bottom: 25px; /* Espaço antes da lista de questões */
-    align-items: flex-end; /* Alinha itens na base */
+    margin-bottom: 20px; /* Reduz margem inferior */
+    align-items: flex-end;
 }
 
 .filter-group {
@@ -471,6 +306,7 @@ input { font-family: inherit; }
     font-size: 0.85em;
     font-weight: 500;
     color: #4b5563;
+    margin-left: 2px;
 }
 
 .filter-group select {
@@ -479,75 +315,19 @@ input { font-family: inherit; }
     border-radius: 6px;
     background-color: #fff;
     font-size: 0.9em;
-    min-width: 150px; /* Largura mínima */
+    min-width: 150px;
     cursor: pointer;
 }
-
-#apply-filters-btn {
-    padding: 8px 20px;
-    background-color: #10a37f; /* Mesmo verde do botão de envio */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.9em;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-    height: fit-content; /* Ajusta altura ao conteúdo */
-}
-
-#apply-filters-btn:hover {
-    background-color: #0f8e6c;
-}
-
-/* Garante que o CSS interativo das alternativas funcione aqui também */
-/* As regras de .alternative-item, .correct-choice, etc., já devem existir */
-/* Adicione esta se não existir, para resetar o cursor */
-#question-bank-list .alternative-item {
-    cursor: pointer;
-}
-#question-bank-list .question-layout.answered .alternative-item {
-    cursor: default;
-}
-/* --- Estilos para Banco de Questões --- */
-
-.question-bank-container {
-    padding: 20px; /* Espaçamento interno da página */
-    height: 100%; /* Ocupa altura da main-content */
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Controla scroll aqui */
-}
-
-.question-bank-container h2 {
-    margin-bottom: 20px;
-    color: #1f2937;
-    font-weight: 500;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 10px;
-}
-
-.filter-container {
-    display: flex;
-    gap: 15px; /* Espaço entre os selects */
-    margin-bottom: 25px;
-    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
-}
-
-.filter-select {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
-    background-color: #fff;
-    font-size: 0.9em;
-    min-width: 150px; /* Largura mínima */
-    cursor: pointer;
-}
-.filter-select:focus {
+.filter-group select:focus {
     outline: none;
     border-color: #10a37f;
     box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
 }
 
+/* (Estilo do botão Aplicar, caso use) */
+#apply-filters-btn { /* ... */ }
+
+/* Mensagens de carregamento/erro/resultados */
 .loading-message,
 .error-message {
     text-align: center;
@@ -555,17 +335,24 @@ input { font-family: inherit; }
     font-style: italic;
     color: #6b7280;
 }
-.error-message {
-    color: #ef4444; /* Vermelho para erros */
+.error-message { color: #ef4444; }
+
+.results-count {
+    font-size: 0.9em;
+    color: #6b7280;
+    margin-bottom: 5px; /* <<< Reduz margem inferior */
+    padding-left: 5px;
+    padding-top: 5px; /* Adiciona um pouco de espaço acima */
 }
 
+/* Container da lista de questões */
 .question-list {
-    flex-grow: 1; /* Ocupa espaço vertical restante */
-    overflow-y: auto; /* Scroll para a lista de questões */
-    padding-right: 10px; /* Espaço para scrollbar */
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 10px;
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Espaço entre os cards de questão */
+    gap: 15px; /* <<< Reduz gap entre questões */
     scrollbar-width: thin;
     scrollbar-color: #d1d1d6 #f7f7f8;
 }
@@ -573,15 +360,55 @@ input { font-family: inherit; }
 .question-list::-webkit-scrollbar-track { background: transparent; }
 .question-list::-webkit-scrollbar-thumb { background-color: #d1d1d6; border-radius: 3px; }
 
-/* Ajusta o layout da questão dentro da lista */
+/* --- Estilo do Card de Questão DENTRO da Lista (Sem fundo/borda) --- */
 .question-list .question-layout {
-    margin-left: 0; /* Remove margem que alinhava com chat */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06); /* Sombra um pouco mais sutil */
+    background-color: transparent; /* Sem fundo */
+    border: none;                 /* Sem borda */
+    box-shadow: none;             /* Sem sombra */
+    margin-left: 0;
+    padding: 10px 0;
+    border-bottom: 1px solid #e5e7eb; /* Separador inferior */
+    border-radius: 0;
+}
+/* Ajustes internos para o card transparente */
+.question-list .question-layout .question-header {
+    background-color: transparent; border-bottom: none; padding: 0 0 10px 0;
+}
+.question-list .question-layout .question-body { padding: 0; }
+.question-list .question-layout .question-body p:not(.question-reference) {
+   margin: 0 0 10px 0; line-height: 1.6; white-space: pre-wrap; /* Necessário para \n */
+}
+.question-list .question-layout .question-reference {
+    font-size: 0.8em; color: #6b7280; text-align: right;
+    margin-top: 15px; margin-bottom: 0; line-height: 1.4;
+}
+.question-list .question-layout .alternatives-container { padding: 15px 0 10px 0; }
+.question-list .question-layout .question-footer {
+     background-color: transparent; border-top: none; padding: 10px 0 0 0;
+     justify-content: flex-start;
 }
 
-.results-count {
-    font-size: 0.9em;
-    color: #6b7280;
-    margin-bottom: 10px;
-    padding-left: 5px;
-}
+
+/* --- Estilos Internos do Card (Mantidos) --- */
+/* Regras para .question-tag, .alternative-item, .alternative-letter, */
+/* .alternative-text, feedbacks, .show-answer-btn, .correct-answer-text */
+/* devem ser mantidas como estavam. */
+.question-tag { background-color: #e5e7eb; color: #4b5563; font-size: 0.8em; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+.pave-tag { background-color: #10a37f; color: #fff; font-weight: 500; } /* Estilo opcional para tag PAVE */
+.alternative-item { display: flex; align-items: stretch; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease; background-color: #fff; overflow: hidden; }
+.question-layout.answered .alternative-item { cursor: default; }
+.question-layout:not(.answered) .alternative-item:hover { background-color: #f9fafb; border-color: #9ca3af; }
+.alternative-letter { font-weight: bold; border-right: 1px solid #d1d5db; min-width: 45px; padding: 10px 0; display: inline-flex; justify-content: center; align-items: center; background-color: #f9fafb; color: #4b5563; font-size: 1em; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; align-self: stretch; }
+.alternative-text { flex-grow: 1; color: #1f2937; font-size: 0.95em; padding: 12px 15px; }
+.alternative-letter.feedback-correct { background-color: #10a37f; color: #fff; border-color: #10a37f;}
+.alternative-letter.feedback-incorrect { background-color: #ef4444; color: #fff; border-color: #ef4444;}
+.alternative-item.correct-answer { border-color: #a7f3d0; background-color: #f0fdf4; }
+.alternative-item.correct-answer .alternative-text { color: #065f46; }
+.alternative-item.correct-answer .alternative-letter { border-right-color: #a7f3d0; }
+.alternative-item.incorrect-choice { border-color: #fecaca; background-color: #fef2f2; }
+.alternative-item.incorrect-choice .alternative-text { color: #991b1b; }
+.alternative-item.incorrect-choice .alternative-letter { border-right-color: #fecaca; }
+.show-answer-btn { background-color: #fff; border: 1px solid #d1d5db; color: #4b5563; padding: 5px 12px; border-radius: 6px; font-size: 0.85em; transition: background-color 0.2s, border-color 0.2s; }
+.question-layout.answered .show-answer-btn { display: none; }
+.show-answer-btn:hover { background-color: #f9fafb; border-color: #9ca3af; }
+.correct-answer-text { font-size: 0.9em; color: #065f46; font-weight: 500; }
