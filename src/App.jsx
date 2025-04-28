@@ -93,12 +93,12 @@ function App() {
       // Processa os dados recebidos da API
       const botResponses = [];
       // Adiciona o comentário do bot se ele existir e for uma string não vazia
-      if (data && typeof data.commentary === 'string' && data.commentary.trim().length > 0) {
+      if (data && typeof data.commentary === 'string' && data.commentary && data.commentary.trim().length > 0) {
         botResponses.push({ type: 'text', sender: 'bot', content: data.commentary });
       }
 
       // Adiciona as questões se 'data.questions' for um array válido e não vazio
-      if (data && Array.isArray(data.questions) && data.questions.length > 0) {
+      if (data && Array.isArray(data.questions) && data.questions && data.questions.length > 0) {
         data.questions.forEach(q => {
           // Valida cada objeto de questão antes de adicioná-lo
           if (q && q.alternativas && q.resposta_letra) {
@@ -114,7 +114,10 @@ function App() {
       }
 
       // Adiciona uma mensagem padrão se NADA foi retornado (nem comentário, nem questões)
-      if (botResponses.length === 0 && !(data && typeof data.commentary === 'string' && data.commentary.trim().length > 0)) {
+      if (
+        botResponses.length === 0 &&
+        !(data && typeof data.commentary === 'string' && data.commentary && data.commentary.trim().length > 0)
+      ) {
           console.log("Nenhum comentário ou questão válida recebida da API.");
           botResponses.push({ type: 'text', sender: 'bot', content: 'Não encontrei informações relevantes para sua busca nos dados atuais.' });
       }
