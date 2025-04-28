@@ -156,7 +156,7 @@ export async function onRequestPost(context) {
     let botCommentary = "";
     let prompt = "";
     const safetySettings = [ /* ... */ ];
-    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`;
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
 
     if (questoesParaFrontend.length > 0) {
         const topicosEncontrados = [...new Set(questoesParaFrontend.map(q => q?.topico || q?.materia))].filter(Boolean).join(', '); // Filtra null/undefined
