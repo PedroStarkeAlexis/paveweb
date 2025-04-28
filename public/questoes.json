@@ -1,594 +1,594 @@
 [
+  {
+    "id": 1,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Biologia",
+    "topico": "Anfíbios",
+    "texto_questao": "Leia o texto a seguir.\nAtropelamentos de anfíbios na Rota do Sol diminuem 80% com medidas de proteção\nAlgumas espécies protegidas só existem nesse local no Sul do Brasil e estão ameaçadas de extinção. É o caso da perereca-macaca (Phyllomedusa distincta), perereca-castanhola (Itapotihyla langsdorffii) e perereca-risadinha (Scinax rizibilis). O sistema de travessias utilizado para proteção, com passagens aéreas, inferiores e cercas direcionadoras, constitui uma iniciativa inédita no Brasil, construída do zero, já que não havia referências anteriores nas quais se basear. O procedimento para evitar o impacto do tráfego sobre a fauna na ERS-486 começou entre 2017 e 2018, com a realização da primeira etapa de monitoramento. Entre 2020 e 2021, foram construídas seis passagens terrestres e cinco aéreas para permitir o deslocamento dos animais, com localização baseada no monitoramento anterior.\n\nA que Ordem pertencem os anfíbios citados no texto?",
+    "referencia": "https://www.estado.rs.gov.br/atropelamentos-de-anfibios-terrestres-na-rota-do-sol-diminuem-80-com-medidas-de-protecao. Acesso em: 01/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "Gymnophiona."},
+      {"letra": "B", "texto": "Sarcopterygii."},
+      {"letra": "C", "texto": "Anura."},
+      {"letra": "D", "texto": "Chelonia."},
+      {"letra": "E", "texto": "Caudata."}
+    ],
+    "resposta_letra": "C"
+  },
+  {
+    "id": 2,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Física",
+    "topico": "Escalas Termométricas",
+    "texto_questao": "Leia o texto a seguir.\nChegada do frio deve elevar o risco de hipotermia nas zonas de enchente do RS\nA tendência é que os termômetros registrem marcas bastante baixas nas próximas duas ou três semanas. Na Grande Porto Alegre, por exemplo, pode fazer entre 5°C a 7°C na madrugada de quinta-feira. Na segunda metade do mês, novas frentes frias devem se repetir. Com tais condições, cresce muito o risco de hipotermia, geralmente em função da exposição ao frio intenso. Além das equipes que trabalham nos resgates ou em funções que não prescindem da entrada na água, a Metsul alerta também sobre o risco para as vítimas das cheias alojadas em abrigos ou alojamentos temporários. Neste contexto, torna-se ainda mais necessária a doação de cobertores e agasalhos para minimizar os problemas.\n\nConsidera-se que a situação de saúde citada no texto tem início quando a temperatura do corpo humano",
+    "referencia": "adaptado de https://www.correiodopovo.com.br/not%C3%ADcias/cidades/chegada-do-frio-deve-elevar-o-risco-de-hipotermia-nas-zonas-de-enchente-do-rs-1.1493848. Acesso em: 04/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "fica acima dos 37°C ou acima de 98°F (Fahrenheit)."},
+      {"letra": "B", "texto": "fica abaixo dos 35°C ou abaixo de 95°F (Fahrenheit)."},
+      {"letra": "C", "texto": "fica acima dos 37°C ou acima de 96°F (Fahrenheit)."},
+      {"letra": "D", "texto": "fica abaixo dos 35°C ou abaixo de 99°F (Fahrenheit)."},
+      {"letra": "E", "texto": "fica acima dos 36°C ou acima de 97°F (Fahrenheit)."}
+    ],
+    "resposta_letra": "B"
+  },
+  {
+    "id": 3,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Biologia",
+    "topico": "Características de Fanerógamas (Gimnospermas e Angiospermas)",
+    "texto_questao": "Leia o texto a seguir.\nButiá sob ameaça de extinção\n\"O butiá é muito referente, faz parte da minha infância. Além de ser bonito de se ver, de se comer, ainda gera renda. Em seis anos vamos convidar vocês pra vir aqui comer os primeiros frutos”, conta a agricultora Isabel Monjeló Dalenogare. [...] elas receberam 140 mudas de butiá, sendo 10 para cada família, doadas pelo projeto \"Conservação e manejo de recursos genéticos do butiazeiro (Butia odorata)\", desenvolvido pelo Departamento de Diagnóstico e Pesquisa Agropecuária (DDPA), da Secretaria da Agricultura, Pecuária, Produção Sustentável e Irrigação (Seapi). O objetivo do projeto é fomentar a conservação das espécies de butiazeiro através da sua valorização ambiental, cultural e econômica.\n\nA que grupo pertence a palmeira citada no texto?",
+    "referencia": "adaptado de https://www.agrolink.com.br/noticias/butia-sob-ameaca-de-extincao_483677.html. Acesso em: 05/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "Gimnospermas."},
+      {"letra": "B", "texto": "Angiospermas."},
+      {"letra": "C", "texto": "Briófitas."},
+      {"letra": "D", "texto": "Pteridófitas."},
+      {"letra": "E", "texto": "Algas verdes."}
+    ],
+    "resposta_letra": "B"
+  },
     {
-      "id": 1,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Biologia",
-      "topico": "Anfíbios",
-      "texto_questao": "Leia o texto a seguir.\nAtropelamentos de anfíbios na Rota do Sol diminuem 80% com medidas de proteção\nAlgumas espécies protegidas só existem nesse local no Sul do Brasil e estão ameaçadas de extinção. É o caso da perereca-macaca (Phyllomedusa distincta), perereca-castanhola (Itapotihyla langsdorffii) e perereca-risadinha (Scinax rizibilis). O sistema de travessias utilizado para proteção, com passagens aéreas, inferiores e cercas direcionadoras, constitui uma iniciativa inédita no Brasil, construída do zero, já que não havia referências anteriores nas quais se basear. O procedimento para evitar o impacto do tráfego sobre a fauna na ERS-486 começou entre 2017 e 2018, com a realização da primeira etapa de monitoramento. Entre 2020 e 2021, foram construídas seis passagens terrestres e cinco aéreas para permitir o deslocamento dos animais, com localização baseada no monitoramento anterior.\n\nA que Ordem pertencem os anfíbios citados no texto?",
-      "referencia": "https://www.estado.rs.gov.br/atropelamentos-de-anfibios-terrestres-na-rota-do-sol-diminuem-80-com-medidas-de-protecao. Acesso em: 01/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "Gymnophiona."},
-        {"letra": "B", "texto": "Sarcopterygii."},
-        {"letra": "C", "texto": "Anura."},
-        {"letra": "D", "texto": "Chelonia."},
-        {"letra": "E", "texto": "Caudata."}
-      ],
-      "resposta_letra": "C"
-    },
-    {
-      "id": 2,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Física",
-      "topico": "Escalas Termométricas",
-      "texto_questao": "Leia o texto a seguir.\nChegada do frio deve elevar o risco de hipotermia nas zonas de enchente do RS\nA tendência é que os termômetros registrem marcas bastante baixas nas próximas duas ou três semanas. Na Grande Porto Alegre, por exemplo, pode fazer entre 5°C a 7°C na madrugada de quinta-feira. Na segunda metade do mês, novas frentes frias devem se repetir. Com tais condições, cresce muito o risco de hipotermia, geralmente em função da exposição ao frio intenso. Além das equipes que trabalham nos resgates ou em funções que não prescindem da entrada na água, a Metsul alerta também sobre o risco para as vítimas das cheias alojadas em abrigos ou alojamentos temporários. Neste contexto, torna-se ainda mais necessária a doação de cobertores e agasalhos para minimizar os problemas.\n\nConsidera-se que a situação de saúde citada no texto tem início quando a temperatura do corpo humano",
-      "referencia": "adaptado de https://www.correiodopovo.com.br/not%C3%ADcias/cidades/chegada-do-frio-deve-elevar-o-risco-de-hipotermia-nas-zonas-de-enchente-do-rs-1.1493848. Acesso em: 04/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "fica acima dos 37°C ou acima de 98°F (Fahrenheit)."},
-        {"letra": "B", "texto": "fica abaixo dos 35°C ou abaixo de 95°F (Fahrenheit)."},
-        {"letra": "C", "texto": "fica acima dos 37°C ou acima de 96°F (Fahrenheit)."},
-        {"letra": "D", "texto": "fica abaixo dos 35°C ou abaixo de 99°F (Fahrenheit)."},
-        {"letra": "E", "texto": "fica acima dos 36°C ou acima de 97°F (Fahrenheit)."}
-      ],
-      "resposta_letra": "B"
-    },
-    {
-      "id": 3,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Biologia",
-      "topico": "Características de Fanerógamas (Gimnospermas e Angiospermas)",
-      "texto_questao": "Leia o texto a seguir.\nButiá sob ameaça de extinção\n\"O butiá é muito referente, faz parte da minha infância. Além de ser bonito de se ver, de se comer, ainda gera renda. Em seis anos vamos convidar vocês pra vir aqui comer os primeiros frutos”, conta a agricultora Isabel Monjeló Dalenogare. [...] elas receberam 140 mudas de butiá, sendo 10 para cada família, doadas pelo projeto \"Conservação e manejo de recursos genéticos do butiazeiro (Butia odorata)\", desenvolvido pelo Departamento de Diagnóstico e Pesquisa Agropecuária (DDPA), da Secretaria da Agricultura, Pecuária, Produção Sustentável e Irrigação (Seapi). O objetivo do projeto é fomentar a conservação das espécies de butiazeiro através da sua valorização ambiental, cultural e econômica.\n\nA que grupo pertence a palmeira citada no texto?",
-      "referencia": "adaptado de https://www.agrolink.com.br/noticias/butia-sob-ameaca-de-extincao_483677.html. Acesso em: 05/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "Gimnospermas."},
-        {"letra": "B", "texto": "Angiospermas."},
-        {"letra": "C", "texto": "Briófitas."},
-        {"letra": "D", "texto": "Pteridófitas."},
-        {"letra": "E", "texto": "Algas verdes."}
-      ],
-      "resposta_letra": "B"
-    },
-      {
-      "id": 4,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Física",
-      "topico": "Infrassom e Ultrassom",
-      "texto_questao": "Os exames médicos de ultrassom e ultrassom Doppler são baseados na emissão e recepção de sons pelo transdutor, que é a parte do aparelho em que se coloca gel e que é posta em contato com o corpo. O transdutor emite sons que são refletidos pelos diferentes tecidos e órgãos do corpo e esses sons refletidos são detectados ao voltarem ao transdutor. Um “software”, uma programação no aparelho, é responsável pela tradução dos efeitos desse processo em imagens. O som emitido no exame, no entanto, é inaudível, de frequência muito maior do que a percebida pelo ouvido humano, que está na faixa entre 20Hz e 20000Hz. A frequência mais baixa num exame de ultrassom pode ser cerca de 50000 vezes maior do que a mais baixa frequência audível.\n\nMarque o valor aproximado de frequências dos exames de ultrassom mais compatível com o texto, ou seja, compatível com a frequência mais baixa num exame de ultrassom.",
-      "referencia": "MÁXIMO, Antônio; ALVARENGA, Beatriz. Física contexto & aplicações. 2º v. 1ª ed. São Paulo: Scipione, 2014.",
-      "alternativas": [
-        {"letra": "A", "texto": "100 KHz."},
-        {"letra": "B", "texto": "1 KHz."},
-        {"letra": "C", "texto": "10 KHz."},
-        {"letra": "D", "texto": "1 nHz."},
-        {"letra": "E", "texto": "1 MHz."}
-      ],
-      "resposta_letra": "E"
-    },
-    {
-      "id": 5,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Física",
-      "topico": "Calor Sensível e Calor Latente",
-      "texto_questao": "A cada dia que passa as pessoas estão mais preocupadas com os alimentos que consomem, pois estudos comprovam que uma dieta alimentar equilibrada, juntamente a exercícios físicos regulares, é indispensável para a manutenção da saúde e a prevenção de obesidade, diabetes, colesterol alto, entre outros problemas.\nOs rótulos nutricionais dos alimentos trazem informações sobre os valores energéticos que eles proporcionam ao organismo. Estudos mostram que os valores de energia consumidos por uma pessoa (adulta) de 70 kg são, em média, 2500 calorias por dia. Se for ingerida uma quantidade de calorias superior à que o corpo precisa para manter suas atividades, o excesso será transformado em tecido gorduroso (adiposo), provocando o aumento de \"peso”.\nGeralmente, esse termo é usado para se referir à quantidade de energia que cada alimento fornece ao organismo se for totalmente aproveitado. Porém, as calorias não se aplicam somente aos alimentos, mas estão associadas a qualquer fenômeno relacionado a trocas de calor. Por exemplo, na queima de 1 litro de gasolina, são liberadas cerca de 7.750.000 calorias.\nUma massa de 5g de água que se encontra a uma temperatura de 25°Cé colocada para ser aquecida, e se utiliza nesse processo um valor de quantidade de calor de 2.535cal, que corresponde aproximadamente à quantidade de calor, em média, necessária que uma pessoa adulta deve consumir diariamente.\n\nCalcule a massa restante de água que não foi vaporizada no processo de aquecimento, sabendo-se que cágua = 1 cal/g• °C e Lv = 540 cal/g.",
-      "referencia": "Adaptado de https://www.preparaenem.com/quimica/o-que-sao-as-calorias.htm. Acesso em: 30/11/2022.",
-      "alternativas": [
-        {"letra": "A", "texto": "2g"},
-        {"letra": "B", "texto": "3g"},
-        {"letra": "C", "texto": "7g"},
-        {"letra": "D", "texto": "1g"},
-        {"letra": "E", "texto": "9g"}
-      ],
-      "resposta_letra": "Anulada"
-    },
-    {
-      "id": 6,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Física",
-      "topico": "Escala Kelvin",
-      "texto_questao": "Usinas termelétricas são importantes no Brasil, em que pese a discussão dos impactos ambientais dessas instalações. Numa termelétrica usa-se a combustão de carvão ou derivados de petróleo para produzir, por aquecimento de água, um vapor que movimenta as pás de uma turbina que gera a energia elétrica. Chama-se rendimento, R, a razão (energia elétrica obtida) ÷ (energia desprendida pela combustão). Esse rendimento é sempre menor do que 1 (ou 100%), o que significa que nem toda energia desprendida na combustão se transforma em energia elétrica. Mostra-se que podemos estimar aproximadamente R a partir de duas temperaturas, Tvapor, a temperatura do vapor na turbina, e Tresfriamento, a temperatura do sistema que resfria o vapor de volta ao estado líquido. Temos R = 1-(Tresfriamento÷Tvapor). Para usar essa expressão o único cuidado deve ser usar a escala Kelvin de temperatura, lembrando que, aproximadamente, T(Kelvin)=T(°C)+273 (temperatura em Kelvin igual a temperatura em Celsius mais 273). Vamos supor Tvapor = 500°C e Tresfriamento = 25°C.\n\nQue estimativa de rendimento temos para as temperaturas de vapor e de resfriamento sugeridas?",
-      "referencia": "MÁXIMO, Antônio; ALVARENGA, Beatriz. Física contexto & aplicações. 2º v. 1ª ed. São Paulo: Scipione, 2014.",
-      "alternativas": [
-        {"letra": "A", "texto": "Cerca de 0,4, ou 40%."},
-        {"letra": "B", "texto": "Cerca de 0,95, ou 95%."},
-        {"letra": "C", "texto": "Cerca de 0,3, ou 30%."},
-        {"letra": "D", "texto": "Cerca de 0,8, ou 80%."},
-        {"letra": "E", "texto": "Cerca de 0,6, ou 60%."}
-      ],
-      "resposta_letra": "E"
-    },
-    {
-      "id": 7,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Química",
-      "topico": "Deslocamento do Equilíbrio: Princípio de Le Chatelier",
-      "texto_questao": "Os refrigerantes são formados por uma mistura de água-gás (no caso o gás carbônico, o CO2) е algum tipo de xarope, que dá a cor e o gosto da bebida. Mas antes de misturar o gás no xarope, os fabricantes misturam a água e o gás num aparelho chamado carbonizador, gerando o ácido carbônico, que tem forma líquida. Nesse tipo de bebida existe, então, o seguinte equilíbrio químico:\n2H2O(I) + CO2(g) <=> H3O+(aq) + HCO3-(aq)\nSegundo o princípio de Le Chatelier, quando é causada alguma forma de perturbação em um sistema químico, o seu equilíbrio se desloca no sentido de reduzir essas perturbações.\n\nConforme o texto e de acordo com a equação, selecione a alternativa que explica o processo que pode causar a chamada eructação (arroto), ao tomarmos bebidas com gás.",
-      "referencia": "https://brasilescola.uol.com.br/quimica/equilibrio-quimico-refrigerante-no-estomago.htm. Acesso em: 06/10/2022.",
-      "alternativas": [
-        {"letra": "A", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há um aumento na concentração da espécie H3O+, deslocando o equilíbrio no sentido da reação inversa."},
-        {"letra": "B", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há um aumento na concentração da espécie H3O+, deslocando o equilíbrio no sentido da reação direta."},
-        {"letra": "C", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há uma diminuição na concentração da espécie H3O+, deslocando o equilíbrio no sentido da reação inversa."},
-        {"letra": "D", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há uma diminuição na concentração da espécie CO2, deslocando o equilíbrio no sentido da reação direta."},
-        {"letra": "E", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há um aumento na concentração da espécie CO2, deslocando o equilíbrio no sentido da reação direta."}
-      ],
-      "resposta_letra": "A"
-    },
-    {
-      "id": 8,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Química",
-      "topico": "Solubilidade e curvas de solubilidade",
-      "texto_questao": "No nosso cotidiano, estamos em constante contato com soluções, como as ligas metálicas, o ar atmosférico, o soro fisiológico, entre outras. Em várias dessas soluções formadas por sólidos e líquidos, a água atua como solvente na maioria dos casos e, por isso, é considerada um solvente universal. O grau de dissolução de um soluto em um solvente depende de vários fatores. Os mais importantes são: a natureza das partículas de solvente e soluto e as interações entre elas; a temperatura na qual a solução é formada; a pressão de um soluto gasoso. Ao se adicionar sal comum à água gradativamente em temperatura constante e agitando continuamente, é possível observar que, em dado momento, não ocorrerá a dissolução do sal, utilizando como exemplo o NaCl. Isso ocorrerá no momento em que houver aproximadamente 360 g de sal para cada litro de água quando a temperatura está em 20°C. A partir desse ponto, dizemos que a solução tornou-se saturada ou que a solução atingiu o seu ponto de saturação, pois qualquer quantidade de sal que for adicionada ao sistema irá precipitar ou formar corpo de fundo. O ponto de saturação depende do soluto, do solvente e das condições físicas (a temperatura sempre influi e a pressão, em especial, em soluções que contêm gases). Este ponto é definido pelo coeficiente ou grau de solubilidade. Podem-se visualizar abaixo os valores dos coeficientes de solubilidade (g de NaCl por 100 g de H2O) do cloreto de sódio (NaCl) em função da temperatura:\n\nTemperatura (°C) | Coeficiente de solubilidade (g de NaCl por 100 g de água)\n------- | --------\n0°C | 35,7\n20°C | 36,0\n50°C | 37,0\n100°C | 39,8\n\nConsiderando-se os dados disponíveis na tabela acima, a opção que melhor representa a quantidade mínima de água, em gramas, a 50 °C, necessária para dissolver totalmente 5,0 g de NaCl é",
-      "referencia": "https://mundoeducacao.uol.com.br/quimica/solucoes.htm. Acesso em: 15/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "9,43."},
-        {"letra": "B", "texto": "10,22."},
-        {"letra": "C", "texto": "13,52."},
-        {"letra": "D", "texto": "15,07."},
-        {"letra": "E", "texto": "7,41."}
-      ],
-      "resposta_letra": "C"
-    },
-    {
-      "id": 9,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Química",
-      "topico": "Catálise",
-      "texto_questao": "Existem substâncias que, quando adicionadas aos reagentes de determinadas reações químicas, alteram a velocidade delas sem, contudo, serem consumidas. As substâncias que promovem um aumento da velocidade das reações químicas nessas condições são designadas geralmente por catalisadores. Um catalisador está profundamente envolvido no decurso de uma reação química, formando e quebrando ligações à medida que os reagentes se transformam em produtos, mas não sofre uma alteração permanente. Ao colocar por exemplo um pedaço de batata em contato com a água oxigenada, ocorre uma reação de decomposição, que produz água e gás oxigênio como produtos, de acordo com a reação abaixo:\n2 H2O2 (aq) → 2 H2O (l) + O2 (g)\nA liberação do oxigênio pode ser comprovada quando a chama do palito de fósforo ficar mais intensa ao aproximá-lo da boca do recipiente, no qual a reação está sendo processada. A água oxigenada se decompõe naturalmente de forma bem lenta somente pela exposição à luz solar. Mas, nesse caso, ela ocorreu de forma mais rápida porque a batata possui uma enzima, chamada catalase, que atua como catalisadora da reação de decomposição da água oxigenada. Essa mesma enzima está presente também no sangue. É por isso que quando colocamos água oxigenada num machucado, observa-se uma efervescência, sendo importante porque permite desinfectar matando microrganismos anaeróbicos.\n\nConforme o texto acima, assinale a alternativa correta:",
-      "referencia": "adaptado de https://www.infoescola.com/quimica/peroxido-de-hidrogenio/. Acesso em: 15/06/2024. e http://educa.fc.up.pt/ficheiros/fichas/1067/Introdu%E7%E3o.pdf. Acesso em: 20/06/2024",
-      "alternativas": [
-        {"letra": "A", "texto": "A catalase muda o mecanismo da reação ou o caminho através do qual os reagentes se transformam nos produtos. Isso ocorre porque esse caminho alternativo exige menor energia de ativação, processando uma reação mais rápida."},
-        {"letra": "B", "texto": "A catalase muda o mecanismo da reação ou o caminho através do qual os reagentes se transformam nos produtos. Isso ocorre porque esse caminho alternativo mantém a mesma energia de ativação, processando uma reação mais lenta."},
-        {"letra": "C", "texto": "A catalase muda o mecanismo da reação ou o caminho através do qual os reagentes se transformam nos produtos. Isso ocorre porque esse caminho alternativo exige uma maior energia de ativação, processando uma reação mais rápida."},
-        {"letra": "D", "texto": "Não ocorre mudança no mecanismo da reação ou no caminho através do qual os reagentes se transformam nos produtos, devido ao fato de que a energia de ativação se mantém constante."},
-        {"letra": "E", "texto": "A catalase muda o mecanismo da reação ou o caminho através do qual os reagentes se transformam nos produtos. Isso ocorre porque esse caminho alternativo exige menor energia de ativação, processando uma reação mais lenta."}
-      ],
-      "resposta_letra": "A"
-    },
-    {
-      "id": 10,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "História",
-      "topico": "Crise do sistema colonial",
-      "texto_questao": "Considere as seguintes afirmações a respeito da Revolta da Cachaça (1660-1661) na História do Brasil Colônia.\nI – A Revolta da Cachaça fez parte dos movimentos separatistas do período colonial brasileiro, tais como a Conjuração Mineira, a Conjuração Baiana e a Revolução Pernambucana.\nII – A Revolta da Cachaça ocorreu no Rio de Janeiro, sendo motivada pela proibição da produção de aguardente pelos colonos, forçando, assim, a importação e o consumo de vinho português.\nIII - Foi uma revolta nativista, porque não era contra a coroa portuguesa, mas contrária à política fiscal aplicada pelo governador da capitania.\n\nEstá(ão) correta(s)?",
-      "alternativas": [
-        {"letra": "A", "texto": "I e II apenas."},
-        {"letra": "B", "texto": "I, II e III."},
-        {"letra": "C", "texto": "I apenas."},
-        {"letra": "D", "texto": "II e III apenas."},
-        {"letra": "E", "texto": "III apenas."}
-      ],
-      "resposta_letra": "D"
-    },
-    {
-      "id": 11,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "História",
-      "topico": "Formação do Estado nacional e as crises políticas",
-      "texto_questao": "Em 1835, mais de duas décadas depois da primeira rebelião, a grande sublevação escrava eclodiu em Salvador. Dessa vez, o ataque partiu de dentro da cidade, e a população não teve uma noite fácil. Na madrugada de 25 de janeiro, grupos de africanos escravos e libertos, armados com porretes, instrumentos de trabalho e armas brancas, lutaram nas ruas de Salvador, durante mais de três horas, enfrentando soldados e civis. A religião esteve entrelaçada com a revolta: boa parte dos rebeldes saiu para lutar nas ruas com as compridas túnicas rituais brancas os abadás usadas pelos adeptos do islamismo. Ainda, carregavam junto ao corpo amuletos com mensagens do Alcorão e com orações fortes para proteção.\n\nO texto identifica qual revolta regencial?",
-      "referencia": "SCHWARCZ, Lilia M.; STARLING, Heloísa M. Brasil: uma biografia. São Paulo: Companhia das Letras, 2015. p. 256.",
-      "alternativas": [
-        {"letra": "A", "texto": "Cabanagem."},
-        {"letra": "B", "texto": "Sabinada."},
-        {"letra": "C", "texto": "Revolta de Itapuã."},
-        {"letra": "D", "texto": "Revolta dos Malês."},
-        {"letra": "E", "texto": "Revolta de Manoel Congo."}
-      ],
-      "resposta_letra": "D"
-    },
-     {
-      "id": 12,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "História",
-      "topico": "Revoluções Inglesas, Norte-Americana e Francesa",
-      "texto_questao": "Leia o texto:\n“O termo sans-culottes, referido às pessoas que usavam calças compridas em vez dos calções até o joelho da gente rica, foi originariamente aplicado num sentido puramente social aos pequenos comerciantes, assalariados e vagabundos, quer da cidade, quer do campo. Durante a revolução, ο termo passou a ser mais geralmente aplicado aos indivíduos politicamente ativos dessas classes, e o seu âmbito alargou-se com a inclusão dos agitadores mais radicais daquele período, independentemente do respectivo estrato social.\"\n\nO texto descreve, os chamados sans-culottes, personagens que tiveram papel preponderante durante",
-      "referencia": "MCCRORY, Martin; MOULDER, Robert. Revolução Francesa para principiantes. Lisboa: Dom Quixote, 1983, p. 67.",
-      "alternativas": [
-        {"letra": "A", "texto": "a Revolução Gloriosa."},
-        {"letra": "B", "texto": "a Independência dos Estados Unidos."},
-        {"letra": "C", "texto": "a Revolução Francesa."},
-        {"letra": "D", "texto": "as Independências na América Latina."},
-        {"letra": "E", "texto": "a Unificação da Alemanha."}
-      ],
-      "resposta_letra": "C"
-    },
-    {
-      "id": 13,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Ciências Humanas",
-      "topico": "Estrutura fundiária, Políticas agrárias e o Estatuto da Terra",
-      "texto_questao": "Leia o texto a seguir:\nA questão agrária permanece absolutamente importante para a compreensão das diversas dimensões estruturantes do País: ambiental, econômica, social e territorial. [...] A dinâmica territorial do País foi e segue condicionada a sua estrutura fundiária, desigual em múltiplas facetas. Historicamente, o acesso à terra determinou a inserção de grupos sociais na sociedade e na estrutura política econômica brasileira e, nesse sentido, é possível dizer que a estrutura fundiária constitui um indicador e um revelador importante dos processos de apropriação da natureza e estratificação social nos territórios rurais. Ela pode ser considerada um fator chave na compreensão desta dinâmica, e pode bloquear ou favorecer o desenvolvimento rural.\n\nA partir dos seus conhecimentos sobre a estrutura fundiária brasileira, avalie as seguintes afirmações:\nI – Ao longo dos últimos cinco séculos, algumas leis foram determinantes para forjar a organização fundiária do Brasil.\nII – A Sesmaria foi um instituto jurídico espanhol que normatizava a concessão de pequenos lotes de terra aos escravizados para produzir gêneros agrícolas voltados para a subsistência e para o mercado interno.\nIII – Em 1850, a Lei de Terras foi a primeira iniciativa no sentido de organizar a propriedade privada no Brasil e dispor sobre o direito agrário.\nIV – Em 1964, o Estatuto da Terra traz a ideia de justiça social e função social da terra, dando origem a uma vasta gama de leis que regulamentam a reforma agrária, o salário mínimo, a moradia rural, a colonização, o uso temporário do solo, a posse e a política agrícola tributária.\nV – Na Constituição Federal do Brasil, de 1988, não há menções sobre as questões agrárias e de regulamentação das terras, o que torna possível o uso indiscriminado para qualquer finalidade.\n\nEstão corretas:",
-      "referencia": "Adaptado de IBGE. Atlas do espaço rural brasileiro. 2. ed. Rio de Janeiro: IBGE, 2020. Disponível em: https://www.ibge.gov.br/apps/atlasrural/pdfs/02_00_Texto.pdf. Acesso em: 17/08/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "I, III e IV apenas."},
-        {"letra": "B", "texto": "II, III e IV apenas."},
-        {"letra": "C", "texto": "I, II, III e V apenas."},
-        {"letra": "D", "texto": "III, IV e V apenas."},
-        {"letra": "E", "texto": "I, II, IV e V apenas."}
-      ],
-      "resposta_letra": "A"
-    },
-    {
-      "id": 14,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Ciências Humanas",
-      "topico": "Desenvolvimento tecnológico",
-      "texto_questao": "Leia o texto a seguir:\nNão existe uma ideia única do que venha a ser a globalização, mas há um consenso de que se trata de um processo múltiplo de forte integração internacional e de interdependência entre os locais e as economias nacionais, marcado por procedimentos de descentralização da produção. A rapidez e a intensidade do fluxo de pessoas, de informação, de mercadorias e de capital caracterizam essa etapa histórica de marcante desenvolvimento tecnológico.\n\nNo século XX foram desenvolvidas muitas das tecnologias que são utilizadas até os dias atuais e que estão presentes em nosso cotidiano. Analise as alternativas e indique qual delas NÃO foi desenvolvida no século XX.",
-      "referencia": "Adaptado de JUNIOR, Alfredo Boulos; SILVA, Edilson Adão Candido; FURQUIM, Laercio. Multiversos: Ciências Humanas: globalização, tempo e espaço: ensino médio. São Paulo: FTD, 2020.",
-      "alternativas": [
-        {"letra": "A", "texto": "Drones."},
-        {"letra": "B", "texto": "Internet."},
-        {"letra": "C", "texto": "GPS."},
-        {"letra": "D", "texto": "Televisão em cores."},
-        {"letra": "E", "texto": "Telégrafo."}
-      ],
-      "resposta_letra": "E"
-    },
-    {
-      "id": 15,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Ciências Humanas",
-      "topico": "Iluminismo",
-      "texto_questao": "A própria noção de Iluminismo, Ilustração, ou ainda Esclarecimento, como o termo é por vezes traduzido, indica, através da metáfora da luz e da claridade, uma oposição às trevas, ao obscurantismo, à ignorância, à superstição, ou seja, à existência de algo oculto, enfatizando, ao contrário, a necessidade de o real, em todos os seus aspectos, tornar-se transparente à razão. O grande instrumento do Iluminismo é a consciência individual, autônoma em sua capacidade de conhecer o real; suas armas são, portanto, o conhecimento, a ciência, a educação.\n\nCom base na reflexão sobre o Iluminismo apresentada pelo autor, discorra sobre o objetivo central deste movimento filosófico e suas implicações. Qual das alternativas melhor descreve o propósito essencial do Iluminismo?",
-      "referencia": "MARCONDES, Danilo. Iniciação à História da Filosofia: Dos Pré-Socráticos a Wittgenstein. 13.ed. Rio de Janeiro: Jorge Zahar Ed., 2010.",
-      "alternativas": [
-        {"letra": "A", "texto": "O Iluminismo promove a aceitação da superstição e do misticismo como formas válidas de conhecimento."},
-        {"letra": "B", "texto": "O lluminismo visa a manter tradições e crenças populares sem questionamento."},
-        {"letra": "C", "texto": "O Iluminismo volta-se à manutenção do obscurantismo e da ignorância para preservar a ordem social."},
-        {"letra": "D", "texto": "O Iluminismo valoriza a submissão da consciência individual às autoridades religiosas e políticas."},
-        {"letra": "E", "texto": "O lluminismo enfatiza a transparência da realidade à razão e utiliza o conhecimento, a ciência e a educação como ferramentas."}
-      ],
-      "resposta_letra": "E"
-    },
-    {
-      "id": 16,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Ciências Humanas",
-      "topico": "Ideologia e dominação social. Função da Ideologia",
-      "texto_questao": "A ideologia é, assim, uma forma de dominação, gerando uma falsa consciência, uma consciência ilusória, que se produz através de mecanismos pelos quais se objetificam certas representações (as da classe dominante) como sendo a verdadeira realidade, tudo isso produzindo uma aparente legitimação das condições existentes numa determinada sociedade em um período histórico determinado. Produz-se com isso uma forma de alienação da consciência humana de sua situação real de existência (as relações de produção). A ideologia é produto de uma estrutura social profundamente desigual e, portanto, não transparente, já que esta desigualdade não pode explicitar-se no nível da consciência. Evitar que isso aconteça é tarefa da ideologia.\n\nQual é o principal desdobramento da objetificação das representações pela classe dominante, conforme descrito pelo autor na análise sobre ideologia?",
-      "referencia": "MARCONDES, Danilo. Iniciação à História da Filosofia: Dos Pré-Socráticos a Wittgenstein. 13.ed. Rio de Janeiro: Jorge Zahar Ed., 2010.",
-      "alternativas": [
-        {"letra": "A", "texto": "Reforça a conscientização crítica das estruturas sociais desiguais."},
-        {"letra": "B", "texto": "Cria uma consciência autêntica e imparcial sobre as relações de produção."},
-        {"letra": "C", "texto": "Legitima as condições existentes e oculta as relações de dominação."},
-        {"letra": "D", "texto": "Permite a precisa compreensão das relações de poder no contexto da sociedade."},
-        {"letra": "E", "texto": "Mobiliza a transformação social e a igualdade de oportunidades."}
-      ],
-      "resposta_letra": "C"
-    },
-    {
-      "id": 17,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Ciências Humanas",
-      "topico": "Liberalismo, Socialismo, Anarquismo e Nacionalismo na Europa",
-      "texto_questao": "O Congresso de Viena (1814-1815) reorganizou a geopolítica europeia após as guerras napoleônicas, unindo forças tradicionais da Europa, propondo a restauração das antigas monarquias absolutistas. Entretanto, não houve demora para que essa tendência conservadora fosse contestada, aliando setores da burguesia, do operariado e das camadas médias urbanas, representando forças sociais surgidas após as Revoluções Francesa e Industrial. Na coesão instável desse arranjo político e social se desenvolveram vários movimentos inspirados no liberalismo, no nacionalismo, no socialismo e no anarquismo.\n\nLeia as seguintes afirmações.\nI – O liberalismo econômico defendia a interferência forte do Estado, regulando o livre-comércio.\nII – Os ideais nacionalistas tiveram grande influência na unificação da Itália e da Alemanha.\nIII - O marxismo como corrente socialista estabeleceu conceitos importantes, como dialética, mais-valia e luta de classes.\nIV – Para o marxismo a desigualdade social é resultado da divisão da sociedade em classes, entre os proprietários dos meios de produção, que compram a mão-de-obra daqueles desprovidos desses meios.\n\nEstão corretas",
-      "referencia": "COTRIM, Gilberto. História Global II. 3. ed. São Paulo: Saraiva, 2016. e MACHADO, Igor José Renó et al. Sociologia Hoje. 1. ed. São Paulo: Ática, 2013.",
-      "alternativas": [
-        {"letra": "A", "texto": "II, III e IV apenas."},
-        {"letra": "B", "texto": "I, II e III apenas."},
-        {"letra": "C", "texto": "I, II e IV apenas."},
-        {"letra": "D", "texto": "II e IV apenas."},
-        {"letra": "E", "texto": "I e II apenas."}
-      ],
-      "resposta_letra": "A"
-    },
-    {
-      "id": 18,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Linguagens",
-      "topico": "Movimentos de contracultura",
-      "texto_questao": "Os movimentos contraculturais, que sinalizam manifestações de grupos que questionam e rejeitam valores e práticas da cultura dominante, trouxeram novas abordagens para a manutenção dos seus objetivos, criando uma identidade forte nas áreas da expressão artística e cultural. Exemplos são os movimentos hippie, punk, hip-hop e rap. Além disso, o enfrentamento ao sistema surgia também na imagem com cortes de cabelo tipo moicano, tatuagens e piercings, bem como as manifestações de dança na rua como break e o grafite, uma marca de existência e visibilidade em meio aos espaços urbanos centrais que marginaliza e exclui os jovens negros e pobres da periferia.\n\nSão características desses movimentos:\nI – O punk emergiu entre os jovens brancos de classe média e média baixa, já o hip-hop se formou entre jovens afrodescendentes nos Estados Unidos.\nII – O movimento punk desenvolveu-se nos Estados Unidos e na Inglaterra em oposição ao otimismo do hip-hop surgido naqueles países.\nIII – O rap nacional se mantém conectado às letras de apoio à cultura dominante e à manutenção da ordem social.\nIV – O movimento hip-hop fundamentou-se no rap como expressão musical, no break como dança e no grafite como expressão visual.\nV – No Brasil o hip-hop ganhou força nos anos 1980, sobretudo na cidade de São Paulo, enquanto nos Estados Unidos o rap foi incorporado à indústria cultural a partir do final dos anos 1990.\n\nEstão corretas:",
-      "referencia": "ARAÚJO, Silvia Maria de; BRIDI, Maria Aparecida; MOTIM, Benilde Lenzi. Sociologia. São Paulo: FNDE, 2016. p. 327.",
-      "alternativas": [
-        {"letra": "A", "texto": "II, III e IV apenas."},
-        {"letra": "B", "texto": "I, IV e V apenas."},
-        {"letra": "C", "texto": "I, II e V apenas."},
-        {"letra": "D", "texto": "III, IV e V apenas."},
-        {"letra": "E", "texto": "I, II e IV apenas."}
-      ],
-      "resposta_letra": "B"
-    },
-    {
-      "id": 19,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Matemática",
-      "topico": "Operações na forma algébrica [de números complexos]",
-      "texto_questao": "Os alunos de uma turma de segundo ano do Ensino Médio estavam organizando comemorações mensais para os aniversariantes. Todos estavam informando o mês do seu aniversário, mas quando chegou a vez de Joaquim, ele lançou uma “charada” envolvendo o conteúdo que estavam estudando nas aulas de Matemática.\nJoaquim disse: “O meu mês de aniversário corresponde à parte real do número complexo resultante do produto de (3 – i) pelo conjugado de (2 – 2i)”.\n\nEm que mês Joaquim faz aniversário?",
-      "alternativas": [
-        {"letra": "A", "texto": "Dezembro."},
-        {"letra": "B", "texto": "Agosto."},
-        {"letra": "C", "texto": "Maio."},
-        {"letra": "D", "texto": "Abril."},
-        {"letra": "E", "texto": "Setembro."}
-      ],
-      "resposta_letra": "B"
-    },
-    {
-      "id": 20,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Matemática",
-      "topico": "Semelhança de triângulos",
-      "texto_questao": "(Questão com imagem)\nDurante o ano de 2024, o estado do Rio Grande do Sul sofreu novamente com fortes chuvas que superaram recordes históricos quanto ao volume de água e muitas localidades em todo o estado tiveram níveis elevados de água da chuva. Suponha que uma determinada rua tem uma distância horizontal entre seu ponto mais alto e o mais baixo de 8 metros, e a diferença de altura entre esses dois pontos é de 6 metros. Durante um dia de chuva, caiu ao longo de toda a extensão da rua uma altura de água de 30 milímetros por metro, que, sem escoamento, acabou se acumulando na parte mais baixa, como representado na imagem abaixo: [Imagem de um triângulo retângulo com catetos 6m e 8m, representando a inclinação da rua]\n\nCom base nisso, qual é a altura, em relação ao fim da rua, em que ficou o nível máximo de água após essa chuva?",
-      "referencia": "Fonte: Autoria própria.",
-      "alternativas": [
-        {"letra": "A", "texto": "3 / (2√5)"},
-        {"letra": "B", "texto": "15 / √2"},
-        {"letra": "C", "texto": "15√2"},
-        {"letra": "D", "texto": "300"},
-        {"letra": "E", "texto": "6√2"}
-      ],
-      "resposta_letra": "A"
-    },
-    {
-      "id": 21,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Matemática",
-      "topico": "Área de quadriláteros",
-      "texto_questao": "(Questão com imagem)\nA cidade de Pelotas é rica pela arquitetura presente em seus casarões, que são testemunhos da era do charque no Sul do Brasil. As fachadas ornamentadas, janelas amplas e varandas detalhadas são símbolos existentes nas construções que remetem aos séculos XVIII e XIX.\nUm dos prédios que compõe esse acervo arquitetônico da cidade é a Escola de Agronomia Eliseu Maciel, atualmente denominada como Sala dos Conselhos Superiores da UFPel. O edifício, cujo projeto arquitetônico foi desenvolvido pelo desenhista Dominique Pineau, inicialmente concebido pela família Antunes Maciel para abrigar uma escola municipal em homenagem póstuma ao tenente-coronel Eliseu Antunes Maciel, nunca chegou a ser usado com esse propósito devido à falta de professores. Em 1883, a Câmara cedeu o prédio para fundar a Escola de Medicina Veterinária e Agricultura Prática, e no ano seguinte, o Instituto Vacinológico foi anexado ao complexo. A Escola de Agronomia Eliseu Maciel, pioneira no Brasil, estabelecida em 1934, evoluiu para a Faculdade de Agronomia Eliseu Maciel, integrando-se à Universidade Federal de Pelotas em 1969.\n[Imagem de uma janela dupla arqueada de um prédio histórico]\nSuponha-se que serão construídas novas coberturas para as janelas, como a mostrada na imagem, com tábuas que devem ser utilizadas na horizontal para a confecção das janelas, de forma a proteger da entrada de chuva, sem prejudicar o fluxo de ar.\n\nPara isso, considerando que a abertura tem 1,5 m de altura e 0,8 m de largura, quantas tábuas, com medidas de 20 cm de largura e comprimento de 1,2 m serão necessárias, com um desperdício mínimo?",
-      "referencia": "Adaptado de \"Escola de Agronomia Eliseu Maciel\". Disponível em: https://wp.ufpel.edu.br/patrimonio/patrimonio-cultural-edificado/escola-de-agronomia-eliseu-maciel/. Acesso em: 16/06/2024. Fonte: Autoria própria.",
-      "alternativas": [
-        {"letra": "A", "texto": "6"},
-        {"letra": "B", "texto": "0,5"},
-        {"letra": "C", "texto": "4"},
-        {"letra": "D", "texto": "5"},
-        {"letra": "E", "texto": "7,5"}
-      ],
-      "resposta_letra": "D"
-    },
-     {
-      "id": 22,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Matemática",
-      "topico": "Cálculo de área [em prismas]",
-      "texto_questao": "(Questão com imagem)\nUtilize a figura e o texto a seguir para responder à questão.\n[Imagem de uma casa modular provisória com medidas 3m x 9m e altura 2,70m]\nEm 2024, o estado do Rio Grande do Sul, foi afetado por fortes chuvas que causaram grandes inundações, gerando “a maior catástrofe climática” da história do estado. De acordo com relatórios da Defesa Civil, 471 das 497 cidades gaúchas foram afetadas pelas tempestades, ou seja, o equivalente a 94,77% do total. De acordo com os dados, somente 26 cidades não tiveram nenhum impacto relacionado às chuvas. Muitas famílias ficaram sem casa para voltar, sendo alojadas em espaços comunitários. No intuito de oferecer um pouco mais de dignidade às famílias atingidas pela enchente, o Governo do Estado anunciou a compra de moradias provisórias. Após as prefeituras beneficiadas conseguirem terrenos adequados e prepararem os locais para a colocação das casas provisórias, os módulos devem ser instalados em até 30 dias. As moradias provisórias com 9m de largura e 3m de profundidade – têm espaço interno de 27m². O espaço é dividido em um quarto, uma sala conjugada à cozinha e um banheiro. O projeto prevê que até seis pessoas vivam em cada moradia provisória. Conforme o governo do Estado, as moradias temporárias são feitas no formato de construção modular, com chassis metálicos, sendo entregues já com mobiliário planejado e eletrodomésticos.\nAs moradias provisórias possuem três aberturas: uma janela de 0,80 m x 0,50 m, no banheiro; uma janela de 1,20 m x 1 m, no quarto e uma porta-janela de 2,10 m x 1,20 m. As moradias devem ser entregues com sua parte externa pintada, com exceção das aberturas que já vêm coloridas. Considere que um galão de tinta de 18 litros consegue cobrir (pintar) 100 m² e que cada galão custa R$ 260,00.\n\nQuantos reais serão gastos para pintar 8 casas, sendo que não pode faltar tinta e que não é possível comprar latas com menos de 18 litros de tinta?",
-      "referencia": "Fonte: https://gauchazh.clicrbs.com.br/geral/noticia/2024/06/governo-do-rs-anuncia-investimento-em-500-casas-provisorias-para-atingidos-pela-enchente-instalacao-depende-de-terrenos-de-prefeituras-clx4vxbea01rq015dg68409jl.html. Acesso em: 17/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "R$ 1.577,68."},
-        {"letra": "B", "texto": "R$ 2.600,00."},
-        {"letra": "C", "texto": "R$ 485,44."},
-        {"letra": "D", "texto": "R$ 1.300,00."},
-        {"letra": "E", "texto": "R$ 2.080,00."}
-      ],
-      "resposta_letra": "D"
-    },
-    {
-      "id": 23,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Matemática",
-      "topico": "Razões trigonométricas (seno, cosseno e tangente)",
-      "texto_questao": "(Questão com imagem)\nAna é uma estudante do ensino médio do Colégio Municipal Pelotense e está aprendendo sobre o funcionamento do teodolito e sua aplicabilidade para medir alturas de diferentes estruturas e construções.\n[Imagem ilustrativa de Ana usando um teodolito para medir a altura de um prédio. A distância inclinada do teodolito ao topo do prédio é 168m. A altura do prédio é 85,5m. A altura do teodolito (olhos de Ana) é 1,5m]\nSuponha que Ana utilizou essa técnica para descobrir qual é a altura do prédio em que mora, chegando ao resultado de 85,5 m. Para isso, teve que ficar a uma distância, em linha reta, do topo do prédio de 168 m, usando o aparelho a uma altura de 1,5 m na linha dos olhos.\n\nAo fazer essa medição, qual é o ângulo em graus que Ana viu no aparelho?",
-      "referencia": "Fonte: Autoria própria, imagem meramente ilustrativa, as medidas dos ângulos e comprimentos da figura não necessariamente se referem à questão com exatidão.",
-      "alternativas": [
-        {"letra": "A", "texto": "30°"},
-        {"letra": "B", "texto": "90°"},
-        {"letra": "C", "texto": "60°"},
-        {"letra": "D", "texto": "15°"},
-        {"letra": "E", "texto": "45°"}
-      ],
-      "resposta_letra": "A"
-    },
-    {
-      "id": 24,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Língua Portuguesa",
-      "topico": "Funções de Linguagem",
-      "texto_questao": "(Questão com imagem no Texto I)\nLeia os textos a seguir para responder a próxima questão.\nTexto I [Cartaz da Campanha Contra a Violência Doméstica, listando tipos de violência e o Disque 180]\nTexto II [Poema \"Uma mulher que grita na esperança de viver\", de uma estudante, sobre medo, machismo, assédio e resistência]\n\nAs funções da linguagem são categorias dos estudos da comunicação. Toda linguagem é utilizada para comunicar algo a alguém. A transmissão da mensagem pressupõe alguns elementos: um emissor, um receptor, um contexto, um código e um canal entre o emissor e o receptor. Analise as proposições que seguem:\nI. No texto I, o cartaz, tem-se como objetivo a conscientização da população sobre a necessidade de denunciar a violência doméstica e a função da linguagem predominante é conativa ou apelativa.\nII. Nos textos I e II se destaca o fato de que as autoridades são responsáveis por ações preventivas contra a violência doméstica e a função predominante é a referencial.\nIII. No texto II, “Poesia | Uma mulher que grita na esperança de viver”, predominam as funções: emotiva ou expressiva e poética.\nIV. No texto I, o cartaz aborda os tipos de violência e, por esse motivo, a função da linguagem predominante é a metalinguística.\n\nEstão corretas:",
-      "alternativas": [
-        {"letra": "A", "texto": "I e II apenas."},
-        {"letra": "B", "texto": "I e III apenas."},
-        {"letra": "C", "texto": "I e IV apenas."},
-        {"letra": "D", "texto": "II e III apenas."},
-        {"letra": "E", "texto": "III e IV apenas."}
-      ],
-      "resposta_letra": "B"
-    },
-    {
-      "id": 25,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Língua Portuguesa",
-      "topico": "Coerência e Coesão Textual",
-      "texto_questao": "Leia o texto a seguir para responder a próxima questão.\nManuel Bandeira\nFilho de engenheiro, Manuel Bandeira foi obrigado abandonar os estudos de arquitetura por causa da tuberculose. Mas a iminência da morte não marcou de forma lúgubre sua obra, embora em seu humor lírico haja sempre um toque de funda melancolia, e na sua poesia haja sempre um certo toque de morbidez, até no erotismo.\nTradutor de autores como Marcel Proust e William Shakespeare, esse nosso Manuel traduziu mesmo foi a nostalgia do paraíso cotidiano mal idealizado por nós, brasileiros, órfãos de um país imaginário, nossa Cocanha perdida, Pasárgada. Descrever seu retrato em palavras é uma tarefa impossível, depois que ele mesmo já o fez tão bem em versos.\n\nA coesão textual é um fenômeno linguístico caracterizado pela articulação entre elementos de um texto. Ela garante a harmonia e a conexão lógica entre as frases, o que colabora para uma melhor compreensão por parte do leitor. Analise as proposições a seguir:\nI. A coesão textual no texto está relacionada com os componentes da superfície textual, ou seja, as palavras e frases que o compõem. No texto em questão, “Manuel Bandeira”, percebe-se que a coesão é construída pelo emprego de pronomes pessoais, possessivos e demonstrativos: “sua”, “seu”, “esse”, “nosso”, “ele”. Esses componentes estão conectados entre si em uma sequência linear por meio de dependências de ordem gramatical.\nII. No texto \"Manuel Bandeira” a coesão é imaterial e não está na superfície textual. A compreensão do que está escrito dependerá dos níveis de interação entre o leitor, o autor e o texto. Por esse motivo, um mesmo texto pode apresentar múltiplas interpretações.\nIII. No texto “Manuel Bandeira” o uso adequado dos conectivos e dos mecanismos de coesão evitam erros que prejudicam a sintaxe e a construção de sentidos do texto.\nIV. No texto “Manuel Bandeira”, a coesão é estabelecida apenas pelo uso de expressões e repetições de palavras.\nV. No texto \"Manuel Bandeira” percebem-se mecanismos de coesão sequencial e referencial.\n\nEstão corretas:",
-      "referencia": "Revista Língua Portuguesa, n° 40, fev. 20.",
-      "alternativas": [
-        {"letra": "A", "texto": "I e II apenas."},
-        {"letra": "B", "texto": "I e IV apenas."},
-        {"letra": "C", "texto": "I, III e V apenas."},
-        {"letra": "D", "texto": "II e III apenas."},
-        {"letra": "E", "texto": "III e IV apenas."}
-      ],
-      "resposta_letra": "C"
-    },
-    {
-      "id": 26,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Literatura Brasileira",
-      "topico": "João Simões Lopes Neto - regionalismo",
-      "texto_questao": "(Questão com imagem no Texto I)\nLeia os textos abaixo.\nTexto 1: Nosso Caramelo resgatado [Imagem de um cavalo (Caramelo) sendo resgatado de um telhado por um bote, com o mapa do RS ao fundo parcialmente submerso]\nTexto 2: MEU ROSILHO \"PIOLHO\"\n\"Nisto senti um tchá! tcbá! tchá! – atrás de mim; olhei, de relancina apenas, porque nem tempo para mais, tive; era o temporal, a bomba d'água que se despenhava, quase nos garrões do rosilho! Foi o quanto amaguei o corpo e toquei, de meia rédea. Cupins e buracos de caranguejos, tacurus, macegas e carquejas, sangas, lagoas, barrais o diabo! – não vi nada! Se rodasse, nem o sebo da coalheira se me aproveitava! Mas o rosilho \"Piolho\" era firme e bonzão, sem mais nada! Eu corria, é verdade, porém a manga d'água também corria... A polvadeira que eu levantava a chuvarada engolia logo. Eu sentia-lhe a frescura, percebia que ela estava-me na garupa, na anca do rosilho, nos garrões dele! Um que outro pingo de chuva mais ponteiro batia-me às vezes na aba do chapéu... Era um duelo esquisito. Um duelo, em que um valente fugia para ficar vencedor! Vencer, aqui, era chegar enxuto. E assim viemos, eu e a tormenta, na mesma disparada: a que te pego! a que te largo! a que te pego! a que te largo!\"(...)\nO escritor pelotense Simões Lopes Neto apresenta em suas narrativas situações, costumes e vivências que fazem parte da cultura gaúcha tradicional, apresentando-as de forma vívida e intensa, com um vocabulário marcado por estilo próprio e inconfundível. No trecho retirado de Meu rosilho “Piolho”, por exemplo, é retratada a relação cotidiana existente entre o gaúcho e o seu cavalo.\n\nBaseando-se nos textos dados leia as afirmações:\nI) Os dois textos reforçam a ligação emocional entre o povo gaúcho e o cavalo.\nII) O texto 1 nos passa a ideia de que tanto o cavalo como o RS precisam de ajuda.\nIII) O texto 2 mostra uma exaltação à paciência do cavalo.\nIV) O texto 1 demonstra a agilidade inerente ao cavalo.\n\nEstão corretas:",
-       "referencia": "Texto 1: radiccioficial. Disponível em: https://www.instagram.com/p/C6wOpnjNHBV/?igsh=N2V3dWtrZG9yNmZz. Acesso em: 18/06/2024. Texto 2: LOPES NETO, J. Simões. Casos do Romualdo. Porto Alegre: Martins Livreiro, 2000.",
-      "alternativas": [
-        {"letra": "A", "texto": "II e III apenas."},
-        {"letra": "B", "texto": "I, II e III apenas."},
-        {"letra": "C", "texto": "I e II apenas."},
-        {"letra": "D", "texto": "III e IV apenas."},
-        {"letra": "E", "texto": "I e IV apenas."}
-      ],
-      "resposta_letra": "C"
-    },
-    {
-      "id": 27,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Linguagens",
-      "topico": "Carta de Pero Vaz de Caminha",
-      "texto_questao": "(Questão com imagem no Texto II)\nLeia os textos abaixo.\nTexto 1: Trecho da CARTA de Pero Vaz de Caminha (excerto)\n(...) “E segundo o que a mim e a todos pareceu, esta gente, não lhes falece outra coisa para ser toda cristã, do que entenderem-nos, porque assim tomavam aquilo que nos viam fazer como nós mesmos; por onde pareceu a todos que nenhuma idolatria nem adoração têm. E bem creio que, se Vossa Alteza aqui mandar quem entre eles mais devagar ande, que todos serão tornados e convertidos ao desejo de Vossa Alteza. E por isso, se alguém vier, não deixe logo de vir clérigo para os batizar; porque já então terão mais conhecimentos de nossa fé, pelos dois degredados que aqui entre eles ficam, os quais hoje também comungaram.”\nTexto 2: Tira do Armandinho – Descobrimento do Brasil [Tirinha do Armandinho questionando a versão do \"Descobrimento do Brasil\" ensinada pela professora, perguntando \"E a versão dos índios?!\"]\n\nQuais as visões sobre o “Descobrimento” do Brasil e a religiosidade dos povos originários apresentadas nos textos 1 e 2?",
-      "referencia": "Texto 1: Adaptada de CAMINHA, Pero Vaz de. A carta. NEAD. Núcleo de Educação a Distância. UNAMA – Universidade da Amazônia. P. 13. s/d. Disponível em: http://www.dominiopublico.gov.br/download/texto/ua000283.pdf. Acesso em: 18/16/2024. Texto 2: FONTE: https://tirasarmandinho.tumblr.com/search/descobrimento%20do%20brasil520. Acesso em: 18/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "No texto 1, trecho da Carta, temos a visão do conquistador europeu buscando impor a religião católica aos povos originários do Brasil. Já no texto 2, a tirinha, temos o questionamento de tal visão, feita pelo personagem Armandinho, que não concorda com a versão eurocêntrica da professora nem do cronista português."},
-        {"letra": "B", "texto": "No texto 1, trecho da Carta, temos a visão do cronista português acerca da importância da catequização dos povos originários do Brasil e no texto 2, a tirinha, notamos que a professora de Armandinho discorda de tal visão eurocêntrica."},
-        {"letra": "C", "texto": "No texto 1, trecho da Carta, verificamos que, na visão de Pero Vaz de Caminha, os povos originários do Brasil já possuem religiosidade própria, não necessitando ser catequizados e no texto 2, a tirinha, notamos que Armandinho concorda com a visão do cronista português."},
-        {"letra": "D", "texto": "No texto 1, trecho da Carta, verificamos que, na visão do cronista português, é importante que os portugueses entendam a religiosidade dos povos originários do Brasil. Já no texto 2, a tirinha, notamos que Armandinho concorda com o cronista português e discorda da professora."},
-        {"letra": "E", "texto": "Os dois textos criticam a visão eurocêntrica da história."}
-      ],
-      "resposta_letra": "A"
-    },
-    {
-      "id": 28,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Literatura Brasileira",
-      "topico": "Tomás Antônio Gonzaga - Cartas Chilenas",
-      "texto_questao": "Leia os textos:\nTexto 1:\nCARTA 2ª- Em que se mostra a piedade que Fanfarrão fingiu no princípio do seu governo, para chamar a si todos os negócios.\n(...)\n1.Do cavalo andaluz, é, sim, provável\n2.Nascer, também, um potro de esperança,\n3.Que tenha frente aberta, largos peitos,\n4.Que tenha alegres olhos e compridos,\n5.Que seja, enfim, de mãos e pés calçado;\n6.- Porém de um bom ginete também pode\n7.Um catralvo nascer, nascer um zarco.\n8. Aquele mesmo potro, que tem todos\n9.Os formosos sinais, que aponta o Rego,\n10.Carece, Doroteu, correr em roda\n11.- No grande picadeiro muitos meses,\n12.Para um e outro lado, necessita\n13.Que o destro picador lhe ponha a sela\n14.E que, montando nele, pouco a pouco,\n15.O faça obedecer ao leve toque\n16. - Do duro cabeção, da branda rédea.\nTexto 2:\nO bêbado e a equilibrista\n1.Caía a tarde feito um viaduto\n2.E um bêbado trajando luto me lembrou Carlitos\n3.A lua, tal qual a dona de um bordel\n4.Pedia a cada estrela fria um brilho de aluguel\n5.E nuvens lá no mata-borrão do céu\n6.Chupavam manchas torturadas\n7.Que sufoco\n8.Louco\n9.O bêbado com chapéu-coco\n10.Fazia irreverências mil\n11.Pra noite do Brasil\n12.Meu Brasil\n13.Que sonha com a volta do irmão do Henfil\n14.Com tanta gente que partiu\n15.Num rabo de foguete\n16.Chora\n17.A nossa Pátria mãe gentil\n18.Choram Marias e Clarisses\n19.No solo do Brasil\n20.Mas sei que uma dor assim pungente\n21. Não há de ser inutilmente\n22.A esperança\n23.Dança na corda bamba de sombrinha\n24.E em cada passo dessa linha\n25.Pode se machucar\n26.Azar\n27.A esperança equilibrista\n28. Sabe que o show de todo artista\n29. Tem que continuar.\nHistoricamente, o Brasil passou por períodos conturbados politicamente, em que os governantes abusavam do poder para roubar, perseguir, matar e prender quem se colocasse contra os atos ilegítimos que cometiam. Na mesma medida, intelectuais e artistas denunciavam tais atrocidades utilizando a linguagem conotativa em suas obras, a partir do uso de metáforas, metonímias, comparações, etc., para não serem punidos. Os autores dos textos 1 e 2 assim procederam em sua época.\n\nNesse contexto, Tomás Antônio Gonzaga, Aldyr Blank e João Bosco utilizaram a metáfora em seus textos, respectivamente em",
-      "referencia": "Texto 1: Adaptada de GONZAGA, Tomas A. Cartas chilenas. NEAD – Núcleo de Educação a Distância. UNAMA. Universidade do Amazonas. s/d. Disponível em: http://www.dominiopublico.gov.br/download/texto/ua000293.pdf. Acesso em: 18/06/2024. Texto 2: Compositores: Aldir Blanc Mendes / João Bosco De Freitas Mucci, Intérprete: Elis Regina. Fonte: adaptada de LyricFind. Disponível em: https://www.letras.mus.br/elis-regina/45679/. Acesso em: 18/06/2024",
-      "alternativas": [
-        {"letra": "A", "texto": "“Do cavalo andaluz” (verso 1, Texto 1) e “tal qual a dona de um bordel” (verso 3, Texto 2)."},
-        {"letra": "B", "texto": "“potro de esperança\" (verso 2, Texto 1) e “Num rabo de foguete” (verso 15, Texto 2)."},
-        {"letra": "C", "texto": "“bom ginete” (verso 6, Texto 1) e “No solo do Brasil” (verso 19, Texto 2)."},
-        {"letra": "D", "texto": "“correr em roda” (verso 10, Texto 1) e “Chupavam manchas torturadas”. (verso 6, texto 2)."},
-        {"letra": "E", "texto": "\"Os formosos sinais” (verso 9, Texto 1) e “Meu Brasil” (verso 12, Texto 2)."}
-      ],
-      "resposta_letra": "B"
-    },
-    {
-      "id": 29,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Linguagens",
-      "topico": "Movimentos de vanguarda",
-      "texto_questao": "(Questão com imagem)\nObserve a imagem e leia o fragmento a seguir.\n[Imagem: \"Os Amantes\" (1928) de René Magritte, mostrando um casal se beijando com panos cobrindo suas cabeças]\nA análise visual da obra nos permite apreciar elementos que podem se comunicar a partir da paleta de cores, do tema, da textura e do contexto. Vemos, de perfil, a figura de dois sujeitos direcionados para beijar um ao outro. À direita, de vestimenta social, temos o sujeito de maior altura, com terno em cores neutras, e à esquerda, outra personagem trajando, por sua vez, um vestido vermelho. Impedindo o contato físico entre as figuras, dois panos repousam sobre suas cabeças, suprimindo as sensações que poderiam estabelecer uma conexão entre ambos.\n\nCom base em seus conhecimentos de Arte e de Língua Portuguesa, marque a alternativa correta:",
-      "referencia": "Imagem: Fonte: http://issocompensa.com/sem-categoria/rene-magritte-os-amantes-1928. Acesso em: 05/06/2024. Texto: Adaptado de https://www.gazetavargasfgv.com/post/isolamento-uma-an%C3%A1lise-de-the-lovers-ii. Acesso em: 05/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "Trata-se de uma obra de vanguarda expressionista, seguida de um texto de gênero informativo."},
-        {"letra": "B", "texto": "Trata-se de uma obra de vanguarda futurista, seguida de um texto de gênero narrativo."},
-        {"letra": "C", "texto": "Trata-se de uma obra de vanguarda impressionista, seguida de um texto de gênero prescritivo."},
-        {"letra": "D", "texto": "Trata-se de uma obra de vanguarda fauvista, seguida de um texto de gênero expositivo."},
-        {"letra": "E", "texto": "Trata-se de uma obra de vanguarda surrealista, seguida de um texto de gênero descritivo."}
-      ],
-      "resposta_letra": "E"
-    },
-    {
-      "id": 30,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Língua Estrangeira",
-      "topico": "Vocabulário",
-      "texto_questao": "(Questão com imagem - Tirinha)\nLeia a tirinha a seguir para responder as questões.\n[Tirinha do Gaturro sobre \"voluntad\" (vontade)]\n\nA expressão “lograr” poderia ser corretamente traduzida por qual palavra em português?",
-      "referencia": "Adaptado de https://22tonslatinos.blogspot.com/2013/05/gaturro-e-os-antonimos.html/. Acesso em: 17/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "Tentar."},
-        {"letra": "B", "texto": "Querer."},
-        {"letra": "C", "texto": "Perder."},
-        {"letra": "D", "texto": "Conseguir."},
-        {"letra": "E", "texto": "Pensar."}
-      ],
-      "resposta_letra": "D"
-    },
-    {
-      "id": 31,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Língua Estrangeira",
-      "topico": "Vocabulário",
-      "texto_questao": "(Questão com imagem - Tirinha)\nLeia a tirinha a seguir para responder as questões.\n[Tirinha do Gaturro sobre \"voluntad\" (vontade)]\n\nQual palavra possui um sentido contrário a “también” em espanhol?",
-      "referencia": "Adaptado de https://22tonslatinos.blogspot.com/2013/05/gaturro-e-os-antonimos.html/. Acesso em: 17/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "Además."},
-        {"letra": "B", "texto": "Tal vez."},
-        {"letra": "C", "texto": "Incluso."},
-        {"letra": "D", "texto": "Tampoco."},
-        {"letra": "E", "texto": "No."}
-      ],
-      "resposta_letra": "D"
-    },
-    {
-      "id": 32,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Língua Estrangeira",
-      "topico": "Vocabulário",
-      "texto_questao": "(Questão com imagem - Tirinha)\nLeia a tirinha a seguir para responder as questões.\n[Tirinha do Gaturro sobre \"voluntad\" (vontade)]\n\nA expressão “com voluntad” no primeiro quadrinho poderia ser substituída por qual outra sem perder o significado proposto?",
-      "referencia": "Adaptado de https://22tonslatinos.blogspot.com/2013/05/gaturro-e-os-antonimos.html/. Acesso em: 17/06/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "Con ganas."},
-        {"letra": "B", "texto": "Con permiso."},
-        {"letra": "C", "texto": "Con realidad."},
-        {"letra": "D", "texto": "Con certeza."},
-        {"letra": "E", "texto": "Com voluntariedad."}
-      ],
-      "resposta_letra": "A"
-    },
-    {
-      "id": 33,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Língua Estrangeira",
-      "topico": "Interpretação textual",
-      "texto_questao": "Leia o texto para responder as questões.\nMakeshift shelter saves hundreds of dogs amid floods in southern Brazil\n[Texto em inglês sobre um abrigo improvisado para cães em Canoas, RS, durante as enchentes]\n\nA partir da leitura do texto “Makeshift shelter saves hundreds of dogs amid floods in southern Brazil\", considere as seguintes afirmações abaixo:\nI – A cidade de Canoas já contava com um espaço preparado para receber animais em situações de crise.\nII – Sempre que um cão é encontrado por seus tutores, os voluntários fazem um momento de silêncio para celebrar o reencontro.\nIII – Muitos chegam após terem sido atropelados ou quase se afogado, mas nem todos os cães feridos que são resgatados conseguem ser enviados para hospitais veterinários.\nIV – O governo rebateu as acusações de inação em relação às ações de resgate de animais.\nV – Além de cães e gatos, bovinos também podem contar com auxílio veterinário.\n\nEstão corretas:",
-      "referencia": "Adaptado de https://abcnews.go.com/International/wireStory/makeshift-shelter-saves-hundreds-dogs-amid-floods-southern-110101279. Acesso em: 24/05/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "I, II e V apenas."},
-        {"letra": "B", "texto": "II, III e V apenas."},
-        {"letra": "C", "texto": "I e IV apenas."},
-        {"letra": "D", "texto": "III, IV e V apenas."},
-        {"letra": "E", "texto": "II e IV apenas."}
-      ],
-      "resposta_letra": "D"
-    },
-    {
-      "id": 34,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Língua Estrangeira",
-      "topico": "Vocabulário",
-      "texto_questao": "Leia o texto para responder as questões.\nMakeshift shelter saves hundreds of dogs amid floods in southern Brazil\n[Texto em inglês sobre um abrigo improvisado para cães em Canoas, RS, durante as enchentes]\n\nConsiderando os contextos textual e frasal, as palavras “makeshift” (l.1), “jittery” (l.25) e \"heartwarming” (l.28) podem ser substituídas, sem mudança de sentido, respectivamente por",
-      "referencia": "Adaptado de https://abcnews.go.com/International/wireStory/makeshift-shelter-saves-hundreds-dogs-amid-floods-southern-110101279. Acesso em: 24/05/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "disposable; noisy; cardiological."},
-        {"letra": "B", "texto": "uncomfortable; angry; sad."},
-        {"letra": "C", "texto": "temporary; edgy; sickening."},
-        {"letra": "D", "texto": "provisional; nervous; emotional."},
-        {"letra": "E", "texto": "permanent; hungry; lukewarm."}
-      ],
-      "resposta_letra": "D"
-    },
-    {
-      "id": 35,
-      "ano": 2024,
-      "etapa": 2,
-      "materia": "Língua Estrangeira",
-      "topico": "Estruturas Gramaticais",
-      "texto_questao": "Leia o texto para responder as questões.\nMakeshift shelter saves hundreds of dogs amid floods in southern Brazil\n[Texto em inglês sobre um abrigo improvisado para cães em Canoas, RS, durante as enchentes]\n\nQual das alternativas abaixo está correta?",
-      "referencia": "Adaptado de https://abcnews.go.com/International/wireStory/makeshift-shelter-saves-hundreds-dogs-amid-floods-southern-110101279. Acesso em: 24/05/2024.",
-      "alternativas": [
-        {"letra": "A", "texto": "Em \"Dog food is scattered throughout the facility, and dogs are chained at distances from one another to prevent fighting” (l.14-15), vemos um exemplo de uso de passive voice."},
-        {"letra": "B", "texto": "Em \"Animal protection groups and volunteers have shared images of difficult rescues and heartwarming scenes of pets reuniting with their owners on social media” (l.27-28), vemos um exemplo de uso de past perfect."},
-        {"letra": "C", "texto": "Em “They will bring food and medical supplies, assist cats and dogs that have found shelter and seek out those still fending for themselves, said Ungerer, 41” (l.34-35), vemos um exemplo de uso de past perfect continuous."},
-        {"letra": "D", "texto": "Em \"Our community chose to embrace this, but days ago we felt so alone” (l.21-22), vemos um exemplo de uso de present perfect."},
-        {"letra": "E", "texto": "Em “The images have spurred Brazilians to send donations and brought veterinarians to the region\" (l.30-31), vemos um exemplo de uso de future continuous."}
-      ],
-      "resposta_letra": "A"
-    }
-  ]
+    "id": 4,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Física",
+    "topico": "Infrassom e Ultrassom",
+    "texto_questao": "Os exames médicos de ultrassom e ultrassom Doppler são baseados na emissão e recepção de sons pelo transdutor, que é a parte do aparelho em que se coloca gel e que é posta em contato com o corpo. O transdutor emite sons que são refletidos pelos diferentes tecidos e órgãos do corpo e esses sons refletidos são detectados ao voltarem ao transdutor. Um “software”, uma programação no aparelho, é responsável pela tradução dos efeitos desse processo em imagens. O som emitido no exame, no entanto, é inaudível, de frequência muito maior do que a percebida pelo ouvido humano, que está na faixa entre 20Hz e 20000Hz. A frequência mais baixa num exame de ultrassom pode ser cerca de 50000 vezes maior do que a mais baixa frequência audível.\n\nMarque o valor aproximado de frequências dos exames de ultrassom mais compatível com o texto, ou seja, compatível com a frequência mais baixa num exame de ultrassom.",
+    "referencia": "MÁXIMO, Antônio; ALVARENGA, Beatriz. Física contexto & aplicações. 2º v. 1ª ed. São Paulo: Scipione, 2014.",
+    "alternativas": [
+      {"letra": "A", "texto": "100 KHz."},
+      {"letra": "B", "texto": "1 KHz."},
+      {"letra": "C", "texto": "10 KHz."},
+      {"letra": "D", "texto": "1 nHz."},
+      {"letra": "E", "texto": "1 MHz."}
+    ],
+    "resposta_letra": "E"
+  },
+  {
+    "id": 5,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Física",
+    "topico": "Calor Sensível e Calor Latente",
+    "texto_questao": "A cada dia que passa as pessoas estão mais preocupadas com os alimentos que consomem, pois estudos comprovam que uma dieta alimentar equilibrada, juntamente a exercícios físicos regulares, é indispensável para a manutenção da saúde e a prevenção de obesidade, diabetes, colesterol alto, entre outros problemas.\nOs rótulos nutricionais dos alimentos trazem informações sobre os valores energéticos que eles proporcionam ao organismo. Estudos mostram que os valores de energia consumidos por uma pessoa (adulta) de 70 kg são, em média, 2500 calorias por dia. Se for ingerida uma quantidade de calorias superior à que o corpo precisa para manter suas atividades, o excesso será transformado em tecido gorduroso (adiposo), provocando o aumento de \"peso”.\nGeralmente, esse termo é usado para se referir à quantidade de energia que cada alimento fornece ao organismo se for totalmente aproveitado. Porém, as calorias não se aplicam somente aos alimentos, mas estão associadas a qualquer fenômeno relacionado a trocas de calor. Por exemplo, na queima de 1 litro de gasolina, são liberadas cerca de 7.750.000 calorias.\nUma massa de 5g de água que se encontra a uma temperatura de 25°Cé colocada para ser aquecida, e se utiliza nesse processo um valor de quantidade de calor de 2.535cal, que corresponde aproximadamente à quantidade de calor, em média, necessária que uma pessoa adulta deve consumir diariamente.\n\nCalcule a massa restante de água que não foi vaporizada no processo de aquecimento, sabendo-se que cágua = 1 cal/g• °C e Lv = 540 cal/g.",
+    "referencia": "Adaptado de https://www.preparaenem.com/quimica/o-que-sao-as-calorias.htm. Acesso em: 30/11/2022.",
+    "alternativas": [
+      {"letra": "A", "texto": "2g"},
+      {"letra": "B", "texto": "3g"},
+      {"letra": "C", "texto": "7g"},
+      {"letra": "D", "texto": "1g"},
+      {"letra": "E", "texto": "9g"}
+    ],
+    "resposta_letra": "Anulada"
+  },
+  {
+    "id": 6,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Física",
+    "topico": "Escala Kelvin",
+    "texto_questao": "Usinas termelétricas são importantes no Brasil, em que pese a discussão dos impactos ambientais dessas instalações. Numa termelétrica usa-se a combustão de carvão ou derivados de petróleo para produzir, por aquecimento de água, um vapor que movimenta as pás de uma turbina que gera a energia elétrica. Chama-se rendimento, R, a razão (energia elétrica obtida) ÷ (energia desprendida pela combustão). Esse rendimento é sempre menor do que 1 (ou 100%), o que significa que nem toda energia desprendida na combustão se transforma em energia elétrica. Mostra-se que podemos estimar aproximadamente R a partir de duas temperaturas, Tvapor, a temperatura do vapor na turbina, e Tresfriamento, a temperatura do sistema que resfria o vapor de volta ao estado líquido. Temos R = 1-(Tresfriamento÷Tvapor). Para usar essa expressão o único cuidado deve ser usar a escala Kelvin de temperatura, lembrando que, aproximadamente, T(Kelvin)=T(°C)+273 (temperatura em Kelvin igual a temperatura em Celsius mais 273). Vamos supor Tvapor = 500°C e Tresfriamento = 25°C.\n\nQue estimativa de rendimento temos para as temperaturas de vapor e de resfriamento sugeridas?",
+    "referencia": "MÁXIMO, Antônio; ALVARENGA, Beatriz. Física contexto & aplicações. 2º v. 1ª ed. São Paulo: Scipione, 2014.",
+    "alternativas": [
+      {"letra": "A", "texto": "Cerca de 0,4, ou 40%."},
+      {"letra": "B", "texto": "Cerca de 0,95, ou 95%."},
+      {"letra": "C", "texto": "Cerca de 0,3, ou 30%."},
+      {"letra": "D", "texto": "Cerca de 0,8, ou 80%."},
+      {"letra": "E", "texto": "Cerca de 0,6, ou 60%."}
+    ],
+    "resposta_letra": "E"
+  },
+  {
+    "id": 7,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Química",
+    "topico": "Deslocamento do Equilíbrio: Princípio de Le Chatelier",
+    "texto_questao": "Os refrigerantes são formados por uma mistura de água-gás (no caso o gás carbônico, o CO2) е algum tipo de xarope, que dá a cor e o gosto da bebida. Mas antes de misturar o gás no xarope, os fabricantes misturam a água e o gás num aparelho chamado carbonizador, gerando o ácido carbônico, que tem forma líquida. Nesse tipo de bebida existe, então, o seguinte equilíbrio químico:\n2H2O(I) + CO2(g) <=> H3O+(aq) + HCO3-(aq)\nSegundo o princípio de Le Chatelier, quando é causada alguma forma de perturbação em um sistema químico, o seu equilíbrio se desloca no sentido de reduzir essas perturbações.\n\nConforme o texto e de acordo com a equação, selecione a alternativa que explica o processo que pode causar a chamada eructação (arroto), ao tomarmos bebidas com gás.",
+    "referencia": "https://brasilescola.uol.com.br/quimica/equilibrio-quimico-refrigerante-no-estomago.htm. Acesso em: 06/10/2022.",
+    "alternativas": [
+      {"letra": "A", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há um aumento na concentração da espécie H3O+, deslocando o equilíbrio no sentido da reação inversa."},
+      {"letra": "B", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há um aumento na concentração da espécie H3O+, deslocando o equilíbrio no sentido da reação direta."},
+      {"letra": "C", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há uma diminuição na concentração da espécie H3O+, deslocando o equilíbrio no sentido da reação inversa."},
+      {"letra": "D", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há uma diminuição na concentração da espécie CO2, deslocando o equilíbrio no sentido da reação direta."},
+      {"letra": "E", "texto": "Quando o refrigerante entra em contato com o suco gástrico do estômago, há um aumento na concentração da espécie CO2, deslocando o equilíbrio no sentido da reação direta."}
+    ],
+    "resposta_letra": "A"
+  },
+  {
+    "id": 8,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Química",
+    "topico": "Solubilidade e curvas de solubilidade",
+    "texto_questao": "No nosso cotidiano, estamos em constante contato com soluções, como as ligas metálicas, o ar atmosférico, o soro fisiológico, entre outras. Em várias dessas soluções formadas por sólidos e líquidos, a água atua como solvente na maioria dos casos e, por isso, é considerada um solvente universal. O grau de dissolução de um soluto em um solvente depende de vários fatores. Os mais importantes são: a natureza das partículas de solvente e soluto e as interações entre elas; a temperatura na qual a solução é formada; a pressão de um soluto gasoso. Ao se adicionar sal comum à água gradativamente em temperatura constante e agitando continuamente, é possível observar que, em dado momento, não ocorrerá a dissolução do sal, utilizando como exemplo o NaCl. Isso ocorrerá no momento em que houver aproximadamente 360 g de sal para cada litro de água quando a temperatura está em 20°C. A partir desse ponto, dizemos que a solução tornou-se saturada ou que a solução atingiu o seu ponto de saturação, pois qualquer quantidade de sal que for adicionada ao sistema irá precipitar ou formar corpo de fundo. O ponto de saturação depende do soluto, do solvente e das condições físicas (a temperatura sempre influi e a pressão, em especial, em soluções que contêm gases). Este ponto é definido pelo coeficiente ou grau de solubilidade. Podem-se visualizar abaixo os valores dos coeficientes de solubilidade (g de NaCl por 100 g de H2O) do cloreto de sódio (NaCl) em função da temperatura:\n\nTemperatura (°C) | Coeficiente de solubilidade (g de NaCl por 100 g de água)\n------- | --------\n0°C | 35,7\n20°C | 36,0\n50°C | 37,0\n100°C | 39,8\n\nConsiderando-se os dados disponíveis na tabela acima, a opção que melhor representa a quantidade mínima de água, em gramas, a 50 °C, necessária para dissolver totalmente 5,0 g de NaCl é",
+    "referencia": "https://mundoeducacao.uol.com.br/quimica/solucoes.htm. Acesso em: 15/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "9,43."},
+      {"letra": "B", "texto": "10,22."},
+      {"letra": "C", "texto": "13,52."},
+      {"letra": "D", "texto": "15,07."},
+      {"letra": "E", "texto": "7,41."}
+    ],
+    "resposta_letra": "C"
+  },
+  {
+    "id": 9,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Química",
+    "topico": "Catálise",
+    "texto_questao": "Existem substâncias que, quando adicionadas aos reagentes de determinadas reações químicas, alteram a velocidade delas sem, contudo, serem consumidas. As substâncias que promovem um aumento da velocidade das reações químicas nessas condições são designadas geralmente por catalisadores. Um catalisador está profundamente envolvido no decurso de uma reação química, formando e quebrando ligações à medida que os reagentes se transformam em produtos, mas não sofre uma alteração permanente. Ao colocar por exemplo um pedaço de batata em contato com a água oxigenada, ocorre uma reação de decomposição, que produz água e gás oxigênio como produtos, de acordo com a reação abaixo:\n2 H2O2 (aq) → 2 H2O (l) + O2 (g)\nA liberação do oxigênio pode ser comprovada quando a chama do palito de fósforo ficar mais intensa ao aproximá-lo da boca do recipiente, no qual a reação está sendo processada. A água oxigenada se decompõe naturalmente de forma bem lenta somente pela exposição à luz solar. Mas, nesse caso, ela ocorreu de forma mais rápida porque a batata possui uma enzima, chamada catalase, que atua como catalisadora da reação de decomposição da água oxigenada. Essa mesma enzima está presente também no sangue. É por isso que quando colocamos água oxigenada num machucado, observa-se uma efervescência, sendo importante porque permite desinfectar matando microrganismos anaeróbicos.\n\nConforme o texto acima, assinale a alternativa correta:",
+    "referencia": "adaptado de https://www.infoescola.com/quimica/peroxido-de-hidrogenio/. Acesso em: 15/06/2024. e http://educa.fc.up.pt/ficheiros/fichas/1067/Introdu%E7%E3o.pdf. Acesso em: 20/06/2024",
+    "alternativas": [
+      {"letra": "A", "texto": "A catalase muda o mecanismo da reação ou o caminho através do qual os reagentes se transformam nos produtos. Isso ocorre porque esse caminho alternativo exige menor energia de ativação, processando uma reação mais rápida."},
+      {"letra": "B", "texto": "A catalase muda o mecanismo da reação ou o caminho através do qual os reagentes se transformam nos produtos. Isso ocorre porque esse caminho alternativo mantém a mesma energia de ativação, processando uma reação mais lenta."},
+      {"letra": "C", "texto": "A catalase muda o mecanismo da reação ou o caminho através do qual os reagentes se transformam nos produtos. Isso ocorre porque esse caminho alternativo exige uma maior energia de ativação, processando uma reação mais rápida."},
+      {"letra": "D", "texto": "Não ocorre mudança no mecanismo da reação ou no caminho através do qual os reagentes se transformam nos produtos, devido ao fato de que a energia de ativação se mantém constante."},
+      {"letra": "E", "texto": "A catalase muda o mecanismo da reação ou o caminho através do qual os reagentes se transformam nos produtos. Isso ocorre porque esse caminho alternativo exige menor energia de ativação, processando uma reação mais lenta."}
+    ],
+    "resposta_letra": "A"
+  },
+  {
+    "id": 10,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "História",
+    "topico": "Crise do sistema colonial",
+    "texto_questao": "Considere as seguintes afirmações a respeito da Revolta da Cachaça (1660-1661) na História do Brasil Colônia.\nI – A Revolta da Cachaça fez parte dos movimentos separatistas do período colonial brasileiro, tais como a Conjuração Mineira, a Conjuração Baiana e a Revolução Pernambucana.\nII – A Revolta da Cachaça ocorreu no Rio de Janeiro, sendo motivada pela proibição da produção de aguardente pelos colonos, forçando, assim, a importação e o consumo de vinho português.\nIII - Foi uma revolta nativista, porque não era contra a coroa portuguesa, mas contrária à política fiscal aplicada pelo governador da capitania.\n\nEstá(ão) correta(s)?",
+    "alternativas": [
+      {"letra": "A", "texto": "I e II apenas."},
+      {"letra": "B", "texto": "I, II e III."},
+      {"letra": "C", "texto": "I apenas."},
+      {"letra": "D", "texto": "II e III apenas."},
+      {"letra": "E", "texto": "III apenas."}
+    ],
+    "resposta_letra": "D"
+  },
+  {
+    "id": 11,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "História",
+    "topico": "Formação do Estado nacional e as crises políticas",
+    "texto_questao": "Em 1835, mais de duas décadas depois da primeira rebelião, a grande sublevação escrava eclodiu em Salvador. Dessa vez, o ataque partiu de dentro da cidade, e a população não teve uma noite fácil. Na madrugada de 25 de janeiro, grupos de africanos escravos e libertos, armados com porretes, instrumentos de trabalho e armas brancas, lutaram nas ruas de Salvador, durante mais de três horas, enfrentando soldados e civis. A religião esteve entrelaçada com a revolta: boa parte dos rebeldes saiu para lutar nas ruas com as compridas túnicas rituais brancas os abadás usadas pelos adeptos do islamismo. Ainda, carregavam junto ao corpo amuletos com mensagens do Alcorão e com orações fortes para proteção.\n\nO texto identifica qual revolta regencial?",
+    "referencia": "SCHWARCZ, Lilia M.; STARLING, Heloísa M. Brasil: uma biografia. São Paulo: Companhia das Letras, 2015. p. 256.",
+    "alternativas": [
+      {"letra": "A", "texto": "Cabanagem."},
+      {"letra": "B", "texto": "Sabinada."},
+      {"letra": "C", "texto": "Revolta de Itapuã."},
+      {"letra": "D", "texto": "Revolta dos Malês."},
+      {"letra": "E", "texto": "Revolta de Manoel Congo."}
+    ],
+    "resposta_letra": "D"
+  },
+   {
+    "id": 12,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "História",
+    "topico": "Revoluções Inglesas, Norte-Americana e Francesa",
+    "texto_questao": "Leia o texto:\n“O termo sans-culottes, referido às pessoas que usavam calças compridas em vez dos calções até o joelho da gente rica, foi originariamente aplicado num sentido puramente social aos pequenos comerciantes, assalariados e vagabundos, quer da cidade, quer do campo. Durante a revolução, ο termo passou a ser mais geralmente aplicado aos indivíduos politicamente ativos dessas classes, e o seu âmbito alargou-se com a inclusão dos agitadores mais radicais daquele período, independentemente do respectivo estrato social.\"\n\nO texto descreve, os chamados sans-culottes, personagens que tiveram papel preponderante durante",
+    "referencia": "MCCRORY, Martin; MOULDER, Robert. Revolução Francesa para principiantes. Lisboa: Dom Quixote, 1983, p. 67.",
+    "alternativas": [
+      {"letra": "A", "texto": "a Revolução Gloriosa."},
+      {"letra": "B", "texto": "a Independência dos Estados Unidos."},
+      {"letra": "C", "texto": "a Revolução Francesa."},
+      {"letra": "D", "texto": "as Independências na América Latina."},
+      {"letra": "E", "texto": "a Unificação da Alemanha."}
+    ],
+    "resposta_letra": "C"
+  },
+  {
+    "id": 13,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Geografia",
+    "topico": "Estrutura fundiária, Políticas agrárias e o Estatuto da Terra",
+    "texto_questao": "Leia o texto a seguir:\nA questão agrária permanece absolutamente importante para a compreensão das diversas dimensões estruturantes do País: ambiental, econômica, social e territorial. [...] A dinâmica territorial do País foi e segue condicionada a sua estrutura fundiária, desigual em múltiplas facetas. Historicamente, o acesso à terra determinou a inserção de grupos sociais na sociedade e na estrutura política econômica brasileira e, nesse sentido, é possível dizer que a estrutura fundiária constitui um indicador e um revelador importante dos processos de apropriação da natureza e estratificação social nos territórios rurais. Ela pode ser considerada um fator chave na compreensão desta dinâmica, e pode bloquear ou favorecer o desenvolvimento rural.\n\nA partir dos seus conhecimentos sobre a estrutura fundiária brasileira, avalie as seguintes afirmações:\nI – Ao longo dos últimos cinco séculos, algumas leis foram determinantes para forjar a organização fundiária do Brasil.\nII – A Sesmaria foi um instituto jurídico espanhol que normatizava a concessão de pequenos lotes de terra aos escravizados para produzir gêneros agrícolas voltados para a subsistência e para o mercado interno.\nIII – Em 1850, a Lei de Terras foi a primeira iniciativa no sentido de organizar a propriedade privada no Brasil e dispor sobre o direito agrário.\nIV – Em 1964, o Estatuto da Terra traz a ideia de justiça social e função social da terra, dando origem a uma vasta gama de leis que regulamentam a reforma agrária, o salário mínimo, a moradia rural, a colonização, o uso temporário do solo, a posse e a política agrícola tributária.\nV – Na Constituição Federal do Brasil, de 1988, não há menções sobre as questões agrárias e de regulamentação das terras, o que torna possível o uso indiscriminado para qualquer finalidade.\n\nEstão corretas:",
+    "referencia": "Adaptado de IBGE. Atlas do espaço rural brasileiro. 2. ed. Rio de Janeiro: IBGE, 2020. Disponível em: https://www.ibge.gov.br/apps/atlasrural/pdfs/02_00_Texto.pdf. Acesso em: 17/08/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "I, III e IV apenas."},
+      {"letra": "B", "texto": "II, III e IV apenas."},
+      {"letra": "C", "texto": "I, II, III e V apenas."},
+      {"letra": "D", "texto": "III, IV e V apenas."},
+      {"letra": "E", "texto": "I, II, IV e V apenas."}
+    ],
+    "resposta_letra": "A"
+  },
+  {
+    "id": 14,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Geografia",
+    "topico": "Desenvolvimento tecnológico",
+    "texto_questao": "Leia o texto a seguir:\nNão existe uma ideia única do que venha a ser a globalização, mas há um consenso de que se trata de um processo múltiplo de forte integração internacional e de interdependência entre os locais e as economias nacionais, marcado por procedimentos de descentralização da produção. A rapidez e a intensidade do fluxo de pessoas, de informação, de mercadorias e de capital caracterizam essa etapa histórica de marcante desenvolvimento tecnológico.\n\nNo século XX foram desenvolvidas muitas das tecnologias que são utilizadas até os dias atuais e que estão presentes em nosso cotidiano. Analise as alternativas e indique qual delas NÃO foi desenvolvida no século XX.",
+    "referencia": "Adaptado de JUNIOR, Alfredo Boulos; SILVA, Edilson Adão Candido; FURQUIM, Laercio. Multiversos: Ciências Humanas: globalização, tempo e espaço: ensino médio. São Paulo: FTD, 2020.",
+    "alternativas": [
+      {"letra": "A", "texto": "Drones."},
+      {"letra": "B", "texto": "Internet."},
+      {"letra": "C", "texto": "GPS."},
+      {"letra": "D", "texto": "Televisão em cores."},
+      {"letra": "E", "texto": "Telégrafo."}
+    ],
+    "resposta_letra": "E"
+  },
+  {
+    "id": 15,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Filosofia",
+    "topico": "Iluminismo",
+    "texto_questao": "A própria noção de Iluminismo, Ilustração, ou ainda Esclarecimento, como o termo é por vezes traduzido, indica, através da metáfora da luz e da claridade, uma oposição às trevas, ao obscurantismo, à ignorância, à superstição, ou seja, à existência de algo oculto, enfatizando, ao contrário, a necessidade de o real, em todos os seus aspectos, tornar-se transparente à razão. O grande instrumento do Iluminismo é a consciência individual, autônoma em sua capacidade de conhecer o real; suas armas são, portanto, o conhecimento, a ciência, a educação.\n\nCom base na reflexão sobre o Iluminismo apresentada pelo autor, discorra sobre o objetivo central deste movimento filosófico e suas implicações. Qual das alternativas melhor descreve o propósito essencial do Iluminismo?",
+    "referencia": "MARCONDES, Danilo. Iniciação à História da Filosofia: Dos Pré-Socráticos a Wittgenstein. 13.ed. Rio de Janeiro: Jorge Zahar Ed., 2010.",
+    "alternativas": [
+      {"letra": "A", "texto": "O Iluminismo promove a aceitação da superstição e do misticismo como formas válidas de conhecimento."},
+      {"letra": "B", "texto": "O lluminismo visa a manter tradições e crenças populares sem questionamento."},
+      {"letra": "C", "texto": "O Iluminismo volta-se à manutenção do obscurantismo e da ignorância para preservar a ordem social."},
+      {"letra": "D", "texto": "O Iluminismo valoriza a submissão da consciência individual às autoridades religiosas e políticas."},
+      {"letra": "E", "texto": "O lluminismo enfatiza a transparência da realidade à razão e utiliza o conhecimento, a ciência e a educação como ferramentas."}
+    ],
+    "resposta_letra": "E"
+  },
+  {
+    "id": 16,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Filosofia",
+    "topico": "Ideologia e dominação social. Função da Ideologia",
+    "texto_questao": "A ideologia é, assim, uma forma de dominação, gerando uma falsa consciência, uma consciência ilusória, que se produz através de mecanismos pelos quais se objetificam certas representações (as da classe dominante) como sendo a verdadeira realidade, tudo isso produzindo uma aparente legitimação das condições existentes numa determinada sociedade em um período histórico determinado. Produz-se com isso uma forma de alienação da consciência humana de sua situação real de existência (as relações de produção). A ideologia é produto de uma estrutura social profundamente desigual e, portanto, não transparente, já que esta desigualdade não pode explicitar-se no nível da consciência. Evitar que isso aconteça é tarefa da ideologia.\n\nQual é o principal desdobramento da objetificação das representações pela classe dominante, conforme descrito pelo autor na análise sobre ideologia?",
+    "referencia": "MARCONDES, Danilo. Iniciação à História da Filosofia: Dos Pré-Socráticos a Wittgenstein. 13.ed. Rio de Janeiro: Jorge Zahar Ed., 2010.",
+    "alternativas": [
+      {"letra": "A", "texto": "Reforça a conscientização crítica das estruturas sociais desiguais."},
+      {"letra": "B", "texto": "Cria uma consciência autêntica e imparcial sobre as relações de produção."},
+      {"letra": "C", "texto": "Legitima as condições existentes e oculta as relações de dominação."},
+      {"letra": "D", "texto": "Permite a precisa compreensão das relações de poder no contexto da sociedade."},
+      {"letra": "E", "texto": "Mobiliza a transformação social e a igualdade de oportunidades."}
+    ],
+    "resposta_letra": "C"
+  },
+  {
+    "id": 17,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "História",
+    "topico": "Liberalismo, Socialismo e Anarquismo",
+    "texto_questao": "O Congresso de Viena (1814-1815) reorganizou a geopolítica europeia após as guerras napoleônicas, unindo forças tradicionais da Europa, propondo a restauração das antigas monarquias absolutistas. Entretanto, não houve demora para que essa tendência conservadora fosse contestada, aliando setores da burguesia, do operariado e das camadas médias urbanas, representando forças sociais surgidas após as Revoluções Francesa e Industrial. Na coesão instável desse arranjo político e social se desenvolveram vários movimentos inspirados no liberalismo, no nacionalismo, no socialismo e no anarquismo.\n\nLeia as seguintes afirmações.\nI – O liberalismo econômico defendia a interferência forte do Estado, regulando o livre-comércio.\nII – Os ideais nacionalistas tiveram grande influência na unificação da Itália e da Alemanha.\nIII - O marxismo como corrente socialista estabeleceu conceitos importantes, como dialética, mais-valia e luta de classes.\nIV – Para o marxismo a desigualdade social é resultado da divisão da sociedade em classes, entre os proprietários dos meios de produção, que compram a mão-de-obra daqueles desprovidos desses meios.\n\nEstão corretas",
+    "referencia": "COTRIM, Gilberto. História Global II. 3. ed. São Paulo: Saraiva, 2016. e MACHADO, Igor José Renó et al. Sociologia Hoje. 1. ed. São Paulo: Ática, 2013.",
+    "alternativas": [
+      {"letra": "A", "texto": "II, III e IV apenas."},
+      {"letra": "B", "texto": "I, II e III apenas."},
+      {"letra": "C", "texto": "I, II e IV apenas."},
+      {"letra": "D", "texto": "II e IV apenas."},
+      {"letra": "E", "texto": "I e II apenas."}
+    ],
+    "resposta_letra": "A"
+  },
+  {
+    "id": 18,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Sociologia",
+    "topico": "Movimentos de contracultura",
+    "texto_questao": "Os movimentos contraculturais, que sinalizam manifestações de grupos que questionam e rejeitam valores e práticas da cultura dominante, trouxeram novas abordagens para a manutenção dos seus objetivos, criando uma identidade forte nas áreas da expressão artística e cultural. Exemplos são os movimentos hippie, punk, hip-hop e rap. Além disso, o enfrentamento ao sistema surgia também na imagem com cortes de cabelo tipo moicano, tatuagens e piercings, bem como as manifestações de dança na rua como break e o grafite, uma marca de existência e visibilidade em meio aos espaços urbanos centrais que marginaliza e exclui os jovens negros e pobres da periferia.\n\nSão características desses movimentos:\nI – O punk emergiu entre os jovens brancos de classe média e média baixa, já o hip-hop se formou entre jovens afrodescendentes nos Estados Unidos.\nII – O movimento punk desenvolveu-se nos Estados Unidos e na Inglaterra em oposição ao otimismo do hip-hop surgido naqueles países.\nIII – O rap nacional se mantém conectado às letras de apoio à cultura dominante e à manutenção da ordem social.\nIV – O movimento hip-hop fundamentou-se no rap como expressão musical, no break como dança e no grafite como expressão visual.\nV – No Brasil o hip-hop ganhou força nos anos 1980, sobretudo na cidade de São Paulo, enquanto nos Estados Unidos o rap foi incorporado à indústria cultural a partir do final dos anos 1990.\n\nEstão corretas:",
+    "referencia": "ARAÚJO, Silvia Maria de; BRIDI, Maria Aparecida; MOTIM, Benilde Lenzi. Sociologia. São Paulo: FNDE, 2016. p. 327.",
+    "alternativas": [
+      {"letra": "A", "texto": "II, III e IV apenas."},
+      {"letra": "B", "texto": "I, IV e V apenas."},
+      {"letra": "C", "texto": "I, II e V apenas."},
+      {"letra": "D", "texto": "III, IV e V apenas."},
+      {"letra": "E", "texto": "I, II e IV apenas."}
+    ],
+    "resposta_letra": "B"
+  },
+  {
+    "id": 19,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Matemática",
+    "topico": "Operações na forma algébrica e representação geométrica",
+    "texto_questao": "Os alunos de uma turma de segundo ano do Ensino Médio estavam organizando comemorações mensais para os aniversariantes. Todos estavam informando o mês do seu aniversário, mas quando chegou a vez de Joaquim, ele lançou uma “charada” envolvendo o conteúdo que estavam estudando nas aulas de Matemática.\nJoaquim disse: “O meu mês de aniversário corresponde à parte real do número complexo resultante do produto de (3 – i) pelo conjugado de (2 – 2i)”.\n\nEm que mês Joaquim faz aniversário?",
+    "alternativas": [
+      {"letra": "A", "texto": "Dezembro."},
+      {"letra": "B", "texto": "Agosto."},
+      {"letra": "C", "texto": "Maio."},
+      {"letra": "D", "texto": "Abril."},
+      {"letra": "E", "texto": "Setembro."}
+    ],
+    "resposta_letra": "B"
+  },
+  {
+    "id": 20,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Matemática",
+    "topico": "Semelhança de triângulos",
+    "texto_questao": "(Questão com imagem)\nDurante o ano de 2024, o estado do Rio Grande do Sul sofreu novamente com fortes chuvas que superaram recordes históricos quanto ao volume de água e muitas localidades em todo o estado tiveram níveis elevados de água da chuva. Suponha que uma determinada rua tem uma distância horizontal entre seu ponto mais alto e o mais baixo de 8 metros, e a diferença de altura entre esses dois pontos é de 6 metros. Durante um dia de chuva, caiu ao longo de toda a extensão da rua uma altura de água de 30 milímetros por metro, que, sem escoamento, acabou se acumulando na parte mais baixa, como representado na imagem abaixo: [Imagem de um triângulo retângulo com catetos 6m e 8m, representando a inclinação da rua]\n\nCom base nisso, qual é a altura, em relação ao fim da rua, em que ficou o nível máximo de água após essa chuva?",
+    "referencia": "Fonte: Autoria própria.",
+    "alternativas": [
+      {"letra": "A", "texto": "3 / (2√5)"},
+      {"letra": "B", "texto": "15 / √2"},
+      {"letra": "C", "texto": "15√2"},
+      {"letra": "D", "texto": "300"},
+      {"letra": "E", "texto": "6√2"}
+    ],
+    "resposta_letra": "A"
+  },
+  {
+    "id": 21,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Matemática",
+    "topico": "Área de quadriláteros",
+    "texto_questao": "(Questão com imagem)\nA cidade de Pelotas é rica pela arquitetura presente em seus casarões, que são testemunhos da era do charque no Sul do Brasil. As fachadas ornamentadas, janelas amplas e varandas detalhadas são símbolos existentes nas construções que remetem aos séculos XVIII e XIX.\nUm dos prédios que compõe esse acervo arquitetônico da cidade é a Escola de Agronomia Eliseu Maciel, atualmente denominada como Sala dos Conselhos Superiores da UFPel. O edifício, cujo projeto arquitetônico foi desenvolvido pelo desenhista Dominique Pineau, inicialmente concebido pela família Antunes Maciel para abrigar uma escola municipal em homenagem póstuma ao tenente-coronel Eliseu Antunes Maciel, nunca chegou a ser usado com esse propósito devido à falta de professores. Em 1883, a Câmara cedeu o prédio para fundar a Escola de Medicina Veterinária e Agricultura Prática, e no ano seguinte, o Instituto Vacinológico foi anexado ao complexo. A Escola de Agronomia Eliseu Maciel, pioneira no Brasil, estabelecida em 1934, evoluiu para a Faculdade de Agronomia Eliseu Maciel, integrando-se à Universidade Federal de Pelotas em 1969.\n[Imagem de uma janela dupla arqueada de um prédio histórico]\nSuponha-se que serão construídas novas coberturas para as janelas, como a mostrada na imagem, com tábuas que devem ser utilizadas na horizontal para a confecção das janelas, de forma a proteger da entrada de chuva, sem prejudicar o fluxo de ar.\n\nPara isso, considerando que a abertura tem 1,5 m de altura e 0,8 m de largura, quantas tábuas, com medidas de 20 cm de largura e comprimento de 1,2 m serão necessárias, com um desperdício mínimo?",
+    "referencia": "Adaptado de \"Escola de Agronomia Eliseu Maciel\". Disponível em: https://wp.ufpel.edu.br/patrimonio/patrimonio-cultural-edificado/escola-de-agronomia-eliseu-maciel/. Acesso em: 16/06/2024. Fonte: Autoria própria.",
+    "alternativas": [
+      {"letra": "A", "texto": "6"},
+      {"letra": "B", "texto": "0,5"},
+      {"letra": "C", "texto": "4"},
+      {"letra": "D", "texto": "5"},
+      {"letra": "E", "texto": "7,5"}
+    ],
+    "resposta_letra": "D"
+  },
+   {
+    "id": 22,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Matemática",
+    "topico": "Prismas - cálculo de área",
+    "texto_questao": "(Questão com imagem)\nUtilize a figura e o texto a seguir para responder à questão.\n[Imagem de uma casa modular provisória com medidas 3m x 9m e altura 2,70m]\nEm 2024, o estado do Rio Grande do Sul, foi afetado por fortes chuvas que causaram grandes inundações, gerando “a maior catástrofe climática” da história do estado. De acordo com relatórios da Defesa Civil, 471 das 497 cidades gaúchas foram afetadas pelas tempestades, ou seja, o equivalente a 94,77% do total. De acordo com os dados, somente 26 cidades não tiveram nenhum impacto relacionado às chuvas. Muitas famílias ficaram sem casa para voltar, sendo alojadas em espaços comunitários. No intuito de oferecer um pouco mais de dignidade às famílias atingidas pela enchente, o Governo do Estado anunciou a compra de moradias provisórias. Após as prefeituras beneficiadas conseguirem terrenos adequados e prepararem os locais para a colocação das casas provisórias, os módulos devem ser instalados em até 30 dias. As moradias provisórias com 9m de largura e 3m de profundidade – têm espaço interno de 27m². O espaço é dividido em um quarto, uma sala conjugada à cozinha e um banheiro. O projeto prevê que até seis pessoas vivam em cada moradia provisória. Conforme o governo do Estado, as moradias temporárias são feitas no formato de construção modular, com chassis metálicos, sendo entregues já com mobiliário planejado e eletrodomésticos.\nAs moradias provisórias possuem três aberturas: uma janela de 0,80 m x 0,50 m, no banheiro; uma janela de 1,20 m x 1 m, no quarto e uma porta-janela de 2,10 m x 1,20 m. As moradias devem ser entregues com sua parte externa pintada, com exceção das aberturas que já vêm coloridas. Considere que um galão de tinta de 18 litros consegue cobrir (pintar) 100 m² e que cada galão custa R$ 260,00.\n\nQuantos reais serão gastos para pintar 8 casas, sendo que não pode faltar tinta e que não é possível comprar latas com menos de 18 litros de tinta?",
+    "referencia": "Fonte: https://gauchazh.clicrbs.com.br/geral/noticia/2024/06/governo-do-rs-anuncia-investimento-em-500-casas-provisorias-para-atingidos-pela-enchente-instalacao-depende-de-terrenos-de-prefeituras-clx4vxbea01rq015dg68409jl.html. Acesso em: 17/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "R$ 1.577,68."},
+      {"letra": "B", "texto": "R$ 2.600,00."},
+      {"letra": "C", "texto": "R$ 485,44."},
+      {"letra": "D", "texto": "R$ 1.300,00."},
+      {"letra": "E", "texto": "R$ 2.080,00."}
+    ],
+    "resposta_letra": "D"
+  },
+  {
+    "id": 23,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Matemática",
+    "topico": "Razões trigonométricas (seno, cosseno e tangente)",
+    "texto_questao": "(Questão com imagem)\nAna é uma estudante do ensino médio do Colégio Municipal Pelotense e está aprendendo sobre o funcionamento do teodolito e sua aplicabilidade para medir alturas de diferentes estruturas e construções.\n[Imagem ilustrativa de Ana usando um teodolito para medir a altura de um prédio. A distância inclinada do teodolito ao topo do prédio é 168m. A altura do prédio é 85,5m. A altura do teodolito (olhos de Ana) é 1,5m]\nSuponha que Ana utilizou essa técnica para descobrir qual é a altura do prédio em que mora, chegando ao resultado de 85,5 m. Para isso, teve que ficar a uma distância, em linha reta, do topo do prédio de 168 m, usando o aparelho a uma altura de 1,5 m na linha dos olhos.\n\nAo fazer essa medição, qual é o ângulo em graus que Ana viu no aparelho?",
+    "referencia": "Fonte: Autoria própria, imagem meramente ilustrativa, as medidas dos ângulos e comprimentos da figura não necessariamente se referem à questão com exatidão.",
+    "alternativas": [
+      {"letra": "A", "texto": "30°"},
+      {"letra": "B", "texto": "90°"},
+      {"letra": "C", "texto": "60°"},
+      {"letra": "D", "texto": "15°"},
+      {"letra": "E", "texto": "45°"}
+    ],
+    "resposta_letra": "A"
+  },
+  {
+    "id": 24,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Portuguesa",
+    "topico": "Funções de Linguagem",
+    "texto_questao": "(Questão com imagem no Texto I)\nLeia os textos a seguir para responder a próxima questão.\nTexto I [Cartaz da Campanha Contra a Violência Doméstica, listando tipos de violência e o Disque 180]\nTexto II [Poema \"Uma mulher que grita na esperança de viver\", de uma estudante, sobre medo, machismo, assédio e resistência]\n\nAs funções da linguagem são categorias dos estudos da comunicação. Toda linguagem é utilizada para comunicar algo a alguém. A transmissão da mensagem pressupõe alguns elementos: um emissor, um receptor, um contexto, um código e um canal entre o emissor e o receptor. Analise as proposições que seguem:\nI. No texto I, o cartaz, tem-se como objetivo a conscientização da população sobre a necessidade de denunciar a violência doméstica e a função da linguagem predominante é conativa ou apelativa.\nII. Nos textos I e II se destaca o fato de que as autoridades são responsáveis por ações preventivas contra a violência doméstica e a função predominante é a referencial.\nIII. No texto II, “Poesia | Uma mulher que grita na esperança de viver”, predominam as funções: emotiva ou expressiva e poética.\nIV. No texto I, o cartaz aborda os tipos de violência e, por esse motivo, a função da linguagem predominante é a metalinguística.\n\nEstão corretas:",
+    "alternativas": [
+      {"letra": "A", "texto": "I e II apenas."},
+      {"letra": "B", "texto": "I e III apenas."},
+      {"letra": "C", "texto": "I e IV apenas."},
+      {"letra": "D", "texto": "II e III apenas."},
+      {"letra": "E", "texto": "III e IV apenas."}
+    ],
+    "resposta_letra": "B"
+  },
+  {
+    "id": 25,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Portuguesa",
+    "topico": "Coesão textual",
+    "texto_questao": "Leia o texto a seguir para responder a próxima questão.\nManuel Bandeira\nFilho de engenheiro, Manuel Bandeira foi obrigado abandonar os estudos de arquitetura por causa da tuberculose. Mas a iminência da morte não marcou de forma lúgubre sua obra, embora em seu humor lírico haja sempre um toque de funda melancolia, e na sua poesia haja sempre um certo toque de morbidez, até no erotismo.\nTradutor de autores como Marcel Proust e William Shakespeare, esse nosso Manuel traduziu mesmo foi a nostalgia do paraíso cotidiano mal idealizado por nós, brasileiros, órfãos de um país imaginário, nossa Cocanha perdida, Pasárgada. Descrever seu retrato em palavras é uma tarefa impossível, depois que ele mesmo já o fez tão bem em versos.\n\nA coesão textual é um fenômeno linguístico caracterizado pela articulação entre elementos de um texto. Ela garante a harmonia e a conexão lógica entre as frases, o que colabora para uma melhor compreensão por parte do leitor. Analise as proposições a seguir:\nI. A coesão textual no texto está relacionada com os componentes da superfície textual, ou seja, as palavras e frases que o compõem. No texto em questão, “Manuel Bandeira”, percebe-se que a coesão é construída pelo emprego de pronomes pessoais, possessivos e demonstrativos: “sua”, “seu”, “esse”, “nosso”, “ele”. Esses componentes estão conectados entre si em uma sequência linear por meio de dependências de ordem gramatical.\nII. No texto \"Manuel Bandeira” a coesão é imaterial e não está na superfície textual. A compreensão do que está escrito dependerá dos níveis de interação entre o leitor, o autor e o texto. Por esse motivo, um mesmo texto pode apresentar múltiplas interpretações.\nIII. No texto “Manuel Bandeira” o uso adequado dos conectivos e dos mecanismos de coesão evitam erros que prejudicam a sintaxe e a construção de sentidos do texto.\nIV. No texto “Manuel Bandeira”, a coesão é estabelecida apenas pelo uso de expressões e repetições de palavras.\nV. No texto \"Manuel Bandeira” percebem-se mecanismos de coesão sequencial e referencial.\n\nEstão corretas:",
+    "referencia": "Revista Língua Portuguesa, n° 40, fev. 20.",
+    "alternativas": [
+      {"letra": "A", "texto": "I e II apenas."},
+      {"letra": "B", "texto": "I e IV apenas."},
+      {"letra": "C", "texto": "I, III e V apenas."},
+      {"letra": "D", "texto": "II e III apenas."},
+      {"letra": "E", "texto": "III e IV apenas."}
+    ],
+    "resposta_letra": "C"
+  },
+  {
+    "id": 26,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Literatura Brasileira",
+    "topico": "João Simões Lopes Neto - regionalismo",
+    "texto_questao": "(Questão com imagem no Texto I)\nLeia os textos abaixo.\nTexto 1: Nosso Caramelo resgatado [Imagem de um cavalo (Caramelo) sendo resgatado de um telhado por um bote, com o mapa do RS ao fundo parcialmente submerso]\nTexto 2: MEU ROSILHO \"PIOLHO\"\n\"Nisto senti um tchá! tcbá! tchá! – atrás de mim; olhei, de relancina apenas, porque nem tempo para mais, tive; era o temporal, a bomba d'água que se despenhava, quase nos garrões do rosilho! Foi o quanto amaguei o corpo e toquei, de meia rédea. Cupins e buracos de caranguejos, tacurus, macegas e carquejas, sangas, lagoas, barrais o diabo! – não vi nada! Se rodasse, nem o sebo da coalheira se me aproveitava! Mas o rosilho \"Piolho\" era firme e bonzão, sem mais nada! Eu corria, é verdade, porém a manga d'água também corria... A polvadeira que eu levantava a chuvarada engolia logo. Eu sentia-lhe a frescura, percebia que ela estava-me na garupa, na anca do rosilho, nos garrões dele! Um que outro pingo de chuva mais ponteiro batia-me às vezes na aba do chapéu... Era um duelo esquisito. Um duelo, em que um valente fugia para ficar vencedor! Vencer, aqui, era chegar enxuto. E assim viemos, eu e a tormenta, na mesma disparada: a que te pego! a que te largo! a que te pego! a que te largo!\"(...)\nO escritor pelotense Simões Lopes Neto apresenta em suas narrativas situações, costumes e vivências que fazem parte da cultura gaúcha tradicional, apresentando-as de forma vívida e intensa, com um vocabulário marcado por estilo próprio e inconfundível. No trecho retirado de Meu rosilho “Piolho”, por exemplo, é retratada a relação cotidiana existente entre o gaúcho e o seu cavalo.\n\nBaseando-se nos textos dados leia as afirmações:\nI) Os dois textos reforçam a ligação emocional entre o povo gaúcho e o cavalo.\nII) O texto 1 nos passa a ideia de que tanto o cavalo como o RS precisam de ajuda.\nIII) O texto 2 mostra uma exaltação à paciência do cavalo.\nIV) O texto 1 demonstra a agilidade inerente ao cavalo.\n\nEstão corretas:",
+     "referencia": "Texto 1: radiccioficial. Disponível em: https://www.instagram.com/p/C6wOpnjNHBV/?igsh=N2V3dWtrZG9yNmZz. Acesso em: 18/06/2024. Texto 2: LOPES NETO, J. Simões. Casos do Romualdo. Porto Alegre: Martins Livreiro, 2000.",
+    "alternativas": [
+      {"letra": "A", "texto": "II e III apenas."},
+      {"letra": "B", "texto": "I, II e III apenas."},
+      {"letra": "C", "texto": "I e II apenas."},
+      {"letra": "D", "texto": "III e IV apenas."},
+      {"letra": "E", "texto": "I e IV apenas."}
+    ],
+    "resposta_letra": "C"
+  },
+  {
+    "id": 27,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Portuguesa",
+    "topico": "Leitura de textos de diferentes gêneros",
+    "texto_questao": "(Questão com imagem no Texto II)\nLeia os textos abaixo.\nTexto 1: Trecho da CARTA de Pero Vaz de Caminha (excerto)\n(...) “E segundo o que a mim e a todos pareceu, esta gente, não lhes falece outra coisa para ser toda cristã, do que entenderem-nos, porque assim tomavam aquilo que nos viam fazer como nós mesmos; por onde pareceu a todos que nenhuma idolatria nem adoração têm. E bem creio que, se Vossa Alteza aqui mandar quem entre eles mais devagar ande, que todos serão tornados e convertidos ao desejo de Vossa Alteza. E por isso, se alguém vier, não deixe logo de vir clérigo para os batizar; porque já então terão mais conhecimentos de nossa fé, pelos dois degredados que aqui entre eles ficam, os quais hoje também comungaram.”\nTexto 2: Tira do Armandinho – Descobrimento do Brasil [Tirinha do Armandinho questionando a versão do \"Descobrimento do Brasil\" ensinada pela professora, perguntando \"E a versão dos índios?!\"]\n\nQuais as visões sobre o “Descobrimento” do Brasil e a religiosidade dos povos originários apresentadas nos textos 1 e 2?",
+    "referencia": "Texto 1: Adaptada de CAMINHA, Pero Vaz de. A carta. NEAD. Núcleo de Educação a Distância. UNAMA – Universidade da Amazônia. P. 13. s/d. Disponível em: http://www.dominiopublico.gov.br/download/texto/ua000283.pdf. Acesso em: 18/16/2024. Texto 2: FONTE: https://tirasarmandinho.tumblr.com/search/descobrimento%20do%20brasil520. Acesso em: 18/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "No texto 1, trecho da Carta, temos a visão do conquistador europeu buscando impor a religião católica aos povos originários do Brasil. Já no texto 2, a tirinha, temos o questionamento de tal visão, feita pelo personagem Armandinho, que não concorda com a versão eurocêntrica da professora nem do cronista português."},
+      {"letra": "B", "texto": "No texto 1, trecho da Carta, temos a visão do cronista português acerca da importância da catequização dos povos originários do Brasil e no texto 2, a tirinha, notamos que a professora de Armandinho discorda de tal visão eurocêntrica."},
+      {"letra": "C", "texto": "No texto 1, trecho da Carta, verificamos que, na visão de Pero Vaz de Caminha, os povos originários do Brasil já possuem religiosidade própria, não necessitando ser catequizados e no texto 2, a tirinha, notamos que Armandinho concorda com a visão do cronista português."},
+      {"letra": "D", "texto": "No texto 1, trecho da Carta, verificamos que, na visão do cronista português, é importante que os portugueses entendam a religiosidade dos povos originários do Brasil. Já no texto 2, a tirinha, notamos que Armandinho concorda com o cronista português e discorda da professora."},
+      {"letra": "E", "texto": "Os dois textos criticam a visão eurocêntrica da história."}
+    ],
+    "resposta_letra": "A"
+  },
+  {
+    "id": 28,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Literatura Brasileira",
+    "topico": "Tomás Antônio Gonzaga - Cartas Chilenas",
+    "texto_questao": "Leia os textos:\nTexto 1:\nCARTA 2ª- Em que se mostra a piedade que Fanfarrão fingiu no princípio do seu governo, para chamar a si todos os negócios.\n(...)\n1.Do cavalo andaluz, é, sim, provável\n2.Nascer, também, um potro de esperança,\n3.Que tenha frente aberta, largos peitos,\n4.Que tenha alegres olhos e compridos,\n5.Que seja, enfim, de mãos e pés calçado;\n6.- Porém de um bom ginete também pode\n7.Um catralvo nascer, nascer um zarco.\n8. Aquele mesmo potro, que tem todos\n9.Os formosos sinais, que aponta o Rego,\n10.Carece, Doroteu, correr em roda\n11.- No grande picadeiro muitos meses,\n12.Para um e outro lado, necessita\n13.Que o destro picador lhe ponha a sela\n14.E que, montando nele, pouco a pouco,\n15.O faça obedecer ao leve toque\n16. - Do duro cabeção, da branda rédea.\nTexto 2:\nO bêbado e a equilibrista\n1.Caía a tarde feito um viaduto\n2.E um bêbado trajando luto me lembrou Carlitos\n3.A lua, tal qual a dona de um bordel\n4.Pedia a cada estrela fria um brilho de aluguel\n5.E nuvens lá no mata-borrão do céu\n6.Chupavam manchas torturadas\n7.Que sufoco\n8.Louco\n9.O bêbado com chapéu-coco\n10.Fazia irreverências mil\n11.Pra noite do Brasil\n12.Meu Brasil\n13.Que sonha com a volta do irmão do Henfil\n14.Com tanta gente que partiu\n15.Num rabo de foguete\n16.Chora\n17.A nossa Pátria mãe gentil\n18.Choram Marias e Clarisses\n19.No solo do Brasil\n20.Mas sei que uma dor assim pungente\n21. Não há de ser inutilmente\n22.A esperança\n23.Dança na corda bamba de sombrinha\n24.E em cada passo dessa linha\n25.Pode se machucar\n26.Azar\n27.A esperança equilibrista\n28. Sabe que o show de todo artista\n29. Tem que continuar.\nHistoricamente, o Brasil passou por períodos conturbados politicamente, em que os governantes abusavam do poder para roubar, perseguir, matar e prender quem se colocasse contra os atos ilegítimos que cometiam. Na mesma medida, intelectuais e artistas denunciavam tais atrocidades utilizando a linguagem conotativa em suas obras, a partir do uso de metáforas, metonímias, comparações, etc., para não serem punidos. Os autores dos textos 1 e 2 assim procederam em sua época.\n\nNesse contexto, Tomás Antônio Gonzaga, Aldyr Blank e João Bosco utilizaram a metáfora em seus textos, respectivamente em",
+    "referencia": "Texto 1: Adaptada de GONZAGA, Tomas A. Cartas chilenas. NEAD – Núcleo de Educação a Distância. UNAMA. Universidade do Amazonas. s/d. Disponível em: http://www.dominiopublico.gov.br/download/texto/ua000293.pdf. Acesso em: 18/06/2024. Texto 2: Compositores: Aldir Blanc Mendes / João Bosco De Freitas Mucci, Intérprete: Elis Regina. Fonte: adaptada de LyricFind. Disponível em: https://www.letras.mus.br/elis-regina/45679/. Acesso em: 18/06/2024",
+    "alternativas": [
+      {"letra": "A", "texto": "“Do cavalo andaluz” (verso 1, Texto 1) e “tal qual a dona de um bordel” (verso 3, Texto 2)."},
+      {"letra": "B", "texto": "“potro de esperança\" (verso 2, Texto 1) e “Num rabo de foguete” (verso 15, Texto 2)."},
+      {"letra": "C", "texto": "“bom ginete” (verso 6, Texto 1) e “No solo do Brasil” (verso 19, Texto 2)."},
+      {"letra": "D", "texto": "“correr em roda” (verso 10, Texto 1) e “Chupavam manchas torturadas”. (verso 6, texto 2)."},
+      {"letra": "E", "texto": "\"Os formosos sinais” (verso 9, Texto 1) e “Meu Brasil” (verso 12, Texto 2)."}
+    ],
+    "resposta_letra": "B"
+  },
+  {
+    "id": 29,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Portuguesa",
+    "topico": "Movimentos de vanguarda",
+    "texto_questao": "(Questão com imagem)\nObserve a imagem e leia o fragmento a seguir.\n[Imagem: \"Os Amantes\" (1928) de René Magritte, mostrando um casal se beijando com panos cobrindo suas cabeças]\nA análise visual da obra nos permite apreciar elementos que podem se comunicar a partir da paleta de cores, do tema, da textura e do contexto. Vemos, de perfil, a figura de dois sujeitos direcionados para beijar um ao outro. À direita, de vestimenta social, temos o sujeito de maior altura, com terno em cores neutras, e à esquerda, outra personagem trajando, por sua vez, um vestido vermelho. Impedindo o contato físico entre as figuras, dois panos repousam sobre suas cabeças, suprimindo as sensações que poderiam estabelecer uma conexão entre ambos.\n\nCom base em seus conhecimentos de Arte e de Língua Portuguesa, marque a alternativa correta:",
+    "referencia": "Imagem: Fonte: http://issocompensa.com/sem-categoria/rene-magritte-os-amantes-1928. Acesso em: 05/06/2024. Texto: Adaptado de https://www.gazetavargasfgv.com/post/isolamento-uma-an%C3%A1lise-de-the-lovers-ii. Acesso em: 05/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "Trata-se de uma obra de vanguarda expressionista, seguida de um texto de gênero informativo."},
+      {"letra": "B", "texto": "Trata-se de uma obra de vanguarda futurista, seguida de um texto de gênero narrativo."},
+      {"letra": "C", "texto": "Trata-se de uma obra de vanguarda impressionista, seguida de um texto de gênero prescritivo."},
+      {"letra": "D", "texto": "Trata-se de uma obra de vanguarda fauvista, seguida de um texto de gênero expositivo."},
+      {"letra": "E", "texto": "Trata-se de uma obra de vanguarda surrealista, seguida de um texto de gênero descritivo."}
+    ],
+    "resposta_letra": "E"
+  },
+  {
+    "id": 30,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Estrangeira",
+    "topico": "Leitura de textos em língua estrangeira",
+    "texto_questao": "(Questão com imagem - Tirinha)\nLeia a tirinha a seguir para responder as questões.\n[Tirinha do Gaturro sobre \"voluntad\" (vontade)]\n\nA expressão “lograr” poderia ser corretamente traduzida por qual palavra em português?",
+    "referencia": "Adaptado de https://22tonslatinos.blogspot.com/2013/05/gaturro-e-os-antonimos.html/. Acesso em: 17/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "Tentar."},
+      {"letra": "B", "texto": "Querer."},
+      {"letra": "C", "texto": "Perder."},
+      {"letra": "D", "texto": "Conseguir."},
+      {"letra": "E", "texto": "Pensar."}
+    ],
+    "resposta_letra": "D"
+  },
+  {
+    "id": 31,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Estrangeira",
+    "topico": "Leitura de textos em língua estrangeira",
+    "texto_questao": "(Questão com imagem - Tirinha)\nLeia a tirinha a seguir para responder as questões.\n[Tirinha do Gaturro sobre \"voluntad\" (vontade)]\n\nQual palavra possui um sentido contrário a “también” em espanhol?",
+    "referencia": "Adaptado de https://22tonslatinos.blogspot.com/2013/05/gaturro-e-os-antonimos.html/. Acesso em: 17/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "Además."},
+      {"letra": "B", "texto": "Tal vez."},
+      {"letra": "C", "texto": "Incluso."},
+      {"letra": "D", "texto": "Tampoco."},
+      {"letra": "E", "texto": "No."}
+    ],
+    "resposta_letra": "D"
+  },
+  {
+    "id": 32,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Estrangeira",
+    "topico": "Leitura de textos em língua estrangeira",
+    "texto_questao": "(Questão com imagem - Tirinha)\nLeia a tirinha a seguir para responder as questões.\n[Tirinha do Gaturro sobre \"voluntad\" (vontade)]\n\nA expressão “com voluntad” no primeiro quadrinho poderia ser substituída por qual outra sem perder o significado proposto?",
+    "referencia": "Adaptado de https://22tonslatinos.blogspot.com/2013/05/gaturro-e-os-antonimos.html/. Acesso em: 17/06/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "Con ganas."},
+      {"letra": "B", "texto": "Con permiso."},
+      {"letra": "C", "texto": "Con realidad."},
+      {"letra": "D", "texto": "Con certeza."},
+      {"letra": "E", "texto": "Com voluntariedad."}
+    ],
+    "resposta_letra": "A"
+  },
+  {
+    "id": 33,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Estrangeira",
+    "topico": "Leitura de textos em língua estrangeira",
+    "texto_questao": "Leia o texto para responder as questões.\nMakeshift shelter saves hundreds of dogs amid floods in southern Brazil\n[Texto em inglês sobre um abrigo improvisado para cães em Canoas, RS, durante as enchentes]\n\nA partir da leitura do texto “Makeshift shelter saves hundreds of dogs amid floods in southern Brazil\", considere as seguintes afirmações abaixo:\nI – A cidade de Canoas já contava com um espaço preparado para receber animais em situações de crise.\nII – Sempre que um cão é encontrado por seus tutores, os voluntários fazem um momento de silêncio para celebrar o reencontro.\nIII – Muitos chegam após terem sido atropelados ou quase se afogado, mas nem todos os cães feridos que são resgatados conseguem ser enviados para hospitais veterinários.\nIV – O governo rebateu as acusações de inação em relação às ações de resgate de animais.\nV – Além de cães e gatos, bovinos também podem contar com auxílio veterinário.\n\nEstão corretas:",
+    "referencia": "Adaptado de https://abcnews.go.com/International/wireStory/makeshift-shelter-saves-hundreds-dogs-amid-floods-southern-110101279. Acesso em: 24/05/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "I, II e V apenas."},
+      {"letra": "B", "texto": "II, III e V apenas."},
+      {"letra": "C", "texto": "I e IV apenas."},
+      {"letra": "D", "texto": "III, IV e V apenas."},
+      {"letra": "E", "texto": "II e IV apenas."}
+    ],
+    "resposta_letra": "D"
+  },
+  {
+    "id": 34,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Estrangeira",
+    "topico": "Leitura de textos em língua estrangeira",
+    "texto_questao": "Leia o texto para responder as questões.\nMakeshift shelter saves hundreds of dogs amid floods in southern Brazil\n[Texto em inglês sobre um abrigo improvisado para cães em Canoas, RS, durante as enchentes]\n\nConsiderando os contextos textual e frasal, as palavras “makeshift” (l.1), “jittery” (l.25) e \"heartwarming” (l.28) podem ser substituídas, sem mudança de sentido, respectivamente por",
+    "referencia": "Adaptado de https://abcnews.go.com/International/wireStory/makeshift-shelter-saves-hundreds-dogs-amid-floods-southern-110101279. Acesso em: 24/05/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "disposable; noisy; cardiological."},
+      {"letra": "B", "texto": "uncomfortable; angry; sad."},
+      {"letra": "C", "texto": "temporary; edgy; sickening."},
+      {"letra": "D", "texto": "provisional; nervous; emotional."},
+      {"letra": "E", "texto": "permanent; hungry; lukewarm."}
+    ],
+    "resposta_letra": "D"
+  },
+  {
+    "id": 35,
+    "ano": 2024,
+    "etapa": 2,
+    "materia": "Língua Estrangeira",
+    "topico": "Leitura de textos em língua estrangeira",
+    "texto_questao": "Leia o texto para responder as questões.\nMakeshift shelter saves hundreds of dogs amid floods in southern Brazil\n[Texto em inglês sobre um abrigo improvisado para cães em Canoas, RS, durante as enchentes]\n\nQual das alternativas abaixo está correta?",
+    "referencia": "Adaptado de https://abcnews.go.com/International/wireStory/makeshift-shelter-saves-hundreds-dogs-amid-floods-southern-110101279. Acesso em: 24/05/2024.",
+    "alternativas": [
+      {"letra": "A", "texto": "Em \"Dog food is scattered throughout the facility, and dogs are chained at distances from one another to prevent fighting” (l.14-15), vemos um exemplo de uso de passive voice."},
+      {"letra": "B", "texto": "Em \"Animal protection groups and volunteers have shared images of difficult rescues and heartwarming scenes of pets reuniting with their owners on social media” (l.27-28), vemos um exemplo de uso de past perfect."},
+      {"letra": "C", "texto": "Em “They will bring food and medical supplies, assist cats and dogs that have found shelter and seek out those still fending for themselves, said Ungerer, 41” (l.34-35), vemos um exemplo de uso de past perfect continuous."},
+      {"letra": "D", "texto": "Em \"Our community chose to embrace this, but days ago we felt so alone” (l.21-22), vemos um exemplo de uso de present perfect."},
+      {"letra": "E", "texto": "Em “The images have spurred Brazilians to send donations and brought veterinarians to the region\" (l.30-31), vemos um exemplo de uso de future continuous."}
+    ],
+    "resposta_letra": "A"
+  }
+]

@@ -315,11 +315,12 @@ input { font-family: inherit; }
 .question-layout {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
+    margin-bottom: 25px;
     padding: 0;
     margin-top: 5px;
     background-color: #ffffff; /* Fundo branco */
     align-self: flex-start; /* <<< Alinha card à esquerda como bot */
-    max-width: 95%; /* Pode ser mais largo que bolhas normais */
+    max-width: 100%; /* Pode ser mais largo que bolhas normais */
     width: auto; /* Largura conforme conteúdo */
     box-sizing: border-box;
     box-shadow: 0 1px 4px rgba(0,0,0,0.07);
@@ -399,10 +400,10 @@ input { font-family: inherit; }
     border-radius: 8px;
     /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); */
     /* border: 1px solid #e0e0e0; */
-    height: calc(100% - 30px); /* Ajusta altura descontando padding da main */
+    height: 100%; /* Ajusta altura descontando padding da main */
     overflow-y: auto; /* Scroll para a lista de questões */
     scrollbar-width: thin;
-    scrollbar-color: #d1d5db #ffffff;
+    scrollbar-color: #d1d5db00 #ffffff;
 }
 .question-bank-container::-webkit-scrollbar { width: 6px; }
 .question-bank-container::-webkit-scrollbar-track { background: #ffffff; }
