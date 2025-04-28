@@ -1,135 +1,220 @@
 // functions/api/ask.js
 
 // --- Funções Auxiliares (Manter as mesmas: removeAccents, stopWords, filtrarQuestoes) ---
-function removeAccents(str) { /* ... código ... */ }
-const stopWords = new Set([ /* ... lista ... */ ]);
-function filtrarQuestoes(questoes, query) { /* ... código ... */ }
+function removeAccents(str) {
+  if (typeof str !== 'string') return '';
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+const stopWords = new Set([ /* ... sua lista de stop words ... */ ]);
 
-// --- Handler Principal (Modificado) ---
+function filtrarQuestoes(questoes, query) {
+  // ADICIONADO: Garante que questoes seja um array antes de filtrar
+  if (!Array.isArray(questoes)) {
+      console.warn("[WARN] filtrarQuestoes recebeu 'questoes' que não é um array. Retornando [].", typeof questoes);
+      return [];
+  }
+
+  const queryNormalized = removeAccents(query.toLowerCase());
+  const palavrasChave = queryNormalized
+      .replace(/[^\w\s]/gi, '')
+      .split(/\s+/)
+      .filter(p => p.length > 1 && !stopWords.has(p));
+
+  // console.log("Worker: Palavras-chave extraídas:", palavrasChave);
+
+  if (!palavrasChave.length) {
+       return [];
+  }
+
+  const resultadosComPontuacao = questoes.map(q => {
+      // Combina textos para busca... (lógica anterior)
+      const ano = (q?.ano || '').toString(); // Adicionado optional chaining em q
+      const etapa = (q?.etapa || '').toString();
+      const materia = removeAccents((q?.materia || '').toLowerCase());
+      const topico = removeAccents((q?.topico || '').toLowerCase());
+      const textoQuestao = removeAccents((q?.texto_questao || '').toLowerCase());
+      const textoCompletoQuestao = `pave ${ano} etapa ${etapa} ${materia} ${topico} ${textoQuestao}`;
+      let score = 0;
+      let match = false;
+      palavrasChave.forEach(palavra => {
+          if (textoCompletoQuestao.includes(palavra)) {
+              score++;
+              match = true;
+          }
+      });
+      return { questao: q, score: score, match: match };
+  })
+  .filter(item => item.match)
+  .sort((a, b) => b.score - a.score);
+
+  return resultadosComPontuacao.map(item => item.questao);
+}
+
+// --- Handler Principal (Mais Robusto) ---
 export async function onRequestPost(context) {
+  const functionName = "/api/ask"; // Para logs
+  console.log(`[LOG] ${functionName}: Iniciando POST request`);
   try {
-    // -- Variáveis de Ambiente/Segredos e Bindings --
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
     const r2Bucket = env.QUESTOES_PAVE_BUCKET;
 
-    // Validações essenciais
+    // Validação de Binding R2
     if (!r2Bucket) {
-      console.error("[ERRO] Binding R2 'QUESTOES_PAVE_BUCKET' não configurado!");
-      return new Response(JSON.stringify({ error: 'Configuração interna incompleta (R2).' }), { status: 500, headers: { 'Content-Type': 'application/json' }});
+      console.error(`[ERRO] ${functionName}: Binding R2 'QUESTOES_PAVE_BUCKET' não configurado!`);
+      throw new Error('Configuração interna incompleta (R2).'); // Lança erro para o catch geral
     }
+    console.log(`[LOG] ${functionName}: Binding R2 encontrado.`);
 
-    // -- Obter Corpo da Requisição --
+    // Validação do Corpo da Requisição
     let requestData;
     try {
       requestData = await request.json();
     } catch (e) {
-      return new Response(JSON.stringify({ error: 'Corpo da requisição inválido (não é JSON).' }), { status: 400, headers: { 'Content-Type': 'application/json' }});
+      console.warn(`[WARN] ${functionName}: Corpo da requisição inválido (não JSON).`);
+      return new Response(JSON.stringify({ error: 'Corpo da requisição inválido.' }), { status: 400, headers: { 'Content-Type': 'application/json' }});
     }
 
     const userQuery = requestData?.query?.trim();
-    const wantsAllQuestions = requestData?.getAll === true; // <<< Verifica se quer todas as questões
+    const wantsAllQuestions = requestData?.getAll === true;
 
-    // --- LÓGICA PARA DEVOLVER TODAS AS QUESTÕES ---
+    // --- Lógica para Devolver Todas as Questões ---
     if (wantsAllQuestions) {
-        console.log("[LOG] Requisição para buscar todas as questões recebida.");
-        const r2Object = await r2Bucket.get('questoes.json');
-        if (r2Object === null) {
-            console.error("[ERRO] getAll: questoes.json não encontrado no R2.");
-            return new Response(JSON.stringify({ error: 'Base de dados não encontrada.' }), { status: 404, headers: { 'Content-Type': 'application/json' }});
-        }
-        console.log("[LOG] getAll: Retornando todas as questões do R2.");
-        // Retorna APENAS a lista de questões, sem commentary
-        // Precisamos ler e parsear aqui para enviar como um array JSON válido na resposta
-        const allQuestions = await r2Object.json();
-        return new Response(JSON.stringify({ commentary: null, questions: allQuestions }), {
-            headers: { 'Content-Type': 'application/json' },
-            status: 200
-        });
+      console.log(`[LOG] ${functionName}: Requisição para buscar todas as questões.`);
+      const r2Object = await r2Bucket.get('questoes.json');
+      if (r2Object === null) {
+        console.error(`[ERRO] ${functionName} (getAll): questoes.json não encontrado no R2.`);
+        throw new Error('Base de dados não encontrada.');
+      }
+      console.log(`[LOG] ${functionName} (getAll): Retornando todas as questões do R2.`);
+      const allQuestions = await r2Object.json(); // Assume que o JSON é válido aqui
+
+      // ADICIONADO: Validação se o parse funcionou
+      if (!Array.isArray(allQuestions)) {
+          console.error(`[ERRO] ${functionName} (getAll): Conteúdo do R2 não é um array JSON válido.`);
+          throw new Error('Formato inválido da base de dados.');
+      }
+
+      return new Response(JSON.stringify({ commentary: null, questions: allQuestions }), {
+        headers: { 'Content-Type': 'application/json' }, status: 200
+      });
     }
     // --- FIM DA LÓGICA PARA DEVOLVER TODAS ---
 
     // --- LÓGICA ORIGINAL DO CHAT (se !wantsAllQuestions) ---
     if (!userQuery) {
-      return new Response(JSON.stringify({ error: 'Nenhuma pergunta fornecida para o chat.' }), { status: 400, headers: { 'Content-Type': 'application/json' }});
+      console.warn(`[WARN] ${functionName}: Nenhuma query fornecida para o chat.`);
+      return new Response(JSON.stringify({ error: 'Nenhuma pergunta fornecida.' }), { status: 400, headers: { 'Content-Type': 'application/json' }});
     }
+    // Validação da API Key apenas se for usar o Gemini
     if (!geminiApiKey) {
-        console.error("[ERRO] GEMINI_API_KEY não configurada!");
-        return new Response(JSON.stringify({ error: 'Configuração interna incompleta (API Key).' }), { status: 500, headers: { 'Content-Type': 'application/json' }});
+        console.error(`[ERRO] ${functionName}: GEMINI_API_KEY não configurada!`);
+        throw new Error('Configuração interna incompleta (API Key).');
     }
 
-    console.log(`[LOG] Chat: Recebida pergunta: "${userQuery}"`);
+    console.log(`[LOG] ${functionName} (Chat): Recebida pergunta: "${userQuery}"`);
 
-    // Carrega questões do R2 para filtrar (poderia otimizar com cache se necessário)
-    const r2Object = await r2Bucket.get('questoes.json');
-     if (r2Object === null) {
-         console.error("[ERRO] Chat: questoes.json não encontrado no R2.");
-         return new Response(JSON.stringify({ commentary: 'Desculpe, não consegui acessar a base de questões agora.', questions: [] }), { status: 500, headers: { 'Content-Type': 'application/json' }});
-     }
-    const questoes = await r2Object.json();
+    // Carrega questões do R2
+    const r2ObjectChat = await r2Bucket.get('questoes.json');
+    if (r2ObjectChat === null) {
+        console.error(`[ERRO] ${functionName} (Chat): questoes.json não encontrado no R2.`);
+        throw new Error('Não foi possível acessar a base de questões.');
+    }
+    let questoes;
+    try {
+        questoes = await r2ObjectChat.json();
+        // ADICIONADO: Validação crucial
+        if (!Array.isArray(questoes)) {
+            console.error(`[ERRO] ${functionName} (Chat): Conteúdo do R2 não é um array JSON válido.`);
+            throw new Error('Formato inválido da base de dados.');
+        }
+    } catch (e) {
+        console.error(`[ERRO] ${functionName} (Chat): Falha ao parsear JSON do R2:`, e);
+        throw new Error('Erro ao ler a base de dados.');
+    }
 
-    // Filtra questões relevantes para o chat
+    // Filtra questões
     const questoesRelevantes = filtrarQuestoes(questoes, userQuery);
-    console.log(`[LOG] Chat: Encontradas ${questoesRelevantes.length} questões relevantes.`);
+    // ADICIONADO: Verificação (embora filtrarQuestoes já deva retornar array)
+    if (!Array.isArray(questoesRelevantes)) {
+        console.error(`[ERRO] ${functionName} (Chat): filtrarQuestoes não retornou um array!`);
+        throw new Error('Erro interno ao processar questões.');
+    }
+    console.log(`[LOG] ${functionName} (Chat): Encontradas ${questoesRelevantes.length} questões relevantes.`);
 
+    // Mapeia para frontend
     const MAX_CONTEXT_QUESTOES = 3;
     const questoesParaFrontend = questoesRelevantes
         .slice(0, MAX_CONTEXT_QUESTOES)
-        .map(q => ({ /* ... mapeamento correto incluindo referencia ... */
-            ano: q.ano, etapa: q.etapa, materia: q.materia, topico: q.topico,
-            texto_questao: q.texto_questao, referencia: q.referencia,
-            alternativas: q.alternativas, resposta_letra: q.resposta_letra
+        .map(q => ({ /* ... mapeamento correto ... */
+            ano: q?.ano, etapa: q?.etapa, materia: q?.materia, topico: q?.topico,
+            texto_questao: q?.texto_questao, referencia: q?.referencia,
+            alternativas: q?.alternativas, resposta_letra: q?.resposta_letra
         }));
 
-    // Chama Gemini API para comentário (lógica original)
+    // Chama Gemini API
     let botCommentary = "";
     let prompt = "";
-    const safetySettings = [ /* ... seus safety settings ... */ ];
+    const safetySettings = [ /* ... */ ];
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`;
 
     if (questoesParaFrontend.length > 0) {
-        const topicosEncontrados = [...new Set(questoesParaFrontend.map(q => q.topico || q.materia))].join(', ');
-        prompt = `(Prompt para gerar comentário baseado em questões encontradas...)`; // Seu prompt original
-        console.log("[LOG] Chat: Enviando para Gemini (com contexto)");
+        const topicosEncontrados = [...new Set(questoesParaFrontend.map(q => q?.topico || q?.materia))].filter(Boolean).join(', '); // Filtra null/undefined
+        prompt = `(Prompt para gerar comentário...)`; // Seu prompt aqui
+        console.log(`[LOG] ${functionName} (Chat): Enviando para Gemini (com contexto)`);
     } else {
-        prompt = `(Prompt para gerar resposta sem contexto...)`; // Seu prompt original
-        console.log("[LOG] Chat: Enviando para Gemini (sem contexto)");
+        prompt = `(Prompt para gerar resposta sem contexto...)`; // Seu prompt aqui
+        console.log(`[LOG] ${functionName} (Chat): Enviando para Gemini (sem contexto)`);
     }
 
-    try { // Bloco try/catch para chamada Gemini
+    try {
         const geminiResponse = await fetch(geminiApiUrl, { /* ... opções fetch ... */ });
-        // ... (lógica original para extrair botCommentary do geminiData) ...
-         if (!geminiResponse.ok) throw new Error(`Erro API Gemini ${geminiResponse.status}`);
-         const geminiData = await geminiResponse.json();
-         botCommentary = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "";
-         // ... (tratamento adicional de erros/fallback) ...
-
+        if (!geminiResponse.ok) {
+            const errorText = await geminiResponse.text();
+            console.error(`[ERRO] ${functionName} (Chat): Erro da API Gemini: ${geminiResponse.status}`, errorText);
+            throw new Error(`Erro da API de IA (${geminiResponse.status})`);
+        }
+        const geminiData = await geminiResponse.json();
+        botCommentary = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        if (!botCommentary && geminiData.candidates?.[0]?.finishReason && geminiData.candidates[0].finishReason !== 'STOP') {
+           botCommentary = `(Resposta da IA filtrada: ${geminiData.candidates[0].finishReason})`;
+           console.warn(`[WARN] ${functionName} (Chat): Geração Gemini interrompida:`, geminiData.candidates[0].finishReason);
+        } else if (!botCommentary) {
+           botCommentary = ""; // Deixa vazio se não veio nada útil
+           console.warn(`[WARN] ${functionName} (Chat): Resposta Gemini sem texto útil.`);
+        }
     } catch (error) {
-        console.error('[ERRO] Chat: Erro ao chamar Gemini API:', error);
-        botCommentary = questoesParaFrontend.length > 0 ? "(Erro ao gerar comentário)" : "(Erro ao gerar resposta)";
+        console.error(`[ERRO] ${functionName} (Chat): Erro ao chamar Gemini API:`, error);
+        // Não joga erro aqui, apenas define comentário como vazio ou de erro
+        botCommentary = "(Desculpe, não consegui gerar um comentário no momento.)";
+    }
+
+    // Define resposta padrão se não houver comentário E não houver questões
+    if (!botCommentary && questoesParaFrontend.length === 0) {
+        botCommentary = "Não encontrei informações relevantes para sua busca nos dados atuais.";
     }
 
     // Retorna resposta estruturada para o CHAT
-    console.log(`[LOG] Chat: Retornando comentário e ${questoesParaFrontend.length} questões.`);
+    console.log(`[LOG] ${functionName} (Chat): Retornando comentário e ${questoesParaFrontend.length} questões.`);
     return new Response(JSON.stringify({ commentary: botCommentary, questions: questoesParaFrontend }), {
-      headers: { 'Content-Type': 'application/json' },
-      status: 200
+      headers: { 'Content-Type': 'application/json' }, status: 200
     });
 
   } catch (error) {
-    // Erro geral não capturado antes
-    console.error('[ERRO] Erro GERAL na função /api/ask:', error);
+    // Catch geral para erros lançados dentro do try principal
+    console.error(`[ERRO] ${functionName}: Erro GERAL CAPTURADO:`, error);
+    // Retorna a mensagem do erro capturado para o frontend
     return new Response(JSON.stringify({ error: `Erro interno: ${error.message}` }), {
       status: 500, headers: { 'Content-Type': 'application/json' },
     });
   }
 }
 
-// Handler genérico para outros métodos (como GET para /api/ask)
+// Handler genérico para outros métodos
 export async function onRequest(context) {
-    console.log(`[WARN] Recebido request ${context.request.method} para /api/ask.`);
+    console.log(`[LOG] /api/ask: Recebido request ${context.request.method}`);
     if (context.request.method === 'POST') {
         return await onRequestPost(context);
     }
-    return new Response(`Método ${context.request.method} não permitido para /api/ask. Use POST.`, { status: 405 });
+    return new Response(`Método ${context.request.method} não permitido. Use POST.`, { status: 405 });
 }
