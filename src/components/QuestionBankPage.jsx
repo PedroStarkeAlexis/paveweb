@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import Filters from '../components/Filters.JSX'; // Importa o componente de filtros
+import Filters from '../components/filters.jsx'; // Importa o componente de filtros
 import QuestionList from '../components/QuestionList'; // Importa o componente de lista de questões
 
 function QuestionBankPage() {
