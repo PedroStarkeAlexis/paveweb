@@ -42,64 +42,82 @@ function App() {
       }
     ]);
   }, []); // Array de dependências vazio = rodar só uma vez
-
-  // --- Handler para Enviar Mensagem (passado para ChatInterface) ---
+  // --- Handler para Enviar Mensagem (VERSÃO MAIS SEGURA) ---
   const handleSendMessage = async (userQuery) => {
-    // Adiciona mensagem do usuário à UI imediatamente
     const newUserMessage = { type: 'text', sender: 'user', content: userQuery };
     setMessages(prevMessages => [...prevMessages, newUserMessage]);
-    setIsLoading(true); // Mostra indicador "Digitando..."
+    setIsLoading(true);
 
     try {
-      // Chama a API backend (/api/ask)
       const response = await fetch('/api/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: userQuery }),
       });
 
-      // Tratamento de erro da API
+      // Pega o corpo da resposta para análise, mesmo se não for OK
+      const responseBody = await response.text(); // Lê como texto primeiro
+
+      // Verifica se a resposta HTTP foi bem-sucedida (status 2xx)
       if (!response.ok) {
-        let errorMsg = `Erro ${response.status}`;
-        try {
-          const errData = await response.json();
-          errorMsg = errData.commentary || errData.error || errorMsg;
-        } catch { /* Ignora erro ao parsear erro */ }
-        throw new Error(errorMsg); // Lança o erro para o catch
+          let errorMsg = `Erro ${response.status}`;
+          try {
+              // Tenta parsear o corpo como JSON para pegar a mensagem de erro estruturada
+              const errData = JSON.parse(responseBody);
+              errorMsg = errData.error || errData.commentary || `Erro ${response.status} - ${response.statusText}`;
+          } catch (e) {
+              // Se não for JSON, usa o texto do corpo como erro (ou o status)
+              errorMsg = responseBody || `Erro ${response.status} - ${response.statusText}`;
+              console.warn("Resposta de erro não era JSON:", responseBody);
+          }
+          throw new Error(errorMsg); // Lança o erro
       }
 
-      // Processa a resposta bem-sucedida
-      const data = await response.json();
+      // Se a resposta foi OK, tenta parsear como JSON
+      let data;
+      try {
+          data = JSON.parse(responseBody);
+      } catch (e) {
+          console.error("Falha ao parsear resposta JSON bem-sucedida:", responseBody, e);
+          throw new Error("Recebi uma resposta inesperada do servidor.");
+      }
 
-      // Prepara as respostas do bot (comentário e/ou questões)
+
+      // --- Processamento Seguro dos Dados ---
       const botResponses = [];
-      if (data.commentary) {
+      // Adiciona comentário APENAS se existir e for uma string
+      if (data && typeof data.commentary === 'string' && data.commentary.length > 0) {
         botResponses.push({ type: 'text', sender: 'bot', content: data.commentary });
       }
-      if (data.questions && data.questions.length > 0) {
+
+      // Adiciona questões APENAS se data.questions for um array e tiver itens
+      // VERIFICAÇÃO IMPORTANTE: Array.isArray(data.questions)
+      if (data && Array.isArray(data.questions) && data.questions.length > 0) {
         data.questions.forEach(q => {
-          if (q.alternativas && q.resposta_letra) {
-            // Adiciona como tipo 'question' se tiver dados para interatividade
+          if (q && q.alternativas && q.resposta_letra) { // Verifica se 'q' também é válido
             botResponses.push({ type: 'question', sender: 'bot', questionData: q });
           } else {
-            // Senão, adiciona como texto informando dados incompletos
-            console.warn("Dados da questão incompletos recebidos:", q);
-            // CORREÇÃO: Removido ``` do final da string
-            botResponses.push({ type: 'text', sender: 'bot', content: `(Recebi uma questão sobre ${q.topico || q.materia}, mas os dados para interação estão incompletos.)` });
+            console.warn("Dados da questão inválidos ou incompletos recebidos:", q);
+            botResponses.push({ type: 'text', sender: 'bot', content: `(Recebi dados de questão incompletos.)` });
           }
         });
+      } else if (data && data.questions !== undefined && data.questions !== null) {
+          // Loga se 'questions' existe mas não é um array válido ou está vazio
+          console.warn("Backend retornou 'questions', mas não é um array válido ou está vazio:", data.questions);
       }
+      // --- Fim do Processamento Seguro ---
+
 
       // Adiciona as respostas do bot ao estado de mensagens
       setMessages(prevMessages => [...prevMessages, ...botResponses]);
 
     } catch (error) {
-      // Captura erros da chamada fetch ou do tratamento da resposta
-      console.error("Erro ao buscar resposta da API:", error);
-      const errorResponse = { type: 'text', sender: 'bot', content: `Desculpe, ocorreu um problema ao processar sua solicitação: ${error.message}` };
+      // Captura erros (fetch, parse, ou o Error lançado)
+      console.error("Erro no handleSendMessage:", error);
+      const errorResponse = { type: 'text', sender: 'bot', content: `Desculpe, ocorreu um problema: ${error.message}` };
       setMessages(prevMessages => [...prevMessages, errorResponse]);
     } finally {
-      // Desativa o indicador de carregamento em qualquer caso (sucesso ou erro)
+      // Garante que o loading termine
       setIsLoading(false);
     }
   };
