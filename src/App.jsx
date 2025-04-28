@@ -117,6 +117,7 @@ function App() {
               {/* Links de Navegação */}
               <NavLink to="/" icon="💬">Busca (Chat)</NavLink>
               <NavLink to="/banco-questoes" icon="📚">Banco de Questões</NavLink>
+              <NavLink to="/banco-questoes" icon="📚">Banco de Questões</NavLink>
               {/* Adicionar outros links conforme necessário */}
             </ul>
           </nav>
@@ -125,7 +126,7 @@ function App() {
                 <li><a href="#"><span className="icon">❓</span> Ajuda</a></li>
              </ul>
              <div className="copyright">
-                 © 2024 Chatbot PAVE
+                 © 2025 Desenvolvido por Pedro alexis
              </div>
           </div>
         </aside>
