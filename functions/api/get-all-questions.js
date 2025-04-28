@@ -1,61 +1,69 @@
 // functions/api/get-all-questions.js
 
-// Handler para requisições GET nesta rota
 export async function onRequestGet(context) {
+    console.log("[LOG] Iniciando /api/get-all-questions (GET)"); // Log 1: Função Iniciada
     try {
-      // -- Obtém acesso ao binding do R2 configurado no dashboard --
       const { env } = context;
-      const r2Bucket = env.QUESTOES_PAVE_BUCKET; // Nome do binding R2
+      const r2Bucket = env.QUESTOES_PAVE_BUCKET;
   
-      // Verifica se o binding foi configurado corretamente
       if (!r2Bucket) {
-        console.error('Erro: Binding R2 QUESTOES_PAVE_BUCKET não configurado nas definições do Pages.');
+        console.error("[ERRO] Binding R2 'QUESTOES_PAVE_BUCKET' não encontrado!");
         return new Response(JSON.stringify({ error: 'Configuração interna do servidor incompleta (R2 Binding).' }), {
-          status: 500, // Erro interno do servidor
-          headers: { 'Content-Type': 'application/json' },
+          status: 500, headers: { 'Content-Type': 'application/json' },
         });
       }
+      console.log("[LOG] Binding R2 encontrado."); // Log 2: Binding OK
   
-      // -- Busca o objeto JSON no R2 --
-      const r2Object = await r2Bucket.get('questoes.json'); // Busca o arquivo pelo nome
+      const objectName = 'questoes.json';
+      console.log(`[LOG] Tentando buscar objeto: ${objectName}`); // Log 3: Tentando buscar
+      const r2Object = await r2Bucket.get(objectName);
   
-      // Verifica se o arquivo foi encontrado no bucket
       if (r2Object === null) {
-        console.error('Erro: Arquivo questoes.json não encontrado no bucket R2.');
+        console.error(`[ERRO] Objeto '${objectName}' não encontrado no bucket R2.`);
         return new Response(JSON.stringify({ error: 'Base de dados de questões não encontrada.' }), {
-          status: 404, // Not Found
-          headers: { 'Content-Type': 'application/json' },
+          status: 404, headers: { 'Content-Type': 'application/json' },
         });
       }
+      console.log(`[LOG] Objeto '${objectName}' encontrado. Tamanho: ${r2Object.size} bytes.`); // Log 4: Objeto Encontrado
   
-      // -- Retorna o conteúdo JSON diretamente --
-      // Define o cabeçalho Content-Type para indicar que é JSON
+      // Verificação extra: Tenta ler uma pequena parte como texto para ver se parece JSON
+      try {
+          const head = await r2Object.text();
+          console.log(`[LOG] Início do conteúdo do objeto: ${head.substring(0,50)}...`); // Log 5: Início do conteúdo
+          // Tenta parsear para garantir que é JSON válido (opcional, pode consumir memória)
+          // JSON.parse(head);
+          // console.log("[LOG] Conteúdo parece ser JSON válido (parse test).");
+      } catch(e) {
+           console.error("[ERRO] Falha ao ler/verificar conteúdo do objeto R2:", e);
+           // Não retorna erro aqui ainda, tenta retornar o body mesmo assim
+      }
+  
+  
+      console.log("[LOG] Preparando resposta com conteúdo JSON."); // Log 6: Preparando resposta
       const headers = new Headers();
-      headers.set('Content-Type', 'application/json');
+      headers.set('Content-Type', 'application/json'); // Define o tipo de conteúdo
   
-      // Retorna o corpo do objeto R2 (que deve ser o JSON) como resposta
-      // Isso é eficiente pois transmite os dados diretamente
+      // Retorna o corpo do objeto R2
       return new Response(r2Object.body, {
         headers: headers,
-        status: 200 // OK
+        status: 200
       });
   
     } catch (error) {
-      // Captura qualquer erro inesperado durante o processo
-      console.error('Worker /api/get-all-questions: Erro GERAL:', error);
+      console.error('[ERRO] Erro GERAL no catch da função:', error); // Log 7: Erro inesperado
       return new Response(JSON.stringify({ error: `Erro interno ao processar a solicitação: ${error.message}` }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        status: 500, headers: { 'Content-Type': 'application/json' },
       });
     }
   }
   
-  // Handler genérico para outros métodos HTTP (POST, PUT, etc.)
-  // Retorna 405 Method Not Allowed para indicar que apenas GET é suportado nesta rota
   export async function onRequest(context) {
+      // Log para qualquer request que chegue aqui
+      console.log(`[LOG] Recebido request: ${context.request.method} ${context.request.url}`);
       if (context.request.method === 'GET') {
           return await onRequestGet(context);
       }
-      // Para qualquer outro método, retorna erro
+      // Para outros métodos, retorna 405
+      console.warn(`[WARN] Método ${context.request.method} não permitido.`);
       return new Response(`Método ${context.request.method} não permitido nesta rota.`, { status: 405 });
   }
