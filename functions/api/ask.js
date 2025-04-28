@@ -1,209 +1,162 @@
 // functions/api/ask.js
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
-// --- Funções Auxiliares (Manter as mesmas: removeAccents, stopWords, filtrarQuestoes) ---
-function removeAccents(str) {
-  if (typeof str !== 'string') return '';
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
-const stopWords = new Set([ /* ... sua lista de stop words ... */ ]);
-
-function filtrarQuestoes(questoes, query) {
-  // ADICIONADO: Garante que questoes seja um array antes de filtrar
-  if (!Array.isArray(questoes)) {
-      console.warn("[WARN] filtrarQuestoes recebeu 'questoes' que não é um array. Retornando [].", typeof questoes);
-      return [];
-  }
-
-  const queryNormalized = removeAccents(query.toLowerCase());
-  const palavrasChave = queryNormalized
-      .replace(/[^\w\s]/gi, '')
-      .split(/\s+/)
-      .filter(p => p.length > 1 && !stopWords.has(p));
-
-  // console.log("Worker: Palavras-chave extraídas:", palavrasChave);
-
-  if (!palavrasChave.length) {
-       return [];
-  }
-
-  const resultadosComPontuacao = questoes.map(q => {
-      // Combina textos para busca... (lógica anterior)
-      const ano = (q?.ano || '').toString(); // Adicionado optional chaining em q
-      const etapa = (q?.etapa || '').toString();
-      const materia = removeAccents((q?.materia || '').toLowerCase());
-      const topico = removeAccents((q?.topico || '').toLowerCase());
-      const textoQuestao = removeAccents((q?.texto_questao || '').toLowerCase());
-      const textoCompletoQuestao = `pave ${ano} etapa ${etapa} ${materia} ${topico} ${textoQuestao}`;
-      let score = 0;
-      let match = false;
-      palavrasChave.forEach(palavra => {
-          if (textoCompletoQuestao.includes(palavra)) {
-              score++;
-              match = true;
-          }
-      });
-      return { questao: q, score: score, match: match };
-  })
-  .filter(item => item.match)
-  .sort((a, b) => b.score - a.score);
-
-  return resultadosComPontuacao.map(item => item.questao);
+// --- Funções Auxiliares (Manter: removeAccents, stopWords, filtrarQuestoes) ---
+function removeAccents(str) { /* ... código ... */ }
+const stopWords = new Set([ /* ... lista ... */ ]);
+function filtrarQuestoes(questoes, query) { /* ... código robusto anterior ... */
+    if (!Array.isArray(questoes)) { return []; }
+    const queryNormalized = removeAccents(query.toLowerCase());
+    const palavrasChave = queryNormalized.replace(/[^\w\s]/gi, '').split(/\s+/).filter(p => p.length > 1 && !stopWords.has(p));
+    if (!palavrasChave.length) { return []; }
+    const resultadosComPontuacao = questoes.map(q => {
+        const ano = (q?.ano || '').toString(); const etapa = (q?.etapa || '').toString();
+        const materia = removeAccents((q?.materia || '').toLowerCase()); const topico = removeAccents((q?.topico || '').toLowerCase());
+        const textoQuestao = removeAccents((q?.texto_questao || '').toLowerCase());
+        const textoCompletoQuestao = `pave ${ano} etapa ${etapa} ${materia} ${topico} ${textoQuestao}`;
+        let score = 0; let match = false;
+        palavrasChave.forEach(palavra => { if (textoCompletoQuestao.includes(palavra)) { score++; match = true; } });
+        return { questao: q, score: score, match: match };
+    }).filter(item => item.match).sort((a, b) => b.score - a.score);
+    return resultadosComPontuacao.map(item => item.questao);
 }
 
-// --- Handler Principal (Mais Robusto) ---
+// --- Handler Principal Refatorado ---
 export async function onRequestPost(context) {
-  const functionName = "/api/ask"; // Para logs
+  const functionName = "/api/ask";
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
   try {
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
     const r2Bucket = env.QUESTOES_PAVE_BUCKET;
 
-    // Validação de Binding R2
-    if (!r2Bucket) {
-      console.error(`[ERRO] ${functionName}: Binding R2 'QUESTOES_PAVE_BUCKET' não configurado!`);
-      throw new Error('Configuração interna incompleta (R2).'); // Lança erro para o catch geral
-    }
-    console.log(`[LOG] ${functionName}: Binding R2 encontrado.`);
+    // Validações essenciais (R2, API Key)
+    if (!r2Bucket) { throw new Error('Configuração interna incompleta (R2).'); }
+    if (!geminiApiKey) { throw new Error('Configuração interna incompleta (API Key).'); }
+    console.log(`[LOG] ${functionName}: Bindings R2 e API Key encontrados.`);
 
-    // Validação do Corpo da Requisição
+    // Obter query do usuário
     let requestData;
-    try {
-      requestData = await request.json();
-    } catch (e) {
-      console.warn(`[WARN] ${functionName}: Corpo da requisição inválido (não JSON).`);
-      return new Response(JSON.stringify({ error: 'Corpo da requisição inválido.' }), { status: 400, headers: { 'Content-Type': 'application/json' }});
-    }
-
+    try { requestData = await request.json(); }
+    catch (e) { return new Response(JSON.stringify({ error: 'Requisição inválida.' }), { status: 400, headers: { 'Content-Type': 'application/json' }}); }
     const userQuery = requestData?.query?.trim();
-    const wantsAllQuestions = requestData?.getAll === true;
 
-    // --- Lógica para Devolver Todas as Questões ---
-    if (wantsAllQuestions) {
-      console.log(`[LOG] ${functionName}: Requisição para buscar todas as questões.`);
-      const r2Object = await r2Bucket.get('questoes.json');
-      if (r2Object === null) {
-        console.error(`[ERRO] ${functionName} (getAll): questoes.json não encontrado no R2.`);
-        throw new Error('Base de dados não encontrada.');
-      }
-      console.log(`[LOG] ${functionName} (getAll): Retornando todas as questões do R2.`);
-      const allQuestions = await r2Object.json(); // Assume que o JSON é válido aqui
+    if (!userQuery) { return new Response(JSON.stringify({ error: 'Nenhuma pergunta fornecida.' }), { status: 400, headers: { 'Content-Type': 'application/json' }}); }
+    console.log(`[LOG] ${functionName}: Query recebida: "${userQuery}"`);
 
-      // ADICIONADO: Validação se o parse funcionou
-      if (!Array.isArray(allQuestions)) {
-          console.error(`[ERRO] ${functionName} (getAll): Conteúdo do R2 não é um array JSON válido.`);
-          throw new Error('Formato inválido da base de dados.');
-      }
-
-      return new Response(JSON.stringify({ commentary: null, questions: allQuestions }), {
-        headers: { 'Content-Type': 'application/json' }, status: 200
-      });
-    }
-    // --- FIM DA LÓGICA PARA DEVOLVER TODAS ---
-
-    // --- LÓGICA ORIGINAL DO CHAT (se !wantsAllQuestions) ---
-    if (!userQuery) {
-      console.warn(`[WARN] ${functionName}: Nenhuma query fornecida para o chat.`);
-      return new Response(JSON.stringify({ error: 'Nenhuma pergunta fornecida.' }), { status: 400, headers: { 'Content-Type': 'application/json' }});
-    }
-    // Validação da API Key apenas se for usar o Gemini
-    if (!geminiApiKey) {
-        console.error(`[ERRO] ${functionName}: GEMINI_API_KEY não configurada!`);
-        throw new Error('Configuração interna incompleta (API Key).');
-    }
-
-    console.log(`[LOG] ${functionName} (Chat): Recebida pergunta: "${userQuery}"`);
-
-    // Carrega questões do R2
-    const r2ObjectChat = await r2Bucket.get('questoes.json');
-    if (r2ObjectChat === null) {
-        console.error(`[ERRO] ${functionName} (Chat): questoes.json não encontrado no R2.`);
-        throw new Error('Não foi possível acessar a base de questões.');
-    }
-    let questoes;
+    // --- Carregar e Filtrar Questões SEMPRE ---
+    // Precisamos dos dados relevantes mesmo que a IA decida não mostrá-los diretamente
+    let allQuestionsData = [];
+    let questoesRelevantes = [];
+    let contextForAI = "Nenhum contexto específico sobre questões do PAVE foi carregado."; // Padrão
     try {
-        questoes = await r2ObjectChat.json();
-        // ADICIONADO: Validação crucial
-        if (!Array.isArray(questoes)) {
-            console.error(`[ERRO] ${functionName} (Chat): Conteúdo do R2 não é um array JSON válido.`);
-            throw new Error('Formato inválido da base de dados.');
+        const r2Object = await r2Bucket.get('questoes.json');
+        if (r2Object !== null) {
+            allQuestionsData = await r2Object.json();
+            if (!Array.isArray(allQuestionsData)) {
+                console.warn(`[WARN] ${functionName}: Conteúdo de questoes.json não é array.`);
+                allQuestionsData = [];
+            } else {
+                console.log(`[LOG] ${functionName}: ${allQuestionsData.length} questões carregadas do R2.`);
+                questoesRelevantes = filtrarQuestoes(allQuestionsData, userQuery);
+                console.log(`[LOG] ${functionName}: ${questoesRelevantes.length} questões relevantes encontradas para a query.`);
+                // Prepara um CONTEXTO RESUMIDO para a IA saber o que foi encontrado
+                if (questoesRelevantes.length > 0) {
+                    const topicosEncontrados = [...new Set(questoesRelevantes.map(q => q.topico || q.materia))].filter(Boolean).join(', ');
+                    contextForAI = `Foram encontradas ${questoesRelevantes.length} questão(ões) relevante(s) sobre "${topicosEncontrados || 'tópicos relacionados'}".`;
+                } else {
+                    contextForAI = "Nenhuma questão relevante encontrada na base de dados para esta pergunta específica.";
+                }
+            }
+        } else { console.warn(`[WARN] ${functionName}: Arquivo questoes.json não encontrado no R2.`); }
+    } catch (e) { console.error(`[ERRO] ${functionName}: Falha ao ler/processar dados do R2:`, e); }
+
+    // --- Configuração da API Gemini ---
+    const genAI = new GoogleGenerativeAI(geminiApiKey);
+    const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash-latest", // Ou "gemini-pro"
+        safetySettings: [ /* ... seus safety settings ... */ ]
+    });
+
+    // --- PROMPT INTELIGENTE ---
+    const prompt = `Você é um assistente PAVE UFPEL. Responda ao usuário de forma conversacional e útil.
+
+    Contexto da Busca (O que foi encontrado na base de dados para a pergunta do usuário):
+    ---
+    ${contextForAI}
+    ---
+
+    Instruções IMPORTANTES:
+    1.  Analise a Pergunta do Usuário: "${userQuery}"
+    2.  Decida a Intenção:
+        *   É um cumprimento ou conversa geral? Responda naturalmente.
+        *   É uma pergunta sobre o PAVE (regras, datas, etc.)? Responda com seu conhecimento geral ou diga que não sabe.
+        *   É uma pergunta que pede **explicitamente** por exemplos de questões, lista de exercícios ou algo similar sobre um tópico/ano/matéria?
+    3.  Formule a Resposta:
+        *   Se a intenção **NÃO** for pedir exemplos de questões: Gere uma resposta textual normal e conversacional. NÃO mencione as questões encontradas a menos que seja muito relevante para responder a uma dúvida específica sobre o *tipo* de questão que cai.
+        *   Se a intenção **FOR PEDIR EXEMPLOS DE QUESTÕES**: Gere uma resposta textual curta confirmando que encontrou questões e que elas serão mostradas. **Inclua a frase chave "[MOSTRAR_QUESTOES]" em algum lugar da sua resposta textual.** Exemplo: "Claro! Encontrei algumas questões sobre Física para você. [MOSTRAR_QUESTOES]" ou "Aqui estão exemplos de questões sobre ${userQuery}. [MOSTRAR_QUESTOES]".
+    4.  Seja conciso.
+
+    Sua Resposta Textual:`;
+
+    console.log(`[LOG] ${functionName}: Enviando prompt inteligente para Gemini.`);
+    let aiResponseText = "";
+    let shouldShowQuestions = false; // Flag para controlar se envia os cards
+
+    try { // Chamada Gemini
+        const result = await model.generateContent(prompt);
+        const response = result.response;
+        aiResponseText = response.text() || ""; // Garante que seja string
+
+        // Verifica se a resposta foi bloqueada
+        if (!aiResponseText && response.promptFeedback?.blockReason) {
+            console.warn(`[WARN] ${functionName}: Resposta bloqueada pela API Gemini. Razão: ${response.promptFeedback.blockReason}`);
+            aiResponseText = `(Desculpe, não posso responder a isso devido às políticas de segurança.)`;
         }
-    } catch (e) {
-        console.error(`[ERRO] ${functionName} (Chat): Falha ao parsear JSON do R2:`, e);
-        throw new Error('Erro ao ler a base de dados.');
-    }
-
-    // Filtra questões
-    const questoesRelevantes = filtrarQuestoes(questoes, userQuery);
-    // ADICIONADO: Verificação (embora filtrarQuestoes já deva retornar array)
-    if (!Array.isArray(questoesRelevantes)) {
-        console.error(`[ERRO] ${functionName} (Chat): filtrarQuestoes não retornou um array!`);
-        throw new Error('Erro interno ao processar questões.');
-    }
-    console.log(`[LOG] ${functionName} (Chat): Encontradas ${questoesRelevantes.length} questões relevantes.`);
-
-    // Mapeia para frontend
-    const MAX_CONTEXT_QUESTOES = 3;
-    const questoesParaFrontend = questoesRelevantes
-        .slice(0, MAX_CONTEXT_QUESTOES)
-        .map(q => ({ /* ... mapeamento correto ... */
-            ano: q?.ano, etapa: q?.etapa, materia: q?.materia, topico: q?.topico,
-            texto_questao: q?.texto_questao, referencia: q?.referencia,
-            alternativas: q?.alternativas, resposta_letra: q?.resposta_letra
-        }));
-
-    // Chama Gemini API
-    let botCommentary = "";
-    let prompt = "";
-    const safetySettings = [ /* ... */ ];
-    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
-
-    if (questoesParaFrontend.length > 0) {
-        const topicosEncontrados = [...new Set(questoesParaFrontend.map(q => q?.topico || q?.materia))].filter(Boolean).join(', '); // Filtra null/undefined
-        prompt = `(Prompt para gerar comentário...)`; // Seu prompt aqui
-        console.log(`[LOG] ${functionName} (Chat): Enviando para Gemini (com contexto)`);
-    } else {
-        prompt = `(Prompt para gerar resposta sem contexto...)`; // Seu prompt aqui
-        console.log(`[LOG] ${functionName} (Chat): Enviando para Gemini (sem contexto)`);
-    }
-
-    try {
-        const geminiResponse = await fetch(geminiApiUrl, { /* ... opções fetch ... */ });
-        if (!geminiResponse.ok) {
-            const errorText = await geminiResponse.text();
-            console.error(`[ERRO] ${functionName} (Chat): Erro da API Gemini: ${geminiResponse.status}`, errorText);
-            throw new Error(`Erro da API de IA (${geminiResponse.status})`);
+        // --- VERIFICA SE A IA PEDIU PARA MOSTRAR QUESTÕES ---
+        if (aiResponseText.includes("[MOSTRAR_QUESTOES]")) {
+            shouldShowQuestions = true;
+            // Remove a frase chave da resposta final para o usuário
+            aiResponseText = aiResponseText.replace("[MOSTRAR_QUESTOES]", "").trim();
+            console.log(`[LOG] ${functionName}: IA indicou para mostrar questões.`);
+        } else {
+             console.log(`[LOG] ${functionName}: IA NÃO indicou para mostrar questões.`);
         }
-        const geminiData = await geminiResponse.json();
-        botCommentary = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "";
-        if (!botCommentary && geminiData.candidates?.[0]?.finishReason && geminiData.candidates[0].finishReason !== 'STOP') {
-           botCommentary = `(Resposta da IA filtrada: ${geminiData.candidates[0].finishReason})`;
-           console.warn(`[WARN] ${functionName} (Chat): Geração Gemini interrompida:`, geminiData.candidates[0].finishReason);
-        } else if (!botCommentary) {
-           botCommentary = ""; // Deixa vazio se não veio nada útil
-           console.warn(`[WARN] ${functionName} (Chat): Resposta Gemini sem texto útil.`);
+        // Define resposta padrão se a IA não retornar nada útil
+        if (!aiResponseText && !shouldShowQuestions) {
+            console.warn(`[WARN] ${functionName}: Resposta da Gemini vazia ou sem texto útil.`);
+            aiResponseText = "(Não consegui gerar uma resposta completa no momento.)";
         }
+
     } catch (error) {
-        console.error(`[ERRO] ${functionName} (Chat): Erro ao chamar Gemini API:`, error);
-        // Não joga erro aqui, apenas define comentário como vazio ou de erro
-        botCommentary = "(Desculpe, não consegui gerar um comentário no momento.)";
+        console.error(`[ERRO] ${functionName}: Erro ao chamar Gemini SDK:`, error);
+        aiResponseText = `(Desculpe, ocorreu um erro ao contatar a IA: ${error.message})`;
     }
 
-    // Define resposta padrão se não houver comentário E não houver questões
-    if (!botCommentary && questoesParaFrontend.length === 0) {
-        botCommentary = "Não encontrei informações relevantes para sua busca nos dados atuais.";
+    // --- Prepara Dados para Frontend ---
+    let questionsToReturn = [];
+    if (shouldShowQuestions && Array.isArray(questoesRelevantes) && questoesRelevantes.length > 0) {
+        // Mapeia apenas as questões RELEVANTES se a IA pediu
+        const MAX_QUESTIONS_TO_SHOW = 3; // Limite de cards
+        questionsToReturn = questoesRelevantes
+            .slice(0, MAX_QUESTIONS_TO_SHOW)
+            .map(q => ({ /* ... mapeamento correto ... */
+                ano: q?.ano, etapa: q?.etapa, materia: q?.materia, topico: q?.topico,
+                texto_questao: q?.texto_questao, referencia: q?.referencia,
+                alternativas: q?.alternativas, resposta_letra: q?.resposta_letra
+            }));
+        console.log(`[LOG] ${functionName}: Preparando ${questionsToReturn.length} questões para enviar ao frontend.`);
     }
 
-    // Retorna resposta estruturada para o CHAT
-    console.log(`[LOG] ${functionName} (Chat): Retornando comentário e ${questoesParaFrontend.length} questões.`);
-    return new Response(JSON.stringify({ commentary: botCommentary, questions: questoesParaFrontend }), {
+    // --- Retornar Resposta Estruturada ---
+    console.log(`[LOG] ${functionName}: Retornando resposta final.`);
+    return new Response(JSON.stringify({ commentary: aiResponseText, questions: questionsToReturn }), {
       headers: { 'Content-Type': 'application/json' }, status: 200
     });
 
   } catch (error) {
-    // Catch geral para erros lançados dentro do try principal
+    // Catch geral
     console.error(`[ERRO] ${functionName}: Erro GERAL CAPTURADO:`, error);
-    // Retorna a mensagem do erro capturado para o frontend
     return new Response(JSON.stringify({ error: `Erro interno: ${error.message}` }), {
       status: 500, headers: { 'Content-Type': 'application/json' },
     });
