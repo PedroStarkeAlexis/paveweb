@@ -508,3 +508,80 @@ input { font-family: inherit; }
 #question-bank-list .question-layout.answered .alternative-item {
     cursor: default;
 }
+/* --- Estilos para Banco de Questões --- */
+
+.question-bank-container {
+    padding: 20px; /* Espaçamento interno da página */
+    height: 100%; /* Ocupa altura da main-content */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Controla scroll aqui */
+}
+
+.question-bank-container h2 {
+    margin-bottom: 20px;
+    color: #1f2937;
+    font-weight: 500;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 10px;
+}
+
+.filter-container {
+    display: flex;
+    gap: 15px; /* Espaço entre os selects */
+    margin-bottom: 25px;
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    background-color: #fff;
+    font-size: 0.9em;
+    min-width: 150px; /* Largura mínima */
+    cursor: pointer;
+}
+.filter-select:focus {
+    outline: none;
+    border-color: #10a37f;
+    box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+}
+
+.loading-message,
+.error-message {
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+    color: #6b7280;
+}
+.error-message {
+    color: #ef4444; /* Vermelho para erros */
+}
+
+.question-list {
+    flex-grow: 1; /* Ocupa espaço vertical restante */
+    overflow-y: auto; /* Scroll para a lista de questões */
+    padding-right: 10px; /* Espaço para scrollbar */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaço entre os cards de questão */
+    scrollbar-width: thin;
+    scrollbar-color: #d1d1d6 #f7f7f8;
+}
+.question-list::-webkit-scrollbar { width: 6px; }
+.question-list::-webkit-scrollbar-track { background: transparent; }
+.question-list::-webkit-scrollbar-thumb { background-color: #d1d1d6; border-radius: 3px; }
+
+/* Ajusta o layout da questão dentro da lista */
+.question-list .question-layout {
+    margin-left: 0; /* Remove margem que alinhava com chat */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); /* Sombra um pouco mais sutil */
+}
+
+.results-count {
+    font-size: 0.9em;
+    color: #6b7280;
+    margin-bottom: 10px;
+    padding-left: 5px;
+}
