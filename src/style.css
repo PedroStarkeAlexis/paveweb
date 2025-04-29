@@ -510,3 +510,10 @@ input { font-family: inherit; }
 #question-bank-list .question-layout.answered .alternative-item {
     cursor: default;
 }
+/* Dentro da seção de Estilos do Card da Questão */
+
+.question-tag.generated-ai-tag {
+    background-color: #6366f1; /* Exemplo: Roxo/Azul */
+    color: #fff;
+    font-weight: 500;
+}

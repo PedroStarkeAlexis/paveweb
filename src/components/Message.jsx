@@ -1,14 +1,18 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown'; // Importa a biblioteca
+import remarkGfm from 'remark-gfm';       // Importa o plugin GFM
 
 function Message({ sender, text }) {
-  // Usa dangerouslySetInnerHTML para renderizar <br> do \n (cuidado com XSS se a fonte não for confiável)
-  const createMarkup = () => {
-    return { __html: text ? text.replace(/\n/g, '<br>') : '' };
-  };
+  // Não precisamos mais da função createMarkup
 
   return (
+    // A classe da bolha continua a mesma
     <div className={`message ${sender === 'user' ? 'user-message' : 'bot-message'}`}>
-      <p dangerouslySetInnerHTML={createMarkup()} />
+      {/* Usa o componente ReactMarkdown para renderizar o texto */}
+      {/* Passamos o texto como children e habilitamos o plugin GFM */}
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {text || ''} {/* Passa o texto aqui. Usa string vazia como fallback */}
+      </ReactMarkdown>
     </div>
   );
 }
