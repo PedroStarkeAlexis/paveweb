@@ -197,7 +197,7 @@ export async function onRequestPost(context) {
     // --- Detecção de Intenção ---
     const queryLower = userQuery.toLowerCase();
     const requestKeywords = ['questão', 'questões', 'exercício', 'exercícios', 'exemplo', 'mostre', 'mande', 'liste', 'quero ver'];
-    const createKeywords = ['crie', 'invente', 'elabore', 'gere uma questão', 'faça uma questão'];
+    const createKeywords = ['crie', 'invente', 'elabore', 'gere uma questão', 'faça uma questão', 'crie uma questão', 'gere'];
     const isAskingForExisting = requestKeywords.some(keyword => queryLower.includes(keyword));
     const isAskingToCreate = createKeywords.some(keyword => queryLower.includes(keyword));
 

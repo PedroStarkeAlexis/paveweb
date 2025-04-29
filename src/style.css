@@ -517,3 +517,41 @@ input { font-family: inherit; }
     color: #fff;
     font-weight: 500;
 }
+/* --- Estilos para Listas Markdown --- */
+
+/* Aplica a listas dentro das bolhas de mensagem E dentro do corpo das questões */
+.message ul, .message ol,
+.question-body ul, .question-body ol,
+.alternative-text ul, .alternative-text ol { /* Inclui alternativas caso usem listas */
+    margin-top: 0.5em;    /* Espaço antes da lista */
+    margin-bottom: 0.5em; /* Espaço depois da lista */
+    padding-left: 2em;   /* <<< INDENTAÇÃO para dar espaço ao marcador */
+}
+
+/* Estilo padrão para listas não ordenadas (com bolinha) */
+.message ul,
+.question-body ul,
+.alternative-text ul {
+    list-style-type: disc; /* <<< GARANTE A BOLINHA */
+}
+
+/* Estilo padrão para listas ordenadas (com números) */
+.message ol,
+.question-body ol,
+.alternative-text ol {
+    list-style-type: decimal; /* <<< GARANTE OS NÚMEROS */
+}
+
+/* Estilo para os itens da lista */
+.message li,
+.question-body li,
+.alternative-text li {
+    margin-bottom: 0.25em; /* Pequeno espaço entre itens da lista */
+}
+
+/* Garante que parágrafos DENTRO de itens de lista não tenham margem extra */
+.message li p,
+.question-body li p,
+.alternative-text li p {
+    margin-bottom: 0;
+}

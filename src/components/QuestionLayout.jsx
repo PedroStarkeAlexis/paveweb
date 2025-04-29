@@ -44,7 +44,7 @@ function QuestionLayout({ questionData }) {
   // Geração das Tags como componentes React
   const sourceTag = ano
         ? (<span key="src" className="question-tag pave-tag">PAVE {ano}</span>)
-        : (<span key="src" className="question-tag generated-ai-tag">Gerada por IA</span>);
+        : (<span key="src" className="question-tag generated-ai-tag">Gerada por IA✨</span>);
   const etapaTag = etapa ? (<span key="etapa" className="question-tag">Etapa {etapa}</span>) : null;
   const materiaTag = materia ? (<span key="materia" className="question-tag">{materia}</span>) : null;
   const topicoTag = topico ? (<span key="topico" className="question-tag">{topico}</span>) : null;
