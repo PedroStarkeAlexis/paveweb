@@ -58,20 +58,43 @@ function filtrarQuestoes(questoes, query) {
     return resultadosComPontuacao.map(item => item.questao);
 }
 
-// --- Função de Parse (Revisada para Robustez) ---
+// --- Função de Parse (Revisada para Matéria/Tópico) ---
 function parseAiGeneratedQuestion(aiText) {
     console.log("[LOG] Tentando parsear texto da IA para questão...");
     if (typeof aiText !== 'string' || !aiText) return null;
     try {
         let enunciado = null; const alternativas = []; let respostaLetra = null;
+        let materia = "Indefinida"; // Valor padrão
+        let topico = "Indefinido";   // Valor padrão
         let textoProcessado = aiText;
         const referencia = "Questão gerada por IA.";
 
-        // Regex mais seguro: Procura por Enunciado/Questão/Pergunta no início ou antes da primeira alternativa (A./A)/A:)
-        const enunciadoRegex = /^(?:Enunciado|Questão|Pergunta|Leia o texto a seguir)[:\s]*([\s\S]*?)(?=\n\s*[A-Ea-e][).:]\s*|\n\s*Alternativa\s*A)/im;
+        // Expressões Regulares
+        // Adiciona regex para Matéria e Tópico no início
+        const materiaRegex = /^\s*Matéria[:\s]+([\s\S]*?)\n/i;
+        const topicoRegex = /^\s*Tópico[:\s]+([\s\S]*?)\n/i;
+        // Ajusta regex do enunciado para procurar APÓS matéria/tópico
+        const enunciadoRegex = /^\s*(?:Enunciado|Questão|Pergunta|Leia o texto a seguir)[:\s]*([\s\S]*?)(?=\n\s*[A-Ea-e][).:]\s*|\n\s*Alternativa\s*A)/im;
         const alternativaRegex = /^\s*([A-Ea-e])[).:]\s+([\s\S]*?)(?=\n\s*[A-Ea-e][).:]|\n\s*Resposta Correta|^\s*$)/gm;
         const respostaRegex = /(?:Resposta Correta|Gabarito|Correta)[:\s]*\s*([A-Ea-e])(?:[).:]|\s|$)/i;
 
+        // Extrai Matéria
+        const materiaMatch = textoProcessado.match(materiaRegex);
+        if (materiaMatch?.[1]) {
+            materia = materiaMatch[1].trim();
+            textoProcessado = textoProcessado.substring(materiaMatch[0].length).trim(); // Remove do texto
+            console.log("[LOG] Parse: Matéria encontrada:", materia);
+        } else { console.warn("[WARN] Parse: Matéria não encontrada no formato esperado."); }
+
+        // Extrai Tópico
+        const topicoMatch = textoProcessado.match(topicoRegex);
+        if (topicoMatch?.[1]) {
+            topico = topicoMatch[1].trim();
+            textoProcessado = textoProcessado.substring(topicoMatch[0].length).trim(); // Remove do texto
+            console.log("[LOG] Parse: Tópico encontrado:", topico);
+        } else { console.warn("[WARN] Parse: Tópico não encontrado no formato esperado."); }
+
+        // Extrai Enunciado (do texto restante)
         const enunciadoMatch = textoProcessado.match(enunciadoRegex);
         if (enunciadoMatch?.[1]) {
             enunciado = enunciadoMatch[1].trim();
@@ -85,6 +108,7 @@ function parseAiGeneratedQuestion(aiText) {
         }
         if (!enunciado) { console.warn("[WARN] Parse: Enunciado vazio."); return null; }
 
+        // Extrai Alternativas (do texto restante)
         let match;
         while ((match = alternativaRegex.exec(textoProcessado)) !== null) {
             if (match.index === alternativaRegex.lastIndex) { alternativaRegex.lastIndex++; }
@@ -93,7 +117,8 @@ function parseAiGeneratedQuestion(aiText) {
         }
         if (alternativas.length < 2) { console.warn(`[WARN] Parse: Alternativas insuficientes (${alternativas.length}).`); return null; }
 
-        const respostaMatch = aiText.match(respostaRegex); // Busca no texto original
+        // Extrai Resposta Correta (do texto original completo da IA)
+        const respostaMatch = aiText.match(respostaRegex);
         if (respostaMatch?.[1]) {
             respostaLetra = respostaMatch[1].toUpperCase();
             if (!alternativas.some(alt => alt.letra === respostaLetra)) {
@@ -103,14 +128,27 @@ function parseAiGeneratedQuestion(aiText) {
         }
         if (!respostaLetra) { console.warn("[WARN] Parse: Resposta correta não encontrada."); return null; }
 
+        // Monta o objeto da questão gerada COM os dados extraídos
         const generatedQuestion = {
-            id: `gen-${Date.now()}`, ano: new Date().getFullYear(), etapa: null, materia: "Gerada pela IA", topico: "Gerado pela IA",
-            texto_questao: enunciado, referencia: referencia, alternativas: alternativas, resposta_letra: respostaLetra
+            id: `gen-${Date.now()}`,
+            ano: null, // Não tem ano específico
+            etapa: null, // Não tem etapa específica
+            materia: materia, // <<< USA A MATÉRIA EXTRAÍDA
+            topico: topico,   // <<< USA O TÓPICO EXTRAÍDO
+            texto_questao: enunciado,
+            referencia: referencia, // Indica origem IA
+            alternativas: alternativas,
+            resposta_letra: respostaLetra
         };
         console.log("[LOG] Parse: Questão gerada parseada com sucesso.");
         return generatedQuestion;
-    } catch (error) { console.error("[ERRO] Parse: Erro inesperado:", error); return null; }
+
+    } catch (error) {
+        console.error("[ERRO] Parse: Erro inesperado ao tentar parsear:", error);
+        return null;
+    }
 }
+
 
 // --- Handler Principal ---
 export async function onRequestPost(context) {
@@ -120,7 +158,7 @@ export async function onRequestPost(context) {
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
     const r2Bucket = env.QUESTOES_PAVE_BUCKET;
-    const modelName = env.MODEL_NAME || "gemini-1.5-flash-latest"; // Fallback seguro
+    const modelName = env.MODEL_NAME || "gemini-2.0-flash"; // Fallback seguro
 
     // Validações
     if (!r2Bucket || !geminiApiKey) { throw new Error('Configuração interna incompleta.'); }
@@ -193,7 +231,17 @@ export async function onRequestPost(context) {
     } else if (isAskingToCreate) {
         // CASO 2: Pediu para CRIAR uma questão
         console.log(`[LOG] ${functionName}: Intenção: Criar questão com IA.`);
-        const creationPrompt = `Crie uma questão de múltipla escolha (A, B, C, D, E) no estilo do PAVE UFPEL sobre o seguinte tópico ou instrução: "${userQuery}". Formate sua resposta EXATAMENTE com as seguintes seções, cada uma em uma nova linha:\nEnunciado: [Texto do enunciado]\nA) [Texto da alternativa A]\nB) [Texto da alternativa B]\nC) [Texto da alternativa C]\nD) [Texto da alternativa D]\nE) [Texto da alternativa E]\nResposta Correta: [Letra maiúscula]`;
+        const creationPrompt = `Crie uma questão de múltipla escolha (A, B, C, D, E) INÉDITA no estilo do PAVE UFPEL sobre o seguinte tópico ou instrução: "${userQuery}".
+        Formate sua resposta **exatamente** com as seguintes seções, cada uma em uma nova linha:
+        Matéria: [Nome da Matéria Principal, ex: Física, História, Biologia]
+        Tópico: [Nome do Tópico Específico dentro da matéria, ex: Cinemática, Iluminismo, Genética]
+        Enunciado: [Texto completo do enunciado aqui, pode ter múltiplas linhas]
+        A) [Texto da alternativa A]
+        B) [Texto da alternativa B]
+        C) [Texto da alternativa C]
+        D) [Texto da alternativa D]
+        E) [Texto da alternativa E]
+        Resposta Correta: [Apenas a LETRA maiúscula correta, ex: C]`;
 
         console.log(`[LOG] ${functionName}: Enviando prompt de CRIAÇÃO para Gemini.`);
         try {
