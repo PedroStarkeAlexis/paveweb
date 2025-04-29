@@ -41,6 +41,7 @@ export async function onRequestPost(context) {
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
     const r2Bucket = env.QUESTOES_PAVE_BUCKET;
+    const modelName = env.MODEL_NAME || "gemini-2.0-flash";
 
     // Validações
     if (!r2Bucket) { throw new Error('Configuração interna incompleta (R2).'); }
@@ -80,7 +81,7 @@ export async function onRequestPost(context) {
     // Configuração da API Gemini (SDK)
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash", // Modelo desejado
+        model: modelName, // Modelo agora vem da variável de ambiente
         // Não precisa definir safetySettings aqui se for passar em generateContent
     });
 
