@@ -22,46 +22,20 @@ function QuestionBankPage() {
       setError(null);     // Limpa erros anteriores
 
       try {
-        // Chama /api/ask com método POST e corpo especial para indicar que quer todas as questões
-        const response = await fetch('/api/ask', {
-          method: 'POST', // <<< Usa POST
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ getAll: true }) // <<< Envia o parâmetro especial
-        });
-
-        // Verifica se a resposta da API foi bem-sucedida
+        // Busca diretamente o arquivo questoes.json do public (R2 Bucket)
+        const response = await fetch('/questoes.json');
         if (!response.ok) {
-          let errorMsg = `Erro ${response.status}`; // Mensagem de erro padrão
-          try {
-            // Tenta obter uma mensagem de erro mais específica do corpo da resposta JSON
-            const errData = await response.json();
-            // Usa o campo 'error' ou 'commentary' da resposta, ou a mensagem padrão
-            errorMsg = errData.error || errData.commentary || errorMsg;
-          } catch (e) {
-             // Ignora se o corpo do erro não for JSON válido
-             console.warn("Não foi possível parsear a resposta de erro como JSON.");
-          }
-          throw new Error(errorMsg); // Lança um erro para ser pego pelo catch
+          throw new Error(`Erro ao carregar questões: ${response.status}`);
         }
-
-        // Se a resposta foi OK, processa os dados JSON
-        const data = await response.json();
-
-        // A resposta deve ter a estrutura { commentary: null, questions: [...] }
-        // Atualiza o estado com todas as questões (garante que seja um array)
-        setAllQuestions(Array.isArray(data.questions) ? data.questions : []);
-        // Inicialmente, a lista filtrada é igual à lista completa
-        setFilteredQuestions(Array.isArray(data.questions) ? data.questions : []);
-
+        const questions = await response.json();
+        setAllQuestions(Array.isArray(questions) ? questions : []);
+        setFilteredQuestions(Array.isArray(questions) ? questions : []);
       } catch (err) {
-        // Captura e exibe erros do fetch ou do tratamento da resposta
-        console.error("Erro no fetch das questões (via /api/ask):", err);
-        setError(err.message || "Falha ao buscar dados das questões."); // Define a mensagem de erro
-        // Limpa as listas em caso de erro
+        console.error("Erro no fetch das questões (via questoes.json):", err);
+        setError(err.message || "Falha ao buscar dados das questões.");
         setAllQuestions([]);
         setFilteredQuestions([]);
       } finally {
-        // Finaliza o estado de carregamento, independente de sucesso ou erro
         setIsLoading(false);
       }
     };
