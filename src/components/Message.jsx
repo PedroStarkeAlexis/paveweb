@@ -2,16 +2,21 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown'; // Importa a biblioteca
 import remarkGfm from 'remark-gfm';       // Importa o plugin GFM
 
-function Message({ sender, text }) {
-  // Não precisamos mais da função createMarkup
+function Message({ sender, text }) { // Recebe sender e text como props
+
+  // Garante que text seja uma string, mesmo que seja vazia
+  const markdownContent = typeof text === 'string' ? text : '';
 
   return (
-    // A classe da bolha continua a mesma
+    // Renderiza a div da bolha com as classes corretas
     <div className={`message ${sender === 'user' ? 'user-message' : 'bot-message'}`}>
-      {/* Usa o componente ReactMarkdown para renderizar o texto */}
-      {/* Passamos o texto como children e habilitamos o plugin GFM */}
+      {/*
+        Renderiza o conteúdo usando ReactMarkdown.
+        O conteúdo (markdownContent) é passado como filho direto do componente.
+        remarkPlugins={[remarkGfm]} habilita funcionalidades extras como tabelas, etc.
+      */}
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {text || ''} {/* Passa o texto aqui. Usa string vazia como fallback */}
+        {markdownContent}
       </ReactMarkdown>
     </div>
   );

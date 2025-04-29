@@ -6,21 +6,24 @@ function QuestionLayout({ questionData }) {
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
 
-  const { /* ...desestruturação como antes... */
+  // Desestruturação segura com valores padrão
+  const {
     ano = null, etapa = null, materia = "Indefinida", topico = "Indefinido",
-    texto_questao = 'Texto da questão não disponível.', referencia = null,
-    alternativas = [], resposta_letra = null,
+    texto_questao = '', // Padrão string vazia
+    referencia = null,
+    alternativas = [],
+    resposta_letra = null,
     id = `question-${Math.random().toString(36).substring(2, 9)}`
   } = questionData || {};
 
   const questionId = id;
 
-  useEffect(() => { /* ... como antes ... */
+  useEffect(() => {
     setAnswered(false);
     setFeedback({});
   }, [questionData]);
 
-  const handleAlternativeClick = (clickedLetter) => { /* ... como antes ... */
+  const handleAlternativeClick = (clickedLetter) => {
     if (answered) return;
     setAnswered(true);
     const isCorrect = clickedLetter === resposta_letra;
@@ -31,35 +34,41 @@ function QuestionLayout({ questionData }) {
     setFeedback(newFeedback);
   };
 
-  const handleShowAnswerClick = () => { /* ... como antes ... */
+  const handleShowAnswerClick = () => {
      if (answered) return;
      setAnswered(true);
      const newFeedback = { [resposta_letra]: 'correct-answer' };
      setFeedback(newFeedback);
   };
 
-  // Geração das Tags (Atualizada para não usar dangerouslySetInnerHTML)
+  // Geração das Tags como componentes React
   const sourceTag = ano
         ? (<span key="src" className="question-tag pave-tag">PAVE {ano}</span>)
         : (<span key="src" className="question-tag generated-ai-tag">Gerada por IA</span>);
   const etapaTag = etapa ? (<span key="etapa" className="question-tag">Etapa {etapa}</span>) : null;
   const materiaTag = materia ? (<span key="materia" className="question-tag">{materia}</span>) : null;
   const topicoTag = topico ? (<span key="topico" className="question-tag">{topico}</span>) : null;
-  const tags = [sourceTag, etapaTag, materiaTag, topicoTag].filter(Boolean); // Filtra nulos
+  const tags = [sourceTag, etapaTag, materiaTag, topicoTag].filter(Boolean);
+
+  // Garante que texto_questao e referencia sejam strings para ReactMarkdown
+  const textoQuestaoString = typeof texto_questao === 'string' ? texto_questao : '';
+  const referenciaString = typeof referencia === 'string' ? referencia : null;
+
 
   return (
     <div className={`question-layout ${answered ? 'answered' : ''}`} id={questionId} data-correct-answer={resposta_letra}>
-      {/* Cabeçalho com as Tags */}
       <div className="question-header">
           {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
       </div>
 
-      {/* Corpo da Questão e Referência com ReactMarkdown */}
+      {/* Corpo e Referência usando ReactMarkdown */}
       <div className="question-body">
-         <ReactMarkdown remarkPlugins={[remarkGfm]}>{texto_questao}</ReactMarkdown>
-         {referencia && (
-            <div className="question-reference"> {/* Mantém a div para estilo */}
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{referencia}</ReactMarkdown>
+         {/* Passa a string como filho */}
+         <ReactMarkdown remarkPlugins={[remarkGfm]}>{textoQuestaoString}</ReactMarkdown>
+         {referenciaString && (
+            <div className="question-reference">
+                {/* Passa a string como filho */}
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{referenciaString}</ReactMarkdown>
             </div>
          )}
       </div>
@@ -74,13 +83,16 @@ function QuestionLayout({ questionData }) {
           let itemClass = 'alternative-item';
 
           if (answered) { /* ... lógica de feedback como antes ... */
-              if (altFeedback === 'correct-choice' || altFeedback === 'correct-answer') {
-                icon = '✔'; letterBoxClass += ' feedback-correct'; itemClass += ' correct-answer';
-                if (altFeedback === 'correct-choice') { itemClass += ' correct-choice'; }
-              } else if (altFeedback === 'incorrect-choice') {
-                icon = '✖'; letterBoxClass += ' feedback-incorrect'; itemClass += ' incorrect-choice';
-              }
+            if (altFeedback === 'correct-choice' || altFeedback === 'correct-answer') {
+              icon = '✔'; letterBoxClass += ' feedback-correct'; itemClass += ' correct-answer';
+              if (altFeedback === 'correct-choice') { itemClass += ' correct-choice'; }
+            } else if (altFeedback === 'incorrect-choice') {
+              icon = '✖'; letterBoxClass += ' feedback-incorrect'; itemClass += ' incorrect-choice';
+            }
           }
+
+          // Garante que o texto da alternativa seja string
+          const altTextoString = typeof alt.texto === 'string' ? alt.texto : '';
 
           return (
             <div
@@ -89,10 +101,10 @@ function QuestionLayout({ questionData }) {
               onClick={() => handleAlternativeClick(altLetter)}
               onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter)}}>
               <span className={letterBoxClass}>{icon}</span>
-              {/* Usa ReactMarkdown para o texto da alternativa */}
-              <div className="alternative-text"> {/* Usa div para block elements */}
+              <div className="alternative-text">
+                  {/* Passa a string como filho */}
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {alt.texto || ''}
+                      {altTextoString}
                   </ReactMarkdown>
               </div>
             </div>
