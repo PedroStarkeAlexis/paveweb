@@ -176,19 +176,23 @@ function App() {
         <nav className="sidebar-nav">
           <ul>
             {/* Links de Navegação */}
-            <NavLink to="/" icon="💬">Busca (Chat)</NavLink>
-            <NavLink to="/banco-questoes" icon="📚">Banco de Questões</NavLink>
-            {/* Adicionar outros links aqui */}
+                  <NavLink to="" icon="🏠">Inicio</NavLink>
+                  <li>
+                    <a href="https://simulador-pave.pedroalexis016.workers.dev/" target="_blank" rel="noopener noreferrer" className="external-link">
+                      <span className="icon">🖩</span> Calculadora
+                    </a>
+                  </li>
+                  <NavLink to="/" icon="💬">Assistente IA</NavLink>
+                  <NavLink to="/banco-questoes" icon="📚">Banco de Questões</NavLink>
+                  {/* Adicionar outros links aqui */}
           </ul>
         </nav>
-        <div className="sidebar-footer">
-           <ul>
-              <li><a href="#"><span className="icon">❓</span> Ajuda</a></li>
-           </ul>
-           <div className="copyright">
-               © 2024 Chatbot PAVE
-           </div>
-        </div>
+<div className="sidebar-footer">
+   <ul>
+      <li><a href="#"><span className="icon">?</span>  Ajuda</a></li>
+   </ul>
+   <div className="copyright"> Desenvolvido por Pedro Alexis {new Date().getFullYear()} </div>
+</div>
       </aside>
 
       {/* Conteúdo Principal à Direita */}
