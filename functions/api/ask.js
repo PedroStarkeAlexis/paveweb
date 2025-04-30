@@ -8,32 +8,118 @@ function removeAccents(str) {
     catch (e) { console.warn("Erro em removeAccents:", e, "Input:", str); return str || ''; }
 }
 const stopWords = new Set(['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', 'é', 'com', 'não', 'uma', 'os', 'no', 'se', 'na', 'por', 'mais', 'as', 'dos', 'como', 'mas', 'foi', 'ao', 'ele', 'das', 'tem', 'à', 'seu', 'sua', 'ou', 'ser', 'quando', 'muito', 'há', 'nos', 'já', 'está', 'eu', 'também', 'só', 'pelo', 'pela', 'até', 'isso', 'ela', 'entre', 'era', 'depois', 'sem', 'mesmo', 'aos', 'ter', 'seus', 'quem', 'nas', 'me', 'esse', 'eles', 'estão', 'você', 'tinha', 'foram', 'essa', 'num', 'nem', 'suas', 'meu', 'às', 'minha', 'têm', 'numa', 'pelos', 'elas', 'havia', 'seja', 'qual', 'será', 'nós', 'tenho', 'lhe', 'deles', 'essas', 'esses', 'pelas', 'este', 'fosse', 'dele', 'tu', 'te', 'vocês', 'vos', 'lhes', 'meus', 'minhas', 'teu', 'tua', 'teus', 'tuas', 'nosso', 'nossa', 'nossos', 'nossas', 'dela', 'delas', 'esta', 'estes', 'estas', 'aquele', 'aquela', 'aqueles', 'aquelas', 'isto', 'aquilo', 'estou', 'está', 'estamos', 'estão', 'estive', 'esteve', 'estivemos', 'estiveram', 'estava', 'estávamos', 'estavam', 'estivera', 'estivéramos', 'esteja', 'estejamos', 'estejam', 'estivesse', 'estivéssemos', 'estivessem', 'estiver', 'estivermos', 'estiverem', 'hei', 'há', 'havemos', 'hão', 'houve', 'houvemos', 'houveram', 'houvera', 'houvéramos', 'haja', 'hajamos', 'hajam', 'houvesse', 'houvéssemos', 'houvessem', 'houver', 'houvermos', 'houverem', 'houverei', 'houverá', 'houveremos', 'houverão', 'houveria', 'houveríamos', 'houveriam', 'sou', 'somos', 'são', 'era', 'éramos', 'eram', 'fui', 'foi', 'fomos', 'foram', 'fora', 'fôramos', 'seja', 'sejamos', 'sejam', 'fosse', 'fôssemos', 'fossem', 'for', 'formos', 'forem', 'serei', 'será', 'seremos', 'serão', 'seria', 'seríamos', 'seriam', 'tenho', 'tem', 'temos', 'tém', 'tinha', 'tínhamos', 'tinham', 'tive', 'teve', 'tivemos', 'tiveram', 'tivera', 'tivéramos', 'tenha', 'tenhamos', 'tenham', 'tivesse', 'tivéssemos', 'tivessem', 'tiver', 'tivermos', 'tiverem', 'terei', 'terá', 'teremos', 'terão', 'teria', 'teríamos', 'teriam', 'me', 'manda', 'envia', 'lista', 'mostre', 'fala', 'diz', 'ai', 'alguma', 'algum', 'coisa', 'sobre', 'dos', 'das', 'então', 'favor', 'poderia', 'gostaria', 'saber', 'se', 'tipo', 'exemplo', 'exercicio', 'exercicios', 'prova', 'vestibular', 'ano', 'materia']); // Mantenha sua lista completa
+// --- Função de Filtragem REFINADA ---
 function filtrarQuestoes(questoes, query) {
     if (!Array.isArray(questoes)) { console.warn("[WARN] filtrarQuestoes: 'questoes' não é array."); return []; }
-    if (typeof query !== 'string' || query.trim() === '') { console.warn("[WARN] filtrarQuestoes: 'query' inválida ou vazia."); return []; }
-    const queryNormalized = removeAccents(query.toLowerCase());
-    if (!queryNormalized) { console.warn("[WARN] filtrarQuestoes: 'queryNormalized' vazia."); return []; }
-    let palavrasChave = [];
-    try {
-        if (typeof queryNormalized === 'string') {
-            palavrasChave = queryNormalized.replace(/[^\w\s]/gi, '').split(/\s+/).filter(p => p && p.length > 1 && !stopWords.has(p));
-        } else { return []; }
-    } catch (e) { console.error("[ERRO] filtrarQuestoes: Erro ao processar palavras-chave:", e); return []; }
-    if (palavrasChave.length === 0) { console.log("[LOG] filtrarQuestoes: Nenhuma palavra-chave útil."); return []; }
-    const resultadosComPontuacao = questoes.map(q => {
-        if (!q || typeof q !== 'object') { console.warn("[WARN] filtrarQuestoes: Item inválido.", q); return { questao: q, score: 0, match: false }; }
-        const ano = (q.ano ?? '').toString(); const etapa = (q.etapa ?? '').toString();
-        const materia = removeAccents((q.materia || '').toLowerCase()); const topico = removeAccents((q.topico || '').toLowerCase());
-        const textoQuestao = removeAccents((q.texto_questao || '').toLowerCase());
-        const textoCompletoQuestao = `pave ${ano} etapa ${etapa} ${materia} ${topico} ${textoQuestao}`;
-        let score = 0; let match = false;
-        palavrasChave.forEach(palavra => {
-            try { if (typeof palavra === 'string' && typeof textoCompletoQuestao === 'string' && textoCompletoQuestao.includes(palavra)) { score++; match = true; } }
-            catch (e) { console.error("[ERRO] filtrarQuestoes: Erro no 'includes':", e); }
-        });
-        return { questao: q, score: score, match: match };
-    }).filter(item => item.match).sort((a, b) => b.score - a.score);
-    return resultadosComPontuacao.map(item => item.questao);
+    if (typeof query !== 'string' || query.trim() === '') { console.warn("[WARN] filtrarQuestoes: 'query' inválida."); return []; }
+
+    const queryLower = query.toLowerCase();
+    const queryNormalized = removeAccents(queryLower);
+
+    // --- Extração de Entidades (Simples) ---
+    // Tenta identificar Matéria, Tópico, Ano, Etapa na query
+    let filtroMateria = null;
+    let filtroTopico = null;
+    let filtroAno = null;
+    let filtroEtapa = null;
+
+    // Exemplo: Tenta encontrar nomes de matérias conhecidas
+    const materiasConhecidas = ["física", "química", "biologia", "história", "geografia", "matemática", "português", "literatura", "inglês", "espanhol", "sociologia", "filosofia"];
+    for (const materia of materiasConhecidas) {
+        if (queryNormalized.includes(materia)) {
+            // Pega a primeira matéria encontrada (pode melhorar)
+            filtroMateria = materia.charAt(0).toUpperCase() + materia.slice(1); // Capitaliza para comparar com JSON
+             console.log(`[LOG] Filtro Matéria detectado: ${filtroMateria}`);
+            break;
+        }
+    }
+     // Tenta encontrar ano (4 dígitos)
+    const anoMatch = query.match(/\b(20\d{2})\b/); // Procura por 20xx
+    if (anoMatch) {
+        filtroAno = parseInt(anoMatch[1], 10);
+         console.log(`[LOG] Filtro Ano detectado: ${filtroAno}`);
+    }
+     // Tenta encontrar etapa (ex: "etapa 1", "etapa 2")
+    const etapaMatch = queryLower.match(/etapa\s*([1-3])\b/);
+    if (etapaMatch) {
+        filtroEtapa = parseInt(etapaMatch[1], 10);
+         console.log(`[LOG] Filtro Etapa detectado: ${filtroEtapa}`);
+    }
+
+    // Tenta usar o resto como Tópico (remove palavras-chave de pedido e filtros já encontrados)
+    let queryParaTopico = queryNormalized;
+    if(filtroMateria) queryParaTopico = queryParaTopico.replace(filtroMateria.toLowerCase(), '');
+    if(filtroAno) queryParaTopico = queryParaTopico.replace(filtroAno.toString(), '');
+    if(filtroEtapa) queryParaTopico = queryParaTopico.replace(/etapa\s*[1-3]/, '');
+    const requestKeywords = ['questão', 'questões', 'exercício', 'exercícios', 'exemplo', 'mostre', 'mande', 'liste', 'quero ver', 'sim', 'pode mandar', 'mostra', 'envia uma questao'];
+    requestKeywords.forEach(kw => queryParaTopico = queryParaTopico.replace(kw, ''));
+    // Remove stop words do que sobrou para tópico
+    stopWords.forEach(sw => queryParaTopico = queryParaTopico.replace(new RegExp(`\\b${sw}\\b`, 'gi'), ''));
+    filtroTopico = queryParaTopico.trim().split(/\s+/).filter(p => p.length > 2).join(' '); // Pega termos significativos
+    if(filtroTopico) console.log(`[LOG] Filtro Tópico (potencial): ${filtroTopico}`);
+
+
+    // --- Filtragem Baseada nas Entidades ---
+    let questoesFiltradas = questoes.filter(q => {
+        if (!q || typeof q !== 'object') return false; // Pula itens inválidos
+
+        let match = true; // Assume que corresponde até provar o contrário
+
+        if (filtroAno && q.ano !== filtroAno) {
+            match = false;
+        }
+        if (filtroEtapa && q.etapa !== filtroEtapa) {
+            match = false;
+        }
+        // Compara matéria normalizada para evitar case sensitivity
+        if (filtroMateria && removeAccents((q.materia || '').toLowerCase()) !== removeAccents(filtroMateria.toLowerCase())) {
+            match = false;
+        }
+        // Verifica se *alguma* palavra chave do tópico filtrado está no tópico ou enunciado da questão
+        if (filtroTopico) {
+            const topicoQuestaoNorm = removeAccents((q.topico || '').toLowerCase());
+            const enunciadoQuestaoNorm = removeAccents((q.texto_questao || '').toLowerCase());
+            const palavrasTopicoFiltro = filtroTopico.split(' ');
+
+            // Precisa que PELO MENOS UMA palavra chave do tópico da query bata
+            const topicoMatchFound = palavrasTopicoFiltro.some(palavraFiltro =>
+                 topicoQuestaoNorm.includes(palavraFiltro) || enunciadoQuestaoNorm.includes(palavraFiltro)
+            );
+            if (!topicoMatchFound) {
+                match = false;
+            }
+        }
+
+        return match;
+    });
+
+    console.log(`[LOG] filtrarQuestoes: ${questoesFiltradas.length} questões encontradas após filtragem rigorosa.`);
+
+    // Se nenhum filtro específico foi detectado E a filtragem inicial falhou,
+    // tenta uma busca mais genérica por palavras-chave como fallback (lógica anterior)
+    if (questoesFiltradas.length === 0 && !filtroMateria && !filtroAno && !filtroEtapa && !filtroTopico) {
+        console.log("[LOG] Nenhum filtro específico/resultado. Tentando busca genérica por palavras-chave...");
+        const palavrasChaveGeral = queryNormalized.replace(/[^\w\s]/gi, '').split(/\s+/).filter(p => p && p.length > 1 && !stopWords.has(p));
+        if (palavrasChaveGeral.length > 0) {
+            const resultadosFallback = questoes.map(q => {
+                 if (!q || typeof q !== 'object') return { questao: q, score: 0, match: false };
+                 const textoCompletoQuestao = removeAccents(`${q.materia || ''} ${q.topico || ''} ${q.texto_questao || ''}`.toLowerCase());
+                 let score = 0; let match = false;
+                 palavrasChaveGeral.forEach(palavra => {
+                     if (typeof textoCompletoQuestao === 'string' && textoCompletoQuestao.includes(palavra)) { score++; match = true; }
+                 });
+                 return { questao: q, score: score, match: match };
+             }).filter(item => item.match).sort((a, b) => b.score - a.score);
+             questoesFiltradas = resultadosFallback.map(item => item.questao);
+             console.log(`[LOG] filtrarQuestoes: ${questoesFiltradas.length} questões encontradas na busca genérica.`);
+        }
+    }
+
+
+    // Poderia adicionar lógica de ordenação aqui se a filtragem inicial retornar muitos resultados
+    // Por exemplo, ordenar por ano mais recente, ou dar prioridade a match no tópico vs enunciado.
+
+    return questoesFiltradas;
 }
 
 function parseAiGeneratedQuestion(aiText) {
