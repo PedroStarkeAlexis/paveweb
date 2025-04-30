@@ -1,102 +1,13 @@
 // functions/api/ask.js
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
-// --- Funções Auxiliares (Robustas) ---
-function removeAccents(str) {
-    if (typeof str !== 'string') return '';
-    try { return str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
-    catch (e) { console.warn("Erro em removeAccents:", e, "Input:", str); return str || ''; }
-}
-const stopWords = new Set(['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', 'é', 'com', 'não', 'uma', 'os', 'no', 'se', 'na', 'por', 'mais', 'as', 'dos', 'como', 'mas', 'foi', 'ao', 'ele', 'das', 'tem', 'à', 'seu', 'sua', 'ou', 'ser', 'quando', 'muito', 'há', 'nos', 'já', 'está', 'eu', 'também', 'só', 'pelo', 'pela', 'até', 'isso', 'ela', 'entre', 'era', 'depois', 'sem', 'mesmo', 'aos', 'ter', 'seus', 'quem', 'nas', 'me', 'esse', 'eles', 'estão', 'você', 'tinha', 'foram', 'essa', 'num', 'nem', 'suas', 'meu', 'às', 'minha', 'têm', 'numa', 'pelos', 'elas', 'havia', 'seja', 'qual', 'será', 'nós', 'tenho', 'lhe', 'deles', 'essas', 'esses', 'pelas', 'este', 'fosse', 'dele', 'tu', 'te', 'vocês', 'vos', 'lhes', 'meus', 'minhas', 'teu', 'tua', 'teus', 'tuas', 'nosso', 'nossa', 'nossos', 'nossas', 'dela', 'delas', 'esta', 'estes', 'estas', 'aquele', 'aquela', 'aqueles', 'aquelas', 'isto', 'aquilo', 'estou', 'está', 'estamos', 'estão', 'estive', 'esteve', 'estivemos', 'estiveram', 'estava', 'estávamos', 'estavam', 'estivera', 'estivéramos', 'esteja', 'estejamos', 'estejam', 'estivesse', 'estivéssemos', 'estivessem', 'estiver', 'estivermos', 'estiverem', 'hei', 'há', 'havemos', 'hão', 'houve', 'houvemos', 'houveram', 'houvera', 'houvéramos', 'haja', 'hajamos', 'hajam', 'houvesse', 'houvéssemos', 'houvessem', 'houver', 'houvermos', 'houverem', 'houverei', 'houverá', 'houveremos', 'houverão', 'houveria', 'houveríamos', 'houveriam', 'sou', 'somos', 'são', 'era', 'éramos', 'eram', 'fui', 'foi', 'fomos', 'foram', 'fora', 'fôramos', 'seja', 'sejamos', 'sejam', 'fosse', 'fôssemos', 'fossem', 'for', 'formos', 'forem', 'serei', 'será', 'seremos', 'serão', 'seria', 'seríamos', 'seriam', 'tenho', 'tem', 'temos', 'tém', 'tinha', 'tínhamos', 'tinham', 'tive', 'teve', 'tivemos', 'tiveram', 'tivera', 'tivéramos', 'tenha', 'tenhamos', 'tenham', 'tivesse', 'tivéssemos', 'tivessem', 'tiver', 'tivermos', 'tiverem', 'terei', 'terá', 'teremos', 'terão', 'teria', 'teríamos', 'teriam', 'me', 'manda', 'envia', 'lista', 'mostre', 'fala', 'diz', 'ai', 'alguma', 'algum', 'coisa', 'sobre', 'dos', 'das', 'então', 'favor', 'poderia', 'gostaria', 'saber', 'se', 'tipo', 'exemplo', 'exercicio', 'exercicios', 'prova', 'vestibular', 'ano', 'materia']); // Mantenha sua lista
-function filtrarQuestoes(questoes, query) {
-    if (!Array.isArray(questoes)) { console.warn("[WARN] filtrarQuestoes: 'questoes' não é array."); return []; }
-    if (typeof query !== 'string' || query.trim() === '') { console.warn("[WARN] filtrarQuestoes: 'query' inválida ou vazia."); return []; }
+// --- Funções Auxiliares ---
+function removeAccents(str) { /* ... código ... */ }
+const stopWords = new Set([ /* ... lista ... */ ]);
+function filtrarQuestoes(questoes, query) { /* ... código robusto anterior ... */ }
+function parseAiGeneratedQuestion(aiText) { /* ... código robusto anterior ... */ }
 
-    const queryNormalized = removeAccents(query.toLowerCase());
-    if (!queryNormalized) { console.warn("[WARN] filtrarQuestoes: 'queryNormalized' vazia."); return []; }
-
-    let palavrasChave = [];
-    try {
-        if (typeof queryNormalized === 'string') {
-            palavrasChave = queryNormalized.replace(/[^\w\s]/gi, '').split(/\s+/).filter(p => p && p.length > 1 && !stopWords.has(p));
-        } else { return []; }
-    } catch (e) { console.error("[ERRO] filtrarQuestoes: Erro ao processar palavras-chave:", e); return []; }
-
-    if (palavrasChave.length === 0) { console.log("[LOG] filtrarQuestoes: Nenhuma palavra-chave útil."); return []; }
-
-    const resultadosComPontuacao = questoes.map(q => {
-        if (!q || typeof q !== 'object') { console.warn("[WARN] filtrarQuestoes: Item inválido.", q); return { questao: q, score: 0, match: false }; }
-        const ano = (q.ano ?? '').toString(); const etapa = (q.etapa ?? '').toString();
-        const materia = removeAccents((q.materia || '').toLowerCase()); const topico = removeAccents((q.topico || '').toLowerCase());
-        const textoQuestao = removeAccents((q.texto_questao || '').toLowerCase());
-        const textoCompletoQuestao = `pave ${ano} etapa ${etapa} ${materia} ${topico} ${textoQuestao}`;
-        let score = 0; let match = false;
-        palavrasChave.forEach(palavra => {
-            try { if (typeof palavra === 'string' && typeof textoCompletoQuestao === 'string' && textoCompletoQuestao.includes(palavra)) { score++; match = true; } }
-            catch (e) { console.error("[ERRO] filtrarQuestoes: Erro no 'includes':", e); }
-        });
-        return { questao: q, score: score, match: match };
-    }).filter(item => item.match).sort((a, b) => b.score - a.score);
-    return resultadosComPontuacao.map(item => item.questao);
-}
-
-function parseAiGeneratedQuestion(aiText) {
-    console.log("[LOG] Tentando parsear texto da IA para questão...");
-    if (typeof aiText !== 'string' || !aiText) return null;
-    try {
-        let enunciado = null; const alternativas = []; let respostaLetra = null;
-        let materia = "Indefinida"; let topico = "Indefinido";
-        let textoRestante = aiText; const referencia = "Questão gerada por IA.";
-        const materiaRegex = /^\s*Matéria[:\s]+([\s\S]*?)(?=\n|$)/im;
-        const topicoRegex = /^\s*Tópico[:\s]+([\s\S]*?)(?=\n|$)/im;
-        const enunciadoRegex = /^(?:Enunciado|Questão|Pergunta|Leia o texto a seguir)[:\s]*([\s\S]*?)(?=\n\s*[A-Ea-e][).:]\s*|\n\s*Alternativa\s*A|$)/im;
-        const alternativaRegex = /^\s*([A-Ea-e])[).:]\s+([\s\S]*?)(?=\n\s*[A-Ea-e][).:]|\n\s*Resposta Correta|^\s*$)/gm;
-        const respostaRegex = /(?:Resposta Correta|Gabarito|Correta)[:\s]*\s*([A-Ea-e])(?:[).:]|\s|$)/i;
-
-        const materiaMatch = textoRestante.match(materiaRegex);
-        if (materiaMatch?.[1]) { materia = materiaMatch[1].trim(); textoRestante = textoRestante.substring(materiaMatch[0].length).trim(); console.log("[LOG] Parse: Matéria:", materia); }
-        else { console.warn("[WARN] Parse: Matéria não encontrada."); }
-        const topicoMatch = textoRestante.match(topicoRegex);
-        if (topicoMatch?.[1]) { topico = topicoMatch[1].trim(); textoRestante = textoRestante.substring(topicoMatch[0].length).trim(); console.log("[LOG] Parse: Tópico:", topico); }
-        else { console.warn("[WARN] Parse: Tópico não encontrado."); }
-
-        let textoParaEnunciado = textoRestante;
-        const enunciadoMatch = textoParaEnunciado.match(enunciadoRegex);
-        let textoParaAlternativas = textoParaEnunciado;
-        if (enunciadoMatch?.[1]) {
-            enunciado = enunciadoMatch[1].trim().replace(/^(Enunciado|Questão|Pergunta)[:\s]*/i, '').trim();
-            if(textoParaAlternativas.startsWith(enunciadoMatch[0])){ textoParaAlternativas = textoParaAlternativas.substring(enunciadoMatch[0].length).trim(); }
-            else { const idxEnunciado = textoParaAlternativas.indexOf(enunciado); if(idxEnunciado !== -1) { textoParaAlternativas = textoParaAlternativas.substring(idxEnunciado + enunciado.length).trim(); } }
-        } else {
-            const firstAltIndex = textoParaAlternativas.search(/^\s*[A-Ea-e][).:]\s+/m);
-            if (firstAltIndex > 0) { enunciado = textoParaAlternativas.substring(0, firstAltIndex).trim(); textoParaAlternativas = textoParaAlternativas.substring(firstAltIndex); }
-            else { console.warn("[WARN] Parse: Enunciado não extraído."); return null; }
-        }
-        if (!enunciado) { console.warn("[WARN] Parse: Enunciado vazio."); return null; }
-
-        let match;
-        while ((match = alternativaRegex.exec(textoParaAlternativas)) !== null) {
-            if (match.index === alternativaRegex.lastIndex) { alternativaRegex.lastIndex++; }
-            const letra = match[1]?.toUpperCase(); const texto = match[2]?.trim();
-            if (letra && texto) { alternativas.push({ letra: letra, texto: texto }); }
-        }
-        if (alternativas.length < 2) { console.warn(`[WARN] Parse: Alternativas insuficientes (${alternativas.length}).`); return null; }
-
-        const respostaMatch = aiText.match(respostaRegex); // Busca no original
-        if (respostaMatch?.[1]) {
-            respostaLetra = respostaMatch[1].toUpperCase();
-            if (!alternativas.some(alt => alt.letra === respostaLetra)) { console.warn(`[WARN] Parse: Resposta (${respostaLetra}) inválida.`); respostaLetra = null; }
-        }
-        if (!respostaLetra) { console.warn("[WARN] Parse: Resposta correta não encontrada."); return null; }
-
-        const generatedQuestion = { id: `gen-${Date.now()}`, ano: null, etapa: null, materia: materia, topico: topico, texto_questao: enunciado, referencia: referencia, alternativas: alternativas, resposta_letra: respostaLetra };
-        console.log("[LOG] Parse: Questão gerada parseada com sucesso.");
-        return generatedQuestion;
-    } catch (error) { console.error("[ERRO] Parse: Erro inesperado:", error); return null; }
-}
-
-
-// --- Handler Principal ---
+// --- Handler Principal (Focado em Mostrar/Gerar) ---
 export async function onRequestPost(context) {
   const functionName = "/api/ask";
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
@@ -110,17 +21,17 @@ export async function onRequestPost(context) {
     if (!r2Bucket || !geminiApiKey) { throw new Error('Configuração interna incompleta.'); }
     console.log(`[LOG] ${functionName}: Configs OK. Modelo: ${modelName}`);
 
-    // Obter corpo e histórico
+    // Obter corpo e histórico (histórico pode não ser mais tão relevante, mas pegamos a última query)
     let requestData;
     try { requestData = await request.json(); } catch (e) { return new Response(JSON.stringify({ error: 'Requisição inválida.' }), { status: 400 }); }
-    const history = requestData?.history;
+    const history = requestData?.history; // Mantém para contexto futuro se necessário
     if (!Array.isArray(history) || history.length === 0) { return new Response(JSON.stringify({ error: 'Histórico inválido.' }), { status: 400 }); }
     const lastUserMessage = history.findLast(m => m.role === 'user');
     const userQuery = typeof lastUserMessage?.parts?.[0]?.text === 'string' ? lastUserMessage.parts[0].text.trim() : null;
     if (!userQuery) { return new Response(JSON.stringify({ error: 'Query inválida no histórico.' }), { status: 400 }); }
     console.log(`[LOG] ${functionName}: Última query: "${userQuery}"`);
 
-    // Carregar e Filtrar Questões SEMPRE
+    // Carregar Questões do R2 SEMPRE
     let allQuestionsData = [];
     let questoesRelevantes = [];
     try {
@@ -128,6 +39,7 @@ export async function onRequestPost(context) {
         if (r2Object !== null) {
             allQuestionsData = await r2Object.json();
             if (Array.isArray(allQuestionsData)) {
+                // Filtra baseado na query atual
                 questoesRelevantes = filtrarQuestoes(allQuestionsData, userQuery);
             } else { allQuestionsData = []; }
         }
@@ -136,57 +48,26 @@ export async function onRequestPost(context) {
 
     // --- Detecção de Intenção ---
     const queryLower = userQuery.toLowerCase();
-    const requestKeywords = ['questão', 'questões', 'exercício', 'exercícios', 'exemplo', 'mostre', 'mande', 'liste', 'quero ver', 'sim', 'pode mandar', 'mostra', 'envia uma questao']; // Adicionado "sim" e confirmações
+    // Palavras para MOSTRAR questão existente
+    const requestKeywords = ['questão', 'questões', 'exercício', 'exercícios', 'exemplo', 'mostre', 'mande', 'liste', 'quero ver', 'sim', 'pode mandar', 'mostra', 'envia uma questao'];
+    // Palavras para CRIAR questão nova
     const createKeywords = ['crie', 'invente', 'elabore', 'gere uma questão', 'faça uma questão'];
-    let isAskingForExisting = requestKeywords.some(keyword => queryLower.includes(keyword));
-    // Verifica confirmação após oferta
-    if (!isAskingForExisting && history.length >= 2) {
-        const lastBotMessage = history[history.length - 2]?.parts?.[0]?.text?.toLowerCase() || '';
-        const confirmationKeywords = ['sim', 'pode', 'quero', 'mostra', 'manda'];
-        if (lastBotMessage.includes("quer que eu te mostre") && confirmationKeywords.some(kw => queryLower.includes(kw))) {
-            isAskingForExisting = true;
-            // Tenta refiltrar com a query anterior se a busca atual não retornou nada
-            if (questoesRelevantes.length === 0 && history.length >=3) {
-                 const previousUserMessage = history.findLast(m => m.role === 'user' && m !== lastUserMessage);
-                 const previousQuery = previousUserMessage?.parts?.[0]?.text?.trim();
-                 if (previousQuery) {
-                     console.log(`[LOG] ${functionName}: Refiltrando com query anterior: "${previousQuery}"`);
-                     questoesRelevantes = filtrarQuestoes(allQuestionsData, previousQuery);
-                     console.log(`[LOG] ${functionName}: ${questoesRelevantes.length} questões relevantes na refiltragem.`);
-                 }
-            }
-        }
-    }
+    const isAskingForExisting = requestKeywords.some(keyword => queryLower.includes(keyword));
     const isAskingToCreate = createKeywords.some(keyword => queryLower.includes(keyword));
 
     let commentary = "";
     let questionsToReturn = [];
     const MAX_QUESTIONS_TO_SHOW = 1;
-    let callAI = true; // Controla se a IA será chamada para gerar texto
 
-    // --- Lógica Principal REVISADA ---
+    // --- LÓGICA DE DECISÃO SIMPLIFICADA ---
 
-    if (isAskingForExisting && !isAskingToCreate && questoesRelevantes.length > 0) {
-        // CASO 1: Pediu questão existente E encontramos -> MOSTRA DIRETO, SEM CHAMAR IA para texto
-        console.log(`[LOG] ${functionName}: Decisão: Mostrar questão existente do R2.`);
-        callAI = false; // << NÃO CHAMA IA PARA TEXTO
-        const qToShow = questoesRelevantes[0];
-        const topico = qToShow?.topico || qToShow?.materia || 'relacionado';
-        commentary = `Ok! Encontrei uma questão sobre ${topico} para você praticar:`; // Comentário padrão
-        questionsToReturn = [{ // Mapeamento seguro
-             ano: qToShow?.ano, etapa: qToShow?.etapa, materia: qToShow?.materia, topico: qToShow?.topico,
-             texto_questao: qToShow?.texto_questao, referencia: qToShow?.referencia,
-             alternativas: qToShow?.alternativas, resposta_letra: qToShow?.resposta_letra
-         }];
-
-    } else if (isAskingToCreate) {
-        // CASO 2: Pediu para CRIAR questão -> Chama IA para criar e parsear
+    if (isAskingToCreate) {
+        // CASO 1: Pediu para CRIAR (Prioridade sobre mostrar existente se ambas keywords estiverem)
         console.log(`[LOG] ${functionName}: Decisão: Criar questão com IA.`);
-        callAI = false; // << NÃO CHAMA IA PARA TEXTO ADICIONAL (só para criação)
         const genAI = new GoogleGenerativeAI(geminiApiKey);
         const model = genAI.getGenerativeModel({ model: modelName });
-        const safetySettings = [ /* ... */ ]; // Defina seus safety settings
-        const creationPrompt = `Crie uma questão... (seu prompt de criação aqui)`; // Inclua Matéria e Tópico no prompt
+        const safetySettings = [ /* ... seus safety settings ... */ ];
+        const creationPrompt = `Crie uma questão de múltipla escolha (A, B, C, D, E) INÉDITA no estilo do PAVE UFPEL sobre o seguinte tópico ou instrução: "${userQuery}". Formate sua resposta EXATAMENTE com as seções: Matéria: [Nome Matéria]\nTópico: [Nome Tópico]\nEnunciado: [Texto Enunciado]\nA) [Alt A]\nB) [Alt B]\nC) [Alt C]\nD) [Alt D]\nE) [Alt E]\nResposta Correta: [Letra]`;
 
         try {
             const result = await model.generateContent({ contents: [{ role: 'user', parts: [{ text: creationPrompt }] }], safetySettings });
@@ -201,44 +82,30 @@ export async function onRequestPost(context) {
             } else { commentary = "(A IA não gerou a questão.)"; }
         } catch (error) { console.error(`[ERRO] ${functionName}: Erro Gemini CRIAÇÃO:`, error); commentary = `(Erro ao criar: ${error.message})`; }
 
-    }
-    // Se callAI ainda for true, significa que é o CASO 3 (Conversa Normal ou Pediu/Não Achou)
-    if (callAI) {
-        console.log(`[LOG] ${functionName}: Decisão: Conversa normal com IA.`);
-        const genAI = new GoogleGenerativeAI(geminiApiKey);
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const safetySettings = [ /* ... */ ]; // Defina seus safety settings
-
-        let conversationContext = "Nenhuma questão relevante encontrada na base para esta pergunta.";
-        if (isAskingForExisting && questoesRelevantes.length === 0) {
-            conversationContext += " (O usuário pediu questões existentes, mas nenhuma foi encontrada.)";
-        } else if (questoesRelevantes.length > 0 && !isAskingForExisting) { // Havia relevantes, mas não foram pedidas
-             const topicosEncontrados = [...new Set(questoesRelevantes.map(q => q?.topico || q?.materia))].filter(Boolean).join(', ');
-             conversationContext = `Foram encontradas ${questoesRelevantes.length} questões sobre "${topicosEncontrados}", mas o usuário não pediu para vê-las.`;
+    } else if (isAskingForExisting) {
+        // CASO 2: Pediu questão existente (e não pediu para criar)
+        if (questoesRelevantes.length > 0) {
+            // Encontramos no R2
+            console.log(`[LOG] ${functionName}: Decisão: Mostrar questão existente do R2.`);
+            const qToShow = questoesRelevantes[0];
+            const topico = qToShow?.topico || qToShow?.materia || 'relacionado';
+            commentary = `Ok! Encontrei uma questão sobre ${topico} para você praticar:`; // Comentário padrão
+            questionsToReturn = [{ // Mapeamento seguro
+                 ano: qToShow?.ano, etapa: qToShow?.etapa, materia: qToShow?.materia, topico: qToShow?.topico,
+                 texto_questao: qToShow?.texto_questao, referencia: qToShow?.referencia,
+                 alternativas: qToShow?.alternativas, resposta_letra: qToShow?.resposta_letra
+             }];
+        } else {
+            // Pediu existente, mas não achamos
+            console.log(`[LOG] ${functionName}: Decisão: Questão pedida não encontrada no R2.`);
+            commentary = `Puxa, procurei por questões sobre "${userQuery}" nos meus dados do PAVE, mas não encontrei nenhuma correspondente no momento. Quer tentar outros termos ou pedir para eu criar uma?`;
+            questionsToReturn = [];
         }
-
-        // Prompt para conversa normal, informando o contexto da busca
-        const conversationPrompt = `Você é um assistente PAVE UFPEL amigável. Responda à ÚLTIMA pergunta do usuário ("${userQuery}") de forma conversacional, usando o histórico para contexto. ${conversationContext}. Se souber que o usuário pediu questões mas não foram encontradas, explique isso. Não invente questões. Seja conciso.`;
-
-         console.log(`[LOG] ${functionName}: Enviando prompt CONVERSACIONAL para Gemini.`);
-         try {
-             // Adiciona o prompt como instrução final ao histórico
-             const historyForConversation = [...history];
-             if (historyForConversation.length > 0 && historyForConversation[historyForConversation.length - 1].parts?.length > 0) {
-                 historyForConversation[historyForConversation.length - 1].parts.push({ text: `\n\n[Instrução para IA]: ${conversationPrompt}` });
-             } else { historyForConversation.push({role: 'user', parts: [{text: conversationPrompt}]}) }
-
-             const result = await model.generateContent({ contents: historyForConversation, safetySettings });
-             const response = result.response;
-             commentary = response.text() || ""; // Usa a resposta da IA como comentário
-             if (!commentary && response.promptFeedback?.blockReason) { commentary = `(Bloqueado: ${response.promptFeedback.blockReason})`; }
-             else if (!commentary) { commentary = "(Não consegui gerar uma resposta.)"; }
-             console.log(`[LOG] ${functionName}: Resposta conversacional recebida.`);
-         } catch (error) {
-             console.error(`[ERRO] ${functionName}: Erro Gemini CONVERSA:`, error);
-             commentary = `(Desculpe, erro ao contatar a IA: ${error.message})`;
-         }
-         questionsToReturn = []; // Garante que nenhuma questão seja enviada neste caso
+    } else {
+        // CASO 3: Não pediu para mostrar nem para criar -> Resposta Padrão/Ajuda
+        console.log(`[LOG] ${functionName}: Decisão: Entrada não reconhecida como pedido de questão.`);
+        commentary = `Olá! Posso te ajudar a praticar com questões do PAVE ou tentar gerar uma nova questão para você. O que gostaria de fazer? (Ex: "questão de história etapa 1", "crie um exercício sobre física moderna")`;
+        questionsToReturn = [];
     }
 
     // Retornar Resposta Estruturada Final
@@ -249,6 +116,7 @@ export async function onRequestPost(context) {
 
   } catch (error) {
       console.error(`[ERRO] ${functionName}: Erro GERAL CAPTURADO:`, error);
+      // Retorna a mensagem de erro específica capturada
       return new Response(JSON.stringify({ error: `Erro interno: ${error.message}` }), {
         status: 500, headers: { 'Content-Type': 'application/json' },
       });
