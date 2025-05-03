@@ -1,0 +1,78 @@
+/* src/features/calculadora/components/visuals/ScoreGauge.css */
+
+.calc-score-gauge {
+  position: relative;
+  display: inline-block;
+}
+
+.calc-score-gauge svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+/* sidcoe */
+/* Círculo de fundo */
+.calc-gauge-background {
+  fill: none;
+  stroke: #e5e7eb;
+}
+
+/* Círculo tracejado */
+.calc-gauge-dashed-circle {
+  fill: none;
+  stroke: var(--border-primary);
+  opacity: 0.5;
+}
+
+/* Círculo de progresso (base) */
+.calc-gauge-progress {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+              stroke 0.3s ease;
+}
+
+/* Cores do progresso baseadas nas chances */
+.calc-gauge-progress.progress-altas { stroke: var(--success-primary); }
+.calc-gauge-progress.progress-medias { stroke: #f59e0b; }
+.calc-gauge-progress.progress-baixas { stroke: var(--error-primary); }
+.calc-gauge-progress.progress-indeterminadas { stroke: var(--text-muted); }
+
+
+/* src/features/calculadora/components/visuals/ScoreGauge.css */
+
+/* ... (outras regras) ... */
+
+/* Texto (container) */
+.calc-gauge-text {
+  font-family: inherit;
+  fill: var(--text-primary);
+  transition: fill 0.3s ease;
+  dominant-baseline: central;
+}
+
+/* "Sua nota final:" */
+.calc-gauge-text-label {
+  font-size: 14px; /* Mantém um tamanho razoável */
+  font-weight: 500;
+  fill: var(--text-secondary);
+}
+
+/* Número da Nota */
+.calc-gauge-text-score {
+  font-size: 28px; /* <<< REDUZIDO de 42px (Ajuste fino se necessário) */
+  font-weight: 700;
+  fill: var(--text-primary);
+}
+
+
+/* Dark Mode */
+[data-theme="dark"] .calc-gauge-background { stroke: #3a3a3a; }
+[data-theme="dark"] .calc-gauge-dashed-circle { stroke: var(--border-secondary); opacity: 0.4; }
+[data-theme="dark"] .calc-gauge-progress.progress-altas { stroke: #34d399; }
+[data-theme="dark"] .calc-gauge-progress.progress-medias { stroke: #fcd34d; }
+[data-theme="dark"] .calc-gauge-progress.progress-baixas { stroke: #f472b6; }
+[data-theme="dark"] .calc-gauge-progress.progress-indeterminadas { stroke: var(--text-muted); }
+[data-theme="dark"] .calc-gauge-text { fill: var(--text-primary); }
+[data-theme="dark"] .calc-gauge-text-label { fill: var(--text-secondary); }
+[data-theme="dark"] .calc-gauge-text-score { fill: var(--text-primary); }
