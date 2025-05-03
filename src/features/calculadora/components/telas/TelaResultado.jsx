@@ -5,7 +5,7 @@ import React from 'react';
 import TabelaDetalhadaResultado from '../TabelaDetalhadaResultado';
 import ShareButton from '../ShareButton';
 import ScoreGauge from '../visuals/ScoreGauge.jsx';
-import CourseInfoCard from '../visuals/CourseInfoCard.jsx';
+import CourseInfoCard from '../visuals/CourseInfoCard';
 
 // CSS
 import './TelaResultadoRenovado.css'; // <<< NOVO NOME PARA O CSS
