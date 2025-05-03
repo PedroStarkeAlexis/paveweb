@@ -3,9 +3,10 @@ import React from 'react';
 
 // Componentes
 import TabelaDetalhadaResultado from '../TabelaDetalhadaResultado';
-import ShareButton from '../ShareButton';
-import ScoreGauge from '../visuals/ScoreGauge.jsx';
-import CourseInfoCard from '../visuals/CourseInfoCard.jsx';
+import ShareButton from '../ShareButton';                         // <<< SEM .jsx
+import ScoreGauge from '../visuals/ScoreGauge';                   // <<< SEM .jsx
+import CourseInfoCard from '../visuals/CourseInfoCard';             // <<< SEM .jsx
+
 
 // CSS
 import './TelaResultadoRenovado.css'; // <<< NOVO NOME PARA O CSS
