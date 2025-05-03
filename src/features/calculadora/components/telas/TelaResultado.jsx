@@ -4,7 +4,7 @@ import React from 'react';
 // Componentes
 import TabelaDetalhadaResultado from '../TabelaDetalhadaResultado';
 import ShareButton from '../ShareButton';
-import ScoreGauge from '../visuals/ScoreGauge';
+import ScoreGauge from '../visuals/ScoreGauge.jsx';
 import CourseInfoCard from '../visuals/CourseInfoCard.jsx';
 
 // CSS
