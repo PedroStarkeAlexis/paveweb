@@ -1,0 +1,114 @@
+/* src/features/calculadora/components/telas/TelaDesempenho.css */
+
+.calc-tela-desempenho {
+    text-align: center; /* Centraliza textos e inputs */
+    padding: 20px 0; /* Espaçamento interno vertical */
+}
+
+.calc-tela-titulo {
+    font-size: 1.6em; /* Tamanho do título */
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+.calc-tela-titulo strong {
+    color: var(--brand-primary); /* Destaca número da etapa */
+}
+
+.calc-tela-subtitulo {
+    font-size: 1em;
+    color: var(--text-secondary);
+    margin-bottom: 40px; /* Espaço antes dos inputs */
+}
+
+.calc-input-group {
+    display: flex;
+    justify-content: center; /* Centraliza os inputs */
+    align-items: flex-start; /* Alinha labels no topo */
+    gap: 25px; /* Espaço entre os inputs */
+    margin-bottom: 15px; /* Espaço antes da msg de erro */
+}
+
+.calc-input-item {
+    display: flex;
+    flex-direction: column; /* Label acima do input */
+    align-items: center; /* Centraliza label e input */
+}
+
+.calc-input-item label {
+    font-size: 0.9em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.calc-input-desempenho {
+    width: 90px; /* Largura dos inputs */
+    padding: 12px 10px;
+    font-size: 1.1em;
+    text-align: center;
+    border: 1px solid var(--border-secondary);
+    border-radius: 8px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    appearance: textfield; /* Define aparência padrão para compatibilidade */
+    -moz-appearance: textfield; /* Esconde setas padrão do number input */
+}
+/* Esconde setas padrão do number input no Chrome/Safari/Edge */
+.calc-input-desempenho::-webkit-outer-spin-button,
+.calc-input-desempenho::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.calc-input-desempenho:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05), 0 0 0 2px rgba(16, 185, 129, 0.3); /* Sombra de foco com cor da marca */
+}
+.calc-input-desempenho[aria-invalid="true"] {
+    border-color: var(--error-primary) !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05), 0 0 0 2px rgba(239, 68, 68, 0.3); /* Sombra de erro */
+}
+
+.calc-error-message {
+    color: var(--error-primary);
+    font-size: 0.9em;
+    margin-top: 5px; /* Espaço acima da msg de erro */
+    min-height: 1.2em; /* Garante espaço mesmo sem erro */
+    font-weight: 500;
+}
+
+
+/* Dark Mode */
+[data-theme="dark"] .calc-tela-titulo { color: var(--text-primary); }
+[data-theme="dark"] .calc-tela-titulo strong { color: var(--brand-primary); }
+[data-theme="dark"] .calc-tela-subtitulo { color: var(--text-secondary); }
+[data-theme="dark"] .calc-input-item label { color: var(--text-muted); }
+[data-theme="dark"] .calc-input-desempenho {
+    background-color: #3a3a3a;
+    color: var(--text-primary);
+    border-color: var(--border-secondary);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+[data-theme="dark"] .calc-input-desempenho:focus {
+    border-color: var(--brand-primary);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2), 0 0 0 2px rgba(16, 185, 129, 0.4);
+}
+[data-theme="dark"] .calc-input-desempenho[aria-invalid="true"] {
+    border-color: var(--error-primary) !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2), 0 0 0 2px rgba(244, 114, 182, 0.4); /* Cor da sombra de erro ajustada */
+}
+[data-theme="dark"] .calc-error-message { color: var(--error-primary); }
+
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .calc-tela-titulo { font-size: 1.4em; }
+    .calc-tela-subtitulo { font-size: 0.95em; margin-bottom: 30px; }
+    .calc-input-group { gap: 15px; }
+    .calc-input-desempenho { width: 75px; font-size: 1em; padding: 10px 8px; }
+    .calc-error-message { font-size: 0.85em; }
+}

@@ -1,0 +1,132 @@
+/* src/features/calculadora/components/telas/TelaResultadoRenovado.css */
+
+.calc-tela-resultado-renovado {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza seções */
+    gap: 40px; /* Espaço entre seções principais */
+    padding: 30px 10px; /* Padding vertical e um pouco horizontal */
+    box-sizing: border-box;
+}
+
+/* Mensagem de Feedback */
+.calc-resultado-feedback-msg {
+    font-size: 1.25em; /* Maior */
+    color: var(--text-primary);
+    max-width: 750px; /* Limita largura */
+    text-align: center;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Seção Hero (Gauge + Card) */
+.calc-resultado-hero-section {
+    display: flex;
+    flex-direction: row; /* Lado a lado por padrão */
+    align-items: center; /* Alinha verticalmente no centro */
+    justify-content: center; /* Centraliza o conjunto */
+    gap: 50px; /* Espaço entre Gauge e Card */
+    flex-wrap: wrap; /* Permite quebrar em telas menores */
+    width: 100%;
+    max-width: 800px; /* Largura máxima para esta seção */
+}
+
+.calc-resultado-gauge-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0; /* Não deixa o gauge encolher */
+}
+.calc-resultado-gauge-label {
+    font-size: 0.95em;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+/* Estilos do gauge em ScoreGauge.css */
+
+.calc-resultado-course-area {
+    width: 100%;
+    max-width: 380px; /* Largura do card */
+    min-width: 300px; /* Largura mínima */
+}
+.calc-curso-nao-selecionado {
+    font-style: italic;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 20px;
+}
+/* Estilos do card em CourseInfoCard.css */
+
+/* Seção de Detalhes (Tabela + Share) */
+.calc-resultado-details-section {
+    width: 100%;
+    max-width: 700px; /* Largura máxima para a seção de detalhes */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza tabela e botão */
+    gap: 30px; /* Espaço entre título, tabela e botão */
+    padding: 30px;
+    background-color: var(--bg-tertiary); /* Fundo sutil para agrupar */
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-top: 10px; /* Espaço acima desta seção */
+}
+
+.calc-details-titulo {
+    font-size: 1.1em;
+    color: var(--text-secondary);
+    margin: 0 0 10px 0; /* Margem inferior */
+    font-weight: 500;
+    text-align: center;
+}
+
+.calc-resultado-tabela-wrapper {
+    width: 100%;
+    max-width: 600px; /* Limita largura da tabela dentro da seção */
+    /* Estilos da tabela em TabelaDetalhadaResultado.css */
+}
+
+.calc-resultado-share-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    /* Estilos do botão em ShareButton.css */
+}
+
+/* --- Dark Mode --- */
+[data-theme="dark"] .calc-resultado-feedback-msg { color: var(--text-primary); }
+[data-theme="dark"] .calc-resultado-gauge-label { color: var(--text-muted); }
+[data-theme="dark"] .calc-curso-nao-selecionado { color: var(--text-muted); }
+[data-theme="dark"] .calc-resultado-details-section {
+    background-color: #2c2c2c; /* Fundo escuro para seção */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+[data-theme="dark"] .calc-details-titulo { color: var(--text-secondary); }
+
+
+/* --- Responsividade --- */
+@media (max-width: 768px) { /* Empilha Gauge e Card */
+    .calc-resultado-hero-section {
+        flex-direction: column; /* Empilha */
+        gap: 35px; /* Espaço vertical */
+        max-width: 500px; /* Limita largura do conjunto empilhado */
+    }
+    .calc-resultado-course-area {
+         max-width: 400px; /* Ajusta largura do card */
+    }
+    .calc-resultado-details-section {
+        max-width: 95%; /* Ocupa mais largura */
+        padding: 25px;
+    }
+     .calc-resultado-tabela-wrapper { max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+     .calc-tela-resultado-renovado { padding: 20px 5px; gap: 30px; }
+     .calc-resultado-feedback-msg { font-size: 1.15em; max-width: 95%; }
+     .calc-resultado-hero-section { gap: 30px; }
+     .calc-resultado-details-section { padding: 20px 15px; gap: 25px; margin-top: 0;}
+     .calc-details-titulo { font-size: 1.05em; }
+}

@@ -1,4 +1,5 @@
-/* Importar uma fonte moderna */
+/* src/style.css */
+/* Importar uma fonte moderna (já existente) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
 /* --- Reset Básico e Estilos Globais --- */
@@ -6,6 +7,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* Adicionado do index.css (CRA) - Anti-aliasing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 html, body {
@@ -13,50 +17,93 @@ html, body {
     overflow: hidden; /* Evita scroll no body */
 }
 
+html {
+    /* Variáveis de cor base para Light Mode (podem ser sobrescritas) */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7f7f8;
+    --bg-tertiary: #f9fafb;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --text-muted: #6b7280;
+    --border-primary: #e5e7eb;
+    --border-secondary: #d1d5db;
+    --brand-primary: #10a37f; /* Verde */
+    --brand-primary-hover: #0f8e6c;
+    --brand-secondary: #e0f2fe; /* Azul claro */
+    --brand-secondary-text: #0c4a6e;
+    --error-primary: #ef4444;
+    --error-secondary: #fef2f2;
+    --success-primary: #10b981; /* Ajustado do verde */
+    --success-secondary: #f0fdf4;
+
+    color-scheme: light; /* Define o esquema de cores padrão */
+    transition: color 0.3s ease, background-color 0.3s ease; /* Transição global */
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #f7f7f8; /* Fundo geral claro */
-    color: #1f2937;
+    background-color: var(--bg-secondary); /* Usa variável */
+    color: var(--text-primary); /* Usa variável */
     font-size: 14px;
     line-height: 1.5;
+    min-width: 320px;
+    display: flex; /* Mantido do index.css (Vite) */
+    place-items: center; /* Mantido do index.css (Vite) */
+    -webkit-tap-highlight-color: transparent; /* Adicionado do App.css (CRA) */
 }
+
+/* Estilo para #root (mesclado) */
+#root {
+    display: flex; /* Para que .app-container ocupe toda a altura/largura */
+    width: 100%;
+    height: 100%;
+    margin: 0 auto; /* Centraliza se houver max-width */
+    padding: 0; /* Remove padding padrão do Vite */
+    text-align: left; /* Reseta text-align center do Vite */
+    flex-grow: 1; /* Ocupa espaço vertical disponível */
+}
+
 
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 button { cursor: pointer; font-family: inherit; }
-input { font-family: inherit; }
+input, select, textarea { font-family: inherit; } /* Garante fonte em todos os inputs */
 
-/* --- Estrutura Principal (Sidebar + Conteúdo) --- */
+code { /* Adicionado do index.css (CRA) */
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* --- Estrutura Principal (Sidebar + Conteúdo - do Projeto 2) --- */
 .app-container {
     display: flex;
     height: 100vh;
     width: 100vw;
 }
 
-/* --- Estilos da Sidebar (Estilo Gemini/Glau Claro) --- */
+/* --- Estilos da Sidebar (Estilo Gemini/Glau Claro - do Projeto 2) --- */
 .sidebar {
     width: 260px;
     height: 100%;
-    background-color: #f8f8f8;
-    border-right: 1px solid #e5e7eb; /* <<< Borda cinza clara */
+    background-color: var(--bg-tertiary); /* Usa variável */
+    border-right: 1px solid var(--border-primary); /* Usa variável */
     display: flex;
     flex-direction: column;
     padding: 10px 0;
-    transition: width 0.3s ease;
+    transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
     flex-shrink: 0;
 }
 
 .sidebar-header {
     padding: 15px 15px 15px 15px;
     text-align: left;
-    border-bottom: 1px solid #f3f4f6; /* Linha clara */
+    border-bottom: 1px solid #f3f4f6; /* Linha clara específica */
     margin-bottom: 15px;
 }
 
 .logo-placeholder {
     font-size: 1.2em;
     font-weight: 500;
-    color: #10a37f; /* <<< Cor destaque (verde) para logo */
+    color: var(--brand-primary); /* Usa variável */
     padding-left: 5px;
 }
 
@@ -64,11 +111,11 @@ input { font-family: inherit; }
     flex-grow: 1;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #d1d5db #ffffff; /* Scrollbar claro */
+    scrollbar-color: var(--border-secondary) var(--bg-primary); /* Usa variáveis */
 }
 .sidebar-nav::-webkit-scrollbar { width: 6px; }
-.sidebar-nav::-webkit-scrollbar-track { background: #ffffff; }
-.sidebar-nav::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 3px; }
+.sidebar-nav::-webkit-scrollbar-track { background: var(--bg-primary); }
+.sidebar-nav::-webkit-scrollbar-thumb { background-color: var(--border-secondary); border-radius: 3px; }
 
 
 .sidebar-nav ul { padding: 0; }
@@ -79,8 +126,8 @@ input { font-family: inherit; }
     display: flex;
     align-items: center;
     padding: 10px 15px;
-    color: #374151; /* <<< TEXTO ESCURO */
-    font-weight: 500; /* Levemente mais pesado */
+    color: var(--text-secondary); /* Usa variável */
+    font-weight: 500;
     font-size: 0.9em;
     border-radius: 6px;
     margin: 0 10px;
@@ -95,20 +142,20 @@ input { font-family: inherit; }
     width: 18px;
     display: inline-block;
     text-align: center;
-    color: #6b7280; /* Ícone cinza */
+    color: var(--text-muted); /* Usa variável */
 }
 .sidebar-nav a:hover {
-    background-color: #f3f4f6; /* <<< Cinza claro no HOVER */
-    color: #111827;
+    background-color: #f3f4f6; /* Cinza claro específico */
+    color: var(--text-primary);
 }
 .sidebar-nav a.active {
-    background-color: #e0f2fe; /* <<< Azul claro para ATIVO (estilo Gemini) */
-    color: #0c4a6e; /* Azul escuro */
+    background-color: var(--brand-secondary); /* Usa variável */
+    color: var(--brand-secondary-text); /* Usa variável */
     font-weight: 500;
 }
-
-.nav-category { /* Mantendo escondido */
-    display: none;
+.sidebar-nav a.external-link:hover { /* Estilo para link externo */
+     background-color: #f3f4f6;
+     color: var(--text-primary);
 }
 
 /* Footer da Sidebar */
@@ -120,46 +167,63 @@ input { font-family: inherit; }
 .sidebar-footer a {
     font-weight: 400;
     font-size: 0.9em;
-    color: #6b7280; /* <<< Cinza para footer */
+    color: var(--text-muted); /* Usa variável */
 }
 .sidebar-footer a:hover {
     background-color: #f3f4f6;
-    color: #111827;
+    color: var(--text-primary);
 }
 .copyright {
     font-size: 0.75em;
-    color: #9ca3af; /* <<< Cinza claro */
+    color: #9ca3af; /* Cinza claro */
     text-align: center;
     padding: 0 15px;
     margin-top: 10px;
 }
 
-
-/* --- Estilos da Área Principal --- */
+/* --- Estilos da Área Principal (do Projeto 2) --- */
 .main-content {
     flex-grow: 1;
     height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: #ffffff;
- /* Fundo geral claro */
+    background-color: var(--bg-primary); /* Usa variável */
 }
 
-/* Container que limita largura e centraliza o chat */
-.chat-interface-container {
+/* Container que limita largura (usado pelo Chat e Banco de Questões) */
+.chat-interface-container,
+.question-bank-container,
+.home-page-container { /* Aplicado também à Home */
     width: 100%;
-    max-width: 800px;
+    max-width: 850px; /* Largura padrão */
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    min-height: 0;
-    padding: 0 15px; /* Padding lateral */
+    min-height: 0; /* Crucial para scroll funcionar */
+    padding: 20px 15px; /* Padding padrão */
+    overflow-y: auto; /* Scroll interno */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-secondary) transparent; /* Scroll transparente */
+}
+.chat-interface-container::-webkit-scrollbar,
+.question-bank-container::-webkit-scrollbar,
+.home-page-container::-webkit-scrollbar { width: 6px; }
+.chat-interface-container::-webkit-scrollbar-track,
+.question-bank-container::-webkit-scrollbar-track,
+.home-page-container::-webkit-scrollbar-track { background: transparent; }
+.chat-interface-container::-webkit-scrollbar-thumb,
+.question-bank-container::-webkit-scrollbar-thumb,
+.home-page-container::-webkit-scrollbar-thumb { background-color: var(--border-secondary); border-radius: 3px; }
+
+/* Ajuste específico para o container do chat ter menos padding */
+.chat-interface-container {
+     padding: 0 15px;
+     max-width: 800px;
 }
 
-
-/* --- Estilos do Chat Box e Input --- */
+/* --- ESTILOS DO CHAT (do Projeto 2) --- */
 .chat-box {
     flex-grow: 1;
     overflow-y: auto;
@@ -168,44 +232,44 @@ input { font-family: inherit; }
     background-color: transparent;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* <<< Reduz gap para bolhas ficarem mais próximas */
+    gap: 10px;
     scrollbar-width: thin;
-    scrollbar-color: #d1d1d600 #f7f7f800;
+    scrollbar-color: var(--border-secondary) transparent;
 }
 .chat-box::-webkit-scrollbar { width: 6px; }
 .chat-box::-webkit-scrollbar-track { background: transparent; }
-.chat-box::-webkit-scrollbar-thumb { background-color: #d1d1d6; border-radius: 3px; }
+.chat-box::-webkit-scrollbar-thumb { background-color: var(--border-secondary); border-radius: 3px; }
 
-/* Área de Input */
 .input-area {
     display: flex;
     padding: 15px 0 25px 0;
     background-color: transparent;
     position: relative;
-    box-shadow: 0 -8px 20px -15px rgba(0, 0, 0, 0.08); /* Sombra superior */
+    box-shadow: 0 -8px 20px -15px rgba(0, 0, 0, 0.08);
 }
 
 #user-input {
     flex-grow: 1;
     padding: 14px 20px;
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--border-primary);
     border-radius: 12px;
     margin-right: 10px;
     font-size: 1em;
-    background-color: #fff;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     resize: none;
     line-height: 1.6;
 }
 #user-input:focus {
     outline: none;
-    border-color: #c5c5d2;
+    border-color: #c5c5d2; /* Cor específica de foco */
     box-shadow: 0 0 0 1px #c5c5d2, 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 #send-button {
     padding: 10px 20px;
-    background-color: #10a37f; /* Verde destaque */
+    background-color: var(--brand-primary);
     color: white;
     border: none;
     border-radius: 8px;
@@ -216,342 +280,358 @@ input { font-family: inherit; }
     margin-bottom: 4px;
 }
 #send-button:hover {
-    background-color: #0f8e6c;
+    background-color: var(--brand-primary-hover);
+}
+#send-button:disabled {
+    background-color: #cccccc; /* Estilo desabilitado genérico */
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 
-/* --- Estilos das Mensagens (COM BOLHAS, SEM ÍCONES) --- */
+/* Mensagens do Chat */
 .message {
-    /* Remove flex e gap que eram para o ícone */
-    /* display: flex; */
-    /* gap: 15px; */
-    max-width: 80%; /* Largura máxima da bolha */
-    padding: 10px 15px; /* Padding INTERNO da bolha */
-    border-radius: 18px; /* Cantos arredondados */
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
     line-height: 1.6;
     font-size: 1em;
     word-wrap: break-word;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
-
-/* REMOVER regra ::before para os ícones */
-/* .message::before { display: none; } */
-/* .user-message::before { display: none; } */
-
 .user-message {
-    align-self: flex-end; /* <<< Alinha bolha à direita */
-    background-color: #e0f2fe; /* <<< Fundo azul claro (Gemini/Glau) */
-    color: #0c4a6e; /* Texto escuro */
-    border-bottom-right-radius: 6px; /* Canto inferior direito menos redondo */
+    align-self: flex-end;
+    background-color: var(--brand-secondary);
+    color: var(--brand-secondary-text);
+    border-bottom-right-radius: 6px;
 }
-
 .bot-message {
-    align-self: flex-start; /* <<< Alinha bolha à esquerda */
-    background-color: #ffffff; /* <<< Fundo BRANCO para bot (contraste) */
-    color: #374151; /* Texto escuro */
-    border: 1px solid #e5e7eb; /* Borda sutil */
-    border-bottom-left-radius: 3px; /* Canto inferior esquerdo menos redondo */
+    align-self: flex-start;
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-primary);
+    border-bottom-left-radius: 6px;
 }
-
-/* Estilo do parágrafo dentro da bolha */
-.message p {
-    margin: 0;
-    padding: 0; /* Remove padding-top antigo */
-    color: inherit; /* Herda cor da bolha */
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
+.message p { margin: 0; padding: 0; color: inherit; white-space: pre-wrap; word-wrap: break-word; }
+.message ul, .message ol { margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 2em; }
+.message ul { list-style-type: disc; }
+.message ol { list-style-type: decimal; }
+.message li { margin-bottom: 0.25em; }
+.message li p { margin-bottom: 0; }
+.message strong, .message b { font-weight: bold; }
+.message em, .message i { font-style: italic; }
 
 .typing-indicator {
-    /* Faz o indicador parecer uma bolha de bot */
     align-self: flex-start;
-    background-color: #ffffff;
-    color: #6b7280;
-    border: 1px solid #e5e7eb;
+    background-color: var(--bg-primary);
+    color: var(--text-muted);
+    border: 1px solid var(--border-primary);
     padding: 10px 15px;
     border-radius: 18px;
     border-bottom-left-radius: 6px;
     font-style: italic;
     max-width: 80%;
 }
-/* .typing-indicator::before { display: none; } */
 
+/* --- ESTILOS DO BANCO DE QUESTÕES (do Projeto 2) --- */
+/* Container já estilizado acima */
 
-/* --- Estilos Card da Questão (Ajustado para contexto) --- */
-/* Dentro da seção --- Estilos Card da Questão --- */
-    /* Dentro da seção --- Estilos Card da Questão --- */
-
-    .question-body {
-        padding: 15px 15px 10px 15px;
-        font-size: 1em;
-        color: #1f2937;
-    }
-
-    .question-body p:not(.question-reference) { /* Aplica a parágrafos que NÃO são a referência */
-       margin: 0 0 10px 0;
-       line-height: 1.6;
-       white-space: pre-wrap; /* <<< READICIONAR ESTA LINHA AQUI */
-    }
-    .question-body p:last-of-type:not(.question-reference) {
-        margin-bottom: 0;
-    }
-
-    /* Regra para a referência (mantém a mesma) */
-    .question-reference {
-        font-size: 0.8em;
-        color: #6b7280;
-        text-align: right;
-        margin-top: 15px;
-        margin-bottom: 0;
-        line-height: 1.4;
-        /* Não precisa de white-space aqui, pois é uma string única */
-    }
-
-
-.question-body p {
-   margin: 0;
-   line-height: 1.6;
-   white-space: pre-wrap; /* <<< ADICIONAR ESTA LINHA */
+.question-bank-container h1 { /* Título se voltar a usar */
+    font-size: 1.4em; font-weight: 500; color: var(--text-primary);
+    margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid var(--border-primary);
 }
+#question-bank-list { display: flex; flex-direction: column; gap: 25px; }
+.results-count { font-size: 0.9em; color: var(--text-muted); margin-bottom: 15px; }
+.loading-message, .error-message, .no-results-message {
+    text-align: center; padding: 20px; color: var(--text-muted); font-style: italic;
+}
+.error-message { color: var(--error-primary); font-style: normal; font-weight: bold; }
+
+/* Filtros */
+.filter-section {
+    display: flex; flex-wrap: wrap; gap: 15px; padding: 15px;
+    background-color: var(--bg-tertiary); border: 1px solid var(--border-primary);
+    border-radius: 8px; margin-bottom: 25px; align-items: flex-end;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.filter-group { display: flex; flex-direction: column; gap: 5px; }
+.filter-group label { font-size: 0.85em; font-weight: 500; color: var(--text-secondary); }
+.filter-group select {
+    padding: 8px 10px; border: 1px solid var(--border-secondary); border-radius: 6px;
+    background-color: var(--bg-primary); color: var(--text-primary);
+    font-size: 0.9em; min-width: 150px; cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- ESTILOS DO COMPONENTE COMUM QuestionLayout (do Projeto 2) --- */
 .question-layout {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    padding: 0;
-    margin-top: 5px;
-    background-color: #ffffff; /* Fundo branco */
-    align-self: flex-start; /* <<< Alinha card à esquerda como bot */
-    max-width: 100%; /* Pode ser mais largo que bolhas normais */
-    width: auto; /* Largura conforme conteúdo */
-    box-sizing: border-box;
+    border: 1px solid var(--border-primary); border-radius: 8px;
+    margin-bottom: 25px; padding: 0; margin-top: 5px;
+    background-color: var(--bg-primary); align-self: flex-start;
+    max-width: 100%; width: auto; box-sizing: border-box;
     box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-    /* margin-left: 0; */ /* <<< Remove margem esquerda */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-/* .question-layout::before { display: none; } */ /* Garante sem ícone */
+/* Ajuste para quando está no banco de questões */
+#question-bank-list .question-layout { align-self: stretch; margin-bottom: 0; }
 
-/* Mantém estilos internos do card */
 .question-header {
-    padding: 10px 15px; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb;
+    padding: 10px 15px; background-color: var(--bg-tertiary); border-bottom: 1px solid var(--border-primary);
     display: flex; flex-wrap: wrap; gap: 8px; border-radius: 8px 8px 0 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .question-tag {
-    .question-tag.pave-tag {
-    background-color: #10a37f; /* Ou outra cor de destaque */
-    color: #fff;
-    font-weight: 500;
-}
-    background-color: #e5e7eb; color: #4b5563; font-size: 0.8em;
+    background-color: #e5e7eb; color: var(--text-secondary); font-size: 0.8em;
     padding: 3px 8px; border-radius: 4px; white-space: nowrap;
 }
-.question-tag.pave-tag {
-    background-color: #10a37f; /* Ou outra cor de destaque */
-    color: #fff;
-    font-weight: 500;
-}
-.question-body { padding: 15px 15px 10px 15px; font-size: 1em; color: #1f2937; }
-.question-body p { margin: 0; line-height: 1.6; }
+.question-tag.pave-tag { background-color: var(--brand-primary); color: #fff; font-weight: 500; }
+.question-tag.generated-ai-tag { background-color: #6366f1; color: #fff; font-weight: 500; }
+
+.question-body { padding: 15px 15px 10px 15px; font-size: 1em; color: var(--text-primary); }
+.question-body p { margin: 0 0 10px 0; line-height: 1.6; white-space: pre-wrap; }
+.question-body p:last-of-type:not(.question-reference) { margin-bottom: 0; }
+.question-reference { font-size: 0.8em; color: var(--text-muted); text-align: right; margin-top: 15px; margin-bottom: 0; line-height: 1.4; }
+.question-body ul, .question-body ol { margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 2em; }
+.question-body ul { list-style-type: disc; }
+.question-body ol { list-style-type: decimal; }
+.question-body li { margin-bottom: 0.25em; }
+.question-body li p { margin-bottom: 0; }
+.question-body strong, .question-body b { font-weight: bold; }
+.question-body em, .question-body i { font-style: italic; }
+
+
 .alternatives-container { padding: 10px 15px 5px 15px; display: flex; flex-direction: column; gap: 8px; }
 .alternative-item {
-    display: flex; align-items: stretch; border: 1px solid #d1d5db;
+    display: flex; align-items: stretch; border: 1px solid var(--border-secondary);
     border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease;
-    background-color: #fff; overflow: hidden;
+    background-color: var(--bg-primary); overflow: hidden;
 }
 .question-layout.answered .alternative-item { cursor: default; }
 .question-layout:not(.answered) .alternative-item:hover { background-color: #f9fafb; border-color: #9ca3af; }
+#question-bank-list .alternative-item { cursor: default; } /* Remove cursor no banco */
+#question-bank-list .alternative-item:hover { background-color: var(--bg-primary); border-color: var(--border-secondary); } /* Remove hover no banco */
+
 .alternative-letter {
-    font-weight: bold; border-right: 1px solid #d1d5db; min-width: 45px;
+    font-weight: bold; border-right: 1px solid var(--border-secondary); min-width: 45px;
     padding: 10px 0; display: inline-flex; justify-content: center; align-items: center;
-    background-color: #f9fafb; color: #4b5563; font-size: 1em;
+    background-color: var(--bg-tertiary); color: var(--text-secondary); font-size: 1em;
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     align-self: stretch;
 }
-.alternative-text { flex-grow: 1; color: #1f2937; font-size: 0.95em; padding: 12px 15px; }
+.alternative-text { flex-grow: 1; color: var(--text-primary); font-size: 0.95em; padding: 12px 15px; }
+.alternative-text p { margin: 0; white-space: pre-wrap; } /* Markdown em alternativas */
+.alternative-text ul, .alternative-text ol { margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 1.5em; } /* Menor indentação */
+.alternative-text ul { list-style-type: disc; }
+.alternative-text ol { list-style-type: decimal; }
+.alternative-text li { margin-bottom: 0.25em; }
+.alternative-text li p { margin-bottom: 0; }
+.alternative-text strong, .alternative-text b { font-weight: bold; }
+.alternative-text em, .alternative-text i { font-style: italic; }
 
-/* Feedback Visual (Mantido igual) */
-.alternative-letter.feedback-correct { background-color: #10a37f; color: #fff; border-color: #10a37f;}
-.alternative-letter.feedback-incorrect { background-color: #ef4444; color: #fff; border-color: #ef4444;}
-.alternative-item.correct-answer { border-color: #a7f3d0; background-color: #f0fdf4; }
+
+/* Feedback Visual */
+.alternative-letter.feedback-correct { background-color: var(--success-primary); color: #fff; border-color: var(--success-primary); }
+.alternative-letter.feedback-incorrect { background-color: var(--error-primary); color: #fff; border-color: var(--error-primary); }
+.alternative-item.correct-answer { border-color: #a7f3d0; background-color: var(--success-secondary); }
 .alternative-item.correct-answer .alternative-text { color: #065f46; }
 .alternative-item.correct-answer .alternative-letter { border-right-color: #a7f3d0; }
-.alternative-item.incorrect-choice { border-color: #fecaca; background-color: #fef2f2; }
+.alternative-item.incorrect-choice { border-color: #fecaca; background-color: var(--error-secondary); }
 .alternative-item.incorrect-choice .alternative-text { color: #991b1b; }
 .alternative-item.incorrect-choice .alternative-letter { border-right-color: #fecaca; }
+/* Estilo estático no banco */
+#question-bank-list .alternative-item.correct-answer-static { border-color: #a7f3d0; background-color: var(--success-secondary); }
+#question-bank-list .alternative-item.correct-answer-static .alternative-text { color: #065f46; font-weight: 500; }
 
-/* Footer do Card (Mantido igual) */
+/* Footer do Card */
 .question-footer {
-    padding: 10px 15px; border-top: 1px solid #f3f4f6; background-color: #f9fafb;
+    padding: 10px 15px; border-top: 1px solid #f3f4f6; background-color: var(--bg-tertiary);
     border-radius: 0 0 8px 8px; display: flex; justify-content: flex-end;
     align-items: center; min-height: 40px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .show-answer-btn {
-    background-color: #fff; border: 1px solid #d1d5db; color: #4b5563;
+    background-color: var(--bg-primary); border: 1px solid var(--border-secondary); color: var(--text-secondary);
     padding: 5px 12px; border-radius: 6px; font-size: 0.85em;
-    transition: background-color 0.2s, border-color 0.2s;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 .question-layout.answered .show-answer-btn { display: none; }
-.show-answer-btn:hover { background-color: #f9fafb; border-color: #9ca3af; }
+.show-answer-btn:hover { background-color: #f9fafb; border-color: #9ca3af; color: var(--text-primary); }
 .correct-answer-text { font-size: 0.9em; color: #065f46; font-weight: 500; }
-/* --- Estilos para a Página do Banco de Questões --- */
-.question-bank-container {
-    width: 100%;
-    max-width: 850px; /* Pode ser um pouco mais largo que o chat */
-    margin: 0 auto; /* Centraliza */
-    padding: 20px 15px; /* Espaçamento interno */
-    /* background-color: #fff; Fundo branco para a área de conteúdo */
-    border-radius: 8px;
-    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); */
-    /* border: 1px solid #e0e0e0; */
-    height: 100%; /* Ajusta altura descontando padding da main */
-    overflow-y: auto; /* Scroll para a lista de questões */
+
+
+/* ============================ */
+/* ======== DARK MODE ========= */
+/* ============================ */
+
+/* Define variáveis de cor para o modo escuro */
+[data-theme="dark"] {
+    --bg-primary: #1e1e1e; /* Fundo principal escuro */
+    --bg-secondary: #121212; /* Fundo geral mais escuro */
+    --bg-tertiary: #2c2c2c; /* Fundo da sidebar/cards */
+    --text-primary: #e0e0e0; /* Texto principal claro */
+    --text-secondary: #b0b0b0; /* Texto secundário */
+    --text-muted: #888888; /* Texto 'muted' */
+    --border-primary: #444444; /* Bordas primárias */
+    --border-secondary: #555555; /* Bordas secundárias */
+    --brand-primary: #10b981; /* Verde mais brilhante */
+    --brand-primary-hover: #0f8e6c; /* Verde hover */
+    --brand-secondary: #374151; /* Azul claro vira cinza escuro */
+    --brand-secondary-text: #e5e7eb; /* Texto sobre cinza escuro */
+    --error-primary: #f472b6; /* Rosa/Vermelho claro */
+    --error-secondary: #581c87; /* Fundo roxo escuro para erro */
+    --success-primary: #34d399; /* Verde claro */
+    --success-secondary: #064e3b; /* Fundo verde escuro para sucesso */
+
+    color-scheme: dark;
+}
+
+/* Aplica as variáveis no modo escuro */
+
+/* Body e Root */
+[data-theme="dark"] body { background-color: var(--bg-secondary); color: var(--text-primary); }
+[data-theme="dark"] #root { /* Nenhum estilo específico necessário aqui geralmente */ }
+
+/* Sidebar */
+[data-theme="dark"] .sidebar { background-color: var(--bg-tertiary); border-right-color: var(--border-primary); }
+[data-theme="dark"] .sidebar-header { border-bottom-color: #3a3a3a; } /* Linha escura específica */
+[data-theme="dark"] .logo-placeholder { color: var(--brand-primary); }
+[data-theme="dark"] .sidebar-nav { scrollbar-color: var(--border-secondary) var(--bg-tertiary); }
+[data-theme="dark"] .sidebar-nav::-webkit-scrollbar-track { background: var(--bg-tertiary); }
+[data-theme="dark"] .sidebar-nav::-webkit-scrollbar-thumb { background-color: var(--border-secondary); }
+[data-theme="dark"] .sidebar-nav a { color: var(--text-secondary); }
+[data-theme="dark"] .sidebar-nav a .icon { color: var(--text-muted); }
+[data-theme="dark"] .sidebar-nav a:hover { background-color: #3a3a3a; color: var(--text-primary); }
+[data-theme="dark"] .sidebar-nav a.active { background-color: var(--brand-secondary); color: var(--brand-secondary-text); }
+[data-theme="dark"] .sidebar-nav a.external-link:hover { background-color: #3a3a3a; color: var(--text-primary); }
+[data-theme="dark"] .sidebar-footer { border-top-color: #3a3a3a; }
+[data-theme="dark"] .sidebar-footer a { color: var(--text-muted); }
+[data-theme="dark"] .sidebar-footer a:hover { background-color: #3a3a3a; color: var(--text-primary); }
+[data-theme="dark"] .copyright { color: #666666; }
+
+/* Main Content e Containers */
+[data-theme="dark"] .main-content { background-color: var(--bg-primary); }
+[data-theme="dark"] .chat-interface-container,
+[data-theme="dark"] .question-bank-container,
+[data-theme="dark"] .home-page-container { scrollbar-color: var(--border-secondary) transparent; }
+[data-theme="dark"] .chat-interface-container::-webkit-scrollbar-thumb,
+[data-theme="dark"] .question-bank-container::-webkit-scrollbar-thumb,
+[data-theme="dark"] .home-page-container::-webkit-scrollbar-thumb { background-color: var(--border-secondary); }
+
+/* Chat */
+[data-theme="dark"] .chat-box { scrollbar-color: var(--border-secondary) transparent; }
+[data-theme="dark"] .chat-box::-webkit-scrollbar-thumb { background-color: var(--border-secondary); }
+[data-theme="dark"] .input-area { box-shadow: 0 -8px 20px -15px rgba(255, 255, 255, 0.05); }
+[data-theme="dark"] #user-input { background-color: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-primary); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+[data-theme="dark"] #user-input:focus { border-color: #777; box-shadow: 0 0 0 1px #777, 0 1px 3px rgba(0, 0, 0, 0.1); }
+[data-theme="dark"] #send-button { background-color: var(--brand-primary); }
+[data-theme="dark"] #send-button:hover { background-color: var(--brand-primary-hover); }
+[data-theme="dark"] #send-button:disabled { background-color: #555; color: #aaa; opacity: 0.6; }
+
+/* Mensagens Chat */
+[data-theme="dark"] .user-message { background-color: #2c5282; /* Azul escuro */ color: #e2e8f0; }
+[data-theme="dark"] .bot-message { background-color: var(--bg-tertiary); color: var(--text-secondary); border-color: var(--border-primary); }
+[data-theme="dark"] .typing-indicator { background-color: var(--bg-tertiary); color: var(--text-muted); border-color: var(--border-primary); }
+
+/* Banco de Questões */
+[data-theme="dark"] .question-bank-container h1 { color: var(--text-primary); border-bottom-color: var(--border-primary); }
+[data-theme="dark"] .results-count { color: var(--text-muted); }
+[data-theme="dark"] .loading-message,
+[data-theme="dark"] .error-message,
+[data-theme="dark"] .no-results-message { color: var(--text-muted); }
+[data-theme="dark"] .error-message { color: var(--error-primary); }
+[data-theme="dark"] .filter-section { background-color: var(--bg-tertiary); border-color: var(--border-primary); }
+[data-theme="dark"] .filter-group label { color: var(--text-secondary); }
+[data-theme="dark"] .filter-group select { background-color: #3a3a3a; color: var(--text-primary); border-color: var(--border-secondary); }
+
+/* Question Layout (Comum) */
+[data-theme="dark"] .question-layout { background-color: var(--bg-tertiary); border-color: var(--border-primary); }
+[data-theme="dark"] .question-header { background-color: #3a3a3a; border-bottom-color: var(--border-primary); }
+[data-theme="dark"] .question-tag { background-color: #444; color: var(--text-secondary); }
+[data-theme="dark"] .question-tag.pave-tag { background-color: var(--brand-primary); color: #111; } /* Texto escuro no verde claro */
+[data-theme="dark"] .question-tag.generated-ai-tag { background-color: #818cf8; color: #1e1b4b; } /* Texto escuro no roxo claro */
+[data-theme="dark"] .question-body { color: var(--text-primary); }
+[data-theme="dark"] .question-reference { color: var(--text-muted); }
+[data-theme="dark"] .alternative-item { background-color: var(--bg-tertiary); border-color: var(--border-secondary); }
+[data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover { background-color: #3a3a3a; border-color: #777; }
+[data-theme="dark"] #question-bank-list .alternative-item:hover { background-color: var(--bg-tertiary); border-color: var(--border-secondary); } /* Remove hover no banco */
+[data-theme="dark"] .alternative-letter { background-color: #3a3a3a; color: var(--text-secondary); border-right-color: var(--border-secondary); }
+[data-theme="dark"] .alternative-text { color: var(--text-primary); }
+
+/* Feedback Visual Dark */
+[data-theme="dark"] .alternative-letter.feedback-correct { background-color: var(--success-primary); color: #111; border-color: var(--success-primary); }
+[data-theme="dark"] .alternative-letter.feedback-incorrect { background-color: var(--error-primary); color: #111; border-color: var(--error-primary); }
+[data-theme="dark"] .alternative-item.correct-answer { border-color: #15803d; background-color: var(--success-secondary); }
+[data-theme="dark"] .alternative-item.correct-answer .alternative-text { color: #a7f3d0; } /* Texto verde claro */
+[data-theme="dark"] .alternative-item.correct-answer .alternative-letter { border-right-color: #15803d; }
+[data-theme="dark"] .alternative-item.incorrect-choice { border-color: #c026d3; background-color: var(--error-secondary); }
+[data-theme="dark"] .alternative-item.incorrect-choice .alternative-text { color: #f9a8d4; } /* Texto rosa claro */
+[data-theme="dark"] .alternative-item.incorrect-choice .alternative-letter { border-right-color: #c026d3; }
+/* Estilo estático banco dark */
+[data-theme="dark"] #question-bank-list .alternative-item.correct-answer-static { border-color: #15803d; background-color: var(--success-secondary); }
+[data-theme="dark"] #question-bank-list .alternative-item.correct-answer-static .alternative-text { color: #a7f3d0; }
+
+/* Footer Card Dark */
+[data-theme="dark"] .question-footer { background-color: #3a3a3a; border-top-color: var(--border-primary); }
+[data-theme="dark"] .show-answer-btn { background-color: var(--bg-tertiary); border-color: var(--border-secondary); color: var(--text-secondary); }
+[data-theme="dark"] .show-answer-btn:hover { background-color: #444; border-color: #777; color: var(--text-primary); }
+[data-theme="dark"] .correct-answer-text { color: #a7f3d0; }
+
+
+/* --- Logo SVG (Movido do App.css antigo, usar se necessário) --- */
+/* .app-logo { display: block; margin: 10px auto 20px auto; max-width: 150px; height: auto; } */
+/* .app-logo .logo-part-black { fill: #333; transition: fill 0.3s ease; } */
+/* .app-logo .logo-part-green { fill: var(--brand-primary); transition: fill 0.3s ease; } */
+/* [data-theme="dark"] .app-logo .logo-part-black { fill: var(--text-primary); } */
+/* [data-theme="dark"] .app-logo .logo-part-green { fill: #81C784; } */ /* Verde mais claro */
+
+
+/* --- SCROLLBARS GLOBAIS (se desejar um estilo consistente) --- */
+/* Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--border-secondary);
+    border-radius: 4px;
+    border: 2px solid var(--bg-secondary); /* Cria padding visual */
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-muted);
+}
+/* Firefox */
+* {
     scrollbar-width: thin;
-    scrollbar-color: #d1d5db00 #ffffff;
-}
-.question-bank-container::-webkit-scrollbar { width: 6px; }
-.question-bank-container::-webkit-scrollbar-track { background: #ffffff; }
-.question-bank-container::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 3px; }
-
-
-.question-bank-container h1 {
-    font-size: 1.4em;
-    font-weight: 500;
-    color: #1f2937;
-    margin-bottom: 25px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e5e7eb;
-    display: block; /* Garante que h1 seja bloco */
+    scrollbar-color: var(--border-secondary) var(--bg-secondary);
 }
 
-#question-bank-list {
-    display: flex;
-    flex-direction: column;
-    gap: 25px; /* Espaço entre os cards de questão */
-}
+/* --- Otimizações Mobile (Exemplo básico, refinar conforme necessário) --- */
+@media (max-width: 768px) {
+    .sidebar {
+        /* Poderia esconder a sidebar ou torná-la menor/overlay */
+        width: 60px; /* Exemplo: Sidebar recolhida */
+         /* Adicionar estilos para esconder texto e mostrar só ícones */
+         overflow: hidden;
+    }
+     .sidebar:hover { width: 260px; } /* Expande no hover (exemplo) */
 
-/* Ajuste para remover cursor pointer das alternativas estáticas */
-#question-bank-list .alternative-item {
-    cursor: default;
-}
- #question-bank-list .alternative-item:hover { /* Remove efeito hover */
-    background-color: #fff;
-    border-color: #d1d5db;
-}
+    .main-content { /* Ocupa toda a largura se a sidebar for overlay */ }
 
-/* Estilo para destacar a alternativa correta estaticamente */
-#question-bank-list .alternative-item.correct-answer-static {
-    border-color: #a7f3d0;
-    background-color: #f0fdf4;
-}
-#question-bank-list .alternative-item.correct-answer-static .alternative-text {
-     color: #065f46;
-     font-weight: 500; /* Opcional: leve negrito na correta */
-}
- /* Estilo para o V na letra correta */
-#question-bank-list .alternative-item .alternative-letter.feedback-correct {
-     background-color: #10a37f;
-     color: #fff;
-     border-color: #10a37f;
-}
-/* --- Estilos para a Seção de Filtros (Banco de Questões) --- */
-.filter-section {
-    display: flex;
-    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
-    gap: 15px; /* Espaço entre os grupos de filtro */
-    padding: 15px;
-    background-color: #f9fafb; /* Fundo levemente diferente */
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    margin-bottom: 25px; /* Espaço antes da lista de questões */
-    align-items: flex-end; /* Alinha itens na base */
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.filter-group label {
-    font-size: 0.85em;
-    font-weight: 500;
-    color: #4b5563;
-}
-
-.filter-group select {
-    padding: 8px 10px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background-color: #fff;
-    font-size: 0.9em;
-    min-width: 150px; /* Largura mínima */
-    cursor: pointer;
-}
-
-#apply-filters-btn {
-    padding: 8px 20px;
-    background-color: #10a37f; /* Mesmo verde do botão de envio */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.9em;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-    height: fit-content; /* Ajusta altura ao conteúdo */
-}
-
-#apply-filters-btn:hover {
-    background-color: #0f8e6c;
-}
-
-/* Garante que o CSS interativo das alternativas funcione aqui também */
-/* As regras de .alternative-item, .correct-choice, etc., já devem existir */
-/* Adicione esta se não existir, para resetar o cursor */
-#question-bank-list .alternative-item {
-    cursor: pointer;
-}
-#question-bank-list .question-layout.answered .alternative-item {
-    cursor: default;
-}
-/* Dentro da seção de Estilos do Card da Questão */
-
-.question-tag.generated-ai-tag {
-    background-color: #6366f1; /* Exemplo: Roxo/Azul */
-    color: #fff;
-    font-weight: 500;
-}
-/* --- Estilos para Listas Markdown --- */
-
-/* Aplica a listas dentro das bolhas de mensagem E dentro do corpo das questões */
-.message ul, .message ol,
-.question-body ul, .question-body ol,
-.alternative-text ul, .alternative-text ol { /* Inclui alternativas caso usem listas */
-    margin-top: 0.5em;    /* Espaço antes da lista */
-    margin-bottom: 0.5em; /* Espaço depois da lista */
-    padding-left: 2em;   /* <<< INDENTAÇÃO para dar espaço ao marcador */
-}
-
-/* Estilo padrão para listas não ordenadas (com bolinha) */
-.message ul,
-.question-body ul,
-.alternative-text ul {
-    list-style-type: disc; /* <<< GARANTE A BOLINHA */
-}
-
-/* Estilo padrão para listas ordenadas (com números) */
-.message ol,
-.question-body ol,
-.alternative-text ol {
-    list-style-type: decimal; /* <<< GARANTE OS NÚMEROS */
-}
-
-/* Estilo para os itens da lista */
-.message li,
-.question-body li,
-.alternative-text li {
-    margin-bottom: 0.25em; /* Pequeno espaço entre itens da lista */
-}
-
-/* Garante que parágrafos DENTRO de itens de lista não tenham margem extra */
-.message li p,
-.question-body li p,
-.alternative-text li p {
-    margin-bottom: 0;
+    .chat-interface-container,
+    .question-bank-container,
+    .home-page-container {
+        max-width: 100%;
+        padding: 15px 10px;
+    }
+    .chat-box { padding: 15px 0; }
+    .input-area { padding: 10px 0 15px 0; }
+    #user-input { padding: 12px 15px; }
+    #send-button { padding: 8px 15px; }
+    .message { max-width: 90%; font-size: 0.95em; }
+    .filter-section { gap: 10px; padding: 10px; }
+    .filter-group select { min-width: 120px; font-size: 0.85em; }
 }

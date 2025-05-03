@@ -1,0 +1,95 @@
+/* src/features/calculadora/components/CursoSelector.css */
+
+/* Container principal do selector */
+.calc-curso-selector-container {
+    margin-bottom: 25px; /* Spacing below the selector */
+    padding-bottom: 15px; /* Optional padding */
+    border-bottom: 1px solid var(--border-primary); /* Optional separator, uses global var */
+    transition: border-color 0.3s ease;
+}
+
+/* Label */
+.calc-curso-select-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary); /* Uses global var */
+    font-weight: 500; /* Adjusted weight */
+    font-size: 1em;
+    transition: color 0.3s ease;
+}
+
+/* Dropdown Select */
+.calc-curso-select-dropdown {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1em;
+    border: 1px solid var(--border-secondary); /* Uses global var */
+    border-radius: 6px; /* Adjusted border-radius */
+    background-color: var(--bg-primary); /* Uses global var */
+    color: var(--text-primary); /* Uses global var */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.calc-curso-select-dropdown:focus {
+    outline: none;
+    border-color: var(--brand-primary); /* Uses global var */
+    box-shadow: 0 0 0 1px var(--brand-primary); /* Adjusted shadow */
+}
+
+/* Mensagens de feedback */
+.calc-curso-feedback {
+    font-style: italic;
+    color: var(--text-muted); /* Uses global var */
+    margin-top: 5px;
+    font-size: 0.9em; /* Adjusted size */
+    transition: color 0.3s ease;
+}
+
+.calc-curso-feedback.error {
+    color: var(--error-primary); /* Uses global var */
+    font-style: normal;
+    font-weight: 500; /* Adjusted weight */
+}
+
+/* --- Dark Mode Overrides (Usando variáveis globais) --- */
+[data-theme="dark"] .calc-curso-selector-container {
+    border-bottom-color: var(--border-primary);
+}
+
+[data-theme="dark"] .calc-curso-select-label {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .calc-curso-select-dropdown {
+    background-color: #3a3a3a; /* Specific dark background */
+    color: var(--text-primary);
+    border-color: var(--border-secondary);
+}
+
+[data-theme="dark"] .calc-curso-select-dropdown:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 1px var(--brand-primary);
+}
+
+[data-theme="dark"] .calc-curso-feedback {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .calc-curso-feedback.error {
+    color: var(--error-primary);
+}
+
+
+/* --- Mobile Adjustments (Example) --- */
+@media (max-width: 600px) {
+    .calc-curso-selector-container {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+    .calc-curso-select-dropdown {
+        padding: 10px; /* Adjust padding for touch */
+        font-size: 0.95em;
+    }
+}

@@ -1,0 +1,94 @@
+/* src/features/calculadora/styles/CalculadoraWizard.css */
+
+.calc-wizard-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 30px 40px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Permite scroll geral SE necessário */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-secondary) transparent;
+}
+.calc-wizard-container::-webkit-scrollbar { width: 6px; }
+.calc-wizard-container::-webkit-scrollbar-track { background: transparent; }
+.calc-wizard-container::-webkit-scrollbar-thumb { background-color: var(--border-secondary); border-radius: 3px; }
+
+.calc-wizard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-primary);
+    transition: border-color 0.3s ease;
+    min-height: 40px;
+    flex-shrink: 0;
+}
+
+.calc-wizard-back-button {
+    background: none; border: none; padding: 5px; cursor: pointer; color: var(--text-muted);
+    border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center;
+    justify-content: center; transition: background-color 0.2s ease, color 0.2s ease; flex-shrink: 0;
+}
+.calc-wizard-back-button:hover { background-color: #f0f0f0; color: var(--text-primary); }
+.calc-wizard-back-button:disabled { opacity: 0.4; cursor: not-allowed; background-color: transparent !important; }
+.calc-wizard-back-button svg { width: 24px; height: 24px; stroke-width: 2; }
+
+/* --- Container do Conteúdo para Animação --- */
+.calc-wizard-content {
+    flex-grow: 1; /* Ocupa espaço vertical */
+    width: 100%;
+    display: flex; /* Usa flex para alinhar o motion.div */
+    /* Não precisa de align/justify aqui, o motion.div interno cuida disso */
+    padding-bottom: 30px;
+    box-sizing: border-box;
+    position: relative; /* <<< NECESSÁRIO para AnimatePresence com exit */
+    overflow: hidden;   /* <<< NECESSÁRIO para esconder conteúdo saindo */
+    min-height: 300px; /* Altura mínima para visualização da animação */
+}
+/* Estilo aplicado ao motion.div via prop 'style' no JSX */
+
+
+.calc-wizard-footer {
+    padding-top: 25px; margin-top: auto; border-top: 1px solid var(--border-primary);
+    text-align: center; transition: border-color 0.3s ease; flex-shrink: 0;
+}
+
+.calc-wizard-next-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-width: 180px; padding: 12px 25px; font-size: 1.05em; background-color: var(--brand-primary);
+    color: white; border: none; border-radius: 8px; cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.3s ease, transform 0.1s ease; font-weight: 500;
+}
+.calc-wizard-next-button:hover { background-color: var(--brand-primary-hover); }
+.calc-wizard-next-button:active { transform: scale(0.98); }
+.calc-wizard-next-button:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; opacity: 0.7; transform: none; }
+.calc-wizard-next-button svg { width: 20px; height: 20px; stroke-width: 2; }
+
+/* --- Dark Mode --- */
+[data-theme="dark"] .calc-wizard-container { scrollbar-color: var(--border-secondary) transparent; }
+[data-theme="dark"] .calc-wizard-container::-webkit-scrollbar-thumb { background-color: var(--border-secondary); }
+[data-theme="dark"] .calc-wizard-header { border-bottom-color: var(--border-primary); }
+[data-theme="dark"] .calc-wizard-back-button { color: var(--text-muted); }
+[data-theme="dark"] .calc-wizard-back-button:hover { background-color: #444; color: var(--text-primary); }
+[data-theme="dark"] .calc-wizard-back-button:disabled { opacity: 0.4; }
+[data-theme="dark"] .calc-wizard-footer { border-top-color: var(--border-primary); }
+[data-theme="dark"] .calc-wizard-next-button:disabled { background-color: #555; color: #aaa; opacity: 0.6; }
+
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+    .calc-wizard-container { padding: 25px 20px; }
+    .calc-wizard-header { padding-bottom: 15px; margin-bottom: 25px; }
+    .calc-wizard-content { padding-bottom: 25px; min-height: 250px; }
+    .calc-wizard-footer { padding-top: 20px; }
+    .calc-wizard-next-button { width: 100%; padding: 14px 20px; font-size: 1em; }
+}
+@media (max-width: 480px) {
+    .calc-wizard-container { padding: 20px 15px; }
+    .calc-wizard-header { margin-bottom: 20px; }
+    .calc-wizard-content { padding-bottom: 20px; min-height: 200px; }
+    .calc-wizard-footer { padding-top: 15px; }
+}

@@ -1,0 +1,104 @@
+/* src/features/calculadora/components/ShareButton.css */
+
+/* Container Principal */
+.calc-share-button-container {
+    text-align: center;
+    margin-top: 25px; /* Espaçamento acima */
+    position: relative; /* Para posicionar o feedback */
+}
+
+/* Botão Share */
+.calc-botao-share {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espaço texto/ícone */
+    width: auto;
+    min-width: 180px;
+    padding: 10px 20px;
+    font-size: 1em;
+    text-align: center;
+    background-color: var(--brand-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.3s ease, transform 0.1s ease;
+    font-weight: 500;
+}
+.calc-botao-share svg {
+    width: 1.1em;
+    height: 1.1em;
+    fill: currentColor;
+}
+.calc-botao-share:hover {
+    background-color: var(--brand-primary-hover);
+}
+.calc-botao-share:active {
+    transform: scale(0.98);
+}
+
+/* Mensagem de Feedback */
+.calc-copy-feedback {
+    display: inline-block; /* Ao lado do botão */
+    margin-left: 15px; /* Espaço do botão */
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    animation: calc-share-fadeOut 2.5s forwards; /* Animação específica */
+    border: 1px solid transparent;
+    vertical-align: middle;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.calc-copy-feedback.success {
+    background-color: var(--success-secondary);
+    color: var(--success-primary);
+    border-color: #a7f3d0; /* Cor clara da borda */
+}
+
+.calc-copy-feedback.error {
+    background-color: var(--error-secondary);
+    color: var(--error-primary);
+    border-color: #fecaca; /* Cor clara da borda */
+}
+
+/* Animação */
+@keyframes calc-share-fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Dark Mode */
+[data-theme="dark"] .calc-botao-share {
+    /* Estilos já usam variáveis que se adaptam */
+}
+[data-theme="dark"] .calc-copy-feedback.success {
+   background-color: var(--success-secondary);
+   color: var(--success-primary);
+   border-color: #15803d; /* Cor escura da borda */
+}
+[data-theme="dark"] .calc-copy-feedback.error {
+   background-color: var(--error-secondary);
+   color: var(--error-primary);
+   border-color: #c026d3; /* Cor escura da borda */
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .calc-botao-share {
+        width: 100%; /* Ocupa largura total */
+        max-width: 300px; /* Limita largura máxima */
+        margin-left: auto;
+        margin-right: auto;
+        display: flex; /* Garante alinhamento interno */
+    }
+    .calc-copy-feedback {
+        display: block; /* Fica abaixo */
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+    }
+}

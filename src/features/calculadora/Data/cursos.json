@@ -1,0 +1,45 @@
+
+[
+    {
+      "id": "eng_comp",
+      "nome": "Engenharia de Computação",
+      "notaCorte": 75.50,
+      "turno": "Matutino"
+    },
+    {
+      "id": "direito_m",
+      "nome": "Direito",
+      "notaCorte": 82.15,
+      "turno": "Diurno"
+    },
+    {
+      "id": "medicina",
+      "nome": "Medicina",
+      "notaCorte": 91.80,
+      "turno": "Noturno"
+    },
+    {
+      "id": "letras_pt",
+      "nome": "Letras - Português",
+      "notaCorte": 68.00,
+      "turno": "Noturno"
+    },
+    {
+      "id": "adm_n",
+      "nome": "Administração",
+      "notaCorte": 71.25,
+      "turno": "Noturno"
+    },
+    {
+      "id": "psico",
+      "nome": "Psicologia",
+      "notaCorte": 78.90,
+      "turno": "Noturno"
+    },
+    {
+      "id": "eng_civil",
+      "nome": "Engenharia Civil",
+      "notaCorte": 73.40,
+      "turno": "Noturno"
+    }
+  ]

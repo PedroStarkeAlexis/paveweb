@@ -1,0 +1,138 @@
+/* src/features/calculadora/components/telas/TelaDesempenhoRedacao.css */
+
+.calc-tela-redacao {
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* Reutiliza estilos de título se definidos globalmente ou em TelaDesempenho.css */
+/* Se não, defina-os aqui: */
+.calc-tela-titulo {
+    font-size: 1.6em;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+.calc-tela-titulo strong { color: var(--brand-primary); }
+.calc-tela-subtitulo {
+    font-size: 1em;
+    color: var(--text-secondary);
+    margin-bottom: 35px; /* Mais espaço antes dos botões */
+}
+
+.calc-redacao-botoes {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Espaço entre botões */
+    margin-bottom: 35px; /* Espaço antes do input (se aparecer) */
+}
+
+.calc-botao-opcao {
+    padding: 12px 30px;
+    font-size: 1em;
+    border: 2px solid var(--border-primary); /* Borda padrão */
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    min-width: 100px;
+}
+
+.calc-botao-opcao:hover {
+    border-color: var(--border-secondary);
+    background-color: #f9fafb; /* Leve fundo no hover */
+}
+
+.calc-botao-opcao.active {
+    border-color: var(--brand-primary);
+    background-color: var(--brand-primary);
+    color: white;
+    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.2);
+}
+
+.calc-redacao-input-container {
+    margin-top: 20px; /* Espaço se o input aparecer */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.calc-redacao-input-container label {
+    font-size: 0.9em;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.calc-input-redacao {
+    width: 120px; /* Input um pouco mais largo */
+    padding: 12px 10px;
+    font-size: 1.1em;
+    text-align: center;
+    border: 1px solid var(--border-secondary);
+    border-radius: 8px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+.calc-input-redacao::-webkit-outer-spin-button,
+.calc-input-redacao::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.calc-input-redacao:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05), 0 0 0 2px rgba(16, 185, 129, 0.3);
+}
+
+.calc-redacao-info {
+    margin-top: 25px;
+    font-size: 0.95em;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Dark Mode */
+[data-theme="dark"] .calc-botao-opcao {
+    border-color: var(--border-secondary);
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+[data-theme="dark"] .calc-botao-opcao:hover {
+    border-color: #777;
+    background-color: #444;
+}
+[data-theme="dark"] .calc-botao-opcao.active {
+    border-color: var(--brand-primary);
+    background-color: var(--brand-primary);
+    color: #111; /* Texto escuro */
+    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3);
+}
+[data-theme="dark"] .calc-redacao-input-container label { color: var(--text-muted); }
+[data-theme="dark"] .calc-input-redacao {
+    background-color: #3a3a3a;
+    color: var(--text-primary);
+    border-color: var(--border-secondary);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+[data-theme="dark"] .calc-input-redacao:focus {
+    border-color: var(--brand-primary);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2), 0 0 0 2px rgba(16, 185, 129, 0.4);
+}
+[data-theme="dark"] .calc-redacao-info { color: var(--text-muted); }
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .calc-tela-redacao { padding: 15px 0; }
+    .calc-tela-titulo { font-size: 1.4em; }
+    .calc-tela-subtitulo { font-size: 0.95em; margin-bottom: 30px; }
+    .calc-redacao-botoes { gap: 10px; margin-bottom: 30px; }
+    .calc-botao-opcao { padding: 10px 20px; font-size: 0.95em; min-width: 80px; }
+    .calc-input-redacao { width: 100px; }
+}

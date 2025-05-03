@@ -1,0 +1,113 @@
+/* src/features/calculadora/components/TabelaDetalhadaResultado.css */
+
+/* Classe específica para a tabela detalhada */
+.calc-tabela-detalhada {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em; /* Tamanho ligeiramente menor */
+    margin: 0 auto; /* Centraliza se o container for mais largo */
+    background-color: var(--bg-primary); /* Garante fundo */
+    border: 1px solid var(--border-primary); /* Borda externa opcional */
+    border-radius: 6px; /* Cantos arredondados */
+    overflow: hidden; /* Garante que bordas funcionem */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.calc-tabela-detalhada th,
+.calc-tabela-detalhada td {
+    padding: 10px 12px; /* Padding interno */
+    border: none; /* Remove bordas internas padrão */
+    border-bottom: 1px solid var(--border-primary); /* Linha separadora horizontal */
+    text-align: left;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: var(--text-secondary);
+}
+.calc-tabela-detalhada tbody tr:last-child td {
+    border-bottom: none; /* Remove borda da última linha */
+}
+
+
+.calc-tabela-detalhada thead th { /* Cabeçalho */
+    background-color: var(--bg-tertiary);
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9em;
+    text-transform: uppercase; /* Opcional: Maiúsculas */
+    letter-spacing: 0.5px; /* Opcional: Espaçamento */
+    border-bottom-width: 2px; /* Linha mais grossa abaixo do header */
+    border-bottom-color: var(--border-primary);
+}
+
+/* Alinhamentos específicos das colunas */
+.calc-tabela-detalhada td:nth-child(2) { /* Coluna Nota */
+    text-align: right;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-family: monospace; /* Opcional: Fonte monoespaçada para números */
+}
+.calc-tabela-detalhada td:nth-child(3) { /* Coluna Contribuição */
+    text-align: right;
+    font-family: monospace; /* Opcional: Fonte monoespaçada para números */
+}
+
+/* Linha de detalhe da redação (se usada) */
+.calc-linha-detalhe-redacao td {
+    font-size: 0.9em;
+    color: var(--text-muted);
+    background-color: #fafafa; /* Fundo levemente diferente */
+}
+.calc-linha-detalhe-redacao td:nth-child(1) {
+    font-style: italic;
+}
+
+
+/* Linha Final (mantida do CSS antigo) */
+.calc-tabela-detalhada .calc-linha-final td {
+    font-weight: bold;
+    font-size: 1.05em; /* Tamanho ligeiramente maior */
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-top: 2px solid var(--border-primary); /* Linha mais grossa acima */
+}
+.calc-tabela-detalhada .calc-linha-final td:last-child {
+    font-size: 1.15em;
+    text-align: right;
+    color: var(--brand-primary);
+}
+
+/* Dark Mode */
+[data-theme="dark"] .calc-tabela-detalhada {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+[data-theme="dark"] .calc-tabela-detalhada th,
+[data-theme="dark"] .calc-tabela-detalhada td {
+    border-bottom-color: var(--border-primary);
+    color: var(--text-secondary);
+}
+[data-theme="dark"] .calc-tabela-detalhada thead th {
+    background-color: #3a3a3a;
+    color: var(--text-primary);
+    border-bottom-color: var(--border-secondary);
+}
+[data-theme="dark"] .calc-tabela-detalhada td:nth-child(2) { color: var(--text-primary); }
+[data-theme="dark"] .calc-linha-detalhe-redacao td {
+    color: var(--text-muted);
+    background-color: #2a2a2a; /* Fundo escuro sutil */
+}
+[data-theme="dark"] .calc-tabela-detalhada .calc-linha-final td {
+    background-color: #3a3a3a;
+    color: var(--text-primary);
+    border-top-color: var(--border-secondary);
+}
+[data-theme="dark"] .calc-tabela-detalhada .calc-linha-final td:last-child { color: var(--brand-primary); }
+
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .calc-tabela-detalhada { font-size: 0.9em; }
+    .calc-tabela-detalhada th, .calc-tabela-detalhada td { padding: 8px 10px; }
+    .calc-tabela-detalhada .calc-linha-final td { font-size: 1em; }
+    .calc-tabela-detalhada .calc-linha-final td:last-child { font-size: 1.1em; }
+}

@@ -1,0 +1,208 @@
+/* src/features/calculadora/styles/Calculadora.css */
+
+/* Container principal da Calculadora */
+/* Ajuste o padding/max-width conforme necessário para integrar no layout geral */
+.calc-container {
+    width: 100%;
+    max-width: 550px; /* Um pouco mais largo que no original? Ajuste */
+    margin: 20px auto; /* Adiciona margem superior/inferior e centraliza */
+    padding: 20px;
+    background-color: var(--bg-primary); /* Usa variável global */
+    border: 1px solid var(--border-primary); /* Usa variável global */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Evita scroll horizontal */
+}
+
+/* Estilos para o Logo SVG (se for usado dentro da CalculadoraPage) */
+.calc-app-logo {
+    display: block;
+    margin: 0 auto 25px auto; /* Margem inferior ajustada */
+    max-width: 130px;
+    height: auto;
+    flex-shrink: 0;
+}
+.calc-app-logo .calc-logo-part-black {
+    fill: #333; /* Cor padrão light */
+    transition: fill 0.3s ease;
+}
+.calc-app-logo .calc-logo-part-green {
+    fill: var(--brand-primary); /* Usa variável */
+    transition: fill 0.3s ease;
+}
+[data-theme="dark"] .calc-app-logo .calc-logo-part-black {
+    fill: var(--text-primary);
+}
+[data-theme="dark"] .calc-app-logo .calc-logo-part-green {
+    fill: #81C784; /* Verde claro específico */
+}
+
+
+/* Container interno das etapas (se precisar de um wrapper extra) */
+.calc-etapas-wrapper {
+    /* Pode adicionar padding interno ou margens aqui se necessário */
+    position: relative; /* Para filhos com position absolute */
+}
+
+/* Navegação Superior (Voltar / Passos) */
+.calc-navegacao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px; /* Aumenta espaço */
+    padding-bottom: 15px; /* Adiciona padding inferior */
+    border-bottom: 1px solid var(--border-primary); /* Linha divisória */
+    transition: border-color 0.3s ease;
+}
+
+.calc-botao-voltar {
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    padding: 0;
+    border: 1px solid var(--border-secondary);
+    border-radius: 50%; /* Botão redondo */
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; /* Tamanho fixo */
+    height: 36px;
+    box-sizing: border-box;
+}
+.calc-botao-voltar:hover {
+    background-color: #e5e7eb; /* Cor específica hover light */
+    border-color: #9ca3af;
+    color: var(--text-primary);
+}
+.calc-botao-voltar:disabled,
+.calc-botao-voltar:disabled:hover {
+    background-color: #cccccc;
+    color: #666666;
+    border-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+.calc-icone-seta {
+    width: 18px;
+    height: 18px;
+    display: block;
+    stroke: currentColor; /* Usa a cor do botão */
+    stroke-width: 1.5;
+}
+
+/* Estilos dos Passos (movidos para componente Passos.css) */
+
+/* Botão Principal (Próximo/Finalizar) */
+.calc-botao-principal {
+    display: block;
+    width: fit-content;
+    max-width: 90%;
+    min-width: 180px;
+    margin: 2rem auto 0 auto;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    text-align: center;
+    background-color: var(--brand-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.3s ease;
+    font-weight: 500;
+}
+.calc-botao-principal:hover {
+    background-color: var(--brand-primary-hover);
+}
+.calc-botao-principal:disabled,
+.calc-botao-principal:disabled:hover {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.7;
+    box-shadow: none;
+}
+/* Modificador para botão na etapa de redação */
+.calc-botao-principal-redacao {
+    /* Pode ter estilos diferentes se necessário */
+}
+
+/* --- DARK MODE para Calculadora --- */
+
+[data-theme="dark"] .calc-container {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-primary);
+}
+[data-theme="dark"] .calc-navegacao {
+    border-bottom-color: var(--border-primary);
+}
+[data-theme="dark"] .calc-botao-voltar {
+    background-color: #3a3a3a;
+    color: var(--text-secondary);
+    border-color: var(--border-secondary);
+}
+[data-theme="dark"] .calc-botao-voltar:hover {
+    background-color: #444;
+    border-color: #777;
+    color: var(--text-primary);
+}
+[data-theme="dark"] .calc-botao-voltar:disabled,
+[data-theme="dark"] .calc-botao-voltar:disabled:hover {
+    background-color: #555;
+    color: #aaa;
+    border-color: #555;
+    opacity: 0.6;
+}
+[data-theme="dark"] .calc-botao-principal {
+    /* background-color: var(--brand-primary); */ /* Já usa variável */
+}
+[data-theme="dark"] .calc-botao-principal:hover {
+    /* background-color: var(--brand-primary-hover); */ /* Já usa variável */
+}
+[data-theme="dark"] .calc-botao-principal:disabled,
+[data-theme="dark"] .calc-botao-principal:disabled:hover {
+    background-color: #555;
+    color: #aaa;
+    opacity: 0.6;
+}
+
+/* --- Responsividade Calculadora --- */
+@media (max-width: 600px) {
+    .calc-container {
+        padding: 15px;
+        margin: 15px auto;
+    }
+    .calc-app-logo {
+        max-width: 115px;
+        margin-bottom: 20px;
+    }
+    .calc-navegacao {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+    .calc-botao-voltar {
+        width: 32px;
+        height: 32px;
+    }
+    .calc-icone-seta {
+        width: 16px;
+        height: 16px;
+    }
+    .calc-botao-principal {
+        width: 100%;
+        max-width: 100%;
+        min-width: unset;
+        margin: 1.5rem 0 0 0;
+        padding: 14px 16px;
+        font-size: 1.05em;
+        box-sizing: border-box;
+    }
+}
+@media (max-width: 380px) {
+    .calc-container { padding: 10px; }
+    .calc-app-logo { max-width: 100px; }
+    .calc-botao-principal { font-size: 1em; padding: 12px 14px; }
+}
