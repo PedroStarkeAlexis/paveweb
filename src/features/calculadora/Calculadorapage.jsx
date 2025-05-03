@@ -1,6 +1,6 @@
 // src/features/calculadora/CalculadoraPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'; // <<< IMPORTAR FRAMER MOTION
+import { motion, AnimatePresence } from 'framer-motion';
 
 // --- COMPONENTES DAS TELAS ---
 import TelaDesempenhoEtapa1 from './components/telas/TelaDesempenhoEtapa1';
@@ -24,7 +24,7 @@ import {
     ETAPA_VIEW_3,
     WIZARD_STEPS
 } from './constants';
-import cursosData from './data/cursos.json';
+// import cursosData from './data/cursos.json'; // <<< REMOVIDO IMPORT LOCAL
 import './styles/CalculadoraWizard.css';
 
 // --- DEFINIÇÕES DA ANIMAÇÃO ---
@@ -56,6 +56,12 @@ function CalculadoraPage() {
         notaRedacao: 0,
     });
     const [validationErrors, setValidationErrors] = useState({});
+
+    // <<< NOVO ESTADO PARA CURSOS >>>
+    const [cursosDisponiveis, setCursosDisponiveis] = useState([]);
+    const [loadingCursos, setLoadingCursos] = useState(true);
+    const [errorCursos, setErrorCursos] = useState(null);
+
 
     // --- FUNÇÕES AUXILIARES ---
     const getKeysForEtapa = useCallback((etapaPAVE) => {
@@ -128,6 +134,42 @@ function CalculadoraPage() {
         setSelecaoCurso({ cursoId: event.target.value });
     }, []);
 
+     // <<< NOVO useEffect PARA BUSCAR CURSOS >>>
+     useEffect(() => {
+        const fetchCursos = async () => {
+            setLoadingCursos(true);
+            setErrorCursos(null);
+            try {
+                // <<< USA A URL PÚBLICA DO R2 FORNECIDA >>>
+                const publicR2Url = 'https://pub-bb3996c786cd4543b2f53acdabbd9915.r2.dev/cursos.json';
+
+                console.log(`Buscando cursos de: ${publicR2Url}`);
+
+                const response = await fetch(publicR2Url, {
+                     cache: 'no-cache' // Evita cache durante testes
+                });
+
+                if (!response.ok) {
+                     console.error(`Erro ao carregar cursos: ${response.status} ${response.statusText}`);
+                     const errorBody = await response.text();
+                     console.error("Corpo da resposta de erro:", errorBody);
+                     throw new Error(`Erro ${response.status} ao buscar cursos.`);
+                }
+
+                const data = await response.json();
+                setCursosDisponiveis(Array.isArray(data) ? data : []);
+            } catch (error) {
+                console.error("Falha ao buscar/processar cursos.json do R2:", error);
+                setErrorCursos("Não foi possível carregar a lista de cursos.");
+                setCursosDisponiveis([]);
+            } finally {
+                setLoadingCursos(false);
+            }
+        };
+
+        fetchCursos();
+    }, []); // Roda apenas uma vez na montagem
+
     // --- Cálculo das Notas das Etapas ---
     useEffect(() => {
         const novasNotasEtapas = {};
@@ -146,7 +188,6 @@ function CalculadoraPage() {
                 if (total > TOTAL_QUESTOES) { calculoValidoGeral = false; }
             }
         }
-
         setResultados(prevResultados => ({
             ...prevResultados,
             notasEtapas: novasNotasEtapas
@@ -155,7 +196,7 @@ function CalculadoraPage() {
     }, [desempenho.acertosE1, desempenho.ignoradasE1,
         desempenho.acertosE2, desempenho.ignoradasE2,
         desempenho.acertosE3, desempenho.ignoradasE3,
-        getKeysForEtapa, validationErrors]);
+        getKeysForEtapa, validationErrors]); // Incluído validationErrors
 
     // --- CALCULAR RESULTADOS FINAIS ---
     const calcularResultadosFinais = useCallback(() => {
@@ -168,7 +209,8 @@ function CalculadoraPage() {
         const notaFinalCalculada = calcularNotaFinal(notasCalculadas, notaRedacaoValida, incluirRedacaoFinal);
         const notaFinalNum = parseFloat(notaFinalCalculada);
 
-        const cursoInfo = cursosData.find(c => c.id === selecaoCurso.cursoId) || null;
+        // <<< USA cursosDisponiveis DO ESTADO >>>
+        const cursoInfo = cursosDisponiveis.find(c => c.id === selecaoCurso.cursoId) || null;
         let chancesCalculadas = null;
         if (cursoInfo) {
             chancesCalculadas = calcularChances(notaFinalNum, cursoInfo.notaCorte);
@@ -182,7 +224,7 @@ function CalculadoraPage() {
             incluirRedacao: incluirRedacaoFinal,
             notaRedacao: notaRedacaoValida,
         }));
-    }, [resultados.notasEtapas, desempenho.incluirRedacao, desempenho.notaRedacao, selecaoCurso.cursoId]);
+    }, [resultados.notasEtapas, desempenho.incluirRedacao, desempenho.notaRedacao, selecaoCurso.cursoId, cursosDisponiveis]); // Adiciona cursosDisponiveis
 
     // --- Verifica se a etapa ATUAL do wizard é válida para avançar ---
     const isCurrentWizardStepValid = useCallback(() => {
@@ -198,7 +240,10 @@ function CalculadoraPage() {
                 if (desempenho.incluirRedacao && desempenho.notaRedacao === '') return false;
                 return true;
             case WIZARD_STEPS.CURSO:
-                return !!selecaoCurso.cursoId;
+                // Habilita mesmo que cursos ainda estejam carregando,
+                // mas a seleção só será possível quando carregados.
+                // A validação real é ter um cursoId selecionado.
+                 return !!selecaoCurso.cursoId;
             default:
                 return true;
         }
@@ -240,11 +285,19 @@ function CalculadoraPage() {
             case WIZARD_STEPS.ETAPA_2: return <TelaDesempenhoEtapa2 onChange={handleDesempenhoChange} values={desempenho} errors={validationErrors} />;
             case WIZARD_STEPS.ETAPA_3: return <TelaDesempenhoEtapa3 onChange={handleDesempenhoChange} values={desempenho} errors={validationErrors} />;
             case WIZARD_STEPS.REDACAO: return <TelaDesempenhoRedacao onChange={handleRedacaoChange} values={desempenho} />;
-            case WIZARD_STEPS.CURSO: return <TelaSelecaoCurso onChange={handleCursoChange} selectedId={selecaoCurso.cursoId} cursos={cursosData} />;
+            case WIZARD_STEPS.CURSO:
+                 return <TelaSelecaoCurso
+                            onChange={handleCursoChange}
+                            selectedId={selecaoCurso.cursoId}
+                            // <<< PASSA OS CURSOS DO ESTADO >>>
+                            cursos={cursosDisponiveis}
+                            isLoading={loadingCursos}
+                            error={errorCursos}
+                         />;
             case WIZARD_STEPS.RESULTADO: return <TelaResultado resultados={resultados} onSimularNovamente={() => setWizardStep(WIZARD_STEPS.ETAPA_1)} />;
             default: return <div>Etapa inválida</div>;
         }
-    }, [wizardStep, handleDesempenhoChange, handleRedacaoChange, handleCursoChange, desempenho, validationErrors, selecaoCurso.cursoId, resultados]);
+    }, [wizardStep, handleDesempenhoChange, handleRedacaoChange, handleCursoChange, desempenho, validationErrors, selecaoCurso.cursoId, resultados, cursosDisponiveis, loadingCursos, errorCursos]); // Adiciona dependências
 
 
     // --- RENDERIZAÇÃO PRINCIPAL DO WIZARD ---
@@ -259,25 +312,20 @@ function CalculadoraPage() {
                      <div style={{width: '40px', flexShrink: 0}}></div>
                  </div>
             )}
-
-            {/* <<< Área de Conteúdo com Animação >>> */}
             <div className="calc-wizard-content">
                 <AnimatePresence mode='wait'>
                     <motion.div
-                        key={wizardStep} // Chave muda a cada etapa
+                        key={wizardStep}
                         variants={slideVariants}
                         initial="hidden"
                         animate="visible"
                         exit="exit"
-                        style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }} // Estilo para ocupar espaço e centralizar
+                        style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
                         {renderCurrentStep()}
                     </motion.div>
                 </AnimatePresence>
             </div>
-             {/* <<< Fim Área de Conteúdo >>> */}
-
-
             <div className="calc-wizard-footer">
                 {wizardStep !== WIZARD_STEPS.RESULTADO && (
                     <button className="calc-wizard-next-button" onClick={handleProximaEtapa} disabled={!isCurrentWizardStepValid()} >
