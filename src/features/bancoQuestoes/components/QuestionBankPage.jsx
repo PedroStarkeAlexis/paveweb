@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 // --- Imports Locais Atualizados ---
-import Filters from './Filters';
+import Filters from './filters.jsx';
 import QuestionList from './QuestionList';
 
 function QuestionBankPage() {
