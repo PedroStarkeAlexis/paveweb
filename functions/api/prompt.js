@@ -1,37 +1,30 @@
 // /functions/api/prompt.js
-// Responsável por construir o prompt para análise da IA.
 
-/**
- * Cria o prompt para a API Gemini analisar a intenção e extrair entidades.
- * @param {Array} history - O histórico da conversa.
- * @param {string} userQuery - A última mensagem do usuário.
- * @returns {string} O prompt formatado para a API.
- */
 export function createAnalysisPrompt(history, userQuery) {
-    // Instruções claras para a IA
-    const analysisPrompt = `
-  Você é um assistente focado em ajudar estudantes com questões do PAVE UFPel.
-  Analise a última mensagem do usuário no contexto do histórico da conversa fornecido.
-  Histórico:
-  ${JSON.stringify(history)}
-  
-  Última mensagem do usuário: "${userQuery}"
-  
-  Sua Tarefa:
-  1. Determine a intenção principal do usuário. Escolha EXATAMENTE uma das seguintes: BUSCAR_QUESTAO, CRIAR_QUESTAO, CONVERSAR, DESCONHECIDO.
-  2. Se a intenção for BUSCAR_QUESTAO ou CRIAR_QUESTAO, extraia entidades relevantes como 'materia', 'topico', 'ano'. Se não encontrar uma entidade específica, use null para seu valor. O tópico deve ser um resumo curto do assunto principal pedido.
-  3. **IMPORTANTE:** Se a intenção for CRIAR_QUESTAO ou CONVERSAR, você DEVE gerar uma resposta textual apropriada no campo 'responseText'.
-     - Para CRIAR_QUESTAO: Gere uma questão INÉDITA de múltipla escolha (A-E) no estilo do PAVE sobre o tópico/descrição extraído. Formate a questão claramente com as seções: Matéria:, Tópico:, Enunciado:, A) ..., B) ..., C) ..., D) ..., E) ..., Resposta Correta: [Letra]. Inclua um breve comentário introdutório antes da questão, como "Certo, elaborei esta questão:". Coloque TUDO isso dentro do campo 'responseText'.
-     - Para CONVERSAR: Gere uma resposta curta e útil à pergunta ou comentário do usuário no campo 'responseText'.
-     - Para BUSCAR_QUESTAO ou DESCONHECIDO: O campo 'responseText' DEVE ser null.
-  4. Retorne sua análise E a resposta gerada (se aplicável) ESTRITAMENTE como um objeto JSON válido, sem nenhum texto antes ou depois. Use a seguinte estrutura:
-  {
-    "intent": "SUA_INTENCAO_ESCOLHIDA",
-    "entities": { "materia": "...", "topico": "...", "ano": ... }, // Ou null se não aplicável/encontrado
-    "responseText": "Seu texto gerado aqui (para CRIAR ou CONVERSAR)" // Ou null para BUSCAR/DESCONHECIDO
-  }
-  `;
-    return analysisPrompt;
-  }
-  
-  // Poderiam existir outras funções de criação de prompt aqui no futuro.
+  const analysisPrompt = `
+Você é um assistente focado em ajudar estudantes com questões do PAVE UFPel.
+Analise a última mensagem do usuário neste histórico:
+${JSON.stringify(history)}
+
+Última mensagem do usuário: "${userQuery}"
+
+Sua Tarefa:
+1.  Determine a intenção principal: BUSCAR_QUESTAO (mostrar existente), CRIAR_QUESTAO (gerar nova), CONVERSAR (responder pergunta/comentário), DESCONHECIDO.
+2.  Se BUSCAR_QUESTAO ou CRIAR_QUESTAO, extraia entidades: 'materia', 'topico', 'ano' (use null se não encontrar).
+3.  **SE a intenção for CRIAR_QUESTAO:**
+    a.  Gere uma questão INÉDITA de múltipla escolha (A-E) sobre o tópico/descrição extraído, no estilo PAVE.
+    b.  **TENTE** formatar essa questão GERADA como um objeto JSON dentro do campo "generated_question". A estrutura DEVE ser: { "materia": "...", "topico": "...", "texto_questao": "...", "alternativas": [ { "letra": "A", "texto": "..." }, ... ], "resposta_letra": "..." }. Use null para matéria/tópico se não conseguir definir.
+    c.  Se NÃO conseguir formatar a questão como JSON ESTRUTURADO, coloque null em "generated_question" e o texto bruto da questão gerada (ou uma mensagem de erro) em "responseText".
+    d.  Inclua um breve comentário introdutório (como "Certo, elaborei esta questão:") no início do "responseText" APENAS se o "generated_question" for null.
+4.  **SE a intenção for CONVERSAR:** Gere uma resposta textual apropriada e coloque-a em "responseText". O campo "generated_question" DEVE ser null.
+5.  **SE a intenção for BUSCAR_QUESTAO ou DESCONHECIDO:** Os campos "generated_question" e "responseText" DEVEM ser null.
+6.  Retorne ESTRITAMENTE um objeto JSON válido com a estrutura:
+    {
+      "intent": "...",
+      "entities": { "materia": "...", "topico": "...", "ano": ... } | null,
+      "generated_question": { ... (objeto da questão) ... } | null,
+      "responseText": "..." | null
+    }
+`;
+  return analysisPrompt;
+}

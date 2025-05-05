@@ -13,73 +13,48 @@ export function removeAccents(str) {
 }
 
 /**
- * Tenta parsear texto gerado pela IA para um objeto de questão estruturado.
- * @param {string} aiText - O texto completo retornado pela IA.
- * @returns {object | null} Um objeto de questão formatado ou null se o parse falhar.
+ * Tenta parsear texto que PODE conter uma questão, como um fallback.
+ * MENOS ROBUSTO que pedir JSON direto para a IA.
+ * @param {string} text - Texto que pode conter a questão.
+ * @returns {object | null} Objeto de questão ou null.
  */
-export function parseAiGeneratedQuestion(aiText) {
-    console.log("[filter.js] Tentando parsear texto da IA para questão...");
-    if (typeof aiText !== 'string' || !aiText) return null;
+export function parseAiGeneratedQuestion(text) {
+    if (typeof text !== 'string' || !text) return null;
+    console.log("[filter.js] Tentando parse de fallback...");
     try {
-        let enunciado = null; const alternativas = []; let respostaLetra = null;
-        let materia = "Indefinida"; let topico = "Indefinido";
-        let textoRestante = aiText; const referencia = "Questão gerada por IA.";
-        const materiaRegex = /^\s*Matéria[:\s]+([\s\S]*?)(?=\n|$)/im;
-        const topicoRegex = /^\s*Tópico[:\s]+([\s\S]*?)(?=\n|$)/im;
-        const enunciadoRegex = /^(?:Enunciado|Questão|Pergunta|Leia o texto a seguir)[:\s]*([\s\S]*?)(?=\n\s*[A-Ea-e][).:]\s|\n\s*Resposta Correta:|\n\s*Alternativas:|$)/im;
-        const alternativaRegex = /^\s*([A-Ea-e])[).:]\s+([\s\S]*?)(?=\n\s*[A-Ea-e][).:]|\n\s*Resposta Correta:|$)/gm;
-        const respostaRegex = /(?:Resposta Correta|Gabarito|Correta)[:\s]*\s*([A-Ea-e])(?:[).:]|\s|$)/i;
+        // Regex muito simples para tentar extrair o básico
+        // Procura por Enunciado:, A), B), ..., Resposta Correta: [Letra]
+        const questaoMatch = text.match(/Enunciado:([\s\S]+)A\)([\s\S]+)B\)([\s\S]+)C\)([\s\S]+)D\)([\s\S]+)E\)([\s\S]+)(?:Resposta Correta|Gabarito):\s*\[?([A-E])\]?/im);
+        if (questaoMatch) {
+            // Captura os grupos do regex
+            const [_, enunciado, a, b, c, d, e, resp] = questaoMatch.map(s => s?.trim()); // Usa trim em cada grupo
 
-        const materiaMatch = textoRestante.match(materiaRegex);
-        if (materiaMatch?.[1]) { materia = materiaMatch[1].trim(); textoRestante = textoRestante.replace(materiaMatch[0], '').trim(); }
+            // Validação mínima
+            if (!enunciado || !a || !b || !c || !d || !e || !resp) {
+                console.warn("[filter.js] Parse fallback: Faltam partes essenciais da questão.");
+                return null;
+            }
 
-        const topicoMatch = textoRestante.match(topicoRegex);
-        if (topicoMatch?.[1]) { topico = topicoMatch[1].trim(); textoRestante = textoRestante.replace(topicoMatch[0], '').trim(); }
-
-        let textoParaEnunciado = textoRestante;
-        const enunciadoMatch = textoParaEnunciado.match(enunciadoRegex);
-        let textoParaAlternativas = textoRestante;
-
-        if (enunciadoMatch?.[1]) {
-            enunciado = enunciadoMatch[1].trim().replace(/^(Enunciado|Questão|Pergunta)[:\s]*/i, '').trim();
-             if (textoParaAlternativas.startsWith(enunciadoMatch[0])) {
-                 textoParaAlternativas = textoParaAlternativas.substring(enunciadoMatch[0].length).trim();
-             } else {
-                 const idxEnunciado = textoParaAlternativas.indexOf(enunciado);
-                 if (idxEnunciado !== -1) { textoParaAlternativas = textoParaAlternativas.substring(idxEnunciado + enunciado.length).trim(); }
-             }
-        } else {
-            const firstAltIndex = textoParaAlternativas.search(/^\s*[A-Ea-e][).:]\s+/m);
-            if (firstAltIndex > 0) {
-                enunciado = textoParaAlternativas.substring(0, firstAltIndex).trim();
-                textoParaAlternativas = textoParaAlternativas.substring(firstAltIndex);
-            } else { enunciado = textoParaAlternativas; textoParaAlternativas = ""; }
+            // Cria um objeto básico (sem matéria/tópico extraídos daqui)
+            return {
+                 id: `gen-fallback-${Date.now()}`, ano: null, etapa: null, materia: "Gerada (Fallback)", topico: "Gerado (Fallback)",
+                 texto_questao: enunciado, referencia: "Questão gerada por IA (fallback).",
+                 alternativas: [
+                     { letra: 'A', texto: a }, { letra: 'B', texto: b },
+                     { letra: 'C', texto: c }, { letra: 'D', texto: d },
+                     { letra: 'E', texto: e }
+                 ],
+                 resposta_letra: resp.toUpperCase()
+            };
         }
-        if (!enunciado) { console.warn("[filter.js] Parse: Enunciado vazio."); return null; }
-
-        let match;
-        while ((match = alternativaRegex.exec(textoParaAlternativas)) !== null) {
-            if (match.index === alternativaRegex.lastIndex) { alternativaRegex.lastIndex++; }
-            const letra = match[1]?.toUpperCase(); const texto = match[2]?.trim();
-            if (letra && texto) { alternativas.push({ letra: letra, texto: texto }); }
-        }
-        if (alternativas.length < 2 && textoParaAlternativas !== "") { console.warn(`[filter.js] Parse: Alternativas insuficientes (${alternativas.length}).`); }
-
-        const respostaMatch = aiText.match(respostaRegex);
-        if (respostaMatch?.[1]) {
-            respostaLetra = respostaMatch[1].toUpperCase();
-            if (!alternativas.some(alt => alt.letra === respostaLetra)) { respostaLetra = null; }
-        }
-        if (alternativas.length < 2 || !respostaLetra) {
-             console.warn("[filter.js] Parse: Estrutura de questão incompleta. Retornando null.");
-             return null;
-        }
-
-        const generatedQuestion = { id: `gen-${Date.now()}`, ano: null, etapa: null, materia: materia, topico: topico, texto_questao: enunciado, referencia: referencia, alternativas: alternativas, resposta_letra: respostaLetra };
-        console.log("[filter.js] Parse: Questão gerada parseada com sucesso.");
-        return generatedQuestion;
-    } catch (error) { console.error("[filter.js] Parse: Erro inesperado:", error); return null; }
+        console.warn("[filter.js] Parse fallback: Regex principal não encontrou correspondência.");
+        return null; // Falhou no parse simples
+    } catch (e) {
+        console.error("[filter.js] Erro no parse de fallback:", e);
+        return null;
+    }
 }
+
 
 /**
  * Filtra um array de questões com base nas entidades extraídas pela IA.
@@ -94,20 +69,28 @@ export function findQuestionsByEntities(entities, allQuestions) {
     let filtered = allQuestions.filter(q => {
         if (!q || typeof q !== 'object') return false;
         let match = true;
+        // Filtragem por matéria (case-insensitive e sem acentos)
         if (materia && q.materia && removeAccents(q.materia.toLowerCase()) !== removeAccents(materia.toLowerCase())) { match = false; }
+        // Filtragem por ano (numérico)
         if (ano && q.ano && q.ano !== parseInt(ano, 10)) { match = false; }
+        // Filtragem por tópico (palavras-chave)
         if (match && topico) {
             const topicoQuestaoNorm = removeAccents((q.topico || '').toLowerCase());
             const enunciadoQuestaoNorm = removeAccents((q.texto_questao || '').toLowerCase());
+            // Extrai palavras chave do tópico pedido (ignora palavras curtas)
             const palavrasTopicoFiltro = removeAccents(topico.toLowerCase()).split(/\s+/).filter(p => p && p.length > 2);
             if (palavrasTopicoFiltro.length > 0) {
-                const topicoMatchFound = palavrasTopicoFiltro.some(pFiltro => topicoQuestaoNorm.includes(pFiltro) || enunciadoQuestaoNorm.includes(pFiltro));
-                if (!topicoMatchFound) { match = false; }
+                // Verifica se ALGUMA palavra chave do pedido existe no tópico OU enunciado da questão
+                const topicoMatchFound = palavrasTopicoFiltro.some(pFiltro =>
+                     topicoQuestaoNorm.includes(pFiltro) || enunciadoQuestaoNorm.includes(pFiltro)
+                 );
+                if (!topicoMatchFound) { match = false; } // Se nenhuma palavra chave bateu, desconsidera a questão
             }
         }
         return match;
     });
     console.log(`[filter.js] Encontradas ${filtered.length} questões com entidades:`, entities);
-    if (filtered.length > 1) { filtered.sort(() => 0.5 - Math.random()); } // Shuffle
+    // Embaralha resultados para variedade se encontrar mais de uma
+    if (filtered.length > 1) { filtered.sort(() => 0.5 - Math.random()); }
     return filtered;
 }

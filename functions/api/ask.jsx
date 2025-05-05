@@ -7,15 +7,15 @@ import { findQuestionsByEntities, parseAiGeneratedQuestion } from './filter'; //
 
 // --- Handler Principal ---
 export async function onRequestPost(context) {
-  const functionName = "/api/ask (v3 - modular)";
+  const functionName = "/api/ask (v4 - IA gera JSON)";
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
   try {
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
-    const r2Bucket = env.QUESTOES_PAVE_BUCKET;
+    const r2Bucket = env.QUESTOES_PAVE_BUCKET; // Binding para as questões existentes
     const modelName = env.MODEL_NAME || "gemini-1.5-flash-latest";
 
-    // Validações
+    // Validações essenciais
     if (!r2Bucket) { throw new Error('Binding R2 [QUESTOES_PAVE_BUCKET] não configurado.'); }
     if (!geminiApiKey) { throw new Error('Variável de ambiente [GEMINI_API_KEY] não configurada.'); }
     console.log(`[LOG] ${functionName}: Configs OK. Modelo: ${modelName}`);
@@ -29,7 +29,7 @@ export async function onRequestPost(context) {
     const lastUserMessage = history.findLast(m => m.role === 'user');
     const userQuery = typeof lastUserMessage?.parts?.[0]?.text === 'string' ? lastUserMessage.parts[0].text.trim() : null;
     if (!userQuery) { return new Response(JSON.stringify({ error: 'Query do usuário inválida no histórico.' }), { status: 400 }); }
-    console.log(`[LOG] ${functionName}: Última query: "${userQuery}"`);
+    console.log(`[LOG] ${functionName}: Query: "${userQuery}"`);
 
     // --- Criar o Prompt usando a função importada ---
     const analysisPrompt = createAnalysisPrompt(history, userQuery);
@@ -38,7 +38,7 @@ export async function onRequestPost(context) {
     console.log(`[LOG] ${functionName}: Enviando prompt de ANÁLISE para Gemini.`);
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const model = genAI.getGenerativeModel({ model: modelName });
-    const safetySettings = [
+    const safetySettings = [ // Configurações de segurança
          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
          { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
          { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
@@ -49,8 +49,8 @@ export async function onRequestPost(context) {
     try {
         const result = await model.generateContent({ contents: [{ role: 'user', parts: [{ text: analysisPrompt }] }], safetySettings });
         const response = result.response;
-        if (!response) { throw new Error("Resposta da API Gemini inválida."); }
-        if (response.promptFeedback?.blockReason) { throw new Error(`Conteúdo bloqueado: ${response.promptFeedback.blockReason}`); }
+        if (!response) { throw new Error("Resposta da API Gemini inválida ou vazia."); }
+        if (response.promptFeedback?.blockReason) { throw new Error(`Conteúdo bloqueado pela IA. Razão: ${response.promptFeedback.blockReason}`); }
         aiResponseText = response.text() || "";
         if (!aiResponseText) { throw new Error("A IA retornou uma string vazia."); }
     } catch(error) {
@@ -61,18 +61,35 @@ export async function onRequestPost(context) {
     // --- Processar Resposta JSON da IA ---
     let intent = 'DESCONHECIDO';
     let entities = null;
+    let generated_question = null;
     let responseText = null;
     let commentary = "";
     let questionsToReturn = [];
 
     try {
-        console.log(`[LOG] ${functionName}: Tentando parsear resposta da IA: ${aiResponseText.substring(0,100)}...`);
+        console.log(`[LOG] ${functionName}: Parseando resposta IA: ${aiResponseText.substring(0,100)}...`);
         const cleanedJsonString = aiResponseText.replace(/^```json\s*|```$/g, '').trim();
         const aiAnalysis = JSON.parse(cleanedJsonString);
+
         intent = aiAnalysis?.intent || 'DESCONHECIDO';
         entities = aiAnalysis?.entities || null;
+        generated_question = aiAnalysis?.generated_question || null;
         responseText = aiAnalysis?.responseText || null;
-        console.log(`[LOG] ${functionName}: IA retornou - Intent: ${intent}, Entities: ${JSON.stringify(entities)}, ResponseText: ${responseText ? 'Sim' : 'Não'}`);
+
+        console.log(`[LOG] ${functionName}: IA Parsed - Intent: ${intent}, Entities: ${JSON.stringify(entities)}, Question: ${generated_question ? 'Sim' : 'Não'}, RespText: ${responseText ? 'Sim' : 'Não'}`);
+
+        // Validações extras
+        if (intent === 'CRIAR_QUESTAO' && !generated_question && !responseText) {
+             console.warn(`[WARN] ${functionName}: Intent CRIAR, mas sem generated_question ou responseText.`);
+             intent = 'DESCONHECIDO';
+             commentary = "Pedi para a IA criar uma questão, mas não recebi o conteúdo.";
+        }
+         if (intent === 'CONVERSAR' && !responseText) {
+              console.warn(`[WARN] ${functionName}: Intent CONVERSAR, mas sem responseText.`);
+              intent = 'DESCONHECIDO';
+              commentary = "Não consegui gerar uma resposta para isso.";
+         }
+
     } catch (e) {
         console.error(`[ERRO] ${functionName}: Falha ao parsear JSON da IA. Resposta:`, aiResponseText, "Erro:", e);
         intent = 'DESCONHECIDO';
@@ -84,21 +101,16 @@ export async function onRequestPost(context) {
         case 'BUSCAR_QUESTAO':
             try {
                 const r2Object = await r2Bucket.get('questoes.json');
-                if (r2Object === null) {
-                    commentary = "Desculpe, não consegui acessar o banco de questões.";
+                if (!r2Object) { commentary = "Erro ao acessar banco de questões."; break; }
+                const allQuestionsData = await r2Object.json();
+                if (!Array.isArray(allQuestionsData)) { commentary = "Banco de questões inválido."; break; }
+
+                const foundQuestions = findQuestionsByEntities(entities, allQuestionsData);
+                if (foundQuestions.length > 0) {
+                    commentary = `Encontrei esta questão sobre ${entities?.topico || entities?.materia || 'o que pediu'}:`;
+                    questionsToReturn = [foundQuestions[0]];
                 } else {
-                    const allQuestionsData = await r2Object.json();
-                    if (Array.isArray(allQuestionsData)) {
-                        // Chama a função importada para filtrar
-                        const foundQuestions = findQuestionsByEntities(entities, allQuestionsData);
-                        if (foundQuestions.length > 0) {
-                            commentary = `Encontrei ${foundQuestions.length > 1 ? 'esta questão' : 'esta questão'} sobre o que você pediu:`; // Ajusta comentário
-                            questionsToReturn = [foundQuestions[0]]; // Limita a 1
-                        } else {
-                            const searchDesc = entities ? `matéria ${entities.materia || '?'} e tópico ${entities.topico || '?'}` : 'sua busca';
-                            commentary = `Procurei por questões sobre ${searchDesc}, mas não encontrei. Tente de novo ou peça para criar uma!`;
-                        }
-                    } else { commentary = "O banco de questões parece estar em formato incorreto."; }
+                    commentary = `Não encontrei questões existentes sobre ${entities?.topico || entities?.materia || 'sua busca'}. Peça para eu criar uma!`;
                 }
             } catch (r2Error) {
                 console.error(`[ERRO] ${functionName}: Falha R2:`, r2Error);
@@ -107,33 +119,35 @@ export async function onRequestPost(context) {
             break;
 
         case 'CRIAR_QUESTAO':
-            if (responseText) {
-                 // Chama a função importada para parsear
-                const parsedQuestion = parseAiGeneratedQuestion(responseText);
-                if (parsedQuestion) {
-                    const matchIntro = responseText.match(/^([\s\S]*?)(?=\n\s*Matéria:|\n\s*Tópico:|\n\s*Enunciado:)/im);
-                    commentary = matchIntro?.[1]?.trim() || "Certo, elaborei esta questão:";
-                    questionsToReturn = [parsedQuestion];
+            if (generated_question) {
+                commentary = "Certo, elaborei esta questão:";
+                generated_question.id = generated_question.id || `gen-${Date.now()}`;
+                generated_question.referencia = generated_question.referencia || "Questão gerada por IA.";
+                questionsToReturn = [generated_question];
+                console.log("[LOG] Usando questão JSON gerada pela IA.");
+            } else if (responseText) { // Tenta o fallback
+                console.warn("[WARN] IA não gerou JSON, tentando parse de fallback no responseText...");
+                const parsedFallback = parseAiGeneratedQuestion(responseText);
+                if (parsedFallback) {
+                     commentary = "Criei esta questão para você (parse fallback):";
+                     questionsToReturn = [parsedFallback];
                 } else {
-                    console.warn(`[WARN] ${functionName}: Falha ao parsear questão criada.`);
-                    commentary = `Tentei criar a questão, mas o formato não ficou perfeito. Veja:\n\n${responseText}`;
-                    questionsToReturn = [];
+                     commentary = `Tentei criar a questão, mas houve um problema no formato final:\n\n${responseText}`;
+                     questionsToReturn = [];
                 }
-            } else {
-                commentary = "Pedi para a IA criar uma questão, mas não recebi o texto.";
-                questionsToReturn = [];
             }
+            // Se ambos nulos, o erro já foi tratado
             break;
 
         case 'CONVERSAR':
-            commentary = responseText || "Entendido.";
+            commentary = responseText; // Já validado que existe
             questionsToReturn = [];
             break;
 
         case 'DESCONHECIDO':
         default:
-             if (!commentary) { // Usa comentário do erro de parse se houver
-                  commentary = "Desculpe, não entendi. Peça para buscar ou criar questões do PAVE.";
+             if (!commentary) { // Usa fallback se não houver msg de erro anterior
+                  commentary = "Não entendi bem. Peça para buscar ou criar questões sobre o PAVE.";
              }
             questionsToReturn = [];
             break;
@@ -146,7 +160,7 @@ export async function onRequestPost(context) {
     });
 
   } catch (error) {
-      console.error(`[ERRO] ${functionName}: Erro GERAL CAPTURADO:`, error);
+      console.error(`[ERRO] ${functionName}: Erro GERAL:`, error);
       return new Response(JSON.stringify({ error: `Erro interno: ${error.message}` }), {
         status: 500, headers: { 'Content-Type': 'application/json' },
       });
@@ -158,5 +172,5 @@ export async function onRequest(context) {
     if (context.request.method === 'POST') {
         return await onRequestPost(context);
     }
-    return new Response(`Método ${context.request.method} não permitido. Use POST.`, { status: 405, headers: { 'Allow': 'POST' } });
+    return new Response(`Método ${context.request.method} não permitido.`, { status: 405, headers: { 'Allow': 'POST' } });
 }
