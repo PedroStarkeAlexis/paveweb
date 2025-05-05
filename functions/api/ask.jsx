@@ -13,7 +13,7 @@ export async function onRequestPost(context) {
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
     const r2Bucket = env.QUESTOES_PAVE_BUCKET; // Binding para as questões existentes
-    const modelName = env.MODEL_NAME || "gemini-1.5-flash-latest";
+    const modelName = env.MODEL_NAME || "gemini-2.0-flash";
 
     // Validações essenciais
     if (!r2Bucket) { throw new Error('Binding R2 [QUESTOES_PAVE_BUCKET] não configurado.'); }
@@ -122,7 +122,7 @@ export async function onRequestPost(context) {
             if (generated_question) {
                 commentary = "Certo, elaborei esta questão:";
                 generated_question.id = generated_question.id || `gen-${Date.now()}`;
-                generated_question.referencia = generated_question.referencia || "Questão gerada por IA.";
+                generated_question.referencia = generated_question.referencia || "Texto gerado por IA.";
                 questionsToReturn = [generated_question];
                 console.log("[LOG] Usando questão JSON gerada pela IA.");
             } else if (responseText) { // Tenta o fallback
@@ -147,7 +147,7 @@ export async function onRequestPost(context) {
         case 'DESCONHECIDO':
         default:
              if (!commentary) { // Usa fallback se não houver msg de erro anterior
-                  commentary = "Não entendi bem. Peça para buscar ou criar questões sobre o PAVE.";
+                  commentary = "Não entendi bem. Voce pode pedir que eu busque ou crie questões do PAVE.";
              }
             questionsToReturn = [];
             break;
