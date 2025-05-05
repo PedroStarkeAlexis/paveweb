@@ -1,283 +1,145 @@
-// functions/api/ask.js
+// /functions/api/ask.js
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
-// --- Funções Auxiliares (Robustas) ---
-function removeAccents(str) {
-    if (typeof str !== 'string') return '';
-    try { return str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
-    catch (e) { console.warn("Erro em removeAccents:", e, "Input:", str); return str || ''; }
-}
-// Lista de Stop Words (ajuste conforme necessário)
-const stopWords = new Set(['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', 'é', 'com', 'não', 'uma', 'os', 'no', 'se', 'na', 'por', 'mais', 'as', 'dos', 'como', 'mas', 'foi', 'ao', 'ele', 'das', 'tem', 'à', 'seu', 'sua', 'ou', 'ser', 'quando', 'muito', 'há', 'nos', 'já', 'está', 'eu', 'também', 'só', 'pelo', 'pela', 'até', 'isso', 'ela', 'entre', 'era', 'depois', 'sem', 'mesmo', 'aos', 'ter', 'seus', 'quem', 'nas', 'me', 'esse', 'eles', 'estão', 'você', 'tinha', 'foram', 'essa', 'num', 'nem', 'suas', 'meu', 'às', 'minha', 'têm', 'numa', 'pelos', 'elas', 'havia', 'seja', 'qual', 'será', 'nós', 'tenho', 'lhe', 'deles', 'essas', 'esses', 'pelas', 'este', 'fosse', 'dele', 'tu', 'te', 'vocês', 'vos', 'lhes', 'meus', 'minhas', 'teu', 'tua', 'teus', 'tuas', 'nosso', 'nossa', 'nossos', 'nossas', 'dela', 'delas', 'esta', 'estes', 'estas', 'aquele', 'aquela', 'aqueles', 'aquelas', 'isto', 'aquilo', 'estou', 'está', 'estamos', 'estão', 'estive', 'esteve', 'estivemos', 'estiveram', 'estava', 'estávamos', 'estavam', 'estivera', 'estivéramos', 'esteja', 'estejamos', 'estejam', 'estivesse', 'estivéssemos', 'estivessem', 'estiver', 'estivermos', 'estiverem', 'hei', 'há', 'havemos', 'hão', 'houve', 'houvemos', 'houveram', 'houvera', 'houvéramos', 'haja', 'hajamos', 'hajam', 'houvesse', 'houvéssemos', 'houvessem', 'houver', 'houvermos', 'houverem', 'houverei', 'houverá', 'houveremos', 'houverão', 'houveria', 'houveríamos', 'houveriam', 'sou', 'somos', 'são', 'era', 'éramos', 'eram', 'fui', 'foi', 'fomos', 'foram', 'fora', 'fôramos', 'seja', 'sejamos', 'sejam', 'fosse', 'fôssemos', 'fossem', 'for', 'formos', 'forem', 'serei', 'será', 'seremos', 'serão', 'seria', 'seríamos', 'seriam', 'tenho', 'tem', 'temos', 'tém', 'tinha', 'tínhamos', 'tinham', 'tive', 'teve', 'tivemos', 'tiveram', 'tivera', 'tivéramos', 'tenha', 'tenhamos', 'tenham', 'tivesse', 'tivéssemos', 'tivessem', 'tiver', 'tivermos', 'tiverem', 'terei', 'terá', 'teremos', 'terão', 'teria', 'teríamos', 'teriam', 'me', 'manda', 'envia', 'lista', 'mostre', 'fala', 'diz', 'ai', 'alguma', 'algum', 'coisa', 'sobre', 'dos', 'das', 'então', 'favor', 'poderia', 'gostaria', 'saber', 'se', 'tipo', 'exemplo', 'exercicio', 'exercicios', 'prova', 'vestibular', 'ano', 'materia']);
+// --- IMPORTAR FUNÇÕES DOS OUTROS ARQUIVOS ---
+import { createAnalysisPrompt } from './prompt'; // Importa do arquivo prompt.js
+import { findQuestionsByEntities, parseAiGeneratedQuestion } from './filter'; // Importa do arquivo filter.js
 
-// Função de Filtragem Refinada
-function filtrarQuestoes(questoes, query) {
-    if (!Array.isArray(questoes)) { console.warn("[WARN] filtrarQuestoes: 'questoes' não é array."); return []; }
-    if (typeof query !== 'string' || query.trim() === '') { console.warn("[WARN] filtrarQuestoes: 'query' inválida ou vazia."); return []; }
-
-    const queryLower = query.toLowerCase();
-    const queryNormalized = removeAccents(queryLower);
-
-    // Extração de Entidades (Simples)
-    let filtroMateria = null; let filtroAno = null; let filtroEtapa = null; let filtroTopico = null;
-    const materiasConhecidas = ["física", "química", "biologia", "história", "geografia", "matemática", "português", "literatura", "inglês", "espanhol", "sociologia", "filosofia"];
-    for (const materia of materiasConhecidas) {
-        if (queryNormalized.includes(materia)) { filtroMateria = materia.charAt(0).toUpperCase() + materia.slice(1); break; }
-    }
-    const anoMatch = query.match(/\b(20\d{2})\b/); if (anoMatch) { filtroAno = parseInt(anoMatch[1], 10); }
-    const etapaMatch = queryLower.match(/etapa\s*([1-3])\b/); if (etapaMatch) { filtroEtapa = parseInt(etapaMatch[1], 10); }
-
-    let queryParaTopico = queryNormalized;
-    if(filtroMateria) queryParaTopico = queryParaTopico.replace(filtroMateria.toLowerCase(), '');
-    if(filtroAno) queryParaTopico = queryParaTopico.replace(filtroAno.toString(), '');
-    if(filtroEtapa) queryParaTopico = queryParaTopico.replace(/etapa\s*[1-3]/, '');
-    const requestKeywords = ['questão', 'questões', 'exercício', 'exercícios', 'exemplo', 'mostre', 'mande', 'liste', 'quero ver', 'sim', 'pode mandar', 'mostra', 'envia uma questao'];
-    requestKeywords.forEach(kw => queryParaTopico = queryParaTopico.replace(new RegExp(`\\b${kw}\\b`, 'gi'), ''));
-    stopWords.forEach(sw => queryParaTopico = queryParaTopico.replace(new RegExp(`\\b${sw}\\b`, 'gi'), ''));
-    filtroTopico = queryParaTopico.trim().split(/\s+/).filter(p => p && p.length > 2).join(' '); // Verifica se p existe
-    if(filtroTopico) console.log(`[LOG] Filtro Tópico (potencial): ${filtroTopico}`);
-    else console.log(`[LOG] Nenhum tópico específico detectado.`);
-
-    // Filtragem Baseada nas Entidades
-    let questoesFiltradas = questoes.filter(q => {
-        if (!q || typeof q !== 'object') return false;
-        let match = true;
-        if (filtroAno && q.ano !== filtroAno) match = false;
-        if (filtroEtapa && q.etapa !== filtroEtapa) match = false;
-        if (filtroMateria && removeAccents((q.materia || '').toLowerCase()) !== removeAccents(filtroMateria.toLowerCase())) match = false;
-        if (filtroTopico) {
-            const topicoQuestaoNorm = removeAccents((q.topico || '').toLowerCase());
-            const enunciadoQuestaoNorm = removeAccents((q.texto_questao || '').toLowerCase());
-            const palavrasTopicoFiltro = filtroTopico.split(' ');
-            const topicoMatchFound = palavrasTopicoFiltro.some(palavraFiltro =>
-                 (typeof topicoQuestaoNorm === 'string' && topicoQuestaoNorm.includes(palavraFiltro)) ||
-                 (typeof enunciadoQuestaoNorm === 'string' && enunciadoQuestaoNorm.includes(palavraFiltro))
-            );
-            if (!topicoMatchFound) match = false;
-        }
-        return match;
-    });
-    console.log(`[LOG] filtrarQuestoes: ${questoesFiltradas.length} questões encontradas na filtragem rigorosa.`);
-
-    // Fallback Genérico (apenas se nenhum filtro foi aplicado e nenhum resultado encontrado)
-    if (questoesFiltradas.length === 0 && !filtroMateria && !filtroAno && !filtroEtapa && !filtroTopico) {
-        console.log("[LOG] Nenhum filtro/resultado. Tentando busca genérica...");
-        const palavrasChaveGeral = queryNormalized.replace(/[^\w\s]/gi, '').split(/\s+/).filter(p => p && p.length > 1 && !stopWords.has(p));
-        if (palavrasChaveGeral.length > 0) {
-            const resultadosFallback = questoes.map(q => {
-                 if (!q || typeof q !== 'object') return { questao: q, score: 0, match: false };
-                 const textoCompletoQuestao = removeAccents(`${q.materia || ''} ${q.topico || ''} ${q.texto_questao || ''}`.toLowerCase());
-                 let score = 0; let match = false;
-                 palavrasChaveGeral.forEach(palavra => {
-                     if (typeof palavra === 'string' && typeof textoCompletoQuestao === 'string' && textoCompletoQuestao.includes(palavra)) { score++; match = true; }
-                 });
-                 return { questao: q, score: score, match: match };
-             }).filter(item => item.match).sort((a, b) => b.score - a.score);
-             questoesFiltradas = resultadosFallback.map(item => item.questao);
-             console.log(`[LOG] filtrarQuestoes: ${questoesFiltradas.length} questões na busca genérica.`);
-        }
-    }
-    return questoesFiltradas;
-}
-
-// Função de Parse (Mantida como estava)
-function parseAiGeneratedQuestion(aiText) {
-    console.log("[LOG] Tentando parsear texto da IA para questão...");
-    if (typeof aiText !== 'string' || !aiText) return null;
-    try {
-        let enunciado = null; const alternativas = []; let respostaLetra = null;
-        let materia = "Indefinida"; let topico = "Indefinido";
-        let textoRestante = aiText; const referencia = "Questão gerada por IA.";
-        const materiaRegex = /^\s*Matéria[:\s]+([\s\S]*?)(?=\n|$)/im;
-        const topicoRegex = /^\s*Tópico[:\s]+([\s\S]*?)(?=\n|$)/im;
-        const enunciadoRegex = /^(?:Enunciado|Questão|Pergunta|Leia o texto a seguir)[:\s]*([\s\S]*?)(?=\n\s*[A-Ea-e][).:]\s*|\n\s*Alternativa\s*A|$)/im;
-        const alternativaRegex = /^\s*([A-Ea-e])[).:]\s+([\s\S]*?)(?=\n\s*[A-Ea-e][).:]|\n\s*Resposta Correta|^\s*$)/gm;
-        const respostaRegex = /(?:Resposta Correta|Gabarito|Correta)[:\s]*\s*([A-Ea-e])(?:[).:]|\s|$)/i;
-
-        const materiaMatch = textoRestante.match(materiaRegex);
-        if (materiaMatch?.[1]) { materia = materiaMatch[1].trim(); textoRestante = textoRestante.substring(materiaMatch[0].length).trim(); console.log("[LOG] Parse: Matéria:", materia); }
-        else { console.warn("[WARN] Parse: Matéria não encontrada."); }
-        const topicoMatch = textoRestante.match(topicoRegex);
-        if (topicoMatch?.[1]) { topico = topicoMatch[1].trim(); textoRestante = textoRestante.substring(topicoMatch[0].length).trim(); console.log("[LOG] Parse: Tópico:", topico); }
-        else { console.warn("[WARN] Parse: Tópico não encontrado."); }
-
-        let textoParaEnunciado = textoRestante;
-        const enunciadoMatch = textoParaEnunciado.match(enunciadoRegex);
-        let textoParaAlternativas = textoParaEnunciado;
-        if (enunciadoMatch?.[1]) {
-            enunciado = enunciadoMatch[1].trim().replace(/^(Enunciado|Questão|Pergunta)[:\s]*/i, '').trim();
-            if(textoParaAlternativas.startsWith(enunciadoMatch[0])){ textoParaAlternativas = textoParaAlternativas.substring(enunciadoMatch[0].length).trim(); }
-            else { const idxEnunciado = textoParaAlternativas.indexOf(enunciado); if(idxEnunciado !== -1) { textoParaAlternativas = textoParaAlternativas.substring(idxEnunciado + enunciado.length).trim(); } }
-        } else {
-            const firstAltIndex = textoParaAlternativas.search(/^\s*[A-Ea-e][).:]\s+/m);
-            if (firstAltIndex > 0) { enunciado = textoParaAlternativas.substring(0, firstAltIndex).trim(); textoParaAlternativas = textoParaAlternativas.substring(firstAltIndex); }
-            else { console.warn("[WARN] Parse: Enunciado não extraído."); return null; }
-        }
-        if (!enunciado) { console.warn("[WARN] Parse: Enunciado vazio."); return null; }
-
-        let match;
-        while ((match = alternativaRegex.exec(textoParaAlternativas)) !== null) {
-            if (match.index === alternativaRegex.lastIndex) { alternativaRegex.lastIndex++; }
-            const letra = match[1]?.toUpperCase(); const texto = match[2]?.trim();
-            if (letra && texto) { alternativas.push({ letra: letra, texto: texto }); }
-        }
-        if (alternativas.length < 2) { console.warn(`[WARN] Parse: Alternativas insuficientes (${alternativas.length}).`); return null; }
-
-        const respostaMatch = aiText.match(respostaRegex);
-        if (respostaMatch?.[1]) {
-            respostaLetra = respostaMatch[1].toUpperCase();
-            if (!alternativas.some(alt => alt.letra === respostaLetra)) { console.warn(`[WARN] Parse: Resposta (${respostaLetra}) inválida.`); respostaLetra = null; }
-        }
-        if (!respostaLetra) { console.warn("[WARN] Parse: Resposta correta não encontrada."); return null; }
-
-        const generatedQuestion = { id: `gen-${Date.now()}`, ano: null, etapa: null, materia: materia, topico: topico, texto_questao: enunciado, referencia: referencia, alternativas: alternativas, resposta_letra: respostaLetra };
-        console.log("[LOG] Parse: Questão gerada parseada com sucesso.");
-        return generatedQuestion;
-    } catch (error) { console.error("[ERRO] Parse: Erro inesperado:", error); return null; }
-}
-
-// --- Handler Principal (Foco em Mostrar/Criar) ---
+// --- Handler Principal ---
 export async function onRequestPost(context) {
-  const functionName = "/api/ask";
+  const functionName = "/api/ask (v3 - modular)";
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
   try {
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
     const r2Bucket = env.QUESTOES_PAVE_BUCKET;
-    const modelName = env.MODEL_NAME || "gemini-1.5-flash-latest"; // Fallback seguro
+    const modelName = env.MODEL_NAME || "gemini-1.5-flash-latest";
 
     // Validações
-    if (!r2Bucket || !geminiApiKey) { throw new Error('Configuração interna incompleta.'); }
+    if (!r2Bucket) { throw new Error('Binding R2 [QUESTOES_PAVE_BUCKET] não configurado.'); }
+    if (!geminiApiKey) { throw new Error('Variável de ambiente [GEMINI_API_KEY] não configurada.'); }
     console.log(`[LOG] ${functionName}: Configs OK. Modelo: ${modelName}`);
 
     // Obter corpo e histórico
     let requestData;
     try { requestData = await request.json(); }
-    catch (e) { return new Response(JSON.stringify({ error: 'Requisição inválida.' }), { status: 400 }); }
+    catch (e) { return new Response(JSON.stringify({ error: 'Requisição JSON inválida.' }), { status: 400 }); }
     const history = requestData?.history;
-    if (!Array.isArray(history) || history.length === 0) { return new Response(JSON.stringify({ error: 'Histórico inválido.' }), { status: 400 }); }
+    if (!Array.isArray(history) || history.length === 0) { return new Response(JSON.stringify({ error: 'Histórico inválido ou vazio.' }), { status: 400 }); }
     const lastUserMessage = history.findLast(m => m.role === 'user');
     const userQuery = typeof lastUserMessage?.parts?.[0]?.text === 'string' ? lastUserMessage.parts[0].text.trim() : null;
-    if (!userQuery) { return new Response(JSON.stringify({ error: 'Query inválida no histórico.' }), { status: 400 }); }
+    if (!userQuery) { return new Response(JSON.stringify({ error: 'Query do usuário inválida no histórico.' }), { status: 400 }); }
     console.log(`[LOG] ${functionName}: Última query: "${userQuery}"`);
 
-    // Carregar e Filtrar Questões SEMPRE
-    let allQuestionsData = [];
-    let questoesRelevantes = [];
+    // --- Criar o Prompt usando a função importada ---
+    const analysisPrompt = createAnalysisPrompt(history, userQuery);
+
+    // --- Chamada Única à IA ---
+    console.log(`[LOG] ${functionName}: Enviando prompt de ANÁLISE para Gemini.`);
+    const genAI = new GoogleGenerativeAI(geminiApiKey);
+    const model = genAI.getGenerativeModel({ model: modelName });
+    const safetySettings = [
+         { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+         { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+         { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+         { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+    ];
+
+    let aiResponseText = "";
     try {
-        const r2Object = await r2Bucket.get('questoes.json');
-        if (r2Object !== null) {
-            allQuestionsData = await r2Object.json();
-            if (Array.isArray(allQuestionsData)) {
-                questoesRelevantes = filtrarQuestoes(allQuestionsData, userQuery);
-            } else { allQuestionsData = []; }
-        }
-    } catch (e) { console.error(`[ERRO] ${functionName}: Falha R2:`, e); }
-    console.log(`[LOG] ${functionName}: ${questoesRelevantes.length} questões relevantes filtradas do R2.`);
-
-    // --- Detecção de Intenção ---
-    const queryLower = userQuery.toLowerCase();
-    // Palavras-chave mais abrangentes para mostrar questões
-    const requestKeywords = ['questão', 'questões', 'exercício', 'exercícios', 'exemplo', 'mostre', 'mande', 'liste', 'quero ver', 'envie', 'apresente', 'sim', 'pode mandar', 'mostra', 'pode', 'gostaria de ver'];
-    const createKeywords = ['crie', 'invente', 'elabore', 'gere uma questão', 'faça uma questão'];
-    let isAskingForExisting = requestKeywords.some(keyword => queryLower.includes(keyword));
-
-    // Lógica de confirmação (Verifica se a última do bot foi oferta e user confirmou)
-    if (!isAskingForExisting && history.length >= 2) {
-        const lastBotMessage = history[history.length - 2]?.parts?.[0]?.text?.toLowerCase() || '';
-        const confirmationKeywords = ['sim', 'pode', 'quero', 'mostra', 'manda', 'envie', 'gostaria'];
-        if (lastBotMessage.includes("quer que eu te mostre") || lastBotMessage.includes("quer dar uma olhadinha")) { // Verifica ofertas comuns
-            if (confirmationKeywords.some(kw => queryLower.includes(kw))) {
-                isAskingForExisting = true;
-                // Tenta refiltrar com query anterior se a busca atual não retornou nada
-                if (questoesRelevantes.length === 0 && history.length >=3) {
-                     const previousUserMessage = history.findLast(m => m.role === 'user' && m !== lastUserMessage);
-                     const previousQuery = previousUserMessage?.parts?.[0]?.text?.trim();
-                     if (previousQuery) {
-                         console.log(`[LOG] ${functionName}: Refiltrando com query anterior: "${previousQuery}"`);
-                         questoesRelevantes = filtrarQuestoes(allQuestionsData, previousQuery);
-                         console.log(`[LOG] ${functionName}: ${questoesRelevantes.length} questões na refiltragem.`);
-                     }
-                }
-            }
-        }
+        const result = await model.generateContent({ contents: [{ role: 'user', parts: [{ text: analysisPrompt }] }], safetySettings });
+        const response = result.response;
+        if (!response) { throw new Error("Resposta da API Gemini inválida."); }
+        if (response.promptFeedback?.blockReason) { throw new Error(`Conteúdo bloqueado: ${response.promptFeedback.blockReason}`); }
+        aiResponseText = response.text() || "";
+        if (!aiResponseText) { throw new Error("A IA retornou uma string vazia."); }
+    } catch(error) {
+         console.error(`[ERRO] ${functionName}: Falha na chamada da API Gemini:`, error);
+         return new Response(JSON.stringify({ error: `Erro ao comunicar com a IA: ${error.message}` }), { status: 503 });
     }
-    // Só considera criar se NÃO estiver pedindo existente
-    const isAskingToCreate = !isAskingForExisting && createKeywords.some(keyword => queryLower.includes(keyword));
 
+    // --- Processar Resposta JSON da IA ---
+    let intent = 'DESCONHECIDO';
+    let entities = null;
+    let responseText = null;
     let commentary = "";
     let questionsToReturn = [];
-    const MAX_QUESTIONS_TO_SHOW = 1; // Mostrar só 1 por vez no chat
 
-    // --- LÓGICA DE DECISÃO REVISADA (Sem conversa IA) ---
-
-    if (isAskingForExisting && questoesRelevantes.length > 0) {
-        // CASO 1: Pediu questão existente E encontramos -> MOSTRA DIRETO
-        console.log(`[LOG] ${functionName}: Decisão: Mostrar questão existente do R2.`);
-        const qToShow = questoesRelevantes[0]; // Pega a primeira mais relevante
-        const topico = qToShow?.topico || qToShow?.materia || 'relacionado';
-        commentary = `Ok! Encontrei uma questão sobre ${topico} para você praticar:`; // Comentário padrão
-        // Mapeamento seguro dos dados da questão
-        questionsToReturn = [{
-             ano: qToShow?.ano, etapa: qToShow?.etapa, materia: qToShow?.materia, topico: qToShow?.topico,
-             texto_questao: qToShow?.texto_questao, referencia: qToShow?.referencia,
-             alternativas: qToShow?.alternativas, resposta_letra: qToShow?.resposta_letra
-         }];
-
-    } else if (isAskingToCreate) {
-        // CASO 2: Pediu para CRIAR questão -> Chama IA para criar e parsear
-        console.log(`[LOG] ${functionName}: Decisão: Criar questão com IA.`);
-        const genAI = new GoogleGenerativeAI(geminiApiKey);
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const safetySettings = [ /* ... seus safety settings ... */ ];
-        const creationPrompt = `Crie uma questão de múltipla escolha (A, B, C, D, E) INÉDITA no estilo do PAVE UFPEL sobre o seguinte tópico ou instrução: "${userQuery}". Formate sua resposta EXATAMENTE com as seguintes seções, cada uma em uma nova linha:\nMatéria: [Nome da Matéria]\nTópico: [Nome do Tópico]\nEnunciado: [Texto do enunciado]\nA) [Alternativa A]\nB) [Alternativa B]\nC) [Alternativa C]\nD) [Alternativa D]\nE) [Alternativa E]\nResposta Correta: [Letra maiúscula]`;
-
-        console.log(`[LOG] ${functionName}: Enviando prompt de CRIAÇÃO para Gemini.`);
-        try {
-            const result = await model.generateContent({ contents: [{ role: 'user', parts: [{ text: creationPrompt }] }], safetySettings });
-            const response = result.response;
-            // Verifica se a resposta foi bloqueada ANTES de tentar acessar text()
-             if (!response) {
-                 console.warn(`[WARN] ${functionName}: Resposta da API Gemini inválida ou vazia.`);
-                 commentary = "(A IA não retornou uma resposta válida.)";
-             } else if (response.promptFeedback?.blockReason) {
-                 console.warn(`[WARN] ${functionName}: Criação bloqueada. Razão: ${response.promptFeedback.blockReason}`);
-                 commentary = `(Não posso criar essa questão: ${response.promptFeedback.blockReason})`;
-             } else {
-                 const aiGeneratedText = response.text() || ""; // Pega o texto só se não foi bloqueada
-                 if (aiGeneratedText) {
-                     const parsedQuestion = parseAiGeneratedQuestion(aiGeneratedText);
-                     if (parsedQuestion) {
-                         commentary = "Certo, elaborei esta questão para você:";
-                         questionsToReturn = [parsedQuestion];
-                     } else {
-                         console.warn(`[WARN] ${functionName}: Falha ao parsear questão gerada pela IA.`);
-                         commentary = `Tentei criar uma questão, mas não consegui formatá-la corretamente. Aqui está o texto gerado:\n\n${aiGeneratedText}`;
-                         questionsToReturn = [];
-                     }
-                 } else {
-                     commentary = "(A IA não gerou a questão.)";
-                 }
-             }
-        } catch (error) {
-            console.error(`[ERRO] ${functionName}: Erro Gemini CRIAÇÃO:`, error);
-            commentary = `(Desculpe, erro ao tentar criar a questão: ${error.message})`;
-        }
-
-    } else {
-        // CASO 3: Nenhuma das intenções acima -> Mensagem de Fallback (sem chamar IA)
-        console.log(`[LOG] ${functionName}: Decisão: Nenhuma ação válida (Mostrar/Criar) detectada ou possível.`);
-        if (isAskingForExisting && questoesRelevantes.length === 0) {
-             // Pediu questão existente, mas a filtragem (ou refiltragem) não encontrou nada
-             commentary = `Puxa, procurei por questões sobre "${userQuery}", mas não encontrei exemplos nos meus dados atuais. Tente outros termos ou peça para eu criar uma!`;
-        } else {
-             // Não detectou intenção clara de mostrar ou criar
-             commentary = "Não entendi bem o que você precisa. Você pode pedir para eu mostrar uma questão existente sobre um tópico (ex: 'questão sobre iluminismo') ou para eu criar uma questão (ex: 'crie uma questão de física').";
-        }
-        questionsToReturn = []; // Garante que nenhuma questão seja enviada
+    try {
+        console.log(`[LOG] ${functionName}: Tentando parsear resposta da IA: ${aiResponseText.substring(0,100)}...`);
+        const cleanedJsonString = aiResponseText.replace(/^```json\s*|```$/g, '').trim();
+        const aiAnalysis = JSON.parse(cleanedJsonString);
+        intent = aiAnalysis?.intent || 'DESCONHECIDO';
+        entities = aiAnalysis?.entities || null;
+        responseText = aiAnalysis?.responseText || null;
+        console.log(`[LOG] ${functionName}: IA retornou - Intent: ${intent}, Entities: ${JSON.stringify(entities)}, ResponseText: ${responseText ? 'Sim' : 'Não'}`);
+    } catch (e) {
+        console.error(`[ERRO] ${functionName}: Falha ao parsear JSON da IA. Resposta:`, aiResponseText, "Erro:", e);
+        intent = 'DESCONHECIDO';
+        commentary = "Desculpe, tive um problema ao processar a resposta da IA.";
     }
 
-    // Retornar Resposta Estruturada Final
+    // --- Lógica do Backend Baseada na Intenção ---
+    switch (intent) {
+        case 'BUSCAR_QUESTAO':
+            try {
+                const r2Object = await r2Bucket.get('questoes.json');
+                if (r2Object === null) {
+                    commentary = "Desculpe, não consegui acessar o banco de questões.";
+                } else {
+                    const allQuestionsData = await r2Object.json();
+                    if (Array.isArray(allQuestionsData)) {
+                        // Chama a função importada para filtrar
+                        const foundQuestions = findQuestionsByEntities(entities, allQuestionsData);
+                        if (foundQuestions.length > 0) {
+                            commentary = `Encontrei ${foundQuestions.length > 1 ? 'esta questão' : 'esta questão'} sobre o que você pediu:`; // Ajusta comentário
+                            questionsToReturn = [foundQuestions[0]]; // Limita a 1
+                        } else {
+                            const searchDesc = entities ? `matéria ${entities.materia || '?'} e tópico ${entities.topico || '?'}` : 'sua busca';
+                            commentary = `Procurei por questões sobre ${searchDesc}, mas não encontrei. Tente de novo ou peça para criar uma!`;
+                        }
+                    } else { commentary = "O banco de questões parece estar em formato incorreto."; }
+                }
+            } catch (r2Error) {
+                console.error(`[ERRO] ${functionName}: Falha R2:`, r2Error);
+                commentary = "Erro ao acessar o banco de questões.";
+            }
+            break;
+
+        case 'CRIAR_QUESTAO':
+            if (responseText) {
+                 // Chama a função importada para parsear
+                const parsedQuestion = parseAiGeneratedQuestion(responseText);
+                if (parsedQuestion) {
+                    const matchIntro = responseText.match(/^([\s\S]*?)(?=\n\s*Matéria:|\n\s*Tópico:|\n\s*Enunciado:)/im);
+                    commentary = matchIntro?.[1]?.trim() || "Certo, elaborei esta questão:";
+                    questionsToReturn = [parsedQuestion];
+                } else {
+                    console.warn(`[WARN] ${functionName}: Falha ao parsear questão criada.`);
+                    commentary = `Tentei criar a questão, mas o formato não ficou perfeito. Veja:\n\n${responseText}`;
+                    questionsToReturn = [];
+                }
+            } else {
+                commentary = "Pedi para a IA criar uma questão, mas não recebi o texto.";
+                questionsToReturn = [];
+            }
+            break;
+
+        case 'CONVERSAR':
+            commentary = responseText || "Entendido.";
+            questionsToReturn = [];
+            break;
+
+        case 'DESCONHECIDO':
+        default:
+             if (!commentary) { // Usa comentário do erro de parse se houver
+                  commentary = "Desculpe, não entendi. Peça para buscar ou criar questões do PAVE.";
+             }
+            questionsToReturn = [];
+            break;
+    }
+
+    // --- Retornar Resposta Final ---
     console.log(`[LOG] ${functionName}: Retornando final. Comentário: ${commentary ? 'Sim' : 'Não'}, Questões: ${questionsToReturn.length}`);
     return new Response(JSON.stringify({ commentary: commentary, questions: questionsToReturn }), {
       headers: { 'Content-Type': 'application/json' }, status: 200
@@ -285,18 +147,16 @@ export async function onRequestPost(context) {
 
   } catch (error) {
       console.error(`[ERRO] ${functionName}: Erro GERAL CAPTURADO:`, error);
-      // Retorna a mensagem de erro específica capturada
       return new Response(JSON.stringify({ error: `Erro interno: ${error.message}` }), {
         status: 500, headers: { 'Content-Type': 'application/json' },
       });
   }
 }
 
-// Handler genérico para outros métodos
+// Handler genérico
 export async function onRequest(context) {
-    console.log(`[LOG] /api/ask: Recebido request ${context.request.method}`);
     if (context.request.method === 'POST') {
         return await onRequestPost(context);
     }
-    return new Response(`Método ${context.request.method} não permitido. Use POST.`, { status: 405 });
+    return new Response(`Método ${context.request.method} não permitido. Use POST.`, { status: 405, headers: { 'Allow': 'POST' } });
 }

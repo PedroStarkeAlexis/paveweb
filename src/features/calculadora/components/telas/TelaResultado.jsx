@@ -16,7 +16,7 @@ const getFeedbackMessage = (chances, cursoNome) => {
     if (!cursoNome || !chances) return "Simule novamente para ver suas chances!";
     switch (chances) {
         case 'Altas': return `Parabéns! Você tem ótimas chances de passar em ${cursoNome}! 🎉`;
-        case 'Médias': return `Boas notícias! Suas chances são consideráveis para ${cursoNome}. Continue se esforçando! 👍`;
+        case 'Médias': return `Sua nota está um pouco a baixo da nota de corte mas voce ainda tem chance de passar em ${cursoNome}. Continue se esforçando! 👍`;
         case 'Baixas': return `A disputa é acirrada para ${cursoNome}. Você precisará de um ótimo desempenho! 💪`;
         default: return `Não foi possível determinar suas chances para ${cursoNome}.`;
     }
