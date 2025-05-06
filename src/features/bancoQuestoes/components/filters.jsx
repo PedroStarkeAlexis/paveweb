@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Recebe as opções (anos, materias, etapas), os valores atuais (filterValues)
+// Recebi as opções (anos, materias, etapas), os valores atuais (filterValues)
 // e a função para chamar quando um filtro muda (onFilterChange)
 function Filters({ anos, materias, etapas, filterValues, onFilterChange }) {
 
