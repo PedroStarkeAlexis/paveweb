@@ -1,6 +1,8 @@
+src/style.css
+
 /* src/style.css */
 /* Importar uma fonte moderna (já existente) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
 
 /* --- Reset Básico e Estilos Globais --- */
 * {
@@ -337,7 +339,7 @@ code { /* Adicionado do index.css (CRA) */
 /* --- ESTILOS DO BANCO DE QUESTÕES (do Projeto 2) --- */
 /* Container já estilizado acima */
 
-.question-bank-container h1 { /* Título se voltar a usar */
+.question-bank-container h1 { /* T��tulo se voltar a usar */
     font-size: 1.4em; font-weight: 500; color: var(--text-primary);
     margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid var(--border-primary);
 }
@@ -549,89 +551,4 @@ code { /* Adicionado do index.css (CRA) */
 [data-theme="dark"] .question-header { background-color: #3a3a3a; border-bottom-color: var(--border-primary); }
 [data-theme="dark"] .question-tag { background-color: #444; color: var(--text-secondary); }
 [data-theme="dark"] .question-tag.pave-tag { background-color: var(--brand-primary); color: #111; } /* Texto escuro no verde claro */
-[data-theme="dark"] .question-tag.generated-ai-tag { background-color: #818cf8; color: #1e1b4b; } /* Texto escuro no roxo claro */
-[data-theme="dark"] .question-body { color: var(--text-primary); }
-[data-theme="dark"] .question-reference { color: var(--text-muted); }
-[data-theme="dark"] .alternative-item { background-color: var(--bg-tertiary); border-color: var(--border-secondary); }
-[data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover { background-color: #3a3a3a; border-color: #777; }
-[data-theme="dark"] #question-bank-list .alternative-item:hover { background-color: var(--bg-tertiary); border-color: var(--border-secondary); } /* Remove hover no banco */
-[data-theme="dark"] .alternative-letter { background-color: #3a3a3a; color: var(--text-secondary); border-right-color: var(--border-secondary); }
-[data-theme="dark"] .alternative-text { color: var(--text-primary); }
-
-/* Feedback Visual Dark */
-[data-theme="dark"] .alternative-letter.feedback-correct { background-color: var(--success-primary); color: #111; border-color: var(--success-primary); }
-[data-theme="dark"] .alternative-letter.feedback-incorrect { background-color: var(--error-primary); color: #111; border-color: var(--error-primary); }
-[data-theme="dark"] .alternative-item.correct-answer { border-color: #15803d; background-color: var(--success-secondary); }
-[data-theme="dark"] .alternative-item.correct-answer .alternative-text { color: #a7f3d0; } /* Texto verde claro */
-[data-theme="dark"] .alternative-item.correct-answer .alternative-letter { border-right-color: #15803d; }
-[data-theme="dark"] .alternative-item.incorrect-choice { border-color: #c026d3; background-color: var(--error-secondary); }
-[data-theme="dark"] .alternative-item.incorrect-choice .alternative-text { color: #f9a8d4; } /* Texto rosa claro */
-[data-theme="dark"] .alternative-item.incorrect-choice .alternative-letter { border-right-color: #c026d3; }
-/* Estilo estático banco dark */
-[data-theme="dark"] #question-bank-list .alternative-item.correct-answer-static { border-color: #15803d; background-color: var(--success-secondary); }
-[data-theme="dark"] #question-bank-list .alternative-item.correct-answer-static .alternative-text { color: #a7f3d0; }
-
-/* Footer Card Dark */
-[data-theme="dark"] .question-footer { background-color: #3a3a3a; border-top-color: var(--border-primary); }
-[data-theme="dark"] .show-answer-btn { background-color: var(--bg-tertiary); border-color: var(--border-secondary); color: var(--text-secondary); }
-[data-theme="dark"] .show-answer-btn:hover { background-color: #444; border-color: #777; color: var(--text-primary); }
-[data-theme="dark"] .correct-answer-text { color: #a7f3d0; }
-
-
-/* --- Logo SVG (Movido do App.css antigo, usar se necessário) --- */
-/* .app-logo { display: block; margin: 10px auto 20px auto; max-width: 150px; height: auto; } */
-/* .app-logo .logo-part-black { fill: #333; transition: fill 0.3s ease; } */
-/* .app-logo .logo-part-green { fill: var(--brand-primary); transition: fill 0.3s ease; } */
-/* [data-theme="dark"] .app-logo .logo-part-black { fill: var(--text-primary); } */
-/* [data-theme="dark"] .app-logo .logo-part-green { fill: #81C784; } */ /* Verde mais claro */
-
-
-/* --- SCROLLBARS GLOBAIS (se desejar um estilo consistente) --- */
-/* Webkit (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-}
-::-webkit-scrollbar-thumb {
-    background-color: var(--border-secondary);
-    border-radius: 4px;
-    border: 2px solid var(--bg-secondary); /* Cria padding visual */
-}
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--text-muted);
-}
-/* Firefox */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-secondary) var(--bg-secondary);
-}
-
-/* --- Otimizações Mobile (Exemplo básico, refinar conforme necessário) --- */
-@media (max-width: 768px) {
-    .sidebar {
-        /* Poderia esconder a sidebar ou torná-la menor/overlay */
-        width: 60px; /* Exemplo: Sidebar recolhida */
-         /* Adicionar estilos para esconder texto e mostrar só ícones */
-         overflow: hidden;
-    }
-     .sidebar:hover { width: 260px; } /* Expande no hover (exemplo) */
-
-    .main-content { /* Ocupa toda a largura se a sidebar for overlay */ }
-
-    .chat-interface-container,
-    .question-bank-container,
-    .home-page-container {
-        max-width: 100%;
-        padding: 15px 10px;
-    }
-    .chat-box { padding: 15px 0; }
-    .input-area { padding: 10px 0 15px 0; }
-    #user-input { padding: 12px 15px; }
-    #send-button { padding: 8px 15px; }
-    .message { max-width: 90%; font-size: 0.95em; }
-    .filter-section { gap: 10px; padding: 10px; }
-    .filter-group select { min-width: 120px; font-size: 0.85em; }
-}
+[data-theme="dark"] .question-tag.generated-ai-tag { background-color: #818
