@@ -1,185 +1,110 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { FixedSizeList as List } from 'react-window'; // Importa react-window
-import AutoSizer from 'react-virtualized-auto-sizer'; // Para obter altura/largura dinâmicas
+import React, { useState, useEffect, useMemo } from 'react';
+// <<< REMOVER imports de react-window e AutoSizer >>>
 
-import Filters from './Filters.jsx'; // Mantém o nome como estava
-import QuestionLayout from '../../../components/common/QuestionLayout'; // Caminho correto
-
-// Componente interno para renderizar cada item na lista virtualizada
-const Row = React.memo(({ index, style, data }) => { // Usa React.memo aqui também!
-    const question = data[index];
-    // Aplicamos o 'style' que react-window passa para posicionamento
-    return (
-        <div style={style}>
-            {/* Adiciona um padding interno para o item na lista virtualizada */}
-            <div style={{ paddingBottom: '25px', paddingRight: '10px' }}>
-                <QuestionLayout questionData={question} />
-            </div>
-        </div>
-    );
-});
-
+import Filters from './Filters.jsx'; // <<< MANTENHA .jsx se o arquivo se chama assim
+import QuestionList from './QuestionList'; // Import original
+// <<< REMOVER import de QuestionLayout se não for usado diretamente aqui >>>
 
 function QuestionBankPage() {
-    // Estado para as questões da PÁGINA ATUAL
-    const [currentPageQuestions, setCurrentPageQuestions] = useState([]);
-    // Estado para os filtros
+    const [allQuestions, setAllQuestions] = useState([]); // <<< VOLTA a guardar TODAS
+    const [filteredQuestions, setFilteredQuestions] = useState([]); // <<< Lista filtrada no frontend
     const [filters, setFilters] = useState({ ano: null, materia: null, etapa: null });
-    // Estado para opções de filtro carregadas da API
-    const [filterOptions, setFilterOptions] = useState({ anos: [], materias: [], etapas: [] });
-    // Estado para informações de paginação
-    const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, totalItems: 0 });
-    // Estados de controle
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isLoadingFilters, setIsLoadingFilters] = useState(true);
+    // <<< REMOVER estados de pagination e isLoadingFilters >>>
+    // <<< REMOVER estado filterOptions (será derivado com useMemo) >>>
 
-    // Função para buscar questões da API
-    const fetchPaginatedQuestions = useCallback(async (page = 1, currentFilters) => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const params = new URLSearchParams({ page: page.toString(), limit: '20' }); // Limite fixo por enquanto
-            if (currentFilters.materia) params.set('materia', currentFilters.materia);
-            if (currentFilters.ano) params.set('ano', currentFilters.ano);
-            if (currentFilters.etapa) params.set('etapa', currentFilters.etapa);
-
-            // <<< CHAMA A NOVA API >>>
-            const response = await fetch(`/api/questions?${params.toString()}`);
-            if (!response.ok) {
-                let errorMsg = `Erro ${response.status}`;
-                try { errorMsg = (await response.json()).error || errorMsg; } catch (e) { /* ignora */ }
-                throw new Error(errorMsg);
-            }
-            const data = await response.json();
-            setCurrentPageQuestions(data.questions || []);
-            setPagination(data.pagination || { currentPage: 1, totalPages: 1, totalItems: 0 });
-        } catch (err) {
-            console.error("Erro no fetch das questões paginadas:", err);
-            setError(err.message || "Falha ao buscar dados.");
-            setCurrentPageQuestions([]);
-            setPagination({ currentPage: 1, totalPages: 1, totalItems: 0 });
-        } finally {
-            setIsLoading(false);
-        }
-    }, []); // useCallback sem dependências, pois usa os parâmetros passados
-
-    // Efeito para buscar opções de filtro UMA VEZ
+    // --- Efeito para Buscar Todas as Questões (LÓGICA ORIGINAL) ---
     useEffect(() => {
-        const fetchFilterOptions = async () => {
-            setIsLoadingFilters(true);
+        const fetchQuestions = async () => {
+            setIsLoading(true);
+            setError(null);
             try {
-                // <<< CHAMA A NOVA API DE FILTROS >>>
-                const response = await fetch('/api/questions/filters'); // Ajuste o caminho se necessário
-                if (!response.ok) throw new Error(`Erro ${response.status}`);
-                const options = await response.json();
-                setFilterOptions({
-                    anos: options.anos || [],
-                    materias: options.materias || [],
-                    etapas: options.etapas || [],
-                });
+                // <<< VOLTA a buscar questoes.json diretamente >>>
+                const response = await fetch('/questoes.json'); // Assume que está em /public
+                if (!response.ok) { throw new Error(`Erro ${response.status}`); }
+                const questions = await response.json();
+                const validQuestions = Array.isArray(questions) ? questions : [];
+                setAllQuestions(validQuestions);
+                setFilteredQuestions(validQuestions); // Inicializa filtrado com tudo
             } catch (err) {
-                console.error("Erro ao buscar opções de filtro:", err);
-                // Poderia setar um erro específico para filtros
+                console.error("Erro no fetch das questões:", err);
+                setError(err.message || "Falha ao buscar dados.");
+                setAllQuestions([]);
+                setFilteredQuestions([]);
             } finally {
-                setIsLoadingFilters(false);
+                setIsLoading(false);
             }
         };
-        fetchFilterOptions();
-    }, []); // Roda apenas na montagem
+        fetchQuestions();
+    }, []); // Roda apenas uma vez
 
-    // Efeito para buscar questões quando filtros ou página mudam
-    useEffect(() => {
-        // Busca a página 1 quando os filtros mudam
-        fetchPaginatedQuestions(pagination.currentPage, filters);
-    }, [filters, pagination.currentPage, fetchPaginatedQuestions]); // Re-executa se filtros ou página mudarem
-
-    // Handler para Mudanças nos Filtros
-    const handleFilterChange = useCallback((filterName, value) => {
-        setFilters(prevFilters => {
-            const newFilters = { ...prevFilters, [filterName]: value };
-            // IMPORTANTE: Quando o filtro muda, voltamos para a página 1
-            setPagination(prevPag => ({ ...prevPag, currentPage: 1 }));
-            // O useEffect acima vai disparar a busca com a nova página e filtros
-            return newFilters;
+    // --- Memo para Derivar Opções de Filtro (LÓGICA ORIGINAL) ---
+    const filterOptions = useMemo(() => {
+        const anos = new Set();
+        const materias = new Set();
+        const etapas = new Set();
+        allQuestions.forEach(q => {
+            if (q?.ano) anos.add(q.ano); // Adiciona verificação opcional
+            if (q?.materia) materias.add(q.materia);
+            if (q?.etapa) etapas.add(q.etapa);
         });
-    }, []);
+        return {
+            anos: Array.from(anos).sort((a, b) => b - a),
+            materias: Array.from(materias).sort(),
+            etapas: Array.from(etapas).sort((a, b) => a - b)
+        };
+    }, [allQuestions]);
 
-    // Handlers para Paginação
-    const handleNextPage = () => {
-        if (pagination.currentPage < pagination.totalPages) {
-            setPagination(prev => ({ ...prev, currentPage: prev.currentPage + 1 }));
+    // --- Efeito para Filtrar Questões (LÓGICA ORIGINAL NO FRONTEND) ---
+    useEffect(() => {
+        let currentQuestions = [...allQuestions]; // Começa com todas as questões
+        if (filters.ano) {
+            const filterAnoNum = parseInt(filters.ano, 10);
+            // Adiciona verificação q.ano existe antes de comparar
+            currentQuestions = currentQuestions.filter(q => q.ano && q.ano === filterAnoNum);
         }
-    };
-    const handlePrevPage = () => {
-        if (pagination.currentPage > 1) {
-            setPagination(prev => ({ ...prev, currentPage: prev.currentPage - 1 }));
+        if (filters.materia) {
+            // Adiciona verificação q.materia existe antes de comparar
+            currentQuestions = currentQuestions.filter(q => q.materia && q.materia === filters.materia);
         }
+        if (filters.etapa) {
+            const filterEtapaNum = parseInt(filters.etapa, 10);
+            // Adiciona verificação q.etapa existe antes de comparar
+            currentQuestions = currentQuestions.filter(q => q.etapa && q.etapa === filterEtapaNum);
+        }
+        setFilteredQuestions(currentQuestions); // Atualiza a lista filtrada
+    }, [filters, allQuestions]); // Executa quando filtros ou allQuestions mudam
+
+    // --- Handler para Mudanças nos Filtros (LÓGICA ORIGINAL) ---
+    const handleFilterChange = (filterName, value) => {
+        setFilters(prevFilters => ({ ...prevFilters, [filterName]: value }));
+        // <<< REMOVER lógica de resetar página >>>
     };
 
-    // Estimativa da altura de cada item (QuestionLayout). AJUSTE conforme necessário!
-    // Pode ser necessário inspecionar o elemento renderizado ou usar bibliotecas para medir.
-    const ESTIMATED_ROW_HEIGHT = 450; // <<<< AJUSTE ESTE VALOR!
+    // <<< REMOVER handlers de paginação (handleNextPage, handlePrevPage) >>>
 
     return (
         <div className="question-bank-container">
-            {/* Passa as opções carregadas da API para Filters */}
-            {!isLoadingFilters && (
-                <Filters
-                    anos={filterOptions.anos}
-                    materias={filterOptions.materias}
-                    etapas={filterOptions.etapas}
-                    filterValues={filters}
-                    onFilterChange={handleFilterChange}
-                />
-            )}
-            {isLoadingFilters && <p className="loading-message">Carregando filtros...</p>}
-
-            <div className="results-summary">
-                {!isLoading && !error && (
-                    <p className="results-count">
-                        {pagination.totalItems} questão(ões) encontrada(s). Exibindo página {pagination.currentPage} de {pagination.totalPages}.
-                    </p>
-                )}
-            </div>
-
-            {/* Container para a lista que terá altura definida */}
-            <div className="question-list-virtualized-container">
-                {isLoading && <p className="loading-message">Carregando questões...</p>}
-                {error && <p className="error-message">Erro: {error}</p>}
-                {!isLoading && !error && currentPageQuestions.length === 0 && (
-                    <p className="no-results-message">Nenhuma questão encontrada com os filtros selecionados.</p>
-                )}
-                {!isLoading && !error && currentPageQuestions.length > 0 && (
-                    // AutoSizer fornece altura e largura para react-window
-                    <AutoSizer>
-                        {({ height, width }) => (
-                            <List
-                                height={height}
-                                itemCount={currentPageQuestions.length}
-                                itemSize={ESTIMATED_ROW_HEIGHT} // <<<< USA A ALTURA ESTIMADA
-                                width={width}
-                                itemData={currentPageQuestions} // Passa as questões para o componente Row
-                            >
-                                {Row}
-                            </List>
-                        )}
-                    </AutoSizer>
-                )}
-            </div>
-
-            {/* Controles de Paginação */}
-            {!isLoading && pagination.totalPages > 1 && (
-                <div className="pagination-controls">
-                    <button onClick={handlePrevPage} disabled={pagination.currentPage === 1}>
-                        Anterior
-                    </button>
-                    <span>Página {pagination.currentPage} de {pagination.totalPages}</span>
-                    <button onClick={handleNextPage} disabled={pagination.currentPage >= pagination.totalPages}>
-                        Próxima
-                    </button>
+            {/* Renderiza filtros normalmente */}
+            <Filters
+                anos={filterOptions.anos}
+                materias={filterOptions.materias}
+                etapas={filterOptions.etapas}
+                filterValues={filters}
+                onFilterChange={handleFilterChange}
+            />
+            {isLoading && <p className="loading-message">Carregando questões...</p>}
+            {error && <p className="error-message">Erro: {error}</p>}
+            {!isLoading && !error && (
+                // <<< VOLTA a usar QuestionList diretamente com a lista filtrada >>>
+                <div className="question-list" id="question-bank-list">
+                    <p className="results-count">{filteredQuestions.length} questão(ões) encontrada(s).</p>
+                    {/* <<< PASSA a lista filtrada do frontend >>> */}
+                    <QuestionList questions={filteredQuestions} />
                 </div>
             )}
+            {/* <<< REMOVER container da lista virtualizada e controles de paginação >>> */}
         </div>
     );
 }

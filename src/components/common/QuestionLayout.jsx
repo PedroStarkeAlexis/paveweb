@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-function QuestionLayoutInternal({ questionData }) {
+function QuestionLayout({ questionData }) {
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
 
@@ -54,7 +54,7 @@ function QuestionLayoutInternal({ questionData }) {
   return (
     <div className={`question-layout ${answered ? 'answered' : ''}`} id={questionId} data-correct-answer={resposta_letra}>
       <div className="question-header">
-        {tags.length > 0 ? tags : <span className="question-tag">Informa��ões Gerais</span>}
+        {tags.length > 0 ? tags : <span className="question-tag">Informaões Gerais</span>}
       </div>
 
       <div className="question-body">
@@ -76,10 +76,10 @@ function QuestionLayoutInternal({ questionData }) {
 
           if (answered) {
             if (altFeedback === 'correct-choice' || altFeedback === 'correct-answer') {
-              icon = '���'; letterBoxClass += ' feedback-correct'; itemClass += ' correct-answer';
+              icon = ''; letterBoxClass += ' feedback-correct'; itemClass += ' correct-answer';
               if (altFeedback === 'correct-choice') { itemClass += ' correct-choice'; }
             } else if (altFeedback === 'incorrect-choice') {
-              icon = '��'; letterBoxClass += ' feedback-incorrect'; itemClass += ' incorrect-choice';
+              icon = ''; letterBoxClass += ' feedback-incorrect'; itemClass += ' incorrect-choice';
             }
           }
 
@@ -114,5 +114,4 @@ function QuestionLayoutInternal({ questionData }) {
   );
 }
 
-const QuestionLayout = React.memo(QuestionLayoutInternal);
 export default QuestionLayout;
