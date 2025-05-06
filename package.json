@@ -16,11 +16,8 @@
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.5.2",
-<<<<<<< HEAD
     "react-virtualized-auto-sizer": "^1.0.26",
     "react-window": "^1.8.11",
-=======
->>>>>>> parent of 5710537 (Add react-window for optimized question rendering and implement API for paginated question fetching)
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
