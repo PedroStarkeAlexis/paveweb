@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FixedSizeList as List } from 'react-window'; // Importa react-window
 import AutoSizer from 'react-virtualized-auto-sizer'; // Para obter altura/largura dinâmicas
 
-import Filters from './Filters'; // Mantém o nome como estava
+import Filters from './Filters.jsx'; // Mantém o nome como estava
 import QuestionLayout from '../../../components/common/QuestionLayout'; // Caminho correto
 
 // Componente interno para renderizar cada item na lista virtualizada
