@@ -1,8 +1,6 @@
-src/style.css
-
-/* src/style.css */
+/* // src/style.css */
 /* Importar uma fonte moderna (já existente) */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
 /* --- Reset Básico e Estilos Globais --- */
 * {
@@ -551,4 +549,4 @@ code { /* Adicionado do index.css (CRA) */
 [data-theme="dark"] .question-header { background-color: #3a3a3a; border-bottom-color: var(--border-primary); }
 [data-theme="dark"] .question-tag { background-color: #444; color: var(--text-secondary); }
 [data-theme="dark"] .question-tag.pave-tag { background-color: var(--brand-primary); color: #111; } /* Texto escuro no verde claro */
-[data-theme="dark"] .question-tag.generated-ai-tag { background-color: #818
+[data-theme="dark"] .question-tag.generated-ai-tag { background-color: #818cf8; color: #fff; }
