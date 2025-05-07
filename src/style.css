@@ -616,3 +616,89 @@ code { /* Adicionado do index.css (CRA) */
     background-color: #555;
     color: #aaa;
 }
+/* src/style.css */
+
+/* ... (seus estilos existentes para .message, .bot-message, etc.) ... */
+
+/* Estilos para o indicador de "Digitando..." */
+.typing-indicator {
+    display: flex; /* Alinha as bolinhas (e o texto, se houver) */
+    align-items: center;
+    padding: 10px 15px; /* Ajuste o padding conforme necessário */
+    /* background-color: var(--bg-primary); // Já herdado de .bot-message
+    border-color: var(--border-primary); // Já herdado de .bot-message */
+  }
+  
+  .typing-dots {
+    display: flex;
+    align-items: flex-end; /* Alinha as bolinhas na base se elas mudarem de altura */
+    /* margin-right: 8px; // Espaço se você mantiver o texto "Digitando..." */
+  }
+  
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    margin: 0 2px; /* Espaçamento entre as bolinhas */
+    background-color: var(--text-muted); /* Cor das bolinhas */
+    border-radius: 50%;
+    opacity: 0.4; /* Começa um pouco apagada */
+    animation: typing-dot-animation 1.4s infinite ease-in-out;
+    /*
+      typing-dot-animation: nome da animação
+      1.4s: duração total de um ciclo
+      infinite: repete indefinidamente
+      ease-in-out: curva de timing da animação
+    */
+  }
+  
+  /* Definindo atrasos diferentes para cada bolinha criar o efeito de onda */
+  .typing-dot:nth-of-type(1) {
+    animation-delay: -0.32s; /* Começa um pouco antes no ciclo */
+  }
+  
+  .typing-dot:nth-of-type(2) {
+    animation-delay: -0.16s; /* Começa no meio do ciclo da primeira */
+  }
+  
+  .typing-dot:nth-of-type(3) {
+    /* animation-delay: 0s; // Já é o padrão, não precisa definir */
+  }
+  
+  /* Keyframes da animação para uma bolinha */
+  @keyframes typing-dot-animation {
+    0%, 80%, 100% {
+      transform: scale(0.8) translateY(0px); /* Pode começar menor e na base */
+      opacity: 0.4;
+    }
+    40% {
+      transform: scale(1) translateY(-3px); /* Sobe um pouco e aumenta */
+      opacity: 1;
+      background-color: var(--brand-primary); /* Opcional: Muda cor no pico da animação */
+    }
+  }
+  
+  /* Ajustes para o tema escuro, se necessário (a cor das bolinhas já usa --text-muted) */
+  [data-theme="dark"] .typing-dot {
+    background-color: var(--text-muted); /* Geralmente --text-muted já funciona bem no dark */
+  }
+  
+  @keyframes typing-dot-animation {
+    0%, 80%, 100% {
+      transform: scale(0.8) translateY(0px);
+      opacity: 0.4;
+    }
+    40% {
+      transform: scale(1) translateY(-3px);
+      opacity: 1;
+      background-color: var(--brand-primary); /* Cor da marca para destaque */
+    }
+  }
+  
+  /* Se você mantiver o texto "Digitando..." junto com as bolinhas */
+  .typing-indicator p {
+    margin: 0;
+    margin-left: 8px; /* Espaço entre as bolinhas e o texto */
+    font-style: italic;
+    font-size: 0.9em;
+    color: var(--text-muted);
+  }

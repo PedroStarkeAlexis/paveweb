@@ -159,7 +159,7 @@ function App() {
     useEffect(() => {
         if (messages.length === 0) {
              setMessages([
-               { type: 'text', sender: 'bot', content: 'Olá! 👋 Use o campo abaixo para interagir ou navegue pelas opções.' }
+               { type: 'text', sender: 'bot', content: 'Oi! Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir! 😊' }
              ]);
         }
     }, []); // Executa apenas na montagem inicial
@@ -170,14 +170,15 @@ function App() {
             <aside className="sidebar">
                 {/* ... Sidebar Header ... */}
                 <div className="sidebar-header">
-                  <span className="logo-placeholder">PAVE Tools</span>
+                  <span className="logo-placeholder">LOGO AQUI</span>
                 </div>
                 <nav className="sidebar-nav">
                     <ul>
-                        <NavLink to="/" icon="🏠">Início</NavLink>
+                        <NavLink to="/" icon="🏠">Início</NavLink> 
+                        <NavLink to="/calculadora" icon="🧮">Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon="💬">Assistente IA</NavLink>
                         <NavLink to="/banco-questoes" icon="📚">Banco de Questões</NavLink>
-                        <NavLink to="/calculadora" icon="🧮">Calculadora PAVE</NavLink>
+                       
                         {/* Adicione outros links se necessário */}
                     </ul>
                 </nav>
