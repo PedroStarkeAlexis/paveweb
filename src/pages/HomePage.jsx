@@ -83,8 +83,8 @@ const ComingSoonCard = () => {
       <div className="home-coming-soon-icon-wrapper">
         <span role="img" aria-label="Foguete">🚀</span>
       </div>
-      <h3>Grandes Novidades a Caminho!</h3>
-      <p>Estamos trabalhando duro para trazer ainda mais ferramentas e recursos incríveis para otimizar seus estudos para o PAVE. Fique de olho!</p>
+      <h3>Novidades a Caminho!</h3>
+      <p>Ainda mais ferramentas e recursos para facilitar seus estudos para o PAVE. Fique de olho!</p>
     </motion.div>
   );
 };
