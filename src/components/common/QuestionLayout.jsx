@@ -1,11 +1,15 @@
-// src/components/common/QuestionLayout.jsx
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-function QuestionLayoutInternal({ questionData }) {
+function QuestionLayoutInternal({ questionData }) { // questionData é a prop
   const [answered, setAnswered] = useState(false);
-  const [feedback, setFeedback] = useState({}); // Guarda o estado da escolha: 'correct-choice', 'incorrect-choice'
+  const [feedback, setFeedback] = useState({});
+
+  // --- CORREÇÃO PRINCIPAL APLICADA AQUI ---
+  // Garanta que questionData seja um objeto antes de desestruturar.
+  // Se for null ou undefined, use um objeto vazio como padrão.
+  const safeQuestionData = questionData || {};
 
   const {
     ano = null, etapa = null, materia = "Indefinida", topico = "Indefinido",
@@ -13,40 +17,40 @@ function QuestionLayoutInternal({ questionData }) {
     referencia = null,
     alternativas = [],
     resposta_letra = null,
-    id = questionData?.id || `question-fallback-${Math.random().toString(36).substring(2, 9)}`
-  } = questionData || {};
+    // Agora acessamos `id` de `safeQuestionData`
+    id = safeQuestionData.id || `question-fallback-${Math.random().toString(36).substring(2, 9)}`
+  } = safeQuestionData; // Desestrutura de safeQuestionData
 
+  // Se você ainda quiser usar o nome 'questionId' para a prop 'id' do div, pode manter:
   const questionId = id;
+  // Ou, mais diretamente, usar 'id' que já foi desestruturado e tem fallback.
 
   useEffect(() => {
     setAnswered(false);
     setFeedback({});
-  }, [questionData]);
+  }, [safeQuestionData]); // Depender de safeQuestionData ou de uma de suas props estáveis como 'id'
 
   const handleAlternativeClick = (clickedLetter) => {
     if (answered) return;
     setAnswered(true);
     const isCorrect = clickedLetter === resposta_letra;
-    // Atualiza o feedback para a alternativa clicada
     setFeedback({
       [clickedLetter]: isCorrect ? 'correct-choice' : 'incorrect-choice',
     });
   };
 
   const handleShowAnswerClick = () => {
-     if (answered) return;
-     setAnswered(true);
-     // Não define feedback de escolha, apenas permite que a correta seja destacada
-     // A lógica de exibição da alternativa correta já vai cuidar disso
-     setFeedback({}); // Pode limpar ou não definir nada específico para a escolha
+    if (answered) return;
+    setAnswered(true);
+    setFeedback({});
   };
 
-  // ... (tags, textoQuestaoString, referenciaString - permanecem iguais) ...
   const sourceTag = ano
-        ? (<span key="src" className="question-tag pave-tag">PAVE {ano}</span>)
-        : (questaoData?.referencia?.toLowerCase().includes("ia") || !ano ?
-           <span key="src" className="question-tag generated-ai-tag">Gerada por IA✨</span>
-           : <span key="src" className="question-tag">Outra Fonte</span>);
+    ? (<span key="src" className="question-tag pave-tag">PAVE {ano}</span>)
+    // Use safeQuestionData aqui também
+    : (safeQuestionData.referencia?.toLowerCase().includes("ia") || !ano ?
+      <span key="src" className="question-tag generated-ai-tag">Gerada por IA✨</span>
+      : <span key="src" className="question-tag">Outra Fonte</span>);
 
   const etapaTag = etapa ? (<span key="etapa" className="question-tag">Etapa {etapa}</span>) : null;
   const materiaTag = materia ? (<span key="materia" className="question-tag">{materia}</span>) : null;
@@ -58,45 +62,44 @@ function QuestionLayoutInternal({ questionData }) {
 
 
   return (
-    <div className={`question-layout ${answered ? 'answered' : ''}`} id={questionId.toString()} data-correct-answer={resposta_letra}>
+    // Use a variável `id` desestruturada que já tem o fallback
+    <div className={`question-layout ${answered ? 'answered' : ''}`} id={id.toString()} data-correct-answer={resposta_letra}>
       <div className="question-header">
-          {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
+        {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
       </div>
 
       <div className="question-body">
-         {React.isValidElement(texto_questao) ? texto_questao : <ReactMarkdown remarkPlugins={[remarkGfm]}>{textoQuestaoString}</ReactMarkdown>}
-         {referenciaString && (
-            <div className="question-reference">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{referenciaString}</ReactMarkdown>
-            </div>
-         )}
+        {React.isValidElement(texto_questao) ? texto_questao : <ReactMarkdown remarkPlugins={[remarkGfm]}>{textoQuestaoString}</ReactMarkdown>}
+        {referenciaString && (
+          <div className="question-reference">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{referenciaString}</ReactMarkdown>
+          </div>
+        )}
       </div>
 
       <div className="alternatives-container">
         {(alternativas || []).map(alt => {
           const altLetter = alt.letra;
-          // Verifica o feedback específico para esta alternativa
-          const choiceStatus = feedback[altLetter]; // 'correct-choice' ou 'incorrect-choice'
+          const choiceStatus = feedback[altLetter];
           const isCorrectAnswer = altLetter === resposta_letra;
 
-          let icon = altLetter; // Padrão é a letra
+          let icon = altLetter;
           let letterBoxClass = 'alternative-letter';
           let itemClass = 'alternative-item';
 
           if (answered) {
-            if (isCorrectAnswer) { // Se esta é a alternativa correta
+            if (isCorrectAnswer) {
               icon = '✔';
               letterBoxClass += ' feedback-correct';
-              itemClass += ' correct-answer'; // Sempre destaca a correta
+              itemClass += ' correct-answer';
               if (choiceStatus === 'correct-choice') {
-                itemClass += ' correct-choice'; // Adicional se foi a escolhida E correta
+                itemClass += ' correct-choice';
               }
-            } else if (choiceStatus === 'incorrect-choice') { // Se esta foi a escolhida E é incorreta
+            } else if (choiceStatus === 'incorrect-choice') {
               icon = '✖';
               letterBoxClass += ' feedback-incorrect';
               itemClass += ' incorrect-choice';
             }
-            // Nenhuma classe de ícone especial para alternativas não escolhidas e não corretas
           }
 
           const altTextoString = typeof alt.texto === 'string' ? alt.texto : String(alt.texto || '');
@@ -106,12 +109,12 @@ function QuestionLayoutInternal({ questionData }) {
               key={altLetter} className={itemClass} data-letter={altLetter}
               role="button" tabIndex={answered ? -1 : 0}
               onClick={() => handleAlternativeClick(altLetter)}
-              onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter)}}>
+              onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter) }}>
               <span className={letterBoxClass}>{icon}</span>
               <div className="alternative-text">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {altTextoString}
-                  </ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {altTextoString}
+                </ReactMarkdown>
               </div>
             </div>
           );
