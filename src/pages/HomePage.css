@@ -144,7 +144,7 @@
 
 /* Dark Mode */
 [data-theme="dark"] .home-page-container-revised {
-  background-color: var(--bg-secondary); /* Fundo geral mais escuro */
+
 }
 [data-theme="dark"] .home-header-revised h1 {
   color: var(--text-primary);

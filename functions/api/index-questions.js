@@ -64,10 +64,18 @@ export async function onRequestPost(context) {
 
     // Limpar o índice antes de reindexar (OPCIONAL, mas útil para evitar duplicatas se IDs mudarem)
     // CUIDADO: Isso apaga tudo! Comente se não quiser.
-    // const existingIds = (await vectorIndex.list()).ids.map(idMeta => idMeta.name);
-    // if (existingIds.length > 0) {
-    //   console.log(`Removendo ${existingIds.length} vetores existentes...`);
-    //   await vectorIndex.deleteByIds(existingIds);
+    // try {
+    //   console.log("Tentando listar IDs existentes para limpeza...");
+    //   const existingIdsResponse = await vectorIndex.list();
+    //   if (existingIdsResponse && existingIdsResponse.ids && existingIdsResponse.ids.length > 0) {
+    //       const existingIds = existingIdsResponse.ids.map(idMeta => idMeta.name);
+    //       console.log(`Removendo ${existingIds.length} vetores existentes...`);
+    //       await vectorIndex.deleteByIds(existingIds);
+    //   } else {
+    //       console.log("Nenhum vetor existente encontrado para remover ou falha ao listar.");
+    //   }
+    // } catch (listError) {
+    //     console.warn("Aviso ao tentar listar/deletar vetores (pode ser normal se o índice estiver vazio ou novo):", listError.message);
     // }
 
     const vectorsToInsert = [];
@@ -92,9 +100,12 @@ export async function onRequestPost(context) {
           id: questao.id.toString(), // ID da questão original (precisa ser string)
           // Metadados para filtragem. Vectorize aceita string, number, boolean.
           ano: questao.ano ? parseInt(questao.ano) : null,
-          materia: questao.materia || "Indefinida",
+          // Normaliza 'materia' para minúsculas para consistência no filtro
+          materia: questao.materia
+            ? questao.materia.toLowerCase()
+            : "indefinida",
           etapa: questao.etapa ? parseInt(questao.etapa) : null,
-          topico: questao.topico || "Indefinido",
+          topico: questao.topico ? questao.topico.toLowerCase() : "indefinido", // Opcional: normalizar tópico também
         });
       }
     }
@@ -103,13 +114,17 @@ export async function onRequestPost(context) {
     const batchSize = 50; // Ajuste conforme necessário (limites da API Workers AI)
     let processedCount = 0;
 
+    console.log(
+      `Iniciando geração de embeddings para ${textsForEmbedding.length} textos em lotes de ${batchSize}.`
+    );
+
     for (let i = 0; i < textsForEmbedding.length; i += batchSize) {
       const textBatch = textsForEmbedding.slice(i, i + batchSize);
       const metadataBatch = questionMetadatas.slice(i, i + batchSize);
       console.log(
-        `Processando lote ${Math.floor(i / batchSize) + 1}... (${
-          textBatch.length
-        } textos)`
+        `Processando lote ${Math.floor(i / batchSize) + 1} de ${Math.ceil(
+          textsForEmbedding.length / batchSize
+        )}... (${textBatch.length} textos)`
       );
 
       const embeddingVectors = await generateEmbeddingsBatch(ai, textBatch);
@@ -124,24 +139,45 @@ export async function onRequestPost(context) {
             metadata: {
               // Metadados para filtragem
               ano: metadataBatch[j].ano,
-              materia: metadataBatch[j].materia,
+              materia: metadataBatch[j].materia, // Já está em minúsculas
               etapa: metadataBatch[j].etapa,
-              topico: metadataBatch[j].topico,
+              topico: metadataBatch[j].topico, // Já está em minúsculas (se normalizado acima)
             },
           });
         } else {
           console.warn(
-            `Embedding não gerado para questão ID: ${metadataBatch[j].id}`
+            `Embedding não gerado para questão ID: ${
+              metadataBatch[j].id
+            } (texto: "${
+              textBatch[j] ? textBatch[j].substring(0, 50) + "..." : "VAZIO"
+            }")`
           );
         }
       }
 
       if (batchVectorsToInsert.length > 0) {
-        await vectorIndex.upsert(batchVectorsToInsert); // Usar upsert para inserir ou atualizar
-        processedCount += batchVectorsToInsert.length;
-        console.log(
-          `${batchVectorsToInsert.length} vetores inseridos/atualizados no índice.`
-        );
+        try {
+          await vectorIndex.upsert(batchVectorsToInsert); // Usar upsert para inserir ou atualizar
+          processedCount += batchVectorsToInsert.length;
+          console.log(
+            `${batchVectorsToInsert.length} vetores inseridos/atualizados no índice. Total processado: ${processedCount}`
+          );
+        } catch (upsertError) {
+          console.error(
+            `Erro ao fazer upsert no lote ${Math.floor(i / batchSize) + 1}:`,
+            upsertError.message
+          );
+          // Tentar inserir um por um em caso de erro no lote (mais lento, mas pode salvar alguns)
+          // console.log("Tentando inserir vetores individualmente após erro no lote...");
+          // for (const vector of batchVectorsToInsert) {
+          //   try {
+          //     await vectorIndex.upsert([vector]);
+          //     processedCount++;
+          //   } catch (individualError) {
+          //     console.error(`Falha ao inserir vetor individual ID ${vector.id}:`, individualError.message);
+          //   }
+          // }
+        }
       }
       // Pequena pausa para não exceder limites de rate, se necessário
       // await new Promise(resolve => setTimeout(resolve, 200));
@@ -154,7 +190,11 @@ export async function onRequestPost(context) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Erro durante a indexação:", error);
+    console.error(
+      "Erro durante a indexação:",
+      error.message,
+      error.stack ? error.stack : ""
+    );
     return new Response(
       JSON.stringify({ error: `Erro na indexação: ${error.message}` }),
       { status: 500 }

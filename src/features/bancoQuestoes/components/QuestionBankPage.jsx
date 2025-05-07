@@ -1,4 +1,3 @@
-// src/features/bancoQuestoes/components/QuestionBankPage.jsx
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import Filters from './Filters.jsx'; // Certifique-se que o caminho e extensão estão corretos
@@ -163,7 +162,7 @@ function QuestionBankPage() {
 
             {isLoadingFilters && <p className="loading-message">Carregando filtros...</p>}
             {!isLoadingFilters && filterOptions.materias.length === 0 && !error && (
-                 <p className="error-message">Opções de filtro não puderam ser carregadas.</p>
+                <p className="error-message">Opções de filtro não puderam ser carregadas.</p>
             )}
             {!isLoadingFilters && filterOptions.materias.length > 0 && (
                 <Filters
@@ -200,7 +199,7 @@ function QuestionBankPage() {
 
             {/* Controles de Paginação */}
             {!isLoading && !error && pagination.totalPages > 1 && (
-                 <div className="pagination-controls">
+                <div className="pagination-controls">
                     <button onClick={handlePrevPage} disabled={pagination.currentPage === 1 || isLoading}>
                         Anterior
                     </button>
