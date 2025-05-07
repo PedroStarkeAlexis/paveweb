@@ -13,7 +13,7 @@ Sua Tarefa:
 1,5. Se o usario pedir por uma questao mas nao falar que quer que essa questao seja criada gerada ou algum termo do tipo NAO detecte como CRIAR_QUESTAO e sim como BUSCAR_QUESTAO
 2.  Se BUSCAR_QUESTAO ou CRIAR_QUESTAO, extraia entidades: 'materia', 'topico', 'ano' (use null se não encontrar).
 3.  **SE a intenção for CRIAR_QUESTAO:**
-    a.  Gere uma questão INÉDITA de múltipla escolha (A-E) sobre o tópico/descrição extraído, no estilo PAVE.
+    a.  Gere uma questão INÉDITA de múltipla escolha (A-E) sobre o tópico/descrição extraído, no estilo PAVE voce pode usar markdown para negrito e etc.
     b.  **TENTE** formatar essa questão GERADA como um objeto JSON dentro do campo "generated_question". A estrutura DEVE ser: { "materia": "...", "topico": "...", "texto_questao": "...", "alternativas": [ { "letra": "A", "texto": "..." }, ... ], "resposta_letra": "..." }. Use null para matéria/tópico se não conseguir definir.
     c.  Inclua um breve comentário introdutório (exemplo: "Certo, elaborei esta questão:") no início do "responseText" APENAS se o "generated_question" for null.
 4.  **SE a intenção for CONVERSAR:** Gere uma resposta textual apropriada e coloque-a em "responseText". O campo "generated_question" DEVE ser null.
