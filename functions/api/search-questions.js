@@ -1,6 +1,6 @@
 const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
 const DEFAULT_SEARCH_LIMIT = 10;
-const DEFAULT_TOP_K = 25;
+const DEFAULT_TOP_K_VECTOR_SEARCH = 50; // Quantos resultados semânticos buscar do Vectorize. Pode ser um pouco maior.
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -8,12 +8,11 @@ export async function onRequestGet(context) {
   const vectorIndex = env.QUESTIONS_INDEX;
   const ai = env.AI;
 
-  // Log de início da requisição
-  console.log(`[search-questions] Recebida requisição: ${request.url}`);
+  console.log(`[search-questions V2] Recebida requisição: ${request.url}`);
 
   if (!r2Bucket || !vectorIndex || !ai) {
     console.error(
-      "[search-questions] ERRO: Bindings R2, Vectorize ou AI não configurados."
+      "[search-questions V2] ERRO: Bindings R2, Vectorize ou AI não configurados."
     );
     return new Response(
       JSON.stringify({
@@ -28,99 +27,74 @@ export async function onRequestGet(context) {
     const params = url.searchParams;
 
     const searchQuery = params.get("query");
-    let materia = params.get("materia");
-    const anoStr = params.get("ano");
-    const etapaStr = params.get("etapa");
+    let materiaFilter = params.get("materia"); // Filtro de matéria
+    const anoFilterStr = params.get("ano"); // Filtro de ano
+    const etapaFilterStr = params.get("etapa"); // Filtro de etapa
     const page = parseInt(params.get("page") || "1", 10);
     const limit = parseInt(
       params.get("limit") || `${DEFAULT_SEARCH_LIMIT}`,
       10
     );
 
-    // Log dos parâmetros recebidos
     console.log(
-      `[search-questions] Parâmetros: query="${searchQuery}", materia="${materia}", ano="${anoStr}", etapa="${etapaStr}", page=${page}, limit=${limit}`
+      `[search-questions V2] Parâmetros: query="${searchQuery}", materiaFiltro="${materiaFilter}", anoFiltro="${anoFilterStr}", etapaFiltro="${etapaFilterStr}", page=${page}, limit=${limit}`
     );
 
-    let matchedQuestionIds = [];
-    let allQuestionsData = null;
-    let isFallbackSearch = false;
-
-    if (materia) {
-      materia = materia.toLowerCase();
-      console.log(`[search-questions] Matéria normalizada para: "${materia}"`);
-    }
-
-    // Caso 1: Sem query de busca e sem filtros (carga inicial da página)
-    if (
-      (!searchQuery || searchQuery.trim() === "") &&
-      !materia &&
-      !anoStr &&
-      !etapaStr
-    ) {
+    if (materiaFilter) {
+      materiaFilter = materiaFilter.toLowerCase();
       console.log(
-        "[search-questions] Modo: Carga Inicial (sem query, sem filtros). Usando fallback R2."
+        `[search-questions V2] Filtro de matéria normalizado para: "${materiaFilter}"`
       );
-      isFallbackSearch = true;
     }
-    // Caso 2: Query de busca vetorial (com ou sem filtros)
-    else if (searchQuery && searchQuery.trim() !== "") {
+    const anoFilter = anoFilterStr ? parseInt(anoFilterStr) : null;
+    const etapaFilter = etapaFilterStr ? parseInt(etapaFilterStr) : null;
+
+    let questionIdsToFetchDetails = null; // Array de IDs se a busca vetorial for usada
+
+    // --- Etapa 1: Busca Vetorial (se houver query) ---
+    if (searchQuery && searchQuery.trim() !== "") {
       console.log(
-        `[search-questions] Modo: Busca Vetorial. Query: "${searchQuery.trim()}"`
+        `[search-questions V2] Modo: Busca Vetorial para query: "${searchQuery.trim()}"`
       );
       const embeddingResponse = await ai.run(EMBEDDING_MODEL, {
         text: [searchQuery.trim()],
       });
-
       if (!embeddingResponse.data || !embeddingResponse.data[0]) {
         console.error(
-          "[search-questions] ERRO: Falha ao gerar embedding para a query."
+          "[search-questions V2] ERRO: Falha ao gerar embedding para a query."
         );
         throw new Error(
           "Não foi possível gerar embedding para a query de busca."
         );
       }
       const queryVector = embeddingResponse.data[0];
+
+      // IMPORTANTE: NENHUM FILTRO DE METADADOS É PASSADO PARA O VECTORIZE.QUERY() AQUI
+      const searchOptions = { topK: DEFAULT_TOP_K_VECTOR_SEARCH };
       console.log(
-        `[search-questions] Embedding da query gerado (tamanho: ${queryVector.length}).`
-      );
-
-      const vectorizeFilter = {};
-      if (materia) vectorizeFilter.materia = materia;
-      if (anoStr) vectorizeFilter.ano = parseInt(anoStr);
-      if (etapaStr) vectorizeFilter.etapa = parseInt(etapaStr);
-
-      const searchOptions = { topK: DEFAULT_TOP_K };
-      if (Object.keys(vectorizeFilter).length > 0) {
-        searchOptions.filter = vectorizeFilter;
-      }
-
-      // Log crucial antes da chamada ao Vectorize
-      console.log(
-        `[search-questions] Opções da consulta Vectorize: ${JSON.stringify(
+        `[search-questions V2] Opções da consulta Vectorize (sem filtro de metadados): ${JSON.stringify(
           searchOptions
         )}`
       );
 
       const vectorMatches = await vectorIndex.query(queryVector, searchOptions);
-
-      // Log crucial da resposta do Vectorize
       console.log(
-        `[search-questions] Vectorize retornou ${vectorMatches.matches.length} correspondências.`
+        `[search-questions V2] Vectorize (sem filtro de metadados) retornou ${vectorMatches.matches.length} correspondências.`
       );
-      if (vectorMatches.matches.length > 0) {
+
+      if (vectorMatches.matches && vectorMatches.matches.length > 0) {
+        questionIdsToFetchDetails = vectorMatches.matches.map(
+          (match) => match.id
+        );
         console.log(
-          `[search-questions] Exemplo da primeira correspondência do Vectorize: id=${
-            vectorMatches.matches[0].id
-          }, score=${vectorMatches.matches[0].score}, metadata=${JSON.stringify(
-            vectorMatches.matches[0].metadata
+          `[search-questions V2] IDs das questões do Vectorize: ${JSON.stringify(
+            questionIdsToFetchDetails
           )}`
         );
-      }
-
-      if (!vectorMatches.matches || vectorMatches.matches.length === 0) {
+      } else {
+        // Se a busca vetorial não encontrou nada, não há o que filtrar depois.
         console.log(
-          "[search-questions] Nenhuma correspondência do Vectorize. Retornando vazio."
+          "[search-questions V2] Nenhuma correspondência do Vectorize. Retornando vazio."
         );
         return new Response(
           JSON.stringify({
@@ -141,104 +115,91 @@ export async function onRequestGet(context) {
           }
         );
       }
-      matchedQuestionIds = vectorMatches.matches.map((match) => match.id);
-      console.log(
-        `[search-questions] IDs das questões correspondentes do Vectorize: ${JSON.stringify(
-          matchedQuestionIds
-        )}`
-      );
-    }
-    // Caso 3: Sem query de busca, MAS COM filtros (filtragem tradicional no R2)
-    else {
-      console.log(
-        "[search-questions] Modo: Apenas Filtros (sem query). Usando fallback R2."
-      );
-      isFallbackSearch = true;
-    }
-
-    console.log("[search-questions] Carregando questoes.json do R2...");
-    const r2Object = await r2Bucket.get("questoes.json");
-    if (r2Object === null) {
-      console.error(
-        "[search-questions] ERRO: questoes.json não encontrado no R2."
-      );
-      throw new Error("questoes.json não encontrado no R2.");
-    }
-    allQuestionsData = await r2Object.json();
-    if (!Array.isArray(allQuestionsData)) {
-      console.error(
-        "[search-questions] ERRO: Formato de questoes.json inválido."
-      );
-      throw new Error("Formato de questoes.json inválido.");
-    }
-    console.log(
-      `[search-questions] ${allQuestionsData.length} questões carregadas do R2.`
-    );
-
-    let relevantQuestionsFull;
-
-    if (isFallbackSearch) {
-      console.log(
-        "[search-questions] Aplicando filtros R2 (fallback/inicial)..."
-      );
-      const anoNum = anoStr ? parseInt(anoStr) : null;
-      const etapaNum = etapaStr ? parseInt(etapaStr) : null;
-
-      relevantQuestionsFull = allQuestionsData.filter((q) => {
-        if (!q || typeof q !== "object") return false;
-        let match = true;
-        if (materia && (!q.materia || q.materia.toLowerCase() !== materia))
-          match = false;
-        if (anoNum && q.ano !== anoNum) match = false;
-        if (etapaNum && q.etapa !== etapaNum) match = false;
-        return match;
-      });
-      console.log(
-        `[search-questions] Filtragem R2 encontrou ${relevantQuestionsFull.length} questões.`
-      );
     } else {
       console.log(
-        "[search-questions] Mapeando IDs do Vectorize para dados completos das questões..."
+        "[search-questions V2] Modo: Sem query de busca. Todos os IDs do R2 serão considerados para filtragem."
       );
-      relevantQuestionsFull = matchedQuestionIds
-        .map((id) =>
-          allQuestionsData.find((q) => q.id && q.id.toString() === id)
-        )
-        .filter(Boolean);
+      // Se não há query, todos os IDs do R2 são candidatos (questionIdsToFetchDetails permanece null, indicando para usar tudo do R2)
+    }
+
+    // --- Etapa 2: Carregar Dados do R2 e Aplicar Filtros de Metadados Manualmente ---
+    console.log("[search-questions V2] Carregando questoes.json do R2...");
+    const r2Object = await r2Bucket.get("questoes.json");
+    if (r2Object === null)
+      throw new Error("questoes.json não encontrado no R2.");
+    const allQuestionsData = await r2Object.json();
+    if (!Array.isArray(allQuestionsData))
+      throw new Error("Formato de questoes.json inválido.");
+    console.log(
+      `[search-questions V2] ${allQuestionsData.length} questões carregadas do R2.`
+    );
+
+    let candidateQuestions;
+    if (questionIdsToFetchDetails) {
+      // Se tivemos resultados da busca vetorial, pegamos apenas essas questões
+      candidateQuestions = allQuestionsData.filter(
+        (q) => q.id && questionIdsToFetchDetails.includes(q.id.toString())
+      );
       console.log(
-        `[search-questions] ${relevantQuestionsFull.length} questões completas encontradas após mapeamento de IDs.`
+        `[search-questions V2] ${candidateQuestions.length} questões candidatas após seleção por IDs do Vectorize.`
+      );
+    } else {
+      // Se não houve busca vetorial (sem query), todas as questões do R2 são candidatas
+      candidateQuestions = allQuestionsData;
+      console.log(
+        `[search-questions V2] Todas as ${candidateQuestions.length} questões do R2 são candidatas para filtragem.`
       );
     }
 
-    const totalItems = relevantQuestionsFull.length;
+    // Aplicar filtros de metadados (materia, ano, etapa)
+    const filteredQuestions = candidateQuestions.filter((q) => {
+      if (!q || typeof q !== "object") return false;
+      let match = true;
+      if (
+        materiaFilter &&
+        (!q.materia || q.materia.toLowerCase() !== materiaFilter)
+      )
+        match = false;
+      if (anoFilter && q.ano !== anoFilter) match = false;
+      if (etapaFilter && q.etapa !== etapaFilter) match = false;
+      return match;
+    });
+    console.log(
+      `[search-questions V2] ${filteredQuestions.length} questões após aplicação manual dos filtros de metadados.`
+    );
+
+    // Paginar os resultados finais
+    const totalItems = filteredQuestions.length;
     const totalPages = Math.ceil(totalItems / limit) || 1;
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
-    const questionsForPage = relevantQuestionsFull.slice(startIndex, endIndex);
+    const questionsForPage = filteredQuestions.slice(startIndex, endIndex);
 
     console.log(
-      `[search-questions] Paginação: totalItems=${totalItems}, totalPages=${totalPages}, currentPage=${page}, limit=${limit}. Retornando ${questionsForPage.length} questões.`
+      `[search-questions V2] Paginação: totalItems=${totalItems}, totalPages=${totalPages}, currentPage=${page}, limit=${limit}. Retornando ${questionsForPage.length} questões.`
     );
 
-    const responseBody = {
-      questions: questionsForPage,
-      pagination: {
-        currentPage: page,
-        totalPages: totalPages,
-        totalItems: totalItems,
-        limit: limit,
-      },
-    };
-    return new Response(JSON.stringify(responseBody), {
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-store",
-      },
-      status: 200,
-    });
+    return new Response(
+      JSON.stringify({
+        questions: questionsForPage,
+        pagination: {
+          currentPage: page,
+          totalPages: totalPages,
+          totalItems: totalItems,
+          limit: limit,
+        },
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+        },
+        status: 200,
+      }
+    );
   } catch (error) {
     console.error(
-      `[search-questions] ERRO GERAL: ${error.message}`,
+      `[search-questions V2] ERRO GERAL: ${error.message}`,
       error.stack
     );
     return new Response(
