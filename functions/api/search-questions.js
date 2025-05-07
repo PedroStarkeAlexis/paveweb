@@ -1,6 +1,6 @@
 const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
 const DEFAULT_SEARCH_LIMIT = 10;
-const DEFAULT_TOP_K_VECTOR_SEARCH = 50; // Quantos resultados semânticos buscar do Vectorize. Pode ser um pouco maior.
+const DEFAULT_TOP_K_VECTOR_SEARCH = 10; // Quantos resultados semânticos buscar do Vectorize. Pode ser um pouco maior.
 
 export async function onRequestGet(context) {
   const { request, env } = context;
