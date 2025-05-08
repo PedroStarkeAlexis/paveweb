@@ -1,7 +1,7 @@
 const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
 const DEFAULT_SEARCH_LIMIT = 10;
 const DEFAULT_TOP_K = 25; // Quantidade de resultados a pedir ao Vectorize
-const MIN_SCORE_THRESHOLD = 0.75; // <<< NOVO: Defina seu limiar aqui (ex: 0.75)
+const MIN_SCORE_THRESHOLD = 0.65;
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -92,27 +92,23 @@ export async function onRequestGet(context) {
       const vectorQueryResult = await vectorIndex.query(
         queryVector,
         searchOptions
-      ); // Renomeado para clareza
+      );
       console.log(
         `[search-questions] Vectorize retornou ${vectorQueryResult.matches.length} correspondências.`
       );
 
       if (vectorQueryResult.matches && vectorQueryResult.matches.length > 0) {
-        // <<< INÍCIO: Filtrar por Score Mínimo >>>
         const highConfidenceMatches = vectorQueryResult.matches.filter(
           (match) => match.score >= MIN_SCORE_THRESHOLD
         );
         console.log(
           `[search-questions] ${highConfidenceMatches.length} correspondências com score >= ${MIN_SCORE_THRESHOLD} (de ${vectorQueryResult.matches.length} iniciais).`
         );
-        // <<< FIM: Filtrar por Score Mínimo >>>
 
         if (highConfidenceMatches.length > 0) {
           const matchedQuestionIds = highConfidenceMatches.map(
             (match) => match.id
           );
-          // Opcional: Logar os scores para ajudar a definir o threshold
-          // console.log("[search-questions] Scores dos matches de alta confiança:", highConfidenceMatches.map(m => ({id: m.id, score: m.score})));
 
           console.log(
             `[search-questions] IDs das questões de alta confiança: ${JSON.stringify(
@@ -144,7 +140,6 @@ export async function onRequestGet(context) {
       initialRelevantQuestions = [...allQuestionsData];
     }
 
-    // --- Aplicar Filtros Manuais (Matéria, Ano, Etapa) ---
     let filteredQuestions = initialRelevantQuestions;
     const filterAnoNum = filterAnoStr ? parseInt(filterAnoStr) : null;
     const filterEtapaNum = filterEtapaStr ? parseInt(filterEtapaStr) : null;
@@ -194,7 +189,6 @@ export async function onRequestGet(context) {
       );
     }
 
-    // --- Paginação ---
     const totalItems = filteredQuestions.length;
     const totalPages = Math.ceil(totalItems / limit) || 1;
     const startIndex = (page - 1) * limit;
