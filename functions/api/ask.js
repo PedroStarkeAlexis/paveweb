@@ -103,12 +103,12 @@ function createQuestionSelectionPrompt(userQuery, candidateQuestions) {
   return `
 Você é um assistente de estudos PAVE.
 A última mensagem do usuário foi: "${userQuery}"
-Ele está buscando uma questão. Analise as seguintes questões candidatas:
+Ele est�� buscando uma questão. Analise as seguintes questões candidatas:
 
 ${JSON.stringify(simplifiedQuestions, null, 2)}
 
 Sua Tarefa:
-1.  Com base na mensagem do usuário ("${userQuery}") e nas questões candidatas fornecidas, escolha a questão ÚNICA que melhor corresponde ao que o usuário pediu.
+1.  Com base na mensagem do usuário ("${userQuery}") e nas questões candidatas fornecidas, escolha a questão ��NICA que melhor corresponde ao que o usuário pediu.
 2.  Se você encontrar uma questão adequada, responda ESTRITAMENTE com um objeto JSON contendo APENAS o ID da questão escolhida, assim:
     { "selected_question_id": "ID_DA_QUESTAO_AQUI" }
 3.  Se NENHUMA das questões candidatas parecer adequada, responda ESTRITAMENTE com um objeto JSON assim:
@@ -201,7 +201,7 @@ export async function onRequestPost(context) {
       }
       if (response.promptFeedback?.blockReason) {
         throw new Error(
-          `Conte��do bloqueado pela IA (análise). Razão: ${response.promptFeedback.blockReason}`
+          `Conteúdo bloqueado pela IA (análise). Razão: ${response.promptFeedback.blockReason}`
         );
       }
       aiAnalysisResponseText = response.text() || "";
@@ -254,7 +254,8 @@ export async function onRequestPost(context) {
 
       if (intent === "CRIAR_QUESTAO" && !generated_question && !responseText) {
         intent = "DESCONHECIDO";
-        commentary = "Pedi para a IA criar uma questão, mas não recebi o conteúdo.";
+        commentary =
+          "Pedi para a IA criar uma questão, mas não recebi o conteúdo.";
       }
       if (intent === "CONVERSAR" && !responseText) {
         intent = "DESCONHECIDO";
@@ -271,7 +272,7 @@ export async function onRequestPost(context) {
       commentary = "Desculpe, tive um problema ao processar a resposta da IA.";
     }
 
-    // --- Lógica do Backend Baseada na Intenção ---
+    // --- L��gica do Backend Baseada na Intenção ---
     if (intent === "BUSCAR_QUESTAO") {
       try {
         console.log(
@@ -284,7 +285,10 @@ export async function onRequestPost(context) {
           commentary = "Erro ao acessar banco de questões para busca.";
         } else {
           allQuestionsR2Data = await r2Object.json();
-          if (!Array.isArray(allQuestionsR2Data) || allQuestionsR2Data.length === 0) {
+          if (
+            !Array.isArray(allQuestionsR2Data) ||
+            allQuestionsR2Data.length === 0
+          ) {
             commentary = "Banco de questões inválido ou vazio para busca.";
             allQuestionsR2Data = null;
           } else {
@@ -445,4 +449,3 @@ export async function onRequest(context) {
     headers: { Allow: "POST" },
   });
 }
-```file
