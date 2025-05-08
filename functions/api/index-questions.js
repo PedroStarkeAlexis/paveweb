@@ -1,38 +1,30 @@
 // Modelo de embedding que usaremos (consistente com o índice e a busca)
 const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
-// Adapte se usar outro modelo. Verifique a documentação do modelo para a dimensão correta.
-// const EMBEDDING_DIMENSION = 768; // J�� definido no índice
 
-// Função para gerar embeddings em lotes
 async function generateEmbeddingsBatch(ai, texts) {
   if (!texts || texts.length === 0) return [];
   try {
     const response = await ai.run(EMBEDDING_MODEL, { text: texts });
-    return response.data || []; // Retorna um array de arrays (vetores)
+    return response.data || [];
   } catch (e) {
     console.error(
       `Erro ao gerar embeddings para lote: ${e.message}`,
       texts.slice(0, 2)
     );
-    // Retorna um array de vetores nulos ou vazios do mesmo tamanho para manter o mapeamento
     return texts.map(() => null);
   }
 }
 
 export async function onRequestPost(context) {
-  // Usaremos POST para acionar
   const { request, env } = context;
-
-  // Simples proteção por header (melhorar em produção se necessário)
   const adminSecret = request.headers.get("X-Admin-Secret");
   if (adminSecret !== env.INDEXING_SECRET && env.CF_ENV !== "development") {
-    // INDEXING_SECRET deve ser uma variável de ambiente
     return new Response("Acesso não autorizado.", { status: 403 });
   }
 
   const r2Bucket = env.QUESTOES_PAVE_BUCKET;
   const vectorIndex = env.QUESTIONS_INDEX;
-  const ai = env.AI; // Binding para Workers AI
+  const ai = env.AI;
 
   if (!r2Bucket || !vectorIndex || !ai) {
     return new Response(
@@ -59,28 +51,10 @@ export async function onRequestPost(context) {
         { status: 500 }
       );
     }
-
     console.log(`Total de ${allQuestionsData.length} questões para processar.`);
 
-    // Limpar o índice antes de reindexar (OPCIONAL, mas útil para evitar duplicatas se IDs mudarem)
-    // CUIDADO: Isso apaga tudo! Comente se não quiser.
-    // try {
-    //   console.log("Tentando listar IDs existentes para limpeza...");
-    //   const existingIdsResponse = await vectorIndex.list();
-    //   if (existingIdsResponse && existingIdsResponse.ids && existingIdsResponse.ids.length > 0) {
-    //       const existingIds = existingIdsResponse.ids.map(idMeta => idMeta.name);
-    //       console.log(`Removendo ${existingIds.length} vetores existentes...`);
-    //       await vectorIndex.deleteByIds(existingIds);
-    //   } else {
-    //       console.log("Nenhum vetor existente encontrado para remover ou falha ao listar.");
-    //   }
-    // } catch (listError) {
-    //     console.warn("Aviso ao tentar listar/deletar vetores (pode ser normal se o índice estiver vazio ou novo):", listError.message);
-    // }
-
-    const vectorsToInsert = [];
     const textsForEmbedding = [];
-    const questionMetadatas = [];
+    const processedQuestionMetadatas = [];
 
     for (const questao of allQuestionsData) {
       if (!questao || !questao.id || !questao.texto_questao) {
@@ -88,32 +62,48 @@ export async function onRequestPost(context) {
         continue;
       }
 
-      // Construir o texto para embedding (experimente com diferentes combinações)
       let textToEmbed = `${questao.materia || ""} ${questao.topico || ""} ${
         questao.texto_questao
       }`;
-      textToEmbed = textToEmbed.replace(/\s+/g, " ").trim(); // Normaliza espaços
+      textToEmbed = textToEmbed.replace(/\s+/g, " ").trim();
 
       if (textToEmbed) {
         textsForEmbedding.push(textToEmbed);
-        questionMetadatas.push({
-          id: questao.id.toString(), // ID da questão original (precisa ser string)
-          // Metadados para filtragem. Vectorize aceita string, number, boolean.
-          ano: questao.ano ? parseInt(questao.ano) : null,
-          // Normaliza 'materia' para minúsculas para consistência no filtro
-          materia: questao.materia
-            ? questao.materia.trim().toLowerCase()
-            : "indefinida",
-          etapa: questao.etapa ? parseInt(questao.etapa) : null,
-          topico: questao.topico
-            ? questao.topico.trim().toLowerCase()
-            : "indefinido", // Opcional: normalizar tópico também
+
+        const metadataPayload = {};
+
+        if (questao.materia) {
+          metadataPayload.materia = questao.materia.trim().toLowerCase();
+        } else {
+          metadataPayload.materia = "indefinida";
+        }
+
+        if (questao.topico) {
+          metadataPayload.topico = questao.topico.trim().toLowerCase();
+        } else {
+          metadataPayload.topico = "indefinido";
+        }
+
+        if (questao.ano) {
+          const anoNum = parseInt(questao.ano, 10);
+          if (!isNaN(anoNum)) {
+            metadataPayload.ano = anoNum;
+          }
+        }
+        if (questao.etapa) {
+          const etapaNum = parseInt(questao.etapa, 10);
+          if (!isNaN(etapaNum)) {
+            metadataPayload.etapa = etapaNum;
+          }
+        }
+        processedQuestionMetadatas.push({
+          questionId: questao.id.toString(),
+          payload: metadataPayload,
         });
       }
     }
 
-    // Gerar embeddings em lotes para não sobrecarregar a API de AI
-    const batchSize = 50; // Ajuste conforme necessário (limites da API Workers AI)
+    const batchSize = 50;
     let processedCount = 0;
 
     console.log(
@@ -122,7 +112,7 @@ export async function onRequestPost(context) {
 
     for (let i = 0; i < textsForEmbedding.length; i += batchSize) {
       const textBatch = textsForEmbedding.slice(i, i + batchSize);
-      const metadataBatch = questionMetadatas.slice(i, i + batchSize);
+      const metadataBatch = processedQuestionMetadatas.slice(i, i + batchSize);
       console.log(
         `Processando lote ${Math.floor(i / batchSize) + 1} de ${Math.ceil(
           textsForEmbedding.length / batchSize
@@ -130,26 +120,19 @@ export async function onRequestPost(context) {
       );
 
       const embeddingVectors = await generateEmbeddingsBatch(ai, textBatch);
-
       const batchVectorsToInsert = [];
+
       for (let j = 0; j < embeddingVectors.length; j++) {
         if (embeddingVectors[j] && embeddingVectors[j].length > 0) {
-          // Verifica se o embedding foi gerado
           batchVectorsToInsert.push({
-            id: metadataBatch[j].id, // ID original da questão
-            values: embeddingVectors[j], // O vetor de embedding
-            metadata: {
-              // Metadados para filtragem
-              ano: metadataBatch[j].ano,
-              materia: metadataBatch[j].materia, // Já est�� em minúsculas
-              etapa: metadataBatch[j].etapa,
-              topico: metadataBatch[j].topico, // Já está em minúsculas (se normalizado acima)
-            },
+            id: metadataBatch[j].questionId,
+            values: embeddingVectors[j],
+            metadata: metadataBatch[j].payload,
           });
         } else {
           console.warn(
             `Embedding não gerado para questão ID: ${
-              metadataBatch[j].id
+              metadataBatch[j].questionId
             } (texto: "${
               textBatch[j] ? textBatch[j].substring(0, 50) + "..." : "VAZIO"
             }")`
@@ -158,8 +141,14 @@ export async function onRequestPost(context) {
       }
 
       if (batchVectorsToInsert.length > 0) {
+        if (batchVectorsToInsert[0]) {
+          console.log(
+            "DEBUG: Exemplo de vetor para upsert (primeiro do lote):",
+            JSON.stringify(batchVectorsToInsert[0], null, 2)
+          );
+        }
         try {
-          await vectorIndex.upsert(batchVectorsToInsert); // Usar upsert para inserir ou atualizar
+          await vectorIndex.upsert(batchVectorsToInsert);
           processedCount += batchVectorsToInsert.length;
           console.log(
             `${batchVectorsToInsert.length} vetores inseridos/atualizados no índice. Total processado: ${processedCount}`
@@ -167,22 +156,16 @@ export async function onRequestPost(context) {
         } catch (upsertError) {
           console.error(
             `Erro ao fazer upsert no lote ${Math.floor(i / batchSize) + 1}:`,
-            upsertError.message
+            upsertError.message,
+            upsertError.cause
+              ? JSON.stringify(
+                  upsertError.cause,
+                  Object.getOwnPropertyNames(upsertError.cause)
+                )
+              : ""
           );
-          // Tentar inserir um por um em caso de erro no lote (mais lento, mas pode salvar alguns)
-          // console.log("Tentando inserir vetores individualmente após erro no lote...");
-          // for (const vector of batchVectorsToInsert) {
-          //   try {
-          //     await vectorIndex.upsert([vector]);
-          //     processedCount++;
-          //   } catch (individualError) {
-          //     console.error(`Falha ao inserir vetor individual ID ${vector.id}:`, individualError.message);
-          //   }
-          // }
         }
       }
-      // Pequena pausa para não exceder limites de rate, se necessário
-      // await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     return new Response(
@@ -193,8 +176,11 @@ export async function onRequestPost(context) {
     );
   } catch (error) {
     console.error(
-      "Erro durante a indexação:",
+      "Erro GERAL durante a indexação:",
       error.message,
+      error.cause
+        ? JSON.stringify(error.cause, Object.getOwnPropertyNames(error.cause))
+        : "",
       error.stack ? error.stack : ""
     );
     return new Response(
@@ -204,7 +190,6 @@ export async function onRequestPost(context) {
   }
 }
 
-// Handler genérico - permite POST para iniciar a indexação
 export async function onRequest(context) {
   if (context.request.method === "POST") {
     return await onRequestPost(context);
