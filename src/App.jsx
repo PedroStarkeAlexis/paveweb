@@ -159,7 +159,7 @@ function App() {
     useEffect(() => {
         if (messages.length === 0) {
              setMessages([
-               { type: 'text', sender: 'bot', content: 'Oi! Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir! 😊' }
+               { type: 'text', sender: 'bot', content: 'Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir! 😊' }
              ]);
         }
     }, []); // Executa apenas na montagem inicial

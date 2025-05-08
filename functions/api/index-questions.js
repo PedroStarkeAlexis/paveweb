@@ -1,7 +1,7 @@
 // Modelo de embedding que usaremos (consistente com o índice e a busca)
 const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
 // Adapte se usar outro modelo. Verifique a documentação do modelo para a dimensão correta.
-// const EMBEDDING_DIMENSION = 768; // Já definido no índice
+// const EMBEDDING_DIMENSION = 768; // J�� definido no índice
 
 // Função para gerar embeddings em lotes
 async function generateEmbeddingsBatch(ai, texts) {
@@ -102,10 +102,12 @@ export async function onRequestPost(context) {
           ano: questao.ano ? parseInt(questao.ano) : null,
           // Normaliza 'materia' para minúsculas para consistência no filtro
           materia: questao.materia
-            ? questao.materia.toLowerCase()
+            ? questao.materia.trim().toLowerCase()
             : "indefinida",
           etapa: questao.etapa ? parseInt(questao.etapa) : null,
-          topico: questao.topico ? questao.topico.toLowerCase() : "indefinido", // Opcional: normalizar tópico também
+          topico: questao.topico
+            ? questao.topico.trim().toLowerCase()
+            : "indefinido", // Opcional: normalizar tópico também
         });
       }
     }
@@ -139,7 +141,7 @@ export async function onRequestPost(context) {
             metadata: {
               // Metadados para filtragem
               ano: metadataBatch[j].ano,
-              materia: metadataBatch[j].materia, // Já está em minúsculas
+              materia: metadataBatch[j].materia, // Já est�� em minúsculas
               etapa: metadataBatch[j].etapa,
               topico: metadataBatch[j].topico, // Já está em minúsculas (se normalizado acima)
             },
