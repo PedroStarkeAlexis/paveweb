@@ -4,9 +4,7 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import { createAnalysisPrompt } from "./prompt";
-// Removido: import { findQuestionsByEntities, parseAiGeneratedQuestion } from './filter';
-// Adicionaremos uma nova função de filtro simples aqui ou importaremos se necessário
-import { parseAiGeneratedQuestion } from "./filter"; // Manter para fallback de CRIAR_QUESTAO
+import { parseAiGeneratedQuestion } from "./filter";
 
 // --- Função Simples para Filtrar Questões (pode ser movida para filter.js depois) ---
 function findQuestionsByEntitiesFromR2(entities, allQuestionsData) {
@@ -19,7 +17,6 @@ function findQuestionsByEntitiesFromR2(entities, allQuestionsData) {
   }
   const { materia, ano, topico } = entities;
 
-  // Função de remover acentos (copiada de filter.js para simplificar ou importe)
   function removeAccents(str) {
     if (typeof str !== "string") return "";
     try {
@@ -66,35 +63,41 @@ function findQuestionsByEntitiesFromR2(entities, allQuestionsData) {
   });
   if (filtered.length > 1) {
     filtered.sort(() => 0.5 - Math.random());
-  } // Embaralha
+  }
   return filtered;
 }
 
 // --- Prompt Específico para a IA Selecionar uma Questão ---
 function createQuestionSelectionPrompt(userQuery, candidateQuestions) {
-  // Limitar o número de questões candidatas para não estourar tokens
-  const MAX_CANDIDATES_FOR_PROMPT = 5; // Ajustável
-  const questionsForPrompt = candidateQuestions.slice(
+  const MAX_CANDIDATES_FOR_PROMPT = 7;
+  let questionsForPrompt = candidateQuestions.slice(
     0,
     MAX_CANDIDATES_FOR_PROMPT
   );
 
-  // Simplificar a representação das questões para o prompt
+  if (
+    candidateQuestions.length > MAX_CANDIDATES_FOR_PROMPT * 2 &&
+    candidateQuestions.length > 10
+  ) {
+    questionsForPrompt = [...candidateQuestions]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, MAX_CANDIDATES_FOR_PROMPT);
+    console.log(
+      `[LOG] createQuestionSelectionPrompt: Amostra aleatória de ${questionsForPrompt.length} questões selecionada de ${candidateQuestions.length} totais.`
+    );
+  }
+
   const simplifiedQuestions = questionsForPrompt.map((q) => ({
     id: q.id,
     materia: q.materia,
     topico: q.topico,
-    // Enviar apenas o início do texto_questao para economizar tokens,
-    // ou um resumo se você tiver/gerar um.
-    // Por agora, vamos enviar o texto_questao para a IA ter mais contexto.
-    // Cuidado com o tamanho!
     texto_questao:
-      q.texto_questao.substring(0, 300) +
-      (q.texto_questao.length > 300 ? "..." : ""),
+      q.texto_questao.substring(0, 250) +
+      (q.texto_questao.length > 250 ? "..." : ""),
   }));
 
   if (simplifiedQuestions.length === 0) {
-    return null; // Não há questões para a IA escolher
+    return null;
   }
 
   return `
@@ -115,13 +118,13 @@ Sua Tarefa:
 }
 
 export async function onRequestPost(context) {
-  const functionName = "/api/ask (v5 - IA busca JSON)"; // Versão atualizada
+  const functionName = "/api/ask (v6 - IA busca JSON com fallback)";
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
   try {
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
     const r2Bucket = env.QUESTOES_PAVE_BUCKET;
-    const modelName = env.MODEL_NAME || "gemini-1.5-flash-latest"; // Usando 1.5 Flash
+    const modelName = env.MODEL_NAME || "gemini-1.5-flash-latest";
 
     if (!r2Bucket) {
       throw new Error("Binding R2 [QUESTOES_PAVE_BUCKET] não configurado.");
@@ -160,7 +163,7 @@ export async function onRequestPost(context) {
     }
     console.log(`[LOG] ${functionName}: Query: "${userQuery}"`);
 
-    const analysisPrompt = createAnalysisPrompt(history, userQuery); // Prompt inicial para intenção/entidades
+    const analysisPrompt = createAnalysisPrompt(history, userQuery);
 
     console.log(
       `[LOG] ${functionName}: Enviando prompt de ANÁLISE para Gemini.`
@@ -198,7 +201,7 @@ export async function onRequestPost(context) {
       }
       if (response.promptFeedback?.blockReason) {
         throw new Error(
-          `Conteúdo bloqueado pela IA (análise). Razão: ${response.promptFeedback.blockReason}`
+          `Conte��do bloqueado pela IA (análise). Razão: ${response.promptFeedback.blockReason}`
         );
       }
       aiAnalysisResponseText = response.text() || "";
@@ -224,7 +227,7 @@ export async function onRequestPost(context) {
     let responseText = null;
     let commentary = "";
     let questionsToReturn = [];
-    let allQuestionsR2Data = null; // Para armazenar os dados do R2
+    let allQuestionsR2Data = null;
 
     try {
       console.log(
@@ -240,8 +243,8 @@ export async function onRequestPost(context) {
 
       intent = aiAnalysis?.intent || "DESCONHECIDO";
       entities = aiAnalysis?.entities || null;
-      generated_question = aiAnalysis?.generated_question || null; // Se a IA já sugerir criar
-      responseText = aiAnalysis?.responseText || null; // Se a IA já sugerir conversar
+      generated_question = aiAnalysis?.generated_question || null;
+      responseText = aiAnalysis?.responseText || null;
 
       console.log(
         `[LOG] ${functionName}: IA Parsed (análise) - Intent: ${intent}, Entities: ${JSON.stringify(
@@ -251,8 +254,7 @@ export async function onRequestPost(context) {
 
       if (intent === "CRIAR_QUESTAO" && !generated_question && !responseText) {
         intent = "DESCONHECIDO";
-        commentary =
-          "Pedi para a IA criar uma questão, mas não recebi o conteúdo.";
+        commentary = "Pedi para a IA criar uma questão, mas não recebi o conteúdo.";
       }
       if (intent === "CONVERSAR" && !responseText) {
         intent = "DESCONHECIDO";
@@ -282,12 +284,11 @@ export async function onRequestPost(context) {
           commentary = "Erro ao acessar banco de questões para busca.";
         } else {
           allQuestionsR2Data = await r2Object.json();
-          if (!Array.isArray(allQuestionsR2Data)) {
-            commentary = "Banco de questões inválido para busca.";
-            allQuestionsR2Data = null; // Reseta se inválido
+          if (!Array.isArray(allQuestionsR2Data) || allQuestionsR2Data.length === 0) {
+            commentary = "Banco de questões inválido ou vazio para busca.";
+            allQuestionsR2Data = null;
           } else {
-            // 1. Filtrar questões do R2 com base nas entidades (filtro leve)
-            const candidateQuestions = findQuestionsByEntitiesFromR2(
+            let candidateQuestions = findQuestionsByEntitiesFromR2(
               entities,
               allQuestionsR2Data
             );
@@ -295,8 +296,14 @@ export async function onRequestPost(context) {
               `[LOG] ${functionName}: Encontradas ${candidateQuestions.length} questões candidatas no R2 com base nas entidades.`
             );
 
+            if (candidateQuestions.length === 0) {
+              console.log(
+                `[LOG] ${functionName}: Pré-filtragem não retornou candidatas. Usando uma amostra de todas as ${allQuestionsR2Data.length} questões como candidatas para a IA.`
+              );
+              candidateQuestions = [...allQuestionsR2Data];
+            }
+
             if (candidateQuestions.length > 0) {
-              // 2. Criar novo prompt para a IA selecionar UMA questão
               const selectionPrompt = createQuestionSelectionPrompt(
                 userQuery,
                 candidateQuestions
@@ -350,17 +357,13 @@ export async function onRequestPost(context) {
                         aiSelection.selected_question_id.toString()
                     );
                     if (foundQuestion) {
-                      commentary = `Encontrei esta questão sobre ${
-                        entities?.topico ||
-                        entities?.materia ||
-                        "o que você pediu"
-                      }:`;
+                      commentary = `A IA selecionou esta questão sobre "${userQuery}":`;
                       questionsToReturn = [foundQuestion];
                     } else {
                       commentary = `A IA sugeriu uma questão (ID: ${aiSelection.selected_question_id}) que não encontrei. Tente ser mais específico ou peça para criar uma.`;
                     }
                   } else {
-                    commentary = `Não consegui encontrar uma questão exata sobre "${userQuery}" com os detalhes fornecidos. Você gostaria que eu tentasse criar uma?`;
+                    commentary = `A IA analisou as opções, mas não selecionou uma questão para "${userQuery}". Você gostaria que eu tentasse criar uma?`;
                   }
                 } catch (selectionError) {
                   console.error(
@@ -370,12 +373,10 @@ export async function onRequestPost(context) {
                   commentary = `Tive um problema ao tentar selecionar a melhor questão para "${userQuery}". Por favor, tente novamente ou peça para criar uma.`;
                 }
               } else {
-                commentary = `Não encontrei questões candidatas sobre "${userQuery}" para a IA escolher. Peça para eu criar uma!`;
+                commentary = `Não há questões disponíveis no banco para a IA escolher. Peça para eu criar uma!`;
               }
             } else {
-              commentary = `Não encontrei questões existentes sobre ${
-                entities?.topico || entities?.materia || "sua busca"
-              }. Peça para eu criar uma!`;
+              commentary = `O banco de questões está vazio. Peça para eu criar uma!`;
             }
           }
         }
@@ -391,7 +392,6 @@ export async function onRequestPost(context) {
           generated_question.referencia || "Texto gerado por IA.";
         questionsToReturn = [generated_question];
       } else if (responseText) {
-        // Tenta o fallback se IA não gerou JSON de questão mas deu texto
         const parsedFallback = parseAiGeneratedQuestion(responseText);
         if (parsedFallback) {
           commentary = "Criei esta questão para você (parse fallback):";
@@ -401,14 +401,11 @@ export async function onRequestPost(context) {
           questionsToReturn = [];
         }
       }
-      // Se generated_question e responseText forem nulos, o commentary de erro já foi setado antes
     } else if (intent === "CONVERSAR") {
-      commentary = responseText; // Já validado que existe
+      commentary = responseText;
       questionsToReturn = [];
     } else {
-      // DESCONHECIDO ou default
       if (!commentary) {
-        // Usa fallback se não houver msg de erro anterior
         commentary =
           "Não entendi bem. Você pode pedir que eu busque ou crie questões do PAVE.";
       }
@@ -448,3 +445,4 @@ export async function onRequest(context) {
     headers: { Allow: "POST" },
   });
 }
+```file
