@@ -54,11 +54,12 @@ async function callGeminiAPI(
 }
 
 export async function onRequestPost(context) {
-  const functionName = "/api/ask (v11 - Múltiplas Questões, Sem Intro)";
+  const functionName = "/api/ask (v12 - Híbrido Vetor+IA Sem Filtro Manual)"; // Nova versão
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
   let allQuestionsR2Data = null;
 
   try {
+    // ... (Configuração inicial, validação, chamada de análise da IA - inalterado) ...
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
     const r2Bucket = env.QUESTOES_PAVE_BUCKET;
@@ -79,9 +80,7 @@ export async function onRequestPost(context) {
     } catch (e) {
       return new Response(
         JSON.stringify({ error: "Requisição JSON inválida." }),
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
 
@@ -89,9 +88,7 @@ export async function onRequestPost(context) {
     if (!Array.isArray(history) || history.length === 0) {
       return new Response(
         JSON.stringify({ error: "Histórico inválido ou vazio." }),
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
     const lastUserMessage = history.findLast((m) => m.role === "user");
@@ -102,9 +99,7 @@ export async function onRequestPost(context) {
     if (!userQuery) {
       return new Response(
         JSON.stringify({ error: "Query do usuário inválida no histórico." }),
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
     console.log(`[LOG] ${functionName}: Query: "${userQuery}"`);
@@ -130,23 +125,21 @@ export async function onRequestPost(context) {
       aiAnalysis = JSON.parse(cleanedJsonString);
     } catch (error) {
       console.error(
-        `[ERRO] ${functionName}: Falha na AN��LISE da API Gemini:`,
+        `[ERRO] ${functionName}: Falha na ANÁLISE da API Gemini:`,
         error
       );
-      const commentary = `Desculpe, tive um problema ao processar seu pedido inicial: ${error.message}. Poderia tentar de novo?`;
+      const commentary = `Desculpe, tive um problema ao processar seu pedido inicial: ${error.message}.`;
       return new Response(
         JSON.stringify({ commentary: commentary, questions: [] }),
-        {
-          status: 503,
-        }
+        { status: 503 }
       );
     }
 
     let intent = aiAnalysis?.intent || "DESCONHECIDO";
-    let entities = aiAnalysis?.entities || null;
+    let entities = aiAnalysis?.entities || null; // Mantemos as entidades para passar à IA de re-ranking
     let generated_question = aiAnalysis?.generated_question || null;
     let responseTextForUser = aiAnalysis?.responseText || null;
-    let commentary = ""; // Inicia vazio
+    let commentary = "";
     let questionsToReturn = [];
 
     console.log(
@@ -155,7 +148,7 @@ export async function onRequestPost(context) {
       )}`
     );
 
-    // Validações pós-análise
+    // Validações pós-análise (inalteradas)
     if (
       intent === "CRIAR_QUESTAO" &&
       !generated_question &&
@@ -174,19 +167,19 @@ export async function onRequestPost(context) {
     switch (intent) {
       case "BUSCAR_QUESTAO":
         try {
-          // ... (Verifica query vaga - inalterado) ...
+          // Verifica query vaga (mantido)
           const isQueryTooVague =
             userQuery.toLowerCase().split(" ").length < 2 &&
             !userQuery.toLowerCase().includes("pave");
-          const hasUsefulEntities =
-            entities && (entities.materia || entities.topico);
-          if (isQueryTooVague && !hasUsefulEntities) {
+          // const hasUsefulEntities = entities && (entities.materia || entities.topico); // Não precisamos mais checar isso para pedir detalhes
+          if (isQueryTooVague /* && !hasUsefulEntities */) {
+            // Podemos manter a condição ou simplificar
             commentary =
               "Para te ajudar a encontrar questões, poderia me dar mais detalhes? Como a matéria ou o tópico. 😊";
             break;
           }
 
-          // ... (Carrega R2 - inalterado) ...
+          // Carrega R2 (mantido)
           const r2Object = await r2Bucket.get("questoes.json");
           if (!r2Object)
             throw new Error("Falha ao acessar R2 (questoes.json).");
@@ -200,7 +193,7 @@ export async function onRequestPost(context) {
             break;
           }
 
-          // ... (Busca Vetorial e Filtro de Score - inalterado) ...
+          // Busca Vetorial e Filtro de Score (mantido)
           let highConfidenceMatches = [];
           try {
             console.log(
@@ -217,7 +210,7 @@ export async function onRequestPost(context) {
               topK: VECTORIZE_TOP_K,
             });
             console.log(
-              `[LOG] ${functionName}: Vectorize retornou ${vectorQueryResult.matches.length} correspond��ncias.`
+              `[LOG] ${functionName}: Vectorize retornou ${vectorQueryResult.matches.length} correspondências.`
             );
             if (vectorQueryResult.matches?.length > 0) {
               highConfidenceMatches = vectorQueryResult.matches.filter(
@@ -232,75 +225,38 @@ export async function onRequestPost(context) {
               `[ERRO] ${functionName}: Falha na busca vetorial:`,
               vectorError
             );
+            // Se a busca vetorial falhar completamente, não há candidatas para a IA
             commentary =
-              "Tive um problema com a busca semântica. Tentando filtrar por outros meios...";
+              "Tive um problema com a busca semântica. Não consigo encontrar questões agora.";
+            break; // Sai do switch
           }
 
-          // ... (Obter Dados Completos e Filtrar Manualmente - inalterado) ...
-          let filteredCandidates = [];
+          // Obter Dados Completos (MODIFICADO: direto dos highConfidenceMatches)
+          let candidatesForReRanking = [];
           if (highConfidenceMatches.length > 0) {
             const candidateIds = highConfidenceMatches.map((match) => match.id);
-            filteredCandidates = allQuestionsR2Data.filter((q) =>
+            candidatesForReRanking = allQuestionsR2Data.filter((q) =>
               candidateIds.includes(q.id.toString())
             );
-          } else if (hasUsefulEntities) {
             console.log(
-              `[LOG] ${functionName}: Busca vetorial sem resultados relevantes. Tentando filtro manual por entidades.`
+              `[LOG] ${functionName}: ${candidatesForReRanking.length} candidatas de alta confiança prontas para re-ranking.`
             );
-            filteredCandidates = filterQuestionsByEntitiesR2(
-              entities,
-              allQuestionsR2Data
-            );
-          }
-          if (hasUsefulEntities && filteredCandidates.length > 0) {
+          } else {
             console.log(
-              `[LOG] ${functionName}: Aplicando filtro manual de entidades em ${filteredCandidates.length} candidatas.`
+              `[LOG] ${functionName}: Nenhuma candidata de alta confiança encontrada após busca vetorial e filtro de score.`
             );
-            const materiaNorm = entities.materia
-              ? removeAccents(entities.materia.toLowerCase())
-              : null;
-            const anoNum = entities.ano ? parseInt(entities.ano, 10) : null;
-            const topicoNorm = entities.topico
-              ? removeAccents(entities.topico.toLowerCase())
-              : null;
-            const palavrasTopico = topicoNorm
-              ? topicoNorm.split(/\s+/).filter((p) => p && p.length > 2)
-              : [];
-            filteredCandidates = filteredCandidates.filter((q) => {
-              let match = true;
-              if (
-                materiaNorm &&
-                (!q.materia ||
-                  removeAccents(q.materia.toLowerCase()) !== materiaNorm)
-              )
-                match = false;
-              if (match && anoNum && q.ano !== anoNum) match = false;
-              if (match && palavrasTopico.length > 0) {
-                const qTopico = removeAccents((q.topico || "").toLowerCase());
-                const qTexto = removeAccents(
-                  (q.texto_questao || "").toLowerCase()
-                );
-                if (
-                  !palavrasTopico.some(
-                    (p) => qTopico.includes(p) || qTexto.includes(p)
-                  )
-                )
-                  match = false;
-              }
-              return match;
-            });
-            console.log(
-              `[LOG] ${functionName}: ${filteredCandidates.length} candidatas após filtro manual.`
-            );
+            // Não há mais fallback para filtro manual aqui
           }
 
-          // --- Re-ranking e Processamento (MODIFICADO) ---
-          if (filteredCandidates.length > 0) {
+          // --- FILTRO MANUAL REMOVIDO ---
+
+          // Re-ranking com IA (se houver candidatas)
+          if (candidatesForReRanking.length > 0) {
             const reRankingPromptText = createQuestionReRankingPrompt(
               userQuery,
-              filteredCandidates,
+              candidatesForReRanking,
               entities
-            );
+            ); // Passa as entidades como contexto para a IA
             if (!reRankingPromptText) {
               commentary = "Não consegui preparar as opções para escolher.";
               break;
@@ -318,7 +274,6 @@ export async function onRequestPost(context) {
                 .trim();
               const aiSelection = JSON.parse(cleanedSelectionJson);
 
-              // Verifica se selected_question_ids é um array e tem IDs
               if (
                 aiSelection &&
                 Array.isArray(aiSelection.selected_question_ids) &&
@@ -330,16 +285,15 @@ export async function onRequestPost(context) {
                 questionsToReturn = allQuestionsR2Data.filter((q) =>
                   questionIdsToFind.includes(q.id.toString())
                 );
-
                 if (questionsToReturn.length > 0) {
-                  // NENHUM commentary aqui, apenas retorna as questões
                   console.log(
                     `[LOG] ${functionName}: IA selecionou ${questionsToReturn.length} questão(ões).`
                   );
+                  // Nenhum commentary
                 } else {
                   commentary = `Selecionei referências (${questionIdsToFind.join(
                     ", "
-                  )}), mas não achei as questões completas. Estranho...`;
+                  )}), mas não achei as questões completas.`;
                   console.warn(
                     `[WARN] ${functionName}: IA (re-ranking) retornou IDs não encontrados: ${questionIdsToFind.join(
                       ", "
@@ -347,49 +301,45 @@ export async function onRequestPost(context) {
                   );
                 }
               } else {
-                // Nenhuma questão selecionada pela IA
                 commentary = `Analisei as opções mais relevantes, mas nenhuma pareceu perfeita para "${createTextPreview(
                   userQuery,
                   30
-                )}". Gostaria de criar uma nova?`;
+                )}".`;
               }
             } catch (selectionError) {
               console.error(
                 `[ERRO] ${functionName}: Falha no RE-RANKING:`,
                 selectionError
               );
-              commentary = `Tive um problema ao selecionar a melhor questão. Poderia tentar de novo?`;
+              commentary = `Tive um problema ao selecionar a melhor questão.`;
             }
           } else {
-            // Nenhuma candidata após todos os filtros
-            commentary = `Não encontrei nenhuma questão que combine bem com seus critérios (${createTextPreview(
+            // Nenhuma candidata após Vectorize + Score
+            commentary = `Não encontrei questões relevantes para "${createTextPreview(
               userQuery,
               30
-            )} ${
-              hasUsefulEntities ? `e filtros aplicados` : ""
-            }). Quer que eu crie uma?`;
+            )}". Gostaria que eu criasse uma?`;
           }
         } catch (error) {
           console.error(
             `[ERRO] ${functionName}: Falha no fluxo BUSCAR_QUESTAO:`,
             error
           );
-          commentary = `Ocorreu um problema ao buscar as questões (${error.message}). Tente novamente.`;
+          commentary = `Ocorreu um problema ao buscar as questões (${error.message}).`;
         }
         break; // Fim do case 'BUSCAR_QUESTAO'
 
-      // --- Casos CRIAR_QUESTAO, CONVERSAR, DESCONHECIDO ---
+      // ... (outros cases inalterados) ...
       case "CRIAR_QUESTAO":
         if (generated_question) {
-          // REMOVIDO commentary introdutório
-          const qData = generated_question; // Usar nome diferente para clareza
+          const qData = generated_question;
           qData.id = qData.id || `gen-${Date.now()}`;
           qData.referencia = qData.referencia || "Texto gerado por IA.";
           questionsToReturn = [qData];
         } else if (responseTextForUser) {
           const parsedFallback = parseAiGeneratedQuestion(responseTextForUser);
           if (parsedFallback) {
-            commentary = "Criei esta questão (formato alternativo):"; // Mantém intro se for fallback
+            commentary = "Criei esta questão (formato alternativo):";
             questionsToReturn = [parsedFallback];
           } else {
             commentary = `Tentei criar, mas o formato não veio como esperado: "${responseTextForUser}"`;
@@ -410,10 +360,9 @@ export async function onRequestPost(context) {
             "Não entendi bem seu pedido. Posso buscar ou criar questões do PAVE, ou conversar sobre o processo seletivo.";
         }
         break;
-    }
+    } // Fim do switch
 
     // --- Retorno Final ---
-    // Se questionsToReturn tiver itens, commentary geralmente será vazio (exceto em erros ou fallbacks)
     console.log(
       `[LOG] ${functionName}: Retornando final. Comentário: "${createTextPreview(
         commentary,
@@ -426,7 +375,6 @@ export async function onRequestPost(context) {
         questions: questionsToReturn,
       }),
       {
-        // Envia null se vazio
         headers: { "Content-Type": "application/json" },
         status: 200,
       }
@@ -460,45 +408,4 @@ export async function onRequest(context) {
     status: 405,
     headers: { Allow: "POST" },
   });
-}
-
-function filterQuestionsByEntitiesR2(entities, allQuestionsData) {
-  if (!Array.isArray(allQuestionsData) || allQuestionsData.length === 0)
-    return [];
-  if (!entities || typeof entities !== "object") return [...allQuestionsData];
-
-  const { materia, ano, topico } = entities;
-  let filtered = allQuestionsData;
-
-  if (materia) {
-    const materiaNorm = removeAccents(materia.toLowerCase());
-    filtered = filtered.filter(
-      (q) => q.materia && removeAccents(q.materia.toLowerCase()) === materiaNorm
-    );
-  }
-  if (ano) {
-    const anoNum = parseInt(ano, 10);
-    if (!isNaN(anoNum)) {
-      filtered = filtered.filter((q) => q.ano === anoNum);
-    }
-  }
-  if (topico) {
-    const palavrasTopicoFiltro = removeAccents(topico.toLowerCase())
-      .split(/\s+/)
-      .filter((p) => p && p.length > 2);
-    if (palavrasTopicoFiltro.length > 0) {
-      filtered = filtered.filter((q) => {
-        const topicoQuestaoNorm = removeAccents((q.topico || "").toLowerCase());
-        const enunciadoQuestaoNorm = removeAccents(
-          (q.texto_questao || "").toLowerCase()
-        );
-        return palavrasTopicoFiltro.some(
-          (pFiltro) =>
-            topicoQuestaoNorm.includes(pFiltro) ||
-            enunciadoQuestaoNorm.includes(pFiltro)
-        );
-      });
-    }
-  }
-  return filtered;
 }
