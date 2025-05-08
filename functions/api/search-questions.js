@@ -1,6 +1,7 @@
 const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
 const DEFAULT_SEARCH_LIMIT = 10;
 const DEFAULT_TOP_K = 25; // Quantidade de resultados a pedir ao Vectorize
+const MIN_SCORE_THRESHOLD = 0.75; // <<< NOVO: Defina seu limiar aqui (ex: 0.75)
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -27,7 +28,7 @@ export async function onRequestGet(context) {
     const params = url.searchParams;
 
     const searchQuery = params.get("query");
-    let filterMateria = params.get("materia"); // Renomeado para clareza
+    let filterMateria = params.get("materia");
     const filterAnoStr = params.get("ano");
     const filterEtapaStr = params.get("etapa");
     const page = parseInt(params.get("page") || "1", 10);
@@ -40,11 +41,9 @@ export async function onRequestGet(context) {
       `[search-questions] Parâmetros: query="${searchQuery}", materia="${filterMateria}", ano="${filterAnoStr}", etapa="${filterEtapaStr}", page=${page}, limit=${limit}`
     );
 
-    let matchedQuestionIds = [];
     let allQuestionsData = null;
-    let initialRelevantQuestions = []; // Lista de questões após busca vetorial ou carga inicial R2
+    let initialRelevantQuestions = [];
 
-    // Carregar todas as questões do R2 primeiro, pois precisaremos delas para metadados e fallback
     console.log("[search-questions] Carregando questoes.json do R2...");
     const r2Object = await r2Bucket.get("questoes.json");
     if (r2Object === null) {
@@ -64,7 +63,6 @@ export async function onRequestGet(context) {
       `[search-questions] ${allQuestionsData.length} questões carregadas do R2.`
     );
 
-    // --- Lógica de Busca e Obtenção da Lista Inicial de Questões ---
     if (searchQuery && searchQuery.trim() !== "") {
       console.log(
         `[search-questions] Modo: Busca Vetorial. Query: "${searchQuery.trim()}"`
@@ -85,43 +83,65 @@ export async function onRequestGet(context) {
         `[search-questions] Embedding da query gerado (tamanho: ${queryVector.length}).`
       );
 
-      // IMPORTANTE: Realiza a busca vetorial SEM o filtro de metadados aqui
       const searchOptions = { topK: DEFAULT_TOP_K };
       console.log(
-        `[search-questions] Opções da consulta Vectorize (sem filtro de metadados): ${JSON.stringify(
+        `[search-questions] Opções da consulta Vectorize: ${JSON.stringify(
           searchOptions
         )}`
       );
-      const vectorMatches = await vectorIndex.query(queryVector, searchOptions);
+      const vectorQueryResult = await vectorIndex.query(
+        queryVector,
+        searchOptions
+      ); // Renomeado para clareza
       console.log(
-        `[search-questions] Vectorize retornou ${vectorMatches.matches.length} correspondências.`
+        `[search-questions] Vectorize retornou ${vectorQueryResult.matches.length} correspondências.`
       );
 
-      if (vectorMatches.matches && vectorMatches.matches.length > 0) {
-        matchedQuestionIds = vectorMatches.matches.map((match) => match.id);
-        console.log(
-          `[search-questions] IDs das questões correspondentes do Vectorize: ${JSON.stringify(
-            matchedQuestionIds
-          )}`
+      if (vectorQueryResult.matches && vectorQueryResult.matches.length > 0) {
+        // <<< INÍCIO: Filtrar por Score Mínimo >>>
+        const highConfidenceMatches = vectorQueryResult.matches.filter(
+          (match) => match.score >= MIN_SCORE_THRESHOLD
         );
-        initialRelevantQuestions = matchedQuestionIds
-          .map((id) =>
-            allQuestionsData.find((q) => q.id && q.id.toString() === id)
-          )
-          .filter(Boolean); // Filtra nulos se algum ID não for encontrado no R2
         console.log(
-          `[search-questions] ${initialRelevantQuestions.length} questões completas encontradas após mapeamento de IDs do Vectorize.`
+          `[search-questions] ${highConfidenceMatches.length} correspondências com score >= ${MIN_SCORE_THRESHOLD} (de ${vectorQueryResult.matches.length} iniciais).`
         );
+        // <<< FIM: Filtrar por Score Mínimo >>>
+
+        if (highConfidenceMatches.length > 0) {
+          const matchedQuestionIds = highConfidenceMatches.map(
+            (match) => match.id
+          );
+          // Opcional: Logar os scores para ajudar a definir o threshold
+          // console.log("[search-questions] Scores dos matches de alta confiança:", highConfidenceMatches.map(m => ({id: m.id, score: m.score})));
+
+          console.log(
+            `[search-questions] IDs das questões de alta confiança: ${JSON.stringify(
+              matchedQuestionIds
+            )}`
+          );
+          initialRelevantQuestions = matchedQuestionIds
+            .map((id) =>
+              allQuestionsData.find((q) => q.id && q.id.toString() === id)
+            )
+            .filter(Boolean);
+          console.log(
+            `[search-questions] ${initialRelevantQuestions.length} questões completas (alta confiança) encontradas após mapeamento.`
+          );
+        } else {
+          console.log(
+            `[search-questions] Nenhuma correspondência do Vectorize atingiu o score mínimo de ${MIN_SCORE_THRESHOLD}.`
+          );
+          initialRelevantQuestions = [];
+        }
       } else {
         console.log("[search-questions] Nenhuma correspondência do Vectorize.");
         initialRelevantQuestions = [];
       }
     } else {
-      // Sem query de busca, usa todas as questões do R2 como base para filtros
       console.log(
         "[search-questions] Modo: Sem query de busca. Usando todas as questões do R2 como base para filtros."
       );
-      initialRelevantQuestions = [...allQuestionsData]; // Copia todas as questões
+      initialRelevantQuestions = [...allQuestionsData];
     }
 
     // --- Aplicar Filtros Manuais (Matéria, Ano, Etapa) ---
@@ -137,7 +157,6 @@ export async function onRequestGet(context) {
         if (!q || typeof q !== "object") return false;
         let match = true;
 
-        // Filtro de Matéria (case-insensitive, com trim)
         if (filterMateria && q.materia) {
           if (
             q.materia.trim().toLowerCase() !==
@@ -146,11 +165,9 @@ export async function onRequestGet(context) {
             match = false;
           }
         } else if (filterMateria && !q.materia) {
-          // Se filtro de matéria existe mas questão não tem matéria
           match = false;
         }
 
-        // Filtro de Ano
         if (match && filterAnoNum && q.ano) {
           if (q.ano !== filterAnoNum) {
             match = false;
@@ -159,7 +176,6 @@ export async function onRequestGet(context) {
           match = false;
         }
 
-        // Filtro de Etapa
         if (match && filterEtapaNum && q.etapa) {
           if (q.etapa !== filterEtapaNum) {
             match = false;
@@ -180,9 +196,8 @@ export async function onRequestGet(context) {
 
     // --- Paginação ---
     const totalItems = filteredQuestions.length;
-    const totalPages = Math.ceil(totalItems / limit) || 1; // Garante pelo menos 1 página
+    const totalPages = Math.ceil(totalItems / limit) || 1;
     const startIndex = (page - 1) * limit;
-    // const endIndex = startIndex + limit; // Não é mais necessário com slice
     const questionsForPage = filteredQuestions.slice(
       startIndex,
       startIndex + limit
