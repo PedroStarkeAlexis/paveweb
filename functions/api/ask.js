@@ -11,7 +11,7 @@ import {
 } from "./filter";
 
 const VECTORIZE_TOP_K = 15;
-const MIN_SCORE_THRESHOLD = 0.75;
+const MIN_SCORE_THRESHOLD = 0.65;
 const MAX_CANDIDATES_FOR_RERANKING = 5;
 
 async function callGeminiAPI(
