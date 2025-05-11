@@ -84,7 +84,7 @@ code { /* Adicionado do index.css (CRA) */
 .sidebar {
     width: 230px;
     height: 100%;
-    background-color: var(--bg-tertiary); /* Usa variável */
+    /* background-color: var(--bg-tertiary); Usa variável */
     border-right: 1px solid #ffffff00; /* Usa variável */
     display: flex;
     flex-direction: column;
@@ -494,7 +494,7 @@ code { /* Adicionado do index.css (CRA) */
 [data-theme="dark"] #root { /* Nenhum estilo específico necessário aqui geralmente */ }
 
 /* Sidebar */
-[data-theme="dark"] .sidebar { background-color: #1e1e1e;  }
+[data-theme="dark"] .sidebar { background-color: #1e1e1e00;  }
 [data-theme="dark"] .sidebar-header { border-bottom-color: #3a3a3a00; } /* Linha escura específica */
 [data-theme="dark"] .logo-placeholder { color: var(--brand-primary); }
 [data-theme="dark"] .sidebar-nav { scrollbar-color: var(--border-secondary) var(--bg-tertiary); }
