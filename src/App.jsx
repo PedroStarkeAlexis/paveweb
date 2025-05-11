@@ -1,26 +1,26 @@
+// src/App.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
 // --- Importar páginas/features dos NOVOS locais ---
 import HomePage from './pages/HomePage';
 // --- Import da nova página ---
-import ChatInterface from './features/chat/components/ChatInterface'; // Verifique se este é o componente da página ou se precisa criar ChatPage.jsx
-import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage'; // Verifique se este é o componente da página
+import ChatInterface from './features/chat/components/ChatInterface';
+import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage';
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
 
 // --- Importar componentes comuns e hooks globais ---
-// ATENÇÃO: No seu print, ThemeToggleButton está como .js, renomeie para .jsx se for componente React
-import ThemeToggleButton from './components/common/ThemeToggleButton'; // Caminho atualizado
-// ATENÇÃO: No seu print, useDarkModeToggle está como .js, renomeie para .jsx
-import useDarkModeToggle from './hooks/useDarkModeToggle'; // Caminho atualizado
+import ThemeToggleButton from './components/common/ThemeToggleButton';
+import useDarkModeToggle from './hooks/useDarkModeToggle';
+import BottomNavBar from './components/common/BottomNavBar'; // <<< NOVO IMPORT
 
-// Importar CSS global principal (geralmente feito em main.jsx, mas confirme)
+// Importar CSS global principal
 import './style.css';
 
-// --- Componente NavLink (com tratamento de link externo) ---
+// --- Componente NavLink (para Sidebar) ---
 function NavLink({ to, icon, children }) {
     const location = useLocation();
-    const isActive = !to.startsWith('http') && location.pathname === to; // Só marca ativo para links internos
+    const isActive = !to.startsWith('http') && location.pathname === to;
     const linkClass = isActive ? 'active' : '';
 
     if (to.startsWith('http')) {
@@ -44,65 +44,55 @@ function NavLink({ to, icon, children }) {
 
 // --- Componente Principal App ---
 function App() {
-    // --- Estado do Chat (Mantido aqui por enquanto) ---
+    // --- Estado do Chat ---
     const [messages, setMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     // --- Estado do Tema ---
-    // Tenta ler a preferência inicial
     const getInitialThemePreference = () => {
-        if (typeof window !== 'undefined') { // Garante que rode apenas no client-side
+        if (typeof window !== 'undefined') {
             const storedPreference = localStorage.getItem('theme-preference');
             if (storedPreference) {
                 return storedPreference === 'dark';
             }
             return window.matchMedia('(prefers-color-scheme: dark)').matches;
         }
-        return false; // Default no server-side ou build time
+        return false;
     };
     const [darkMode, setDarkMode] = useState(getInitialThemePreference);
 
     // --- Hook e Lógica de Tema ---
-    useDarkModeToggle(darkMode, setDarkMode); // Hook aplica classe e data-theme
+    useDarkModeToggle(darkMode, setDarkMode);
 
-    // Função para o botão de toggle (salva no localStorage)
     const handleThemeToggle = useCallback(() => {
         setDarkMode(prevMode => {
             const newMode = !prevMode;
-            // localStorage só existe no client-side
             if (typeof window !== 'undefined') {
                 localStorage.setItem('theme-preference', newMode ? 'dark' : 'light');
             }
             return newMode;
         });
-    }, [setDarkMode]); // setDarkMode é estável, não precisa estar na dependência geralmente
+    }, [setDarkMode]);
 
-    // Sincroniza com mudanças no sistema operacional (se não houver preferência salva)
     useEffect(() => {
-        if (typeof window !== 'undefined') { // Garante que rode apenas no client-side
+        if (typeof window !== 'undefined') {
             const matcher = window.matchMedia('(prefers-color-scheme: dark)');
             const listener = ({ matches: isDark }) => {
-                // Atualiza SÓ SE não houver preferência explícita no localStorage
                 if (!localStorage.getItem('theme-preference')) {
                     setDarkMode(isDark);
                 }
             };
-            // Listener moderno
             if (matcher.addEventListener) {
                  matcher.addEventListener('change', listener);
-                 // Cleanup function
                  return () => matcher.removeEventListener('change', listener);
-            }
-            // Listener legado (para compatibilidade, embora menos provável com React 19)
-            else if (matcher.addListener) {
+            } else if (matcher.addListener) { // Legado
                  matcher.addListener(listener);
-                 // Cleanup function
                  return () => matcher.removeListener(listener);
             }
         }
-    }, [setDarkMode]); // Depende do setDarkMode
+    }, [setDarkMode]);
 
-    // --- Handler para Enviar Mensagem (Lógica permanece igual) ---
+    // --- Handler para Enviar Mensagem ---
     const handleSendMessage = async (userQuery) => {
         const newUserMessage = { type: 'text', sender: 'user', content: userQuery };
         const updatedMessages = [...messages, newUserMessage];
@@ -119,7 +109,7 @@ function App() {
         if (historyForAPI.length === 0) { setIsLoading(false); return; }
 
         try {
-            const response = await fetch('/api/ask', { /* ... corpo da requisição ... */
+            const response = await fetch('/api/ask', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ history: historyForAPI }),
@@ -154,8 +144,7 @@ function App() {
         }
     };
 
-
-    // --- Efeito Inicial do Chat (Lógica permanece igual) ---
+    // --- Efeito Inicial do Chat ---
     useEffect(() => {
         if (messages.length === 0) {
              setMessages([
@@ -164,11 +153,17 @@ function App() {
         }
     }, []); // Executa apenas na montagem inicial
 
+    // <<< ITENS PARA A BARRA DE NAVEGAÇÃO INFERIOR >>>
+    const bottomNavItems = [
+        { to: "/", icon: "🏠", label: "Início" },
+        { to: "/calculadora", icon: "🧮", label: "Calculadora" },
+        { to: "/chat", icon: "💬", label: "Chat IA" },
+        { to: "/banco-questoes", icon: "📚", label: "Questões" },
+    ];
+
     return (
-        // Classe dark-mode será aplicada pelo hook no elemento <html> ou <body>
         <div className="app-container">
-            <aside className="sidebar">
-                {/* ... Sidebar Header ... */}
+            <aside className="sidebar"> {/* Sidebar será escondida em mobile via CSS */}
                 <div className="sidebar-header">
                   <span className="logo-placeholder">LOGO AQUI</span>
                 </div>
@@ -178,11 +173,8 @@ function App() {
                         <NavLink to="/calculadora" icon="🧮">Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon="💬">Assistente IA</NavLink>
                         <NavLink to="/banco-questoes" icon="📚">Banco de Questões</NavLink>
-                       
-                        {/* Adicione outros links se necessário */}
                     </ul>
                 </nav>
-                {/* ... Sidebar Footer ... */}
                 <div className="sidebar-footer">
                    <ul>
                       <li><a href="#"><span className="icon">?</span> Ajuda</a></li>
@@ -205,13 +197,13 @@ function App() {
                         }
                     />
                     <Route path="/banco-questoes" element={<QuestionBankPage />} />
-                    {<Route path="/calculadora" element={<CalculadoraPage />} /> }
+                    <Route path="/calculadora" element={<CalculadoraPage />} />
                     <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>Página não encontrada (404)</h2></div>} />
                 </Routes>
             </main>
 
-            {/* Botão de Tema Renderizado Globalmente */}
             <ThemeToggleButton isDarkMode={darkMode} toggleDarkMode={handleThemeToggle} />
+            <BottomNavBar items={bottomNavItems} />
         </div>
     );
 }

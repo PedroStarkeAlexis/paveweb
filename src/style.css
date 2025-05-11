@@ -30,7 +30,7 @@ html {
     --brand-primary: #10a37f; /* Verde */
     --brand-primary-hover: #0f8e6c;
     --brand-secondary: #e0f2fe; /* Azul claro */
-    --brand-secondary-text: #0c4a6e;
+    --brand-secondary-text: #d3d0b7;
     --error-primary: #ef4444;
     --error-secondary: #fef2f2;
     --success-primary: #10b981; /* Ajustado do verde */
@@ -85,7 +85,7 @@ code { /* Adicionado do index.css (CRA) */
     width: 230px;
     height: 100%;
     background-color: var(--bg-tertiary); /* Usa variável */
-    border-right: 1px solid var(--border-primary); /* Usa variável */
+    border-right: 1px solid #ffffff00; /* Usa variável */
     display: flex;
     flex-direction: column;
     padding: 10px 0;
@@ -160,6 +160,7 @@ code { /* Adicionado do index.css (CRA) */
 
 /* Footer da Sidebar */
 .sidebar-footer {
+    text-align: center;
     padding: 10px 0;
     border-top: 1px solid #f3f4f6; /* Linha clara */
 }
@@ -337,7 +338,7 @@ code { /* Adicionado do index.css (CRA) */
 /* --- ESTILOS DO BANCO DE QUESTÕES (do Projeto 2) --- */
 /* Container já estilizado acima */
 
-.question-bank-container h1 { /* T��tulo se voltar a usar */
+.question-bank-container h1 { /* Título se voltar a usar */
     font-size: 1.4em; font-weight: 500; color: var(--text-primary);
     margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid var(--border-primary);
 }
@@ -445,7 +446,7 @@ code { /* Adicionado do index.css (CRA) */
 
 /* Footer do Card */
 .question-footer {
-    padding: 10px 15px; border-top: 1px solid #f3f4f6; background-color: var(--bg-tertiary);
+    padding: 10px 15px;background-color: var(--bg-tertiary);
     border-radius: 0 0 8px 8px; display: flex; justify-content: flex-end;
     align-items: center; min-height: 40px;
     transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -489,12 +490,12 @@ code { /* Adicionado do index.css (CRA) */
 /* Aplica as variáveis no modo escuro */
 
 /* Body e Root */
-[data-theme="dark"] body { background-color: var(--bg-secondary); color: var(--text-primary); }
+[data-theme="dark"] body { background-color: var(--bg-primary); color: var(--text-primary); }
 [data-theme="dark"] #root { /* Nenhum estilo específico necessário aqui geralmente */ }
 
 /* Sidebar */
-[data-theme="dark"] .sidebar { background-color: var(--bg-tertiary); border-right-color: var(--border-primary); }
-[data-theme="dark"] .sidebar-header { border-bottom-color: #3a3a3a; } /* Linha escura específica */
+[data-theme="dark"] .sidebar { background-color: #1e1e1e;  }
+[data-theme="dark"] .sidebar-header { border-bottom-color: #3a3a3a00; } /* Linha escura específica */
 [data-theme="dark"] .logo-placeholder { color: var(--brand-primary); }
 [data-theme="dark"] .sidebar-nav { scrollbar-color: var(--border-secondary) var(--bg-tertiary); }
 [data-theme="dark"] .sidebar-nav::-webkit-scrollbar-track { background: var(--bg-tertiary); }
@@ -502,9 +503,11 @@ code { /* Adicionado do index.css (CRA) */
 [data-theme="dark"] .sidebar-nav a { color: var(--text-secondary); }
 [data-theme="dark"] .sidebar-nav a .icon { color: var(--text-muted); }
 [data-theme="dark"] .sidebar-nav a:hover { background-color: #3a3a3a; color: var(--text-primary); }
-[data-theme="dark"] .sidebar-nav a.active { background-color: var(--brand-secondary); color: var(--brand-secondary-text); }
+[data-theme="dark"] .sidebar-nav a.active { 
+    background-color: rgba(255,255,255,.1);
+    color: #d1cfc0 }
 [data-theme="dark"] .sidebar-nav a.external-link:hover { background-color: #3a3a3a; color: var(--text-primary); }
-[data-theme="dark"] .sidebar-footer { border-top-color: #3a3a3a; }
+[data-theme="dark"] .sidebar-footer { border-top-color: #3a3a3a00; }
 [data-theme="dark"] .sidebar-footer a { color: var(--text-muted); }
 [data-theme="dark"] .sidebar-footer a:hover { background-color: #3a3a3a; color: var(--text-primary); }
 [data-theme="dark"] .copyright { color: #666666; }
@@ -521,7 +524,7 @@ code { /* Adicionado do index.css (CRA) */
 /* Chat */
 [data-theme="dark"] .chat-box { scrollbar-color: var(--border-secondary) transparent; }
 [data-theme="dark"] .chat-box::-webkit-scrollbar-thumb { background-color: var(--border-secondary); }
-[data-theme="dark"] .input-area { box-shadow: 0 -8px 20px -15px rgba(255, 255, 255, 0.05); }
+/* [data-theme="dark"] .input-area { box-shadow: 0 -8px 20px -15px rgba(255, 255, 255, 0.05); } */
 [data-theme="dark"] #user-input { background-color: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-primary); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
 [data-theme="dark"] #user-input:focus { border-color: #777; box-shadow: 0 0 0 1px #777, 0 1px 3px rgba(0, 0, 0, 0.1); }
 [data-theme="dark"] #send-button { background-color: var(--brand-primary); }
@@ -702,3 +705,54 @@ code { /* Adicionado do index.css (CRA) */
     font-size: 0.9em;
     color: var(--text-muted);
   }
+  /* --- Responsividade para Sidebar e BottomNavBar --- */
+@media (max-width: 768px) { /* Ponto de quebra para mobile */
+  .sidebar {
+    display: none; /* Esconde a sidebar em telas menores */
+  }
+
+  .main-content {
+    /* margin-left: 0; // Removido, pois o .app-container já é flex e o main-content vai ocupar o espaço */
+    padding-bottom: 70px; /* Altura da BottomNavBar + um pouco de folga */
+  }
+
+  .bottom-nav-bar {
+    display: flex; /* Mostra a BottomNavBar em telas menores */
+  }
+
+  /* Ajustes para os containers das páginas para compensar a BottomNavBar */
+  /* Se o scroll interno das páginas não funcionar bem, pode ser necessário aplicar o padding-bottom aqui */
+  .chat-interface-container,
+  .question-bank-container,
+  .home-page-container-revised, /* Adicionado para a HomePage */
+  .calc-wizard-container { /* Adicionado para a Calculadora */
+    /* padding-bottom: 70px; // Pode ser necessário se o scroll interno não respeitar o padding do main-content */
+    /* Teste sem isso primeiro, o padding-bottom no main-content deve ser suficiente */
+  }
+
+  /* Ajuste do botão de tema para não colidir com a bottom nav */
+  .theme-toggle {
+    bottom: 75px; /* Sobe um pouco (60px da nav + 15px de margem) */
+  }
+}
+
+@media (max-width: 480px) {
+  .bottom-nav-bar {
+    height: 55px; /* Barra um pouco menor em telas muito pequenas */
+  }
+  .main-content {
+    padding-bottom: 65px; /* Ajusta padding para nova altura da barra */
+  }
+  .bottom-nav-icon {
+    font-size: 1.2em;
+  }
+  .bottom-nav-label {
+    font-size: 0.65em;
+  }
+  .theme-toggle {
+    bottom: 70px;
+    width: 38px;
+    height: 38px;
+    padding: 5px;
+  }
+}

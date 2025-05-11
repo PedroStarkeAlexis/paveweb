@@ -13,7 +13,7 @@ export function createAnalysisPrompt(history, userQuery) {
       1,5. Se o usario pedir por uma questao mas nao falar que quer que essa questao seja criada gerada ou algum termo do tipo NAO detecte como CRIAR_QUESTAO e sim como BUSCAR_QUESTAO
       2.  Se BUSCAR_QUESTAO ou CRIAR_QUESTAO, extraia entidades: 'materia', 'topico', 'ano' (use null se não encontrar). Tente ser específico (ex: 'Trigonometria' em vez de apenas 'Matemática' se possível).
       3.  **SE a intenção for CRIAR_QUESTAO:**
-          a.  Gere uma questão INÉDITA de múltipla escolha (A-E) sobre o tópico/descrição extraído, no estilo PAVE voce pode usar markdown para negrito etc.
+          a.  Gere uma questão INÉDITA de múltipla escolha (A-E) sobre o tópico/descrição extraído, no estilo do vestibular PAVE da UFPEL voce pode usar markdown para negrito etc.
           b.  **TENTE** formatar essa questão GERADA como um objeto JSON dentro do campo "generated_question". A estrutura DEVE ser: { "materia": "...", "topico": "...", "texto_questao": "...", "alternativas": [ { "letra": "A", "texto": "..." }, ... ], "resposta_letra": "..." }. Use null para matéria/tópico se não conseguir definir.
           c.  Inclua um breve comentário introdutório (exemplo: "Certo, elaborei esta questão:") no in��cio do "responseText" APENAS se o "generated_question" for null.
       4.  **SE a intenção for CONVERSAR:** Gere uma resposta textual apropriada e coloque-a em "responseText". O campo "generated_question" DEVE ser null.
@@ -41,7 +41,7 @@ export function createQuestionReRankingPrompt(
   candidateQuestions,
   entities
 ) {
-  const MAX_CANDIDATES_FOR_RERANKING = 5; // Limita quantas enviar para a IA escolher
+  const MAX_CANDIDATES_FOR_RERANKING = 8; // Limita quantas enviar para a IA escolher
   const questionsForPrompt = candidateQuestions.slice(
     0,
     MAX_CANDIDATES_FOR_RERANKING
@@ -79,7 +79,7 @@ ${JSON.stringify(simplifiedQuestions, null, 2)}
 
 Sua Tarefa:
 1.  Reavalie a pergunta do usuário e as entidades em relação às opções fornecidas.
-2.  Identifique **TODAS** as questões da lista que são **altamente relevantes** para o pedido do usuário. Pode ser uma, várias ou nenhuma.
+2.  Identifique **TODAS** as questões da lista que são relevantes e fazem sentido com o pedido do usuário. Pode ser uma, várias ou nenhuma voce pode decidir isso baseado no pedido do usuario.
 3.  Responda ESTRITAMENTE com um objeto JSON contendo uma lista (array) de IDs das questões selecionadas. A chave deve ser "selected_question_ids".
     *   Se encontrar uma ou mais questões relevantes:
         { "selected_question_ids": ["ID_1", "ID_2", ...] }
