@@ -434,11 +434,11 @@ code { /* Adicionado do index.css (CRA) */
 /* Feedback Visual */
 .alternative-letter.feedback-correct { background-color: var(--success-primary); color: #fff; border-color: var(--success-primary); }
 .alternative-letter.feedback-incorrect { background-color: var(--error-primary); color: #fff; border-color: var(--error-primary); }
-.alternative-item.correct-answer { border-color: #a7f3d0; background-color: var(--success-secondary); }
-.alternative-item.correct-answer .alternative-text { color: #065f46; }
+/* .alternative-item.correct-answer { border-color: #a7f3d0; background-color: var(--success-secondary); } */
+/* .alternative-item.correct-answer .alternative-text { color: #065f46; } */
 .alternative-item.correct-answer .alternative-letter { border-right-color: #a7f3d0; }
-.alternative-item.incorrect-choice { border-color: #fecaca; background-color: var(--error-secondary); }
-.alternative-item.incorrect-choice .alternative-text { color: #991b1b; }
+/* .alternative-item.incorrect-choice { border-color: #fecaca; background-color: var(--error-secondary); } */
+/* .alternative-item.incorrect-choice .alternative-text { color: #991b1b; } */
 .alternative-item.incorrect-choice .alternative-letter { border-right-color: #fecaca; }
 /* Estilo estático no banco */
 #question-bank-list .alternative-item.correct-answer-static { border-color: #a7f3d0; background-color: var(--success-secondary); }
@@ -479,8 +479,8 @@ code { /* Adicionado do index.css (CRA) */
     --brand-primary-hover: #0f8e6c; /* Verde hover */
     --brand-secondary: #374151; /* Azul claro vira cinza escuro */
     --brand-secondary-text: #e5e7eb; /* Texto sobre cinza escuro */
-    --error-primary: #f472b6; /* Rosa/Vermelho claro */
-    --error-secondary: #581c87; /* Fundo roxo escuro para erro */
+    --error-primary: #f74c4c; /* Rosa/Vermelho claro */
+    --error-secondary: #871c1c; /* Fundo roxo escuro para erro */
     --success-primary: #34d399; /* Verde claro */
     --success-secondary: #064e3b; /* Fundo verde escuro para sucesso */
 
