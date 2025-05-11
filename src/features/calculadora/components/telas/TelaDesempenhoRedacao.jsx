@@ -8,8 +8,8 @@ function TelaDesempenhoRedacao({ onChange, values }) {
 
   return (
     <div className="calc-tela-redacao">
-      <h2 className="calc-tela-titulo">Você fez a <strong>Redação</strong>?</h2>
-      <p className="calc-tela-subtitulo">Selecione "Sim" para incluir sua nota (0 a {NOTA_MAX_REDAÇÃO}) no cálculo.</p>
+      <h2 className="calc-tela-titulo">Deseja incluir a <strong>Redação</strong>?</h2>
+      <p className="calc-tela-subtitulo">Selecione "Sim" para incluir a nota estimada (0 a {NOTA_MAX_REDAÇÃO}) no cálculo.</p>
 
       {/* Botões de Seleção Sim/Não */}
       <div className="calc-redacao-botoes">
