@@ -195,7 +195,8 @@ code { /* Adicionado do index.css (CRA) */
 /* Container que limita largura (usado pelo Chat e Banco de Questões) */
 .chat-interface-container,
 .question-bank-container,
-.home-page-container { /* Aplicado também à Home */
+.home-page-container,
+.home-page-container-revised { /* Aplicado também à Home */
     width: 100%;
     max-width: 850px; /* Largura padrão */
     margin: 0 auto;
@@ -203,24 +204,57 @@ code { /* Adicionado do index.css (CRA) */
     flex-direction: column;
     flex-grow: 1;
     min-height: 0; /* Crucial para scroll funcionar */
-    padding: 20px 15px; /* Padding padrão */
+    padding-top: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
     overflow-y: auto; /* Scroll interno */
     scrollbar-width: thin;
     scrollbar-color: var(--border-secondary) transparent; /* Scroll transparente */
 }
 .chat-interface-container::-webkit-scrollbar,
 .question-bank-container::-webkit-scrollbar,
-.home-page-container::-webkit-scrollbar { width: 6px; }
+.home-page-container::-webkit-scrollbar,
+.home-page-container-revised::-webkit-scrollbar { width: 6px; }
 .chat-interface-container::-webkit-scrollbar-track,
 .question-bank-container::-webkit-scrollbar-track,
-.home-page-container::-webkit-scrollbar-track { background: transparent; }
+.home-page-container::-webkit-scrollbar-track,
+.home-page-container-revised::-webkit-scrollbar-track { background: transparent; }
 .chat-interface-container::-webkit-scrollbar-thumb,
 .question-bank-container::-webkit-scrollbar-thumb,
-.home-page-container::-webkit-scrollbar-thumb { background-color: var(--border-secondary); border-radius: 3px; }
+.home-page-container::-webkit-scrollbar-thumb,
+.home-page-container-revised::-webkit-scrollbar-thumb { background-color: var(--border-secondary); border-radius: 3px; }
+
+.calc-wizard-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding-top: 30px;
+    padding-left: 40px;
+    padding-right: 40px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-secondary) transparent;
+}
+
+.calc-wizard-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.calc-wizard-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.calc-wizard-container::-webkit-scrollbar-thumb {
+    background-color: var(--border-secondary);
+    border-radius: 3px;
+}
 
 /* Ajuste específico para o container do chat ter menos padding */
 .chat-interface-container {
-     padding: 0 15px;
+     padding-top: 0;
      max-width: 800px;
 }
 
@@ -718,6 +752,7 @@ code { /* Adicionado do index.css (CRA) */
 
   .bottom-nav-bar {
     display: flex; /* Mostra a BottomNavBar em telas menores */
+    height: 60px;
   }
 
   /* Ajustes para os containers das páginas para compensar a BottomNavBar */
