@@ -96,7 +96,7 @@ code { /* Adicionado do index.css (CRA) */
 .sidebar-header {
     padding: 15px 15px 15px 15px;
     text-align: left;
-    border-bottom: 1px solid #f3f4f6; /* Linha clara específica */
+    border-bottom: 1px solid #f3f4f600; /* Linha clara específica */
     margin-bottom: 15px;
 }
 
@@ -149,8 +149,8 @@ code { /* Adicionado do index.css (CRA) */
     color: var(--text-primary);
 }
 .sidebar-nav a.active {
-    background-color: var(--brand-secondary); /* Usa variável */
-    color: var(--brand-secondary-text); /* Usa variável */
+    background-color:#0000000a ; /* Usa variável */
+    color: #111; /* Usa variável */
     font-weight: 500;
 }
 .sidebar-nav a.external-link:hover { /* Estilo para link externo */
