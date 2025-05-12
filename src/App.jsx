@@ -34,7 +34,7 @@ function NavLink({ to, icon: IconComponent, children }) {
             <li>
                 <a href={to} target="_blank" rel="noopener noreferrer" className="external-link">
                     {IconComponent && <IconComponent className="sidebar-icon" />}
-                    <span className="nav-link-text">{children}</span> {/* Garante que o texto está em um span */}
+                    <span className="nav-link-text">{children}</span>
                 </a>
             </li>
         );
@@ -44,7 +44,7 @@ function NavLink({ to, icon: IconComponent, children }) {
         <li>
             <Link to={to} className={linkClass}>
                 {IconComponent && <IconComponent className="sidebar-icon" />}
-                <span className="nav-link-text">{children}</span> {/* Garante que o texto está em um span */}
+                <span className="nav-link-text">{children}</span>
             </Link>
         </li>
     );
@@ -176,7 +176,7 @@ function App() {
                 </div>
                 <nav className="sidebar-nav">
                     <ul>
-                        <NavLink to="/" icon={IconHome}>Início</NavLink> 
+                        <NavLink to="/" icon={IconHome}>Início</NavLink>
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
@@ -185,8 +185,18 @@ function App() {
                 <div className="sidebar-footer">
                    <ul>
                       <li>
-                        <a href="#"> {/* Considere tornar este um Link se for rota interna */}
-                            <IconHelp className="sidebar-icon-footer" /> {/* Classe específica para ícone do footer */}
+                        {/*
+                          O atributo data-az-l precisa do ID do SURVEY ou WIDGET específico do Appzi.
+                          A 'token' (rcbhq) é para o script principal, NÃO para data-az-l.
+                          Vá ao seu painel Appzi, encontre o ID do survey/widget que quer abrir
+                          e substitua o placeholder abaixo.
+                        */}
+                        <a
+                          href="#" // Appzi deve lidar com o clique.
+                          data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc158" // <<< SUBSTITUA ESTE VALOR
+                          onClick={(e) => e.preventDefault()} // Opcional: Garante que o link não navegue
+                        >
+                            <IconHelp className="sidebar-icon-footer" />
                             <span className="nav-link-text">Ajuda</span>
                         </a>
                       </li>
