@@ -1,17 +1,19 @@
+/* // src/components/common/BottomNavBar.css */
 .bottom-nav-bar {
-  display: none; /* Escondido por padrão, mostrado via media query */
+  display: none; /* <<< MAIS IMPORTANTE: Escondido por padrão */
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60px; /* Altura da barra */
+  height: 60px; /* Altura da barra - ajuste se necessário */
   background-color: var(--bg-tertiary);
   border-top: 1px solid var(--border-primary);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
-  z-index: 1000; /* Para ficar acima do conteúdo */
+  z-index: 1000;
+  /* display: flex; // Movido para a media query em style.css */
   justify-content: space-around;
-  align-items: center;
-  padding: 0 10px; /* Pequeno padding lateral */
+  align-items: stretch; /* Para os itens ocuparem toda a altura */
+  padding: 0 5px; /* Reduzir padding lateral se os itens estiverem apertados */
   box-sizing: border-box;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -21,29 +23,39 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-grow: 1;
+  flex: 1; /* Cada item ocupa espaço igual */
+  min-width: 0; /* Permite que os itens encolham se necessário */
   color: var(--text-muted);
   text-decoration: none;
-  padding: 6px 0; /* Padding vertical para o item */
+  padding: 6px 4px; /* Padding interno do item */
   height: 100%;
-  transition: color 0.2s ease;
-  border-radius: 6px; /* Para feedback de toque sutil */
+  transition: color 0.2s ease, background-color 0.2s ease;
+  border-radius: 6px;
+  position: relative; /* Para posicionar elementos filhos se necessário */
+  overflow: hidden; /* Para text-overflow funcionar */
 }
 
 .bottom-nav-item:hover,
 .bottom-nav-item:focus-visible {
-  background-color: rgba(0,0,0,0.03); /* Leve feedback */
+  background-color: rgba(0,0,0,0.03);
 }
 
 .bottom-nav-icon {
-  font-size: 1.3em; /* Tamanho do ícone */
-  margin-bottom: 2px; /* Espaço entre ícone e label */
+  width: 22px; /* Tamanho explícito para o SVG */
+  height: 22px; /* Tamanho explícito para o SVG */
+  margin-bottom: 4px; /* Aumentar espaço entre ícone e label */
+  color: inherit; 
+  flex-shrink: 0; /* Evita que o ícone encolha */
 }
 
 .bottom-nav-label {
-  font-size: 0.7em; /* Tamanho do label */
+  font-size: 0.7rem; /* Ajustar tamanho do label */
   font-weight: 500;
-  white-space: nowrap; /* Evita quebra de linha */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2; /* Adicionar line-height para melhor espaçamento vertical */
+  max-width: 100%; /* Garante que o label não ultrapasse o item */
 }
 
 .bottom-nav-item.active {
@@ -51,15 +63,15 @@
 }
 
 .bottom-nav-item.active .bottom-nav-icon {
-  /* Poderia adicionar um efeito sutil no ícone ativo, se desejado */
+  /* color: var(--brand-primary); // Já herda a cor do item ativo */
 }
 .bottom-nav-item.active .bottom-nav-label {
-  font-weight: 700; /* Label ativo mais forte */
+  font-weight: 600; /* Um pouco menos que 700 para não ficar tão "gordo" */
 }
 
 /* Dark Mode para BottomNavBar */
 [data-theme="dark"] .bottom-nav-bar {
-  background-color: var(--bg-tertiary); /* Geralmente o mesmo que sidebar */
+  background-color: var(--bg-tertiary); 
   border-top-color: var(--border-primary);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15);
 }
@@ -75,4 +87,19 @@
 
 [data-theme="dark"] .bottom-nav-item.active {
   color: var(--brand-primary);
+}
+
+/* Ajustes finos para telas muito pequenas, se necessário */
+@media (max-width: 360px) {
+  .bottom-nav-bar {
+    height: 55px;
+  }
+  .bottom-nav-icon {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 2px;
+  }
+  .bottom-nav-label {
+    font-size: 0.65rem;
+  }
 }

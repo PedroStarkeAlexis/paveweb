@@ -3,13 +3,14 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './BottomNavBar.css';
 
-const NavItem = ({ to, icon, label }) => {
+const NavItem = ({ to, icon: IconComponent, label }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
 
   return (
     <Link to={to} className={`bottom-nav-item ${isActive ? 'active' : ''}`}>
-      <span className="bottom-nav-icon">{icon}</span>
+      {/* CORREÇÃO: Renderiza o IconComponent diretamente se ele existir */}
+      {IconComponent && <IconComponent className="bottom-nav-icon" />}
       <span className="bottom-nav-label">{label}</span>
     </Link>
   );
@@ -26,7 +27,7 @@ function BottomNavBar({ items }) {
         <NavItem
           key={item.to}
           to={item.to}
-          icon={item.icon}
+          icon={item.icon} // Passa o componente SVG (referência da função/classe)
           label={item.label}
         />
       ))}

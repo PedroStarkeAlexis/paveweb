@@ -756,3 +756,55 @@ code { /* Adicionado do index.css (CRA) */
     padding: 5px;
   }
 }
+
+/* Ícones na Sidebar */
+.sidebar-nav a .sidebar-icon {
+    margin-right: 10px;
+    width: 18px; 
+    height: 18px;
+    color: var(--text-muted); 
+    flex-shrink: 0; 
+}
+
+.sidebar-nav a:hover .sidebar-icon,
+.sidebar-nav a.active .sidebar-icon {
+    color: var(--brand-primary); 
+}
+
+[data-theme="dark"] .sidebar-nav a .sidebar-icon {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .sidebar-nav a:hover .sidebar-icon,
+[data-theme="dark"] .sidebar-nav a.active .sidebar-icon {
+    color: var(--brand-primary);
+}
+
+/* Estilo para o texto dentro do NavLink, se necessário */
+.sidebar-nav a .nav-link-text,
+.sidebar-footer a .nav-link-text { /* Aplicar também ao footer */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* Ícone no Footer da Sidebar */
+/* CORREÇÃO: Usar classe específica .sidebar-icon-footer */
+.sidebar-footer a .sidebar-icon-footer { 
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+    vertical-align: middle; 
+}
+.sidebar-footer a:hover .sidebar-icon-footer {
+    color: var(--text-primary);
+}
+[data-theme="dark"] .sidebar-footer a .sidebar-icon-footer {
+    color: var(--text-muted);
+}
+[data-theme="dark"] .sidebar-footer a:hover .sidebar-icon-footer {
+    color: var(--text-primary);
+}
+

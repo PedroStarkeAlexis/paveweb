@@ -2,9 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
-// --- Importar páginas/features dos NOVOS locais ---
+// --- Importar páginas/features ---
 import HomePage from './pages/HomePage';
-// --- Import da nova página ---
 import ChatInterface from './features/chat/components/ChatInterface';
 import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage';
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
@@ -12,13 +11,20 @@ import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
 // --- Importar componentes comuns e hooks globais ---
 import ThemeToggleButton from './components/common/ThemeToggleButton';
 import useDarkModeToggle from './hooks/useDarkModeToggle';
-import BottomNavBar from './components/common/BottomNavBar'; // <<< NOVO IMPORT
+import BottomNavBar from './components/common/BottomNavBar';
+
+// --- Importar Ícones SVG ---
+import IconHome from './components/icons/IconHome';
+import IconCalculator from './components/icons/IconCalculator';
+import IconChat from './components/icons/IconChat';
+import IconBook from './components/icons/IconBook';
+import IconHelp from './components/icons/IconHelp';
 
 // Importar CSS global principal
 import './style.css';
 
 // --- Componente NavLink (para Sidebar) ---
-function NavLink({ to, icon, children }) {
+function NavLink({ to, icon: IconComponent, children }) {
     const location = useLocation();
     const isActive = !to.startsWith('http') && location.pathname === to;
     const linkClass = isActive ? 'active' : '';
@@ -27,7 +33,8 @@ function NavLink({ to, icon, children }) {
         return (
             <li>
                 <a href={to} target="_blank" rel="noopener noreferrer" className="external-link">
-                    <span className="icon">{icon}</span> {children}
+                    {IconComponent && <IconComponent className="sidebar-icon" />}
+                    <span className="nav-link-text">{children}</span> {/* Garante que o texto está em um span */}
                 </a>
             </li>
         );
@@ -36,7 +43,8 @@ function NavLink({ to, icon, children }) {
     return (
         <li>
             <Link to={to} className={linkClass}>
-                <span className="icon">{icon}</span> {children}
+                {IconComponent && <IconComponent className="sidebar-icon" />}
+                <span className="nav-link-text">{children}</span> {/* Garante que o texto está em um span */}
             </Link>
         </li>
     );
@@ -153,31 +161,35 @@ function App() {
         }
     }, []); // Executa apenas na montagem inicial
 
-    // <<< ITENS PARA A BARRA DE NAVEGAÇÃO INFERIOR >>>
     const bottomNavItems = [
-        { to: "/", icon: "🏠", label: "Início" },
-        { to: "/calculadora", icon: "🧮", label: "Calculadora" },
-        { to: "/chat", icon: "💬", label: "Chat IA" },
-        { to: "/banco-questoes", icon: "📚", label: "Questões" },
+        { to: "/", icon: IconHome, label: "Início" },
+        { to: "/calculadora", icon: IconCalculator, label: "Calculadora" },
+        { to: "/chat", icon: IconChat, label: "Chat IA" },
+        { to: "/banco-questoes", icon: IconBook, label: "Questões" },
     ];
 
     return (
         <div className="app-container">
-            <aside className="sidebar"> {/* Sidebar será escondida em mobile via CSS */}
+            <aside className="sidebar">
                 <div className="sidebar-header">
                   <span className="logo-placeholder">LOGO AQUI</span>
                 </div>
                 <nav className="sidebar-nav">
                     <ul>
-                        <NavLink to="/" icon="🏠">Início</NavLink> 
-                        <NavLink to="/calculadora" icon="🧮">Calculadora PAVE</NavLink>
-                        <NavLink to="/chat" icon="💬">Assistente IA</NavLink>
-                        <NavLink to="/banco-questoes" icon="📚">Banco de Questões</NavLink>
+                        <NavLink to="/" icon={IconHome}>Início</NavLink> 
+                        <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
+                        <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
+                        <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
                     </ul>
                 </nav>
                 <div className="sidebar-footer">
                    <ul>
-                      <li><a href="#"><span className="icon">?</span> Ajuda</a></li>
+                      <li>
+                        <a href="#"> {/* Considere tornar este um Link se for rota interna */}
+                            <IconHelp className="sidebar-icon-footer" /> {/* Classe específica para ícone do footer */}
+                            <span className="nav-link-text">Ajuda</span>
+                        </a>
+                      </li>
                    </ul>
                    <div className="copyright"> Desenvolvido por Pedro Alexis {new Date().getFullYear()} </div>
                 </div>
