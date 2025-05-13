@@ -1,0 +1,346 @@
+/* // src/components/common/QuestionLayout.css */
+
+/* --- Seção: Container Principal do QuestionLayout --- */
+.question-layout {
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  margin-bottom: 25px; /* Removido do chatFeature.css e colocado aqui, pois é do componente */
+  padding: 0;
+  margin-top: 5px;
+  background-color: var(--bg-primary);
+  align-self: flex-start; /* Para chat */
+  max-width: 100%;
+  width: auto; /* Para chat */
+  box-sizing: border-box;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+/* --- Sub-Seção: Ajuste para QuestionLayout dentro do Banco de Questões --- */
+#question-bank-list .question-layout {
+  align-self: stretch;
+  margin-bottom: 0; /* O gap da lista #question-bank-list cuida disso */
+}
+
+/* --- Seção: Cabe��alho da Quest��o (Tags) --- */
+.question-header {
+  padding: 10px 15px;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-radius: 8px 8px 0 0;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.question-tag {
+  background-color: #e5e7eb;
+  color: var(--text-secondary);
+  font-size: 0.8em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.question-tag.pave-tag {
+  background-color: var(--brand-primary);
+  color: #fff;
+  font-weight: 500;
+}
+.question-tag.generated-ai-tag {
+  background-color: #6366f1; /* Roxo para IA */
+  color: #fff;
+  font-weight: 500;
+}
+
+/* --- Seção: Corpo da Questão (Enunciado e Referência) --- */
+.question-body {
+  padding: 15px 15px 10px 15px;
+  font-size: 1em;
+  color: var(--text-primary);
+}
+.question-body p {
+  margin: 0 0 10px 0;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.question-body p:last-of-type:not(.question-reference) {
+  margin-bottom: 0;
+} /* Se não for a referência, remove margem */
+.question-reference {
+  font-size: 0.8em;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 15px;
+  margin-bottom: 0; /* Garantir que não adicione espaço extra abaixo */
+  line-height: 1.4;
+}
+/* --- Sub-Seção: Markdown no Corpo da Questão --- */
+.question-body ul,
+.question-body ol {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-left: 2em;
+}
+.question-body ul {
+  list-style-type: disc;
+}
+.question-body ol {
+  list-style-type: decimal;
+}
+.question-body li {
+  margin-bottom: 0.25em;
+}
+.question-body li p {
+  margin-bottom: 0;
+}
+.question-body strong,
+.question-body b {
+  font-weight: bold;
+}
+.question-body em,
+.question-body i {
+  font-style: italic;
+}
+
+/* --- Seção: Alternativas --- */
+.alternatives-container {
+  padding: 10px 15px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.alternative-item {
+  display: flex;
+  align-items: stretch; /* Faz a letra e o texto terem a mesma altura */
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  background-color: var(--bg-primary);
+  overflow: hidden; /* Para o border-radius funcionar com filhos */
+}
+.question-layout.answered .alternative-item {
+  cursor: default;
+}
+.question-layout:not(.answered) .alternative-item:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+/* --- Sub-Seção: Ajustes para QuestionLayout dentro do Banco de Questões --- */
+#question-bank-list .alternative-item {
+  cursor: default;
+}
+#question-bank-list .alternative-item:hover {
+  background-color: var(--bg-primary);
+  border-color: var(--border-secondary);
+}
+
+.alternative-letter {
+  font-weight: bold;
+  border-right: 1px solid var(--border-secondary);
+  min-width: 45px;
+  padding: 10px 0; /* Vertical, horizontal é pelo flex */
+  display: inline-flex; /* Para centralizar conteúdo */
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 1em;
+  transition: background-color 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease;
+  align-self: stretch; /* Ocupa toda altura do .alternative-item */
+}
+.alternative-text {
+  flex-grow: 1;
+  color: var(--text-primary);
+  font-size: 0.95em;
+  padding: 12px 15px;
+}
+/* --- Sub-Seção: Markdown nas Alternativas --- */
+.alternative-text p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+.alternative-text ul,
+.alternative-text ol {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-left: 1.5em;
+}
+.alternative-text ul {
+  list-style-type: disc;
+}
+.alternative-text ol {
+  list-style-type: decimal;
+}
+.alternative-text li {
+  margin-bottom: 0.25em;
+}
+.alternative-text li p {
+  margin-bottom: 0;
+}
+.alternative-text strong,
+.alternative-text b {
+  font-weight: bold;
+}
+.alternative-text em,
+.alternative-text i {
+  font-style: italic;
+}
+
+/* --- Seção: Feedback Visual das Alternativas --- */
+.alternative-letter.feedback-correct {
+  background-color: var(--success-primary);
+  color: #fff;
+  border-color: var(--success-primary); /* Borda da letra acompanha */
+}
+.alternative-letter.feedback-incorrect {
+  background-color: var(--error-primary);
+  color: #fff;
+  border-color: var(--error-primary); /* Borda da letra acompanha */
+}
+/* .alternative-item.correct-answer { ... } // Comentado no original, mantido comentado */
+/* .alternative-item.correct-answer .alternative-text { ... } // Comentado no original */
+.alternative-item.correct-answer .alternative-letter {
+  border-right-color: #a7f3d0; /* Cor da borda interna para item correto */
+}
+/* .alternative-item.incorrect-choice { ... } // Comentado no original */
+/* .alternative-item.incorrect-choice .alternative-text { ... } // Comentado no original */
+.alternative-item.incorrect-choice .alternative-letter {
+  border-right-color: #fecaca; /* Cor da borda interna para item incorreto escolhido */
+}
+/* --- Sub-Seção: Estilo Estático para Banco de Questões --- */
+#question-bank-list .alternative-item.correct-answer-static {
+  border-color: #a7f3d0;
+  background-color: var(--success-secondary);
+}
+#question-bank-list .alternative-item.correct-answer-static .alternative-text {
+  color: #065f46;
+  font-weight: 500;
+}
+
+/* --- Seção: Footer da Questão (Botão Mostrar Resposta / Texto Resposta Correta) --- */
+.question-footer {
+  padding: 10px 15px;
+  background-color: var(--bg-tertiary);
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 40px; /* Para manter altura mesmo sem botão */
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Adicionado border-color */
+}
+.show-answer-btn {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.question-layout.answered .show-answer-btn {
+  display: none;
+}
+.show-answer-btn:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+  color: var(--text-primary);
+}
+.correct-answer-text {
+  font-size: 0.9em;
+  color: #065f46; /* Verde escuro para texto da resposta correta */
+  font-weight: 500;
+}
+
+/* --- Seção: Dark Mode para QuestionLayout --- */
+[data-theme="dark"] .question-layout {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-primary);
+}
+[data-theme="dark"] .question-header {
+  background-color: #3a3a3a;
+  border-bottom-color: var(--border-primary);
+}
+[data-theme="dark"] .question-tag {
+  background-color: #444;
+  color: var(--text-secondary);
+}
+[data-theme="dark"] .question-tag.pave-tag {
+  background-color: var(--brand-primary);
+  color: #111;
+}
+[data-theme="dark"] .question-tag.generated-ai-tag {
+  background-color: #818cf8; /* Roxo claro para IA no dark mode */
+  color: #fff;
+}
+[data-theme="dark"] .question-body {
+  color: var(--text-primary);
+}
+[data-theme="dark"] .question-reference {
+  color: var(--text-muted);
+}
+[data-theme="dark"] .alternative-item {
+  border-color: var(--border-secondary);
+  background-color: var(--bg-primary); /* Fundo do item no dark mode */
+}
+[data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover {
+  background-color: #27272a; /* Um pouco mais claro que o fundo do item */
+  border-color: #777;
+}
+[data-theme="dark"] #question-bank-list .alternative-item:hover {
+  background-color: var(--bg-primary);
+  border-color: var(--border-secondary);
+}
+[data-theme="dark"] .alternative-letter {
+  border-right-color: var(--border-secondary);
+  background-color: #3a3a3a; /* Fundo da letra no dark mode */
+  color: var(--text-secondary);
+}
+[data-theme="dark"] .alternative-text {
+  color: var(--text-primary);
+}
+[data-theme="dark"] .alternative-letter.feedback-correct {
+  background-color: var(--success-primary);
+  color: #111; /* Texto escuro no verde */
+  border-color: var(--success-primary);
+}
+[data-theme="dark"] .alternative-letter.feedback-incorrect {
+  background-color: var(--error-primary);
+  color: #fff;
+  border-color: var(--error-primary);
+}
+[data-theme="dark"] .alternative-item.correct-answer .alternative-letter {
+  border-right-color: #15803d; /* Borda interna verde escura */
+}
+[data-theme="dark"] .alternative-item.incorrect-choice .alternative-letter {
+  border-right-color: #c026d3; /* Borda interna rosa/roxa escura */
+}
+[data-theme="dark"]
+  #question-bank-list
+  .alternative-item.correct-answer-static {
+  border-color: #15803d;
+  background-color: var(--success-secondary);
+}
+[data-theme="dark"]
+  #question-bank-list
+  .alternative-item.correct-answer-static
+  .alternative-text {
+  color: #a7f3d0; /* Texto verde claro */
+}
+[data-theme="dark"] .question-footer {
+  background-color: #3a3a3a;
+  border-top-color: var(--border-primary); /* Adicionado para consistência */
+}
+[data-theme="dark"] .show-answer-btn {
+  background-color: var(--bg-primary);
+  border-color: var(--border-secondary);
+  color: var(--text-secondary);
+}
+[data-theme="dark"] .show-answer-btn:hover {
+  background-color: #27272a;
+  border-color: #777;
+  color: var(--text-primary);
+}
+[data-theme="dark"] .correct-answer-text {
+  color: #a7f3d0; /* Texto da resposta correta verde claro */
+}

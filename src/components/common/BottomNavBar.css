@@ -37,19 +37,19 @@
 
 .bottom-nav-item:hover,
 .bottom-nav-item:focus-visible {
-  background-color: rgba(0,0,0,0.03);
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .bottom-nav-icon {
-  width: 22px; /* Tamanho explícito para o SVG */
+  width: 22px; /* Tamanho expl��cito para o SVG */
   height: 22px; /* Tamanho explícito para o SVG */
   margin-bottom: 4px; /* Aumentar espaço entre ícone e label */
-  color: inherit; 
+  color: inherit;
   flex-shrink: 0; /* Evita que o ícone encolha */
 }
 
 .bottom-nav-label {
-  font-size: 0.7rem; /* Ajustar tamanho do label */
+  font-size: 0.75rem; /* AUMENTADO de 0.7rem para 0.75rem */
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -71,7 +71,7 @@
 
 /* Dark Mode para BottomNavBar */
 [data-theme="dark"] .bottom-nav-bar {
-  background-color: var(--bg-tertiary); 
+  background-color: var(--bg-tertiary);
   border-top-color: var(--border-primary);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15);
 }
@@ -82,7 +82,7 @@
 
 [data-theme="dark"] .bottom-nav-item:hover,
 [data-theme="dark"] .bottom-nav-item:focus-visible {
-  background-color: rgba(255,255,255,0.05);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="dark"] .bottom-nav-item.active {
@@ -91,6 +91,7 @@
 
 /* Ajustes finos para telas muito pequenas, se necessário */
 @media (max-width: 360px) {
+  /* A media query original era 480px, mas esta �� mais específica para 360px no arquivo. Ajustei a original para 360px */
   .bottom-nav-bar {
     height: 55px;
   }
@@ -100,6 +101,6 @@
     margin-bottom: 2px;
   }
   .bottom-nav-label {
-    font-size: 0.65rem;
+    font-size: 0.7rem; /* AUMENTADO de 0.65rem para 0.7rem (ou mantenha 0.6875rem para ser proporcional) */
   }
 }
