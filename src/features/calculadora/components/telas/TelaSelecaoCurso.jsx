@@ -1,11 +1,36 @@
 // src/features/calculadora/components/telas/TelaSelecaoCurso.jsx
 import React from 'react';
-import './TelaSelecaoCurso.css'; // <<< Criaremos este CSS
+import './TelaSelecaoCurso.css';
+import '../shared/NextStepButton.css'; // <<< Importar CSS do botão
 
-function TelaSelecaoCurso({ onChange, selectedId, cursos }) {
+// <<< Recebe as novas props para o botão
+function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error, onNextStep, isNextStepDisabled, nextStepText }) {
+
+  let selectContent;
+  if (isLoading) {
+    selectContent = <option value="" disabled>Carregando cursos...</option>;
+  } else if (error) {
+    selectContent = <option value="" disabled>Erro ao carregar cursos</option>;
+  } else {
+    selectContent = (
+      <>
+        <option value="" disabled>-- Selecione um curso --</option>
+        {cursos && cursos.map((curso) => (
+          <option key={curso.id} value={curso.id}>
+            {curso.nome} - ({curso.turno})
+          </option>
+        ))}
+        {(!cursos || cursos.length === 0) && !isLoading && !error && (
+          <option value="" disabled>Nenhum curso dispon��vel</option>
+        )}
+      </>
+    );
+  }
+
 
   return (
     <div className="calc-tela-selecao-curso">
+      {/* ... (Título, subtítulo, select sem altera����es) ... */}
       <h2 className="calc-tela-titulo">Qual <strong>curso</strong> você gostaria de ingressar?</h2>
       <p className="calc-tela-subtitulo">Selecione o curso desejado na UFPel.</p>
 
@@ -13,33 +38,31 @@ function TelaSelecaoCurso({ onChange, selectedId, cursos }) {
         <label htmlFor="cursoSelect">Curso</label>
         <select
           id="cursoSelect"
-          name="cursoId" // Nome correspondente no estado do pai
-          value={selectedId || ''} // Controlado pelo estado do pai (usa '' se selectedId for null/undefined)
-          onChange={onChange} // Chama o handler passado por props (handleCursoChange)
+          name="cursoId"
+          value={selectedId || ''}
+          onChange={onChange}
           className="calc-select-dropdown"
+          disabled={isLoading || !!error} // Desabilita se carregando ou erro
         >
-          {/* Opção padrão desabilitada */}
-          <option value="" disabled>-- Selecione um curso --</option>
-
-          {/* Mapeia a lista de cursos recebida por props */}
-          {cursos && cursos.map((curso) => (
-            <option key={curso.id} value={curso.id}>
-              {curso.nome} - ({curso.turno}) {/* Exibe nome e turno */}
-            </option>
-          ))}
-          {/* Mensagem se a lista de cursos não carregar */}
-           {!cursos || cursos.length === 0 && (
-               <option value="" disabled>Carregando cursos...</option>
-           )}
+          {selectContent}
         </select>
-         {/* Poderia adicionar um segundo select para "Turno" ou "Concorrência" se necessário,
-             mas o protótipo e o JSON atual não exigem isso separadamente.
-             O turno já está associado ao curso. */}
       </div>
 
-      {/* Espaço reservado para possíveis erros de seleção ou informações adicionais */}
       <div className="calc-select-feedback">
-        {/* Exemplo: {error && <p className="error">{error}</p>} */}
+        {/* Mostra erro se houver */}
+        {error && <p className="calc-error-message" style={{ textAlign: 'center' }}>{error}</p>}
+      </div>
+
+      {/* <<< Adiciona o botão Próxima Etapa aqui >>> */}
+      <div className="calc-next-step-button-container">
+        <button
+          className="calc-step-next-button" // <<< Usa a nova classe CSS
+          onClick={onNextStep}
+          disabled={isNextStepDisabled || isLoading || !!error} // Desabilita tamb��m se carregando ou erro
+        >
+          {nextStepText}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>
+        </button>
       </div>
     </div>
   );

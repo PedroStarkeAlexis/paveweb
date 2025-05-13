@@ -1,9 +1,11 @@
-// src/features/calculadora/components/telas/TelaDesempenhoEtapa1.jsx
+// src/features/calculadora/components/telas/TelaDesempenhoEtapa2.jsx
 import React from 'react';
-import { TOTAL_QUESTOES } from '../../constants'; // Importa constante relevante
-import './TelaDesempenho.css'; // <<< Criaremos um CSS compartilhado para as telas de desempenho
+import { TOTAL_QUESTOES } from '../../constants';
+import './TelaDesempenho.css';
+import '../shared/NextStepButton.css'; // <<< Importar CSS do botão
 
-function TelaDesempenhoEtapa1({ onChange, values, errors }) {
+// <<< Recebe as novas props para o botão
+function TelaDesempenhoEtapa2({ onChange, values, errors, onNextStep, isNextStepDisabled, nextStepText }) {
   const etapaNumero = 2;
   const acertosKey = `acertosE${etapaNumero}`;
   const ignoradasKey = `ignoradasE${etapaNumero}`;
@@ -11,7 +13,7 @@ function TelaDesempenhoEtapa1({ onChange, values, errors }) {
 
   return (
     <div className="calc-tela-desempenho">
-      {/* Título da Tela - pode ser ajustado */}
+      {/* ... (Título e inputs sem alterações) ... */}
       <h2 className="calc-tela-titulo">Como foi seu desempenho na <strong>Etapa {etapaNumero}</strong>?</h2>
       <p className="calc-tela-subtitulo">Informe seus acertos e respostas ignoradas (I.R.).</p>
 
@@ -22,13 +24,13 @@ function TelaDesempenhoEtapa1({ onChange, values, errors }) {
           <input
             type="number"
             id={acertosKey}
-            name={acertosKey} // Útil para forms mais complexos
+            name={acertosKey}
             value={values[acertosKey]}
             onChange={(e) => onChange(etapaNumero, 'acertos', e.target.value)}
             min="0"
             max={TOTAL_QUESTOES}
-            placeholder="0" // Placeholder
-            aria-invalid={!!errors[errorKey]} // Indica erro para acessibilidade
+            placeholder="0"
+            aria-invalid={!!errors[errorKey]}
             aria-describedby={errors[errorKey] ? `${errorKey}-error` : undefined}
             className="calc-input-desempenho"
           />
@@ -45,8 +47,8 @@ function TelaDesempenhoEtapa1({ onChange, values, errors }) {
             onChange={(e) => onChange(etapaNumero, 'ignoradas', e.target.value)}
             min="0"
             max={TOTAL_QUESTOES}
-            placeholder="0" // Placeholder
-            aria-invalid={!!errors[errorKey]} // Indica erro para acessibilidade
+            placeholder="0"
+            aria-invalid={!!errors[errorKey]}
             aria-describedby={errors[errorKey] ? `${errorKey}-error` : undefined}
             className="calc-input-desempenho"
           />
@@ -59,8 +61,20 @@ function TelaDesempenhoEtapa1({ onChange, values, errors }) {
           {errors[errorKey]}
         </p>
       )}
+
+      {/* <<< Adiciona o botão Pr��xima Etapa aqui >>> */}
+      <div className="calc-next-step-button-container">
+        <button
+          className="calc-step-next-button" // <<< Usa a nova classe CSS
+          onClick={onNextStep}
+          disabled={isNextStepDisabled}
+        >
+          {nextStepText}
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>
+        </button>
+      </div>
     </div>
   );
 }
 
-export default TelaDesempenhoEtapa1;
+export default TelaDesempenhoEtapa2;

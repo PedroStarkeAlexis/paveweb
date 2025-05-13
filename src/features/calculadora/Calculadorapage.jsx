@@ -29,9 +29,9 @@ import './styles/CalculadoraWizard.css';
 
 // --- DEFINIÇÕES DA ANIMAÇÃO ---
 const slideVariants = {
-  hidden: { y: '50%', opacity: 0, transition: { type: 'tween', duration: 0.3, ease: 'easeOut' } },
-  visible: { y: 0, opacity: 1, transition: { type: 'tween', duration: 0.3, ease: 'easeOut' } },
-  exit: { y: '-50%', opacity: 0, position: 'absolute', width: '100%', transition: { type: 'tween', duration: 0.3, ease: 'easeIn' } }
+    hidden: { y: '50%', opacity: 0, transition: { type: 'tween', duration: 0.3, ease: 'easeOut' } },
+    visible: { y: 0, opacity: 1, transition: { type: 'tween', duration: 0.3, ease: 'easeOut' } },
+    exit: { y: '-50%', opacity: 0, position: 'absolute', width: '100%', transition: { type: 'tween', duration: 0.3, ease: 'easeIn' } }
 };
 
 
@@ -134,26 +134,26 @@ function CalculadoraPage() {
         setSelecaoCurso({ cursoId: event.target.value });
     }, []);
 
-     // <<< NOVO useEffect PARA BUSCAR CURSOS >>>
-     useEffect(() => {
+    // <<< NOVO useEffect PARA BUSCAR CURSOS >>>
+    useEffect(() => {
         const fetchCursos = async () => {
             setLoadingCursos(true);
             setErrorCursos(null);
             try {
-                // <<< USA A URL PÚBLICA DO R2 FORNECIDA >>>
+                // <<< USA A URL P��BLICA DO R2 FORNECIDA >>>
                 const publicR2Url = 'https://pub-bb3996c786cd4543b2f53acdabbd9915.r2.dev/cursos.json';
 
                 console.log(`Buscando cursos de: ${publicR2Url}`);
 
                 const response = await fetch(publicR2Url, {
-                     cache: 'no-cache' // Evita cache durante testes
+                    cache: 'no-cache' // Evita cache durante testes
                 });
 
                 if (!response.ok) {
-                     console.error(`Erro ao carregar cursos: ${response.status} ${response.statusText}`);
-                     const errorBody = await response.text();
-                     console.error("Corpo da resposta de erro:", errorBody);
-                     throw new Error(`Erro ${response.status} ao buscar cursos.`);
+                    console.error(`Erro ao carregar cursos: ${response.status} ${response.statusText}`);
+                    const errorBody = await response.text();
+                    console.error("Corpo da resposta de erro:", errorBody);
+                    throw new Error(`Erro ${response.status} ao buscar cursos.`);
                 }
 
                 const data = await response.json();
@@ -170,7 +170,7 @@ function CalculadoraPage() {
         fetchCursos();
     }, []); // Roda apenas uma vez na montagem
 
-    // --- Cálculo das Notas das Etapas ---
+    // --- C��lculo das Notas das Etapas ---
     useEffect(() => {
         const novasNotasEtapas = {};
         let calculoValidoGeral = true;
@@ -194,8 +194,8 @@ function CalculadoraPage() {
         }));
 
     }, [desempenho.acertosE1, desempenho.ignoradasE1,
-        desempenho.acertosE2, desempenho.ignoradasE2,
-        desempenho.acertosE3, desempenho.ignoradasE3,
+    desempenho.acertosE2, desempenho.ignoradasE2,
+    desempenho.acertosE3, desempenho.ignoradasE3,
         getKeysForEtapa, validationErrors]); // Incluído validationErrors
 
     // --- CALCULAR RESULTADOS FINAIS ---
@@ -240,10 +240,7 @@ function CalculadoraPage() {
                 if (desempenho.incluirRedacao && desempenho.notaRedacao === '') return false;
                 return true;
             case WIZARD_STEPS.CURSO:
-                // Habilita mesmo que cursos ainda estejam carregando,
-                // mas a seleção só será possível quando carregados.
-                // A validação real é ter um cursoId selecionado.
-                 return !!selecaoCurso.cursoId;
+                return !!selecaoCurso.cursoId;
             default:
                 return true;
         }
@@ -268,49 +265,66 @@ function CalculadoraPage() {
             const etapaAnteriorNum = wizardStep - 1;
             setWizardStep(etapaAnteriorNum);
             const { errorKey } = getKeysForEtapa(etapaAnteriorNum);
-             if (validationErrors[errorKey]) {
-                 setValidationErrors(prev => {
-                     const newState = { ...prev };
-                     delete newState[errorKey];
-                     return newState;
-                 });
-             }
+            if (validationErrors[errorKey]) {
+                setValidationErrors(prev => {
+                    const newState = { ...prev };
+                    delete newState[errorKey];
+                    return newState;
+                });
+            }
         }
     }, [wizardStep, getKeysForEtapa, validationErrors]);
 
+    // Determinar texto e estado do botão Próxima Etapa para passar aos componentes filhos
+    const isNextStepDisabled = !isCurrentWizardStepValid();
+    const nextStepText = wizardStep === WIZARD_STEPS.CURSO ? 'Simular agora' : 'Próxima etapa';
+
+
     // --- RENDERIZAÇÃO CONDICIONAL DA TELA ATUAL ---
     const renderCurrentStep = useCallback(() => {
+        // Define as props comuns para o botão de próxima etapa, a ser renderizado por cada tela
+        const nextStepProps = {
+            onNextStep: handleProximaEtapa,
+            isNextStepDisabled: isNextStepDisabled,
+            nextStepText: nextStepText,
+        };
+
         switch (wizardStep) {
-            case WIZARD_STEPS.ETAPA_1: return <TelaDesempenhoEtapa1 onChange={handleDesempenhoChange} values={desempenho} errors={validationErrors} />;
-            case WIZARD_STEPS.ETAPA_2: return <TelaDesempenhoEtapa2 onChange={handleDesempenhoChange} values={desempenho} errors={validationErrors} />;
-            case WIZARD_STEPS.ETAPA_3: return <TelaDesempenhoEtapa3 onChange={handleDesempenhoChange} values={desempenho} errors={validationErrors} />;
-            case WIZARD_STEPS.REDACAO: return <TelaDesempenhoRedacao onChange={handleRedacaoChange} values={desempenho} />;
+            case WIZARD_STEPS.ETAPA_1: return <TelaDesempenhoEtapa1 onChange={handleDesempenhoChange} values={desempenho} errors={validationErrors} {...nextStepProps} />;
+            case WIZARD_STEPS.ETAPA_2: return <TelaDesempenhoEtapa2 onChange={handleDesempenhoChange} values={desempenho} errors={validationErrors} {...nextStepProps} />;
+            case WIZARD_STEPS.ETAPA_3: return <TelaDesempenhoEtapa3 onChange={handleDesempenhoChange} values={desempenho} errors={validationErrors} {...nextStepProps} />;
+            case WIZARD_STEPS.REDACAO: return <TelaDesempenhoRedacao onChange={handleRedacaoChange} values={desempenho} {...nextStepProps} />;
             case WIZARD_STEPS.CURSO:
-                 return <TelaSelecaoCurso
-                            onChange={handleCursoChange}
-                            selectedId={selecaoCurso.cursoId}
-                            // <<< PASSA OS CURSOS DO ESTADO >>>
-                            cursos={cursosDisponiveis}
-                            isLoading={loadingCursos}
-                            error={errorCursos}
-                         />;
+                return <TelaSelecaoCurso
+                    onChange={handleCursoChange}
+                    selectedId={selecaoCurso.cursoId}
+                    // <<< PASSA OS CURSOS DO ESTADO >>>
+                    cursos={cursosDisponiveis}
+                    isLoading={loadingCursos}
+                    error={errorCursos}
+                    {...nextStepProps}
+                />;
             case WIZARD_STEPS.RESULTADO: return <TelaResultado resultados={resultados} onSimularNovamente={() => setWizardStep(WIZARD_STEPS.ETAPA_1)} />;
             default: return <div>Etapa inválida</div>;
         }
-    }, [wizardStep, handleDesempenhoChange, handleRedacaoChange, handleCursoChange, desempenho, validationErrors, selecaoCurso.cursoId, resultados, cursosDisponiveis, loadingCursos, errorCursos]); // Adiciona dependências
+    }, [
+        wizardStep, handleDesempenhoChange, handleRedacaoChange, handleCursoChange, desempenho,
+        validationErrors, selecaoCurso.cursoId, resultados, cursosDisponiveis, loadingCursos, errorCursos,
+        handleProximaEtapa, isNextStepDisabled, nextStepText // Adiciona dependências para nextStepProps
+    ]);
 
 
     // --- RENDERIZAÇÃO PRINCIPAL DO WIZARD ---
     return (
         <div className="calc-wizard-container">
             {wizardStep !== WIZARD_STEPS.RESULTADO && (
-                 <div className="calc-wizard-header">
-                     <button onClick={handleEtapaAnterior} disabled={wizardStep === WIZARD_STEPS.ETAPA_1} className="calc-wizard-back-button" aria-label="Etapa anterior">
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" > <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /> </svg>
-                     </button>
-                     <Stepper currentStep={wizardStep} />
-                     <div style={{width: '40px', flexShrink: 0}}></div>
-                 </div>
+                <div className="calc-wizard-header">
+                    <button onClick={handleEtapaAnterior} disabled={wizardStep === WIZARD_STEPS.ETAPA_1} className="calc-wizard-back-button" aria-label="Etapa anterior">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" > <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /> </svg>
+                    </button>
+                    <Stepper currentStep={wizardStep} />
+                    <div style={{ width: '40px', flexShrink: 0 }}></div>
+                </div>
             )}
             <div className="calc-wizard-content">
                 <AnimatePresence mode='wait'>
@@ -327,17 +341,11 @@ function CalculadoraPage() {
                 </AnimatePresence>
             </div>
             <div className="calc-wizard-footer">
-                {wizardStep !== WIZARD_STEPS.RESULTADO && (
-                    <button className="calc-wizard-next-button" onClick={handleProximaEtapa} disabled={!isCurrentWizardStepValid()} >
-                        {wizardStep === WIZARD_STEPS.CURSO ? 'Simular agora' : 'Próxima etapa'}
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>
+                {wizardStep === WIZARD_STEPS.RESULTADO && (
+                    <button className="calc-wizard-next-button" onClick={() => setWizardStep(WIZARD_STEPS.ETAPA_1)} >
+                        Simular Novamente
                     </button>
                 )}
-                 {wizardStep === WIZARD_STEPS.RESULTADO && (
-                     <button className="calc-wizard-next-button" onClick={() => setWizardStep(WIZARD_STEPS.ETAPA_1)} >
-                         Simular Novamente
-                     </button>
-                 )}
             </div>
         </div>
     );

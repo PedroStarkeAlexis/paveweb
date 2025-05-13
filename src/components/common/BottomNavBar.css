@@ -49,7 +49,7 @@
 }
 
 .bottom-nav-label {
-  font-size: 0.75rem; /* AUMENTADO de 0.7rem para 0.75rem */
+  font-size: 0.7rem; /* AUMENTADO de 0.7rem para 0.75rem */
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -101,6 +101,6 @@
     margin-bottom: 2px;
   }
   .bottom-nav-label {
-    font-size: 0.7rem; /* AUMENTADO de 0.65rem para 0.7rem (ou mantenha 0.6875rem para ser proporcional) */
+    font-size: 0.65rem; /* AUMENTADO de 0.65rem para 0.7rem (ou mantenha 0.6875rem para ser proporcional) */
   }
 }
