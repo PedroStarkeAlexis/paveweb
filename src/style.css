@@ -31,7 +31,7 @@ html {
   --brand-primary: #10a37f; /* Verde */
   --brand-primary-hover: #0f8e6c;
   --brand-secondary: #e0f2fe; /* Azul claro */
-  --brand-secondary-text: #d3d0b7;
+  --brand-secondary-text: #000000;
   --error-primary: #ef4444;
   --error-secondary: #fef2f2;
   --success-primary: #10b981; /* Ajustado do verde */
