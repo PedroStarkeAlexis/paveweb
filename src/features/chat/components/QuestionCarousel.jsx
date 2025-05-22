@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Removido useRef para scrollAreaRef e itemRefs
+import React, { useState, useEffect } from 'react';
 import QuestionLayout from '../../../components/common/QuestionLayout';
 import './QuestionCarousel.css';
 
@@ -18,7 +18,6 @@ const IconChevronRight = (props) => (
 function QuestionCarousel({ questionsData }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Resetar o índice se os dados das questões mudarem
   useEffect(() => {
     setCurrentIndex(0);
   }, [questionsData]);
@@ -32,19 +31,22 @@ function QuestionCarousel({ questionsData }) {
   };
 
   if (!questionsData || questionsData.length === 0) {
-    return <p className="carousel-empty-message">Nenhuma questão para exibir no carrossel.</p>;
+    // Retornar null ou uma mensagem simples se não houver dados,
+    // para evitar renderizar a estrutura do carrossel vazia.
+    // O ChatBox pode lidar com a mensagem de "nenhuma questão".
+    return null;
   }
 
   const isPrevDisabled = currentIndex === 0;
   const isNextDisabled = currentIndex === questionsData.length - 1;
 
-  // Estilo para mover o track
   const trackStyle = {
-    transform: `translateX(-${currentIndex * 100}%)`, // Move o track
-    width: `${questionsData.length * 100}%`, // Largura total do track
+    transform: `translateX(-${currentIndex * 100}%)`,
+    width: `${questionsData.length * 100}%`,
   };
 
   return (
+    // A classe 'bot-message' é crucial aqui para que o carrossel inteiro se pareça com uma bolha de chat.
     <div className="question-carousel-container bot-message">
       {questionsData.length > 1 && (
         <div className="carousel-controls">
@@ -69,16 +71,15 @@ function QuestionCarousel({ questionsData }) {
           </button>
         </div>
       )}
-      {/* Viewport do Carrossel */}
       <div className="carousel-viewport">
-        {/* Track que contém todos os itens e se move */}
         <div className="carousel-track" style={trackStyle}>
           {questionsData.map((question, index) => (
             <div
               className="question-carousel-item"
               key={question.id || `carousel-q-${index}`}
-              aria-hidden={index !== currentIndex} // Para acessibilidade
+              aria-hidden={index !== currentIndex}
             >
+              {/* QuestionLayout é renderizado aqui dentro */}
               <QuestionLayout questionData={question} />
             </div>
           ))}

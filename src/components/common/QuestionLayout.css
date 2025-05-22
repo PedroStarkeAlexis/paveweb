@@ -4,13 +4,13 @@
 .question-layout {
   border: 1px solid var(--border-primary);
   border-radius: 8px;
-  margin-bottom: 25px; /* Removido do chatFeature.css e colocado aqui, pois é do componente */
-  padding: 0;
+  /* margin-bottom: 25px; // Esta margem pode ser problemática no carrossel */
+  /* padding: 0; // O padding deve estar nos elementos filhos como .question-header, .question-body */
   margin-top: 5px;
   background-color: var(--bg-primary);
   align-self: flex-start; /* Para chat */
   max-width: 100%;
-  width: auto; /* Para chat */
+  width: 100%; /* Garante que ele tente ocupar o espaço do pai */
   box-sizing: border-box;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
   transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -21,7 +21,7 @@
   margin-bottom: 0; /* O gap da lista #question-bank-list cuida disso */
 }
 
-/* --- Seção: Cabe��alho da Quest��o (Tags) --- */
+/* --- Seção: Cabeçalho da Questão (Tags) --- */
 .question-header {
   padding: 10px 15px;
   background-color: var(--bg-tertiary);

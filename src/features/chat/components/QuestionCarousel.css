@@ -1,28 +1,29 @@
+/* 
+  .question-carousel-container é a "bolha" de mensagem do bot.
+  Ele já herda estilos de .bot-message como background, border-radius geral, e padding.
+  O padding padrão de .bot-message (10px 15px) será o espaçamento externo.
+*/
 .question-carousel-container {
-  width: 100%;
-  max-width: 100%;
-  padding-top: 10px; /* Espaço para os controles */
-  box-sizing: border-box;
-  border-radius: 18px;
-  border-bottom-left-radius: 6px;
-  align-self: flex-start;
-  position: relative;
+  /* Herda de .bot-message, mas podemos adicionar/sobrescrever se necessário */
   display: flex;
   flex-direction: column;
+  /* padding: 10px 15px; // Já vem de .bot-message, não precisa repetir aqui */
+  /* Garantir que o padding de .bot-message seja respeitado pelos filhos */
+  box-sizing: border-box;
 }
 
-/* Controles de Navegação */
 .carousel-controls {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 0 15px 10px 15px; /* Padding para os controles, incluindo inferior */
+  padding-bottom: 10px; /* Espaço entre controles e a questão */
   gap: 8px;
-  order: -1; /* Coloca os controles ACIMA do viewport no fluxo flex column */
+  width: 100%; /* Ocupa a largura disponível dentro do padding do container */
+  box-sizing: border-box;
 }
 
 .carousel-nav-button {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-primary); /* Para contraste com a bolha do bot */
   border: 1px solid var(--border-secondary);
   color: var(--text-muted);
   border-radius: 50%;
@@ -40,86 +41,85 @@
   width: 14px;
   height: 14px;
 }
-
 .carousel-nav-button:hover:not(:disabled) {
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
   border-color: var(--text-muted);
 }
-
 .carousel-nav-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 .carousel-counter {
   font-size: 0.8em;
   color: var(--text-muted);
   font-weight: 500;
 }
 
-/* Viewport do Carrossel (Substitui question-carousel-scroll-area) */
 .carousel-viewport {
-  width: 100%; /* Ocupa toda a largura do container */
-  overflow: hidden; /* ESSENCIAL: Esconde os itens fora da viewport */
-  position: relative; /* Necessário se houver elementos posicionados absolutamente dentro */
-  padding: 0 15px 10px 15px; /* Padding para os itens não colarem nas bordas da bolha */
-  box-sizing: border-box;
+  width: 100%; /* Ocupa a largura disponível dentro do padding do container */
+  overflow: hidden;
+  position: relative;
 }
 
-/* Track que se move */
 .carousel-track {
-  display: flex; /* Alinha os itens horizontalmente */
-  /* A largura será definida inline via style (questionsData.length * 100%) */
-  /* O transform translateX também será inline via style */
-  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1); /* Animação suave */
+  display: flex;
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  /* width e transform são definidos inline */
 }
 
 .question-carousel-item {
-  flex-shrink: 0; /* Impede que os itens encolham */
-  width: 100%; /* Cada item ocupa 100% da largura do viewport */
+  flex-shrink: 0;
+  width: 100%; /* Cada item terá 100% da largura da viewport */
   box-sizing: border-box;
+  /* 
+    NÃO adicione padding lateral aqui. O padding já está no .question-carousel-container (herdado de .bot-message).
+    O QuestionLayout dentro deste item vai se expandir para 100% desta largura.
+  */
 }
 
 .question-carousel-item .question-layout {
-  margin-bottom: 0;
   width: 100%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  max-width: 100%; /* Garante que não ultrapasse o item */
+  margin: 0; /* Remove quaisquer margens padrão do QuestionLayout */
+  /* 
+    As bordas, sombras e paddings INTERNOS do QuestionLayout (para .question-header, .question-body)
+    devem ser mantidos para que ele se pareça com um card individual.
+    O QuestionLayout em si não deve ter padding externo ou margem aqui.
+  */
+  border: 1px solid var(--border-primary); /* Re-aplicando borda para o "card" interno, se QuestionLayout não tiver */
+  border-radius: 8px; /* Re-aplicando borda para o "card" interno */
+  background-color: var(--bg-primary); /* Fundo do card de questão */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra sutil para o card */
+}
+[data-theme="dark"] .question-carousel-item .question-layout {
+  border-color: var(--border-secondary);
+  background-color: var(--bg-tertiary); /* Fundo do card no dark mode */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.carousel-empty-message {
-  padding: 10px 15px;
-  font-style: italic;
-  color: var(--text-muted);
-  text-align: center; /* Centraliza a mensagem de vazio */
-}
-
-/* Removida a dica de arrastar, pois não é mais aplicável */
-/* .carousel-scroll-hint { ... } */
-
-/* Dark Mode para Controles */
+/* Dark Mode para Controles (já deve estar ok, mas verificando) */
 [data-theme="dark"] .carousel-nav-button {
-  background-color: var(--bg-tertiary);
+  background-color: var(
+    --bg-tertiary
+  ); /* Ajustado para melhor contraste no dark */
   border-color: var(--border-primary);
   color: var(--text-muted);
 }
 [data-theme="dark"] .carousel-nav-button:hover:not(:disabled) {
-  background-color: #4a4a4a; /* Um pouco mais escuro que o bg-tertiary */
+  background-color: #4a4a4a;
   color: var(--text-primary);
   border-color: var(--text-muted);
 }
 [data-theme="dark"] .carousel-counter {
   color: var(--text-muted);
 }
-[data-theme="dark"] .question-carousel-item .question-layout {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
 
 /* Responsividade */
 @media (max-width: 400px) {
-  /* Não precisa mais de .question-carousel-item width, pois é 100% */
   .carousel-controls {
-    padding: 0 10px 8px 10px; /* Menor padding em telas pequenas */
+    /* padding: 0 10px 8px 10px; // Removido, o padding do container principal cuida disso */
+    padding-bottom: 8px;
   }
   .carousel-nav-button {
     width: 26px;
@@ -128,8 +128,5 @@
   .carousel-nav-button svg {
     width: 12px;
     height: 12px;
-  }
-  .carousel-viewport {
-    padding: 0 10px 10px 10px; /* Ajuste de padding para viewport */
   }
 }
