@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import QuestionLayout from '../../../components/common/QuestionLayout';
+import { motion, AnimatePresence } from 'framer-motion'; // Importar para animação
 import './QuestionCarousel.css';
 
 // Ícones (mantidos)
@@ -15,39 +16,59 @@ const IconChevronRight = (props) => (
   </svg>
 );
 
+// Variantes de animação para o slide
+const slideVariants = {
+  enter: (direction) => ({
+    x: direction > 0 ? '100%' : '-100%', // Entra da direita se 'next', da esquerda se 'prev'
+    opacity: 0,
+    scale: 0.98, // Leve zoom out ao entrar
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.3, ease: [0.42, 0, 0.58, 1] } // Curva de ease suave
+  },
+  exit: (direction) => ({
+    x: direction < 0 ? '100%' : '-100%', // Sai para a direita se 'prev' foi clicado, para a esquerda se 'next'
+    opacity: 0,
+    scale: 0.98,
+    transition: { duration: 0.2, ease: [0.42, 0, 0.58, 1] }
+  }),
+};
+
 function QuestionCarousel({ questionsData }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0); // Para controlar a direção da animação
 
+  // Resetar o índice se os dados das questões mudarem (ex: nova busca)
   useEffect(() => {
     setCurrentIndex(0);
+    setDirection(0); // Reseta direção para não animar na primeira carga de novas questões
   }, [questionsData]);
 
   const handlePrev = () => {
+    setDirection(-1); // Indica que estamos indo para a esquerda (anterior)
     setCurrentIndex((prevIndex) => Math.max(0, prevIndex - 1));
   };
 
   const handleNext = () => {
+    setDirection(1); // Indica que estamos indo para a direita (próximo)
     setCurrentIndex((prevIndex) => Math.min(questionsData.length - 1, prevIndex + 1));
   };
 
   if (!questionsData || questionsData.length === 0) {
-    // Retornar null ou uma mensagem simples se não houver dados,
-    // para evitar renderizar a estrutura do carrossel vazia.
-    // O ChatBox pode lidar com a mensagem de "nenhuma questão".
-    return null;
+    return <p className="carousel-empty-message">Nenhuma questão para exibir no carrossel.</p>;
   }
 
   const isPrevDisabled = currentIndex === 0;
   const isNextDisabled = currentIndex === questionsData.length - 1;
-
-  const trackStyle = {
-    transform: `translateX(-${currentIndex * 100}%)`,
-    width: `${questionsData.length * 100}%`,
-  };
+  const currentQuestion = questionsData[currentIndex];
 
   return (
-    // A classe 'bot-message' é crucial aqui para que o carrossel inteiro se pareça com uma bolha de chat.
+    // O container principal continua sendo a "bolha" da mensagem do bot
     <div className="question-carousel-container bot-message">
+      {/* Controles de navegação no topo */}
       {questionsData.length > 1 && (
         <div className="carousel-controls">
           <button
@@ -71,19 +92,29 @@ function QuestionCarousel({ questionsData }) {
           </button>
         </div>
       )}
-      <div className="carousel-viewport">
-        <div className="carousel-track" style={trackStyle}>
-          {questionsData.map((question, index) => (
-            <div
-              className="question-carousel-item"
-              key={question.id || `carousel-q-${index}`}
-              aria-hidden={index !== currentIndex}
-            >
-              {/* QuestionLayout é renderizado aqui dentro */}
-              <QuestionLayout questionData={question} />
-            </div>
-          ))}
-        </div>
+
+      {/* Viewport para AnimatePresence e para conter a questão atual */}
+      <div className="carousel-single-item-viewport">
+        <AnimatePresence initial={false} custom={direction} mode="wait">
+          {/*
+            A key={currentIndex} é crucial para AnimatePresence detectar
+            a mudança de componente e aplicar animações de entrada/saída.
+          */}
+          <motion.div
+            key={currentIndex}
+            custom={direction} // Passa a direção para as variantes
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="carousel-motion-item" // Wrapper para o QuestionLayout
+          >
+            {/* Renderiza apenas a questão atual */}
+            {currentQuestion && (
+              <QuestionLayout questionData={currentQuestion} />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

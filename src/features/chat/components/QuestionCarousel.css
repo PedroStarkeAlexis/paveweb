@@ -1,29 +1,25 @@
-/* 
-  .question-carousel-container é a "bolha" de mensagem do bot.
-  Ele já herda estilos de .bot-message como background, border-radius geral, e padding.
-  O padding padrão de .bot-message (10px 15px) será o espaçamento externo.
-*/
 .question-carousel-container {
-  /* Herda de .bot-message, mas podemos adicionar/sobrescrever se necessário */
-  display: flex;
-  flex-direction: column;
-  /* padding: 10px 15px; // Já vem de .bot-message, não precisa repetir aqui */
-  /* Garantir que o padding de .bot-message seja respeitado pelos filhos */
+  /* Herda estilos de .bot-message para parecer uma bolha de chat */
+  /* Padding interno para não colar controles e questão nas bordas da bolha */
+  padding: 10px 15px 15px 15px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column; /* Empilha controles e viewport da questão */
+  gap: 10px; /* Espaço entre controles e a área da questão */
+  /* align-self e max-width já vêm de .bot-message */
 }
 
 .carousel-controls {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-end; /* Alinha botões à direita */
   align-items: center;
-  padding-bottom: 10px; /* Espaço entre controles e a questão */
   gap: 8px;
-  width: 100%; /* Ocupa a largura disponível dentro do padding do container */
-  box-sizing: border-box;
+  width: 100%; /* Ocupa a largura para o justify-content funcionar */
+  /* Não precisa de padding aqui, pois o container pai já tem */
 }
 
 .carousel-nav-button {
-  background-color: var(--bg-primary); /* Para contraste com a bolha do bot */
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-secondary);
   color: var(--text-muted);
   border-radius: 50%;
@@ -56,53 +52,40 @@
   font-weight: 500;
 }
 
-.carousel-viewport {
-  width: 100%; /* Ocupa a largura disponível dentro do padding do container */
-  overflow: hidden;
-  position: relative;
+/* Viewport para AnimatePresence e para conter o item em movimento */
+.carousel-single-item-viewport {
+  width: 100%; /* Ocupa toda a largura disponível no container pai */
+  overflow: hidden; /* ESSENCIAL para a animação de slide funcionar sem causar scrollbars */
+  position: relative; /* Para que os motion.div posicionados funcionem corretamente */
+  /* A altura será determinada pelo conteúdo (QuestionLayout) */
 }
 
-.carousel-track {
-  display: flex;
-  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
-  /* width e transform são definidos inline */
-}
-
-.question-carousel-item {
-  flex-shrink: 0;
-  width: 100%; /* Cada item terá 100% da largura da viewport */
-  box-sizing: border-box;
-  /* 
-    NÃO adicione padding lateral aqui. O padding já está no .question-carousel-container (herdado de .bot-message).
-    O QuestionLayout dentro deste item vai se expandir para 100% desta largura.
+.carousel-motion-item {
+  /* Este div será animado. Não precisa de width: 100% aqui,
+     pois o QuestionLayout dentro dele já se expandirá.
+     Framer Motion pode adicionar 'position: absolute' durante a animação de saída.
   */
 }
 
-.question-carousel-item .question-layout {
-  width: 100%;
-  max-width: 100%; /* Garante que não ultrapasse o item */
-  margin: 0; /* Remove quaisquer margens padrão do QuestionLayout */
-  /* 
-    As bordas, sombras e paddings INTERNOS do QuestionLayout (para .question-header, .question-body)
-    devem ser mantidos para que ele se pareça com um card individual.
-    O QuestionLayout em si não deve ter padding externo ou margem aqui.
+/* Estilo para o QuestionLayout dentro do carrossel */
+.carousel-motion-item .question-layout {
+  margin-bottom: 0; /* Remove margem inferior padrão se QuestionLayout tiver */
+  /* O QuestionLayout usará sua própria borda, padding, etc.
+     Ele se comportará como se estivesse sozinho dentro da bolha do bot.
+     Não precisamos de box-shadow aqui, pois o QuestionLayout já tem.
   */
-  border: 1px solid var(--border-primary); /* Re-aplicando borda para o "card" interno, se QuestionLayout não tiver */
-  border-radius: 8px; /* Re-aplicando borda para o "card" interno */
-  background-color: var(--bg-primary); /* Fundo do card de questão */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra sutil para o card */
-}
-[data-theme="dark"] .question-carousel-item .question-layout {
-  border-color: var(--border-secondary);
-  background-color: var(--bg-tertiary); /* Fundo do card no dark mode */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Dark Mode para Controles (já deve estar ok, mas verificando) */
+.carousel-empty-message {
+  padding: 10px 0;
+  font-style: italic;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Dark Mode para Controles */
 [data-theme="dark"] .carousel-nav-button {
-  background-color: var(
-    --bg-tertiary
-  ); /* Ajustado para melhor contraste no dark */
+  background-color: var(--bg-tertiary);
   border-color: var(--border-primary);
   color: var(--text-muted);
 }
@@ -115,11 +98,10 @@
   color: var(--text-muted);
 }
 
-/* Responsividade */
+/* Responsividade (para os controles, principalmente) */
 @media (max-width: 400px) {
   .carousel-controls {
-    /* padding: 0 10px 8px 10px; // Removido, o padding do container principal cuida disso */
-    padding-bottom: 8px;
+    /* gap: 5px; /* Pode reduzir o gap se necessário */
   }
   .carousel-nav-button {
     width: 26px;
