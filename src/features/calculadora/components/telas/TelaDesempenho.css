@@ -21,6 +21,13 @@
     margin-bottom: 40px; /* Espaço antes dos inputs */
 }
 
+.calc-max-info {
+    font-size: 0.9em; /* Tamanho da fonte um pouco menor que o subtítulo */
+    color: var(--text-secondary); /* Mesma cor do subtítulo */
+    margin-top: -30px; /* Ajusta a margem superior para reduzir o espaço */
+    margin-bottom: 15px; /* Espaço antes do grupo de inputs */
+}
+
 .calc-input-group {
     display: flex;
     justify-content: center; /* Centraliza os inputs */
@@ -86,6 +93,9 @@
 [data-theme="dark"] .calc-tela-titulo { color: var(--text-primary); }
 [data-theme="dark"] .calc-tela-titulo strong { color: var(--brand-primary); }
 [data-theme="dark"] .calc-tela-subtitulo { color: var(--text-secondary); }
+[data-theme="dark"] .calc-max-info {
+    color: var(--text-secondary); /* Mesma cor do subtítulo no modo escuro */
+}
 [data-theme="dark"] .calc-input-item label { color: var(--text-muted); }
 [data-theme="dark"] .calc-input-desempenho {
     background-color: #3a3a3a;

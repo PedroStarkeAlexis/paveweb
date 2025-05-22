@@ -1,24 +1,20 @@
-// src/features/calculadora/components/telas/TelaDesempenhoEtapa2.jsx
 import React from 'react';
 import { TOTAL_QUESTOES } from '../../constants';
 import './TelaDesempenho.css';
-import '../shared/NextStepButton.css'; // <<< Importar CSS do botão
+import '../shared/NextStepButton.css';
 
-// <<< Recebe as novas props para o botão
-function TelaDesempenhoEtapa2({ onChange, values, errors, onNextStep, isNextStepDisabled, nextStepText }) {
-  const etapaNumero = 2;
+function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isNextStepDisabled, nextStepText }) {
   const acertosKey = `acertosE${etapaNumero}`;
   const ignoradasKey = `ignoradasE${etapaNumero}`;
   const errorKey = `etapa${etapaNumero}`;
 
   return (
     <div className="calc-tela-desempenho">
-      {/* ... (Título e inputs sem alterações) ... */}
       <h2 className="calc-tela-titulo">Como foi seu desempenho na <strong>Etapa {etapaNumero}</strong>?</h2>
       <p className="calc-tela-subtitulo">Informe seus acertos e respostas ignoradas (I.R.).</p>
+      <p className="calc-max-info">(Máximo: {TOTAL_QUESTOES} questões - Acertos + I.R.)</p>
 
       <div className="calc-input-group">
-        {/* Input Acertos */}
         <div className="calc-input-item">
           <label htmlFor={acertosKey}>Acertos</label>
           <input
@@ -36,7 +32,6 @@ function TelaDesempenhoEtapa2({ onChange, values, errors, onNextStep, isNextStep
           />
         </div>
 
-        {/* Input Ignoradas */}
         <div className="calc-input-item">
           <label htmlFor={ignoradasKey}>I.R.</label>
           <input
@@ -55,17 +50,15 @@ function TelaDesempenhoEtapa2({ onChange, values, errors, onNextStep, isNextStep
         </div>
       </div>
 
-      {/* Mensagem de Erro */}
       {errors[errorKey] && (
         <p id={`${errorKey}-error`} className="calc-error-message" role="alert">
           {errors[errorKey]}
         </p>
       )}
 
-      {/* <<< Adiciona o botão Pr��xima Etapa aqui >>> */}
       <div className="calc-next-step-button-container">
         <button
-          className="calc-step-next-button" // <<< Usa a nova classe CSS
+          className="calc-step-next-button"
           onClick={onNextStep}
           disabled={isNextStepDisabled}
         >
@@ -77,4 +70,4 @@ function TelaDesempenhoEtapa2({ onChange, values, errors, onNextStep, isNextStep
   );
 }
 
-export default TelaDesempenhoEtapa2;
+export default TelaDesempenho;
