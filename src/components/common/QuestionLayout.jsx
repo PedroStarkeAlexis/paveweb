@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-function QuestionLayoutInternal({ questionData }) { // questionData é a prop
+function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
 
-  // --- CORREÇÃO PRINCIPAL APLICADA AQUI ---
-  // Garanta que questionData seja um objeto antes de desestruturar.
-  // Se for null ou undefined, use um objeto vazio como padrão.
   const safeQuestionData = questionData || {};
 
   const {
@@ -17,18 +14,13 @@ function QuestionLayoutInternal({ questionData }) { // questionData é a prop
     referencia = null,
     alternativas = [],
     resposta_letra = null,
-    // Agora acessamos `id` de `safeQuestionData`
     id = safeQuestionData.id || `question-fallback-${Math.random().toString(36).substring(2, 9)}`
-  } = safeQuestionData; // Desestrutura de safeQuestionData
-
-  // Se você ainda quiser usar o nome 'questionId' para a prop 'id' do div, pode manter:
-  const questionId = id;
-  // Ou, mais diretamente, usar 'id' que já foi desestruturado e tem fallback.
+  } = safeQuestionData;
 
   useEffect(() => {
     setAnswered(false);
     setFeedback({});
-  }, [safeQuestionData]); // Depender de safeQuestionData ou de uma de suas props estáveis como 'id'
+  }, [safeQuestionData]);
 
   const handleAlternativeClick = (clickedLetter) => {
     if (answered) return;
@@ -47,7 +39,6 @@ function QuestionLayoutInternal({ questionData }) { // questionData é a prop
 
   const sourceTag = ano
     ? (<span key="src" className="question-tag pave-tag">PAVE {ano}</span>)
-    // Use safeQuestionData aqui também
     : (safeQuestionData.referencia?.toLowerCase().includes("ia") || !ano ?
       <span key="src" className="question-tag generated-ai-tag">Gerada por IA✨</span>
       : <span key="src" className="question-tag">Outra Fonte</span>);
@@ -60,10 +51,10 @@ function QuestionLayoutInternal({ questionData }) { // questionData é a prop
   const textoQuestaoString = typeof texto_questao === 'string' ? texto_questao : React.isValidElement(texto_questao) ? '' : String(texto_questao || '');
   const referenciaString = typeof referencia === 'string' ? referencia : null;
 
+  const layoutClassName = `question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`;
 
   return (
-    // Use a variável `id` desestruturada que já tem o fallback
-    <div className={`question-layout ${answered ? 'answered' : ''}`} id={id.toString()} data-correct-answer={resposta_letra}>
+    <div className={layoutClassName} id={id.toString()} data-correct-answer={resposta_letra}>
       <div className="question-header">
         {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
       </div>
@@ -109,7 +100,7 @@ function QuestionLayoutInternal({ questionData }) { // questionData é a prop
               key={altLetter} className={itemClass} data-letter={altLetter}
               role="button" tabIndex={answered ? -1 : 0}
               onClick={() => handleAlternativeClick(altLetter)}
-              onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter) }}>
+              onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter); }}>
               <span className={letterBoxClass}>{icon}</span>
               <div className="alternative-text">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>

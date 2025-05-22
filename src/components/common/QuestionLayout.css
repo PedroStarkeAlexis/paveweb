@@ -1,6 +1,6 @@
 /* // src/components/common/QuestionLayout.css */
 
-/* --- Seção: Container Principal do QuestionLayout --- */
+/* --- Se����o: Container Principal do QuestionLayout --- */
 .question-layout {
   border: 1px solid var(--border-primary);
   border-radius: 8px;
@@ -15,6 +15,17 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+/* --- Seção: Modo Carrossel para QuestionLayout --- */
+.question-layout.carousel-item-mode {
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;
+}
+
 /* --- Sub-Seção: Ajuste para QuestionLayout dentro do Banco de Questões --- */
 #question-bank-list .question-layout {
   align-self: stretch;
@@ -256,6 +267,9 @@
 [data-theme="dark"] .question-layout {
   background-color: var(--bg-tertiary);
   border-color: var(--border-primary);
+}
+[data-theme="dark"] .question-layout.carousel-item-mode {
+  background-color: transparent;
 }
 [data-theme="dark"] .question-header {
   background-color: #3a3a3a;
