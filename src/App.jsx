@@ -91,18 +91,18 @@ function App() {
                 }
             };
             if (matcher.addEventListener) {
-                 matcher.addEventListener('change', listener);
-                 return () => matcher.removeEventListener('change', listener);
+                matcher.addEventListener('change', listener);
+                return () => matcher.removeEventListener('change', listener);
             } else if (matcher.addListener) { // Legado
-                 matcher.addListener(listener);
-                 return () => matcher.removeListener(listener);
+                matcher.addListener(listener);
+                return () => matcher.removeListener(listener);
             }
         }
     }, [setDarkMode]);
 
     // --- Handler para Enviar Mensagem ---
     const handleSendMessage = async (userQuery) => {
-        const newUserMessage = { type: 'text', sender: 'user', content: userQuery };
+        const newUserMessage = { type: 'text', sender: 'user', content: userQuery, id: `user-${Date.now()}` }; // Adiciona ID
         const updatedMessages = [...messages, newUserMessage];
         setMessages(updatedMessages);
         setIsLoading(true);
@@ -133,19 +133,41 @@ function App() {
             catch (e) { throw new Error("Resposta inesperada do servidor."); }
 
             const botResponses = [];
-            if (data?.commentary?.trim()) { botResponses.push({ type: 'text', sender: 'bot', content: data.commentary }); }
-            if (data?.questions?.length > 0) {
-                data.questions.forEach(q => {
-                    if (q && q.alternativas && q.resposta_letra) { botResponses.push({ type: 'question', sender: 'bot', questionData: q }); }
-                    else { botResponses.push({ type: 'text', sender: 'bot', content: `(Dados de questão incompletos)` }); }
-                });
+            const botMessageIdBase = `bot-${Date.now()}`;
+
+            if (data?.commentary?.trim()) {
+                botResponses.push({ type: 'text', sender: 'bot', content: data.commentary, id: `${botMessageIdBase}-comment` });
             }
-            if (botResponses.length === 0 && response.ok) { botResponses.push({ type: 'text', sender: 'bot', content: 'Entendido.' }); }
+
+            // <<< LÓGICA DO CARROSSEL AQUI >>>
+            if (data?.questions?.length > 0) {
+                if (data.questions.length > 1) { // Mais de uma questão, usar carrossel
+                    botResponses.push({
+                        type: 'question_carousel', // Novo tipo
+                        sender: 'bot',
+                        questionsData: data.questions.filter(q => q && q.alternativas && q.resposta_letra), // Filtra inválidas
+                        id: `${botMessageIdBase}-carousel`
+                    });
+                } else { // Apenas uma questão, renderizar normalmente
+                    const q = data.questions[0];
+                    if (q && q.alternativas && q.resposta_letra) {
+                        botResponses.push({ type: 'question', sender: 'bot', questionData: q, id: `${botMessageIdBase}-q0` });
+                    } else {
+                        botResponses.push({ type: 'text', sender: 'bot', content: `(Dados de questão incompletos)`, id: `${botMessageIdBase}-qerr0` });
+                    }
+                }
+            }
+            // <<< FIM DA LÓGICA DO CARROSSEL >>>
+
+
+            if (botResponses.length === 0 && response.ok) {
+                botResponses.push({ type: 'text', sender: 'bot', content: 'Não tenho uma resposta específica para isso no momento.', id: `${botMessageIdBase}-fallback` });
+            }
             if (botResponses.length > 0) { setMessages(prev => [...prev, ...botResponses]); }
 
         } catch (error) {
             console.error("Erro no handleSendMessage:", error);
-            const errorResponse = { type: 'text', sender: 'bot', content: `Desculpe, ocorreu um problema: ${error.message}` };
+            const errorResponse = { type: 'text', sender: 'bot', content: `Desculpe, ocorreu um problema: ${error.message}`, id: `err-${Date.now()}` };
             setMessages(prev => [...prev, errorResponse]);
         } finally {
             setIsLoading(false);
@@ -155,10 +177,11 @@ function App() {
     // --- Efeito Inicial do Chat ---
     useEffect(() => {
         if (messages.length === 0) {
-             setMessages([
-               { type: 'text', sender: 'bot', content: 'Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir! 😊' }
-             ]);
+            setMessages([
+                { type: 'text', sender: 'bot', content: 'Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir! 😊', id: `bot-initial-${Date.now()}` }
+            ]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Executa apenas na montagem inicial
 
     const bottomNavItems = [
@@ -172,7 +195,7 @@ function App() {
         <div className="app-container">
             <aside className="sidebar">
                 <div className="sidebar-header">
-                  <span className="logo-placeholder">LOGO AQUI</span>
+                    <span className="logo-placeholder">LOGO AQUI</span>
                 </div>
                 <nav className="sidebar-nav">
                     <ul>
@@ -183,25 +206,25 @@ function App() {
                     </ul>
                 </nav>
                 <div className="sidebar-footer">
-                   <ul>
-                      <li>
-                        {/*
+                    <ul>
+                        <li>
+                            {/*
                           O atributo data-az-l precisa do ID do SURVEY ou WIDGET específico do Appzi.
                           A 'token' (rcbhq) é para o script principal, NÃO para data-az-l.
                           Vá ao seu painel Appzi, encontre o ID do survey/widget que quer abrir
                           e substitua o placeholder abaixo.
                         */}
-                        <a
-                          href="#" // Appzi deve lidar com o clique.
-                          data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc158" // <<< SUBSTITUA ESTE VALOR
-                          onClick={(e) => e.preventDefault()} // Opcional: Garante que o link não navegue
-                        >
-                            <IconHelp className="sidebar-icon-footer" />
-                            <span className="nav-link-text">Ajuda</span>
-                        </a>
-                      </li>
-                   </ul>
-                   <div className="copyright"> Desenvolvido por Pedro Alexis {new Date().getFullYear()} </div>
+                            <a
+                                href="#" // Appzi deve lidar com o clique.
+                                data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc158" // <<< SUBSTITUA ESTE VALOR
+                                onClick={(e) => e.preventDefault()} // Opcional: Garante que o link não navegue
+                            >
+                                <IconHelp className="sidebar-icon-footer" />
+                                <span className="nav-link-text">Ajuda</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div className="copyright"> Desenvolvido por Pedro Alexis {new Date().getFullYear()} </div>
                 </div>
             </aside>
 

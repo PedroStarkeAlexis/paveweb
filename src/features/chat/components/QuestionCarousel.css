@@ -1,0 +1,72 @@
+.question-carousel-container {
+  width: 100%; /* Ocupa a largura da bolha do bot */
+  max-width: 100%; /* Garante que não exceda a bolha do bot */
+  padding: 10px 0px 10px 10px; /* Padding interno, menos à direita para dar espaço para o scroll */
+  box-sizing: border-box;
+  /* Herda estilos de .bot-message (background, border, etc) se a classe for adicionada no JSX */
+  border-radius: 18px; /* Mantém o raio da bolha */
+  border-bottom-left-radius: 6px; /* Específico do bot */
+  align-self: flex-start; /* Padrão para bot-message */
+}
+
+.question-carousel-scroll-area {
+  display: flex;
+  overflow-x: auto;
+  gap: 15px; /* Espaço entre os cards de questão */
+  padding-bottom: 10px; /* Espaço para a barra de scroll não cobrir conteúdo */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-secondary) transparent;
+}
+
+.question-carousel-scroll-area::-webkit-scrollbar {
+  height: 8px; /* Altura da barra de scroll horizontal */
+}
+.question-carousel-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+.question-carousel-scroll-area::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+  border-radius: 4px;
+}
+[data-theme="dark"] .question-carousel-scroll-area::-webkit-scrollbar-thumb {
+  background-color: var(--border-primary); /* Um pouco mais visível no dark */
+}
+
+.question-carousel-item {
+  flex: 0 0 auto; /* Não cresce, não encolhe, baseia-se no width */
+  width: 320px; /* Largura de cada card de questão. Ajuste conforme necessário. */
+  max-width: 85vw; /* Máximo para não ficar muito grande em telas largas dentro do chat */
+  /* O QuestionLayout já tem sua própria margem e estilo */
+}
+
+/* Ajuste para o QuestionLayout dentro do carrossel, se necessário */
+.question-carousel-item .question-layout {
+  margin-bottom: 0; /* Remove margem inferior padrão do QuestionLayout */
+  width: 100%; /* Faz o QuestionLayout ocupar todo o .question-carousel-item */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* Sombra sutil para destacar os cards */
+}
+[data-theme="dark"] .question-carousel-item .question-layout {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-empty-message {
+  padding: 10px;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.carousel-scroll-hint {
+  font-size: 0.8em;
+  color: var(--text-muted);
+  text-align: right;
+  padding-right: 15px; /* Alinha com o final do container, considerando scrollbar */
+  margin-top: 5px;
+}
+
+/* Responsividade para o carrossel */
+@media (max-width: 400px) {
+  .question-carousel-item {
+    width: 280px; /* Cards um pouco menores em telas pequenas */
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import Message from './Message';
 import QuestionLayout from '../../../components/common/QuestionLayout';
+import QuestionCarousel from './QuestionCarousel'; // <<< Importar
 
 function ChatBox({ messages, isLoading }) {
   const chatBoxRef = useRef(null);
@@ -8,26 +9,27 @@ function ChatBox({ messages, isLoading }) {
   useEffect(() => {
     if (chatBoxRef.current) {
       const element = chatBoxRef.current;
-      // Um pequeno delay para garantir que a renderização terminou antes de rolar
       setTimeout(() => {
         element.scrollTop = element.scrollHeight;
       }, 100);
     }
-  }, [messages, isLoading]); // Rola quando novas mensagens chegam ou o estado de loading muda
+  }, [messages, isLoading]);
 
   return (
     <div id="chat-box" className="chat-box" ref={chatBoxRef}>
       {messages.map((msg, index) => {
-        if (msg.type === 'question' && msg.questionData) {
+        // <<< ADICIONAR CONDICIONAL PARA CARROSSEL >>>
+        if (msg.type === 'question_carousel' && msg.questionsData && msg.questionsData.length > 0) {
+          return <QuestionCarousel key={msg.id || `carousel-${index}`} questionsData={msg.questionsData} />;
+        } else if (msg.type === 'question' && msg.questionData) {
           return <QuestionLayout key={msg.id || `q-${index}`} questionData={msg.questionData} />;
-        } else if (msg.type === 'text' && typeof msg.content === 'string') { // Verifica se content é string
+        } else if (msg.type === 'text' && typeof msg.content === 'string') {
           return <Message key={msg.id || `msg-${index}`} sender={msg.sender} text={msg.content} />;
         }
         console.warn("Mensagem inválida ou incompleta no ChatBox:", msg);
         return null;
       })}
 
-      {/* Indicador de "Digitando..." atualizado */}
       {isLoading && (
         <div id="typing-indicator" className="message bot-message typing-indicator">
           <div className="typing-dots">
@@ -35,8 +37,6 @@ function ChatBox({ messages, isLoading }) {
             <span className="typing-dot"></span>
             <span className="typing-dot"></span>
           </div>
-          {/* Você pode manter o texto "Digitando..." ou removê-lo se as bolinhas forem suficientes */}
-          {/* <p><em>Digitando...</em></p> */}
         </div>
       )}
     </div>
