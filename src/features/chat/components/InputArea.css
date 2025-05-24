@@ -1,58 +1,53 @@
-.chat-input-area-wrapper {
-  /* Mantém a funcionalidade de fixar no rodapé */
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
-
-  /* Mudanças para "invisibilidade" */
-  background-color: transparent; /* Sem fundo visível */
-  box-shadow: none; /* Sem sombra */
-  transition: background-color 0.3s ease;
-
-  /* Padding para posicionar a pílula.
-     O padding inferior da página de chat deve ser gerenciado pelo
-     .main-content ou .chat-interface-container para evitar sobreposição
-     com a BottomNavBar em mobile.
-     Este padding aqui é para o espaço entre o último item do chat-box e a pílula. */
-  padding-top: 10px; /* Espaço acima da p��lula */
-  padding-bottom: 10px; /* Espaço abaixo da pílula, antes do fim da tela */
-  /* Padding lateral não é necessário aqui, pois o .chat-interface-container j�� deve prover */
-}
-
+/* A PÍLULA (input + botão) é o elemento STICKY agora */
 .chat-input-container {
   display: flex;
   align-items: center;
-  background-color: var(--bg-secondary); /* A pílula mantém seu fundo */
-  border: 1px solid var(--border-primary); /* A pílula mantém sua borda */
-  border-radius: 24px; /* Mais arredondado, estilo "pill" */
-  padding: 0 8px 0 20px; /* Padding: 0 topo/baixo, 8px dir, 0 esq, 20px esq para texto */
-  position: relative;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease,
-    background-color 0.3s ease;
-  min-height: 48px; /* Altura mínima */
+  background-color: var(--bg-secondary); /* Fundo da pílula */
+  border: 1px solid var(--border-primary); /* Borda da pílula */
+  border-radius: 24px; /* Arredondamento da pílula */
+  padding: 0 8px 0 20px; /* Padding interno horizontal da pílula */
 
-  /* Para centralizar a pílula se o .chat-interface-container permitir mais largura
-     do que a pílula precisa. */
+  /* Posicionamento STICKY */
+  position: sticky;
+  bottom: 10px; /* Espaçamento da borda inferior da viewport. Ajuste se necessário. */
+  left: 0; /* Necessário para que width/margin:auto funcione corretamente com sticky em alguns contextos */
+  right: 0; /* Necessário para que width/margin:auto funcione corretamente com sticky em alguns contextos */
+  z-index: 10; /* Para ficar acima do conteúdo do chat-box */
+
+  min-height: 48px; /* Altura mínima da pílula */
+
+  /* Centraliza a pílula e define sua largura máxima.
+     Como agora InputArea é filho direto de .chat-interface-container,
+     este margin:auto vai centraliz��-lo dentro dos limites do .chat-interface-container.
+     O .chat-interface-container já tem padding lateral (0 15px). */
   margin-left: auto;
   margin-right: auto;
-  max-width: 700px; /* Ajuste conforme a largura desejada para a pílula */
+  max-width: 700px; /* Largura máxima desejada para a pílula. Ajuste conforme o design. */
+  /* width: 100%; /* Removido, max-width e margin:auto cuidam da largura e centralização.
+                     Se precisar que ocupe a largura do pai até o max-width, pode usar,
+                     mas o pai (.chat-interface-container) já tem padding,
+                     então a pílula não colará nas bordas da tela. */
+
+  /* Transições */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.3s ease;
 }
 
 .chat-input-container:focus-within {
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 1px var(--brand-primary);
+  box-shadow: 0 0 0 1px var(--brand-primary); /* Sombra de foco sutil na pílula */
 }
 
 .chat-input-field {
   flex-grow: 1;
   border: none;
   outline: none;
-  background-color: transparent; /* Input em si é transparente */
+  background-color: transparent; /* Input em si é transparente dentro da pílula */
   color: var(--text-primary);
   font-size: 1em;
   line-height: 1.5;
-  padding: 12px 0; /* Padding vertical para altura do texto */
-  resize: none; /* Se for textarea no futuro */
+  padding: 12px 0; /* Padding vertical para o texto dentro do input */
+  resize: none;
 }
 
 .chat-input-field::placeholder {
@@ -74,7 +69,7 @@
   margin-left: 8px; /* Espaço entre input e botão */
   cursor: pointer;
   transition: background-color 0.2s ease, opacity 0.2s ease;
-  flex-shrink: 0; /* Para não encolher */
+  flex-shrink: 0;
 }
 
 .chat-send-button svg {
@@ -93,17 +88,11 @@
   cursor: not-allowed;
 }
 
-/* Estilo para quando est�� carregando */
 .chat-input-container.loading {
-  /* Pode adicionar um overlay ou mudar a opacidade aqui se quiser */
+  /* Estilos para quando estiver carregando, se necessário */
 }
 
 /* --- Dark Mode --- */
-[data-theme="dark"] .chat-input-area-wrapper {
-  /* O fundo já é transparente, a sombra foi removida. */
-  /* Não precisa de mais nada aqui para o wrapper em si. */
-}
-
 [data-theme="dark"] .chat-input-container {
   background-color: var(--bg-tertiary);
   border-color: var(--border-primary);
@@ -122,13 +111,8 @@
   color: var(--text-muted);
 }
 
-[data-theme="dark"] .chat-send-button {
-  /* background-color: var(--brand-primary); // Já é definido */
-  /* color: white; // Já é definido */
-}
-[data-theme="dark"] .chat-send-button:hover:not(:disabled) {
-  /* background-color: var(--brand-primary-hover); // Já é definido */
-}
+/* [data-theme="dark"] .chat-send-button { ... } // Estilos do botão já usam vars */
+/* [data-theme="dark"] .chat-send-button:hover:not(:disabled) { ... } */
 
 [data-theme="dark"] .chat-send-button:disabled {
   background-color: var(--border-secondary);

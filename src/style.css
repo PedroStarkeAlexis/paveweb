@@ -212,7 +212,7 @@ code {
   margin-top: 10px;
 }
 
-/* --- Estilos da Área Principal (do Projeto 2) --- */
+/* --- Estilos da ��rea Principal (do Projeto 2) --- */
 .main-content {
   flex-grow: 1;
   height: 100%;
@@ -274,6 +274,7 @@ code {
   gap: 10px;
   scrollbar-width: thin;
   scrollbar-color: var(--border-secondary) transparent;
+  padding-bottom: 75px; /* AJUSTE ESTE VALOR CONFORME O NECESSÁRIO */
 }
 .chat-box::-webkit-scrollbar {
   width: 6px;
@@ -1090,7 +1091,7 @@ code {
     display: flex; /* Mostra a BottomNavBar em telas menores */
   }
 
-  /* Ajustes para os containers das páginas para compensar a BottomNavBar */
+  /* Ajustes para os containers das p��ginas para compensar a BottomNavBar */
   .chat-interface-container,
   .question-bank-container,
   .home-page-container-revised, /* Adicionado para a HomePage */

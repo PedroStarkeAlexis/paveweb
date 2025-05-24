@@ -20,27 +20,25 @@ function InputArea({ onSendMessage, isLoading }) {
   };
 
   return (
-    <div className="chat-input-area-wrapper">
-      <div className={`chat-input-container ${isLoading ? 'loading' : ''}`}>
-        <input
-          type="text"
-          className="chat-input-field"
-          placeholder="Digite sua mensagem..."
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={handleKeyPress}
-          disabled={isLoading}
-          aria-label="Campo de mensagem"
-        />
-        <button
-          className="chat-send-button"
-          onClick={handleSend}
-          disabled={isLoading || !inputValue.trim()}
-          aria-label="Enviar mensagem"
-        >
-          <IconSend />
-        </button>
-      </div>
+    <div className={`chat-input-container ${isLoading ? 'loading' : ''}`}>
+      <input
+        type="text"
+        className="chat-input-field"
+        placeholder="Digite sua mensagem..."
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyPress={handleKeyPress}
+        disabled={isLoading}
+        aria-label="Campo de mensagem"
+      />
+      <button
+        className="chat-send-button"
+        onClick={handleSend}
+        disabled={isLoading || !inputValue.trim()}
+        aria-label="Enviar mensagem"
+      >
+        <IconSend />
+      </button>
     </div>
   );
 }
