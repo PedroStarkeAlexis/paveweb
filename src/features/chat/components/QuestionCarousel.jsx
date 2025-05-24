@@ -103,7 +103,7 @@ function QuestionCarousel({ questionsData }) {
             exit="exit"
             // A classe .bot-message é aplicada aqui para que o item animado seja a bolha
             // E o QuestionLayout dentro dele será transparente/sem bordas próprias
-            className="carousel-motion-item bot-message"
+            className="carousel-motion-item"
           >
             {currentQuestion && (
               // Passar uma prop para QuestionLayout para que ele não renderize sua borda/fundo
