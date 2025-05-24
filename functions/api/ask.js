@@ -54,7 +54,7 @@ async function callGeminiAPI(
 }
 
 export async function onRequestPost(context) {
-  const functionName = "/api/ask (v13 - Criação Múltipla & Carrossel)"; // Nova versão
+  const functionName = "/api/ask (v14 - INFO_PAVE Card)"; // Nova versão
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
   let allQuestionsR2Data = null;
 
@@ -86,7 +86,7 @@ export async function onRequestPost(context) {
     const history = requestData?.history;
     if (!Array.isArray(history) || history.length === 0) {
       return new Response(
-        JSON.stringify({ error: "Hist��rico inválido ou vazio." }),
+        JSON.stringify({ error: "Histórico inválido ou vazio." }),
         { status: 400 }
       );
     }
@@ -97,7 +97,7 @@ export async function onRequestPost(context) {
         : null;
     if (!userQuery) {
       return new Response(
-        JSON.stringify({ error: "Query do usu��rio inválida no histórico." }),
+        JSON.stringify({ error: "Query do usuário inválida no histórico." }),
         { status: 400 }
       );
     }
@@ -156,11 +156,14 @@ export async function onRequestPost(context) {
     let responseTextForUser = aiAnalysis?.responseText || null;
     let commentary = "";
     let questionsToReturn = [];
+    let displayCard = null; // <<< NOVO: Campo para sinalizar o card
 
     console.log(
       `[LOG] ${functionName}: IA Parsed (análise) - Intent: ${intent}, Entities: ${JSON.stringify(
         entities
-      )}, Generated Questions Count: ${generatedQuestionsFromAI?.length || 0}`
+      )}, Generated Questions Count: ${
+        generatedQuestionsFromAI?.length || 0
+      }, ResponseText: "${createTextPreview(responseTextForUser, 30)}"`
     );
 
     // Validações pós-análise
@@ -174,8 +177,12 @@ export async function onRequestPost(context) {
       commentary =
         "Pedi para gerar questão(ões), mas não consegui obter o conteúdo.";
     }
-    if (intent === "CONVERSAR" && !responseTextForUser) {
-      intent = "DESCONHECIDO";
+    // Se for INFO_PAVE, responseTextForUser é esperado. Se CONVERSAR, também.
+    if (
+      (intent === "CONVERSAR" || intent === "INFO_PAVE") &&
+      !responseTextForUser
+    ) {
+      intent = "DESCONHECIDO"; // Ou trata INFO_PAVE de forma diferente se responseText for obrigatório
       commentary = "Não consegui formular uma resposta para isso.";
     }
 
@@ -226,7 +233,7 @@ export async function onRequestPost(context) {
               topK: VECTORIZE_TOP_K,
             });
             console.log(
-              `[LOG] ${functionName}: Vectorize retornou ${vectorQueryResult.matches.length} correspondências.`
+              `[LOG] ${functionName}: Vectorize retornou ${vectorQueryResult.matches.length} correspond��ncias.`
             );
             if (vectorQueryResult.matches?.length > 0) {
               highConfidenceMatches = vectorQueryResult.matches.filter(
@@ -255,7 +262,7 @@ export async function onRequestPost(context) {
               candidateIds.includes(q.id.toString())
             );
             console.log(
-              `[LOG] ${functionName}: ${candidatesForReRanking.length} candidatas de alta confian��a prontas para re-ranking.`
+              `[LOG] ${functionName}: ${candidatesForReRanking.length} candidatas de alta confiança prontas para re-ranking.`
             );
           } else {
             console.log(
@@ -412,9 +419,19 @@ export async function onRequestPost(context) {
         }
         break; // Fim do case 'CRIAR_QUESTAO'
 
-      case "CONVERSAR":
-        commentary = responseTextForUser;
+      // <<< NOVO CASE / L��GICA PARA INFO_PAVE >>>
+      case "INFO_PAVE":
+        commentary = responseTextForUser; // A IA deve fornecer o texto para acompanhar o card
+        displayCard = "pave_info_recommendation"; // Sinaliza para o frontend
+        // questionsToReturn permanece []
         break;
+
+      case "CONVERSAR": // Agora CONVERSAR é para outros tipos de conversa que não são INFO_PAVE
+        commentary = responseTextForUser;
+        // questionsToReturn permanece []
+        // displayCard permanece null
+        break;
+
       case "DESCONHECIDO":
       default:
         if (!commentary) {
@@ -429,12 +446,13 @@ export async function onRequestPost(context) {
       `[LOG] ${functionName}: Retornando final. Comentário: "${createTextPreview(
         commentary,
         50
-      )}", Questões: ${questionsToReturn.length}`
+      )}", Questões: ${questionsToReturn.length}, DisplayCard: ${displayCard}`
     );
     return new Response(
       JSON.stringify({
         commentary: commentary || null,
         questions: questionsToReturn,
+        displayCard: displayCard, // <<< NOVO: Inclui o sinalizador no retorno
       }),
       {
         headers: { "Content-Type": "application/json" },

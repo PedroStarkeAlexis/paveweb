@@ -1,0 +1,124 @@
+.info-pave-card-wrapper {
+  align-self: flex-start; /* Alinha como uma mensagem de bot */
+  width: 100%;
+  max-width: 480px; /* Largura máxima do card */
+  margin-bottom: 10px; /* Espaçamento igual a outras mensagens */
+  padding: 0 5px; /* Similar ao padding do chat-box */
+  box-sizing: border-box;
+}
+
+.info-pave-card {
+  display: flex;
+  align-items: flex-start; /* Alinha ícone e conteúdo no topo */
+  gap: 18px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px; /* Bordas arredondadas */
+  padding: 20px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  /* Efeito sutil de borda esquerda colorida */
+  border-left: 5px solid var(--brand-primary);
+}
+
+.info-pave-card-icon-area {
+  flex-shrink: 0;
+  background-color: var(--brand-secondary); /* Fundo do ícone */
+  color: var(--brand-primary);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px; /* Alinha melhor com o título */
+}
+
+.info-pave-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.info-pave-card-content {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.info-pave-card-title {
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+}
+
+.info-pave-card-text {
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 18px 0;
+}
+
+.info-pave-card-button {
+  display: inline-block;
+  background-color: var(--brand-primary);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.9em;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  text-align: center;
+}
+
+.info-pave-card-button:hover {
+  background-color: var(--brand-primary-hover);
+}
+
+/* Dark Mode */
+[data-theme="dark"] .info-pave-card {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-primary);
+  border-left-color: var(--brand-primary);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .info-pave-card-icon-area {
+  background-color: var(
+    --brand-secondary
+  ); /* Pode ser ajustado para dark mode */
+  color: var(--brand-primary);
+}
+
+[data-theme="dark"] .info-pave-card-title {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .info-pave-card-text {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .info-pave-card-button {
+  /* background-color: var(--brand-primary); */ /* Já usa */
+  /* color: white; */ /* Já usa */
+}
+[data-theme="dark"] .info-pave-card-button:hover {
+  /* background-color: var(--brand-primary-hover); */ /* Já usa */
+}
+
+@media (max-width: 400px) {
+  .info-pave-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+    padding: 20px 15px;
+  }
+  .info-pave-card-icon-area {
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+  .info-pave-card-content {
+    text-align: center;
+  }
+}

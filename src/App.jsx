@@ -100,34 +100,6 @@ function App() {
         }
     }, [setDarkMode]);
 
-    // --- Helper para processar questões do bot ---
-    const processBotQuestions = useCallback((questions, botMessageIdBase) => {
-        const responses = [];
-        if (!questions || questions.length === 0) {
-            return responses;
-        }
-
-        const validQuestions = questions.filter(q => q && q.alternativas && q.resposta_letra);
-
-        if (validQuestions.length === 0) {
-            responses.push({ type: 'text', sender: 'bot', content: `(Nenhuma questão válida encontrada)`, id: `${botMessageIdBase}-qerr-all` });
-            return responses;
-        }
-
-        if (validQuestions.length > 1) {
-            responses.push({
-                type: 'question_carousel',
-                sender: 'bot',
-                questionsData: validQuestions,
-                id: `${botMessageIdBase}-carousel`
-            });
-        } else {
-            const q = validQuestions[0];
-            responses.push({ type: 'question', sender: 'bot', questionData: q, id: `${botMessageIdBase}-q0` });
-        }
-        return responses;
-    }, []);
-
     // --- Handler para Enviar Mensagem ---
     const handleSendMessage = async (userQuery) => {
         const newUserMessage = { type: 'text', sender: 'user', content: userQuery, id: `user-${Date.now()}` }; // Adiciona ID
@@ -163,18 +135,54 @@ function App() {
             const botResponses = [];
             const botMessageIdBase = `bot-${Date.now()}`;
 
+            // 1. Adiciona o comentário/resposta textual da IA, se houver
             if (data?.commentary?.trim()) {
-                botResponses.push({ type: 'text', sender: 'bot', content: data.commentary, id: `${botMessageIdBase}-comment` });
+                botResponses.push({
+                    type: 'text',
+                    sender: 'bot',
+                    content: data.commentary,
+                    id: `${botMessageIdBase}-comment`
+                });
             }
 
-            // <<< LÓGICA DO CARROSSEL AQUI (Refatorada) >>>
-            const questionResponses = processBotQuestions(data.questions, botMessageIdBase);
-            botResponses.push(...questionResponses);
-            // <<< FIM DA LÓGICA DO CARROSSEL >>>
+            // 2. Adiciona o card de informações do PAVE, se sinalizado
+            if (data?.displayCard === "pave_info_recommendation") {
+                botResponses.push({
+                    type: 'pave_info_card', // <<< NOVO TIPO DE MENSAGEM
+                    sender: 'bot',
+                    id: `${botMessageIdBase}-paveinfocard`
+                    // Não precisa de dados extras, o card é estático por enquanto
+                });
+            }
 
-            if (botResponses.length === 0 && response.ok) {
+            // 3. Adiciona questões (lógica do carrossel existente)
+            if (data?.questions?.length > 0) {
+                if (data.questions.length > 1) {
+                    botResponses.push({
+                        type: 'question_carousel',
+                        sender: 'bot',
+                        questionsData: data.questions.filter(q => q && q.alternativas && q.resposta_letra),
+                        id: `${botMessageIdBase}-carousel`
+                    });
+                } else {
+                    const q = data.questions[0];
+                    if (q && q.alternativas && q.resposta_letra) {
+                        botResponses.push({ type: 'question', sender: 'bot', questionData: q, id: `${botMessageIdBase}-q0` });
+                    } else {
+                        // Only add this error if no other meaningful response (like a comment or info card) is present
+                        if (botResponses.length === 0 || data.displayCard !== "pave_info_recommendation") {
+                            botResponses.push({ type: 'text', sender: 'bot', content: `(Dados de questão incompletos)`, id: `${botMessageIdBase}-qerr0` });
+                        }
+                    }
+                }
+            }
+
+            // Fallback se nenhuma resposta foi preparada e a API retornou OK
+            // (mas não se j�� tivermos um card de info, pois ele já é uma resposta)
+            if (botResponses.length === 0 && response.ok && data?.displayCard !== "pave_info_recommendation") {
                 botResponses.push({ type: 'text', sender: 'bot', content: 'Não tenho uma resposta específica para isso no momento.', id: `${botMessageIdBase}-fallback` });
             }
+
             if (botResponses.length > 0) { setMessages(prev => [...prev, ...botResponses]); }
 
         } catch (error) {
