@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import IconSend from '../../../components/icons/IconSend'; // Ajuste o caminho se necessário
+import './InputArea.css'; // Criaremos este arquivo CSS
 
 function InputArea({ onSendMessage, isLoading }) {
   const [inputValue, setInputValue] = useState('');
@@ -18,19 +20,27 @@ function InputArea({ onSendMessage, isLoading }) {
   };
 
   return (
-    <div className="input-area">
-      <input
-        type="text"
-        id="user-input" // Mantém ID se o CSS usar
-        placeholder="Digite sua pergunta ou comando..."
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyPress={handleKeyPress}
-        disabled={isLoading}
-      />
-      <button id="send-button" onClick={handleSend} disabled={isLoading}>
-        {isLoading ? '...' : 'Enviar'}
-      </button>
+    <div className="chat-input-area-wrapper">
+      <div className={`chat-input-container ${isLoading ? 'loading' : ''}`}>
+        <input
+          type="text"
+          className="chat-input-field"
+          placeholder="Digite sua mensagem..."
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyPress={handleKeyPress}
+          disabled={isLoading}
+          aria-label="Campo de mensagem"
+        />
+        <button
+          className="chat-send-button"
+          onClick={handleSend}
+          disabled={isLoading || !inputValue.trim()}
+          aria-label="Enviar mensagem"
+        >
+          <IconSend />
+        </button>
+      </div>
     </div>
   );
 }

@@ -212,7 +212,7 @@ code {
   margin-top: 10px;
 }
 
-/* --- Estilos da ��rea Principal (do Projeto 2) --- */
+/* --- Estilos da Área Principal (do Projeto 2) --- */
 .main-content {
   flex-grow: 1;
   height: 100%;
@@ -222,7 +222,7 @@ code {
   background-color: var(--bg-primary); /* Usa variável */
 }
 
-/* Container que limita largura (usado pelo Chat e Banco de Quest��es) */
+/* Container que limita largura (usado pelo Chat e Banco de Questões) */
 .chat-interface-container,
 .question-bank-container,
 .home-page-container {
@@ -286,6 +286,8 @@ code {
   border-radius: 3px;
 }
 
+/* COMENTE OU REMOVA ESTES ESTILOS ANTIGOS: */
+/*
 .input-area {
   display: flex;
   padding: 15px 0 25px 0;
@@ -309,7 +311,7 @@ code {
 }
 #user-input:focus {
   outline: none;
-  border-color: #c5c5d2; /* Cor específica de foco */
+  border-color: #c5c5d2;
   box-shadow: 0 0 0 1px #c5c5d2, 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -329,11 +331,12 @@ code {
   background-color: var(--brand-primary-hover);
 }
 #send-button:disabled {
-  background-color: #cccccc; /* Estilo desabilitado genérico */
+  background-color: #cccccc;
   color: #666666;
   cursor: not-allowed;
   opacity: 0.7;
 }
+*/
 
 /* Mensagens do Chat */
 .message {
@@ -409,7 +412,7 @@ code {
 /* Container já estilizado acima */
 
 .question-bank-container h1 {
-  /* T��tulo se voltar a usar */
+  /* Título se voltar a usar */
   font-size: 1.4em;
   font-weight: 500;
   color: var(--text-primary);
@@ -834,6 +837,8 @@ code {
   background-color: var(--border-secondary);
 }
 /* [data-theme="dark"] .input-area { box-shadow: 0 -8px 20px -15px rgba(255, 255, 255, 0.05); } */
+/* COMENTE OU REMOVA ESTES ESTILOS ANTIGOS: */
+/*
 [data-theme="dark"] #user-input {
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
@@ -855,6 +860,7 @@ code {
   color: #aaa;
   opacity: 0.6;
 }
+*/
 
 /* Mensagens Chat */
 [data-theme="dark"] .user-message {
@@ -1004,7 +1010,7 @@ code {
 .typing-dots {
   display: flex;
   align-items: flex-end; /* Alinha as bolinhas na base se elas mudarem de altura */
-  /* margin-right: 8px; // Espaço se você mantiver o texto "Digitando..." */
+  /* margin-right: 8px; // Espaço se voc�� mantiver o texto "Digitando..." */
 }
 
 .typing-dot {
@@ -1033,7 +1039,7 @@ code {
 }
 
 .typing-dot:nth-of-type(3) {
-  /* animation-delay: 0s; // Já é o padrão, não precisa definir */
+  /* animation-delay: 0s; // Já �� o padrão, não precisa definir */
 }
 
 /* Keyframes da animação para uma bolinha */
@@ -1130,7 +1136,7 @@ code {
   }
 }
 
-/* ��cones na Sidebar */
+/* Ícones na Sidebar */
 .sidebar-nav a .sidebar-icon {
   margin-right: 10px;
   width: 18px;
