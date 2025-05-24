@@ -19,9 +19,9 @@ export function createAnalysisPrompt(history, userQuery) {
           d.  Você PODE fornecer um breve comentário introdutório (ex: "Certo, elaborei estas questões:") no campo "responseText". Se você não fornecer um "responseText" mas criar questões, um comentário padrão será usado.
           e.  Se não conseguir gerar o JSON de questões no formato de array, mas puder gerar o texto das questões, coloque o texto completo em "responseText" e deixe "generated_questions" como null.
       4.  **SE a intenção for INFO_PAVE:**
-          a.  Gere uma resposta textual curta e amigável confirmando o pedido de informação e sugerindo consultar a página oficial (ex: "Claro! Para informações detalhadas sobre o PAVE, o ideal é consultar a página oficial da UFPel ou o edital mais recente."). Coloque essa resposta em "responseText".
+          a.  Gere uma resposta textual curta e amigável confirmando o pedido de informação e sugerindo consultar a página oficial (ex: "Para informações detalhadas sobre o PAVE, o ideal é consultar a página de informações ou o edital mais recente."). Coloque essa resposta em "responseText".Você pode usar markdown.
           b.  O campo "generated_questions" DEVE ser null.
-      5.  **SE a intenção for CONVERSAR (e não for INFO_PAVE):** Gere uma resposta textual apropriada e coloque-a em "responseText". O campo "generated_questions" DEVE ser null.
+      5.  **SE a intenção for CONVERSAR (e não for INFO_PAVE):** Gere uma resposta textual apropriada e coloque-a em "responseText". O campo "generated_questions" DEVE ser null.Você pode usar markdown.
       6.  **SE a intenção for BUSCAR_QUESTAO ou DESCONHECIDO:** Os campos "generated_questions" e "responseText" DEVEM ser null.
       7.  Retorne ESTRITAMENTE um objeto JSON válido com a estrutura:
           {
