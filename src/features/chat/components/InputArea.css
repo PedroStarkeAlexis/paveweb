@@ -23,7 +23,7 @@
   margin-left: auto;
   margin-right: auto;
   max-width: 700px; /* Largura máxima desejada para a pílula. Ajuste conforme o design. */
-  /* width: 100%; /* Removido, max-width e margin:auto cuidam da largura e centralização.
+ width: 100%; /* Removido, max-width e margin:auto cuidam da largura e centralização.
                      Se precisar que ocupe a largura do pai até o max-width, pode usar,
                      mas o pai (.chat-interface-container) já tem padding,
                      então a pílula não colará nas bordas da tela. */

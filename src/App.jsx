@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
-// --- Importar páginas/features ---
+// --- Importar p��ginas/features ---
 import HomePage from './pages/HomePage';
 import ChatInterface from './features/chat/components/ChatInterface';
 import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage';
@@ -100,6 +100,34 @@ function App() {
         }
     }, [setDarkMode]);
 
+    // --- Helper para processar questões do bot ---
+    const processBotQuestions = useCallback((questions, botMessageIdBase) => {
+        const responses = [];
+        if (!questions || questions.length === 0) {
+            return responses;
+        }
+
+        const validQuestions = questions.filter(q => q && q.alternativas && q.resposta_letra);
+
+        if (validQuestions.length === 0) {
+            responses.push({ type: 'text', sender: 'bot', content: `(Nenhuma questão válida encontrada)`, id: `${botMessageIdBase}-qerr-all` });
+            return responses;
+        }
+
+        if (validQuestions.length > 1) {
+            responses.push({
+                type: 'question_carousel',
+                sender: 'bot',
+                questionsData: validQuestions,
+                id: `${botMessageIdBase}-carousel`
+            });
+        } else {
+            const q = validQuestions[0];
+            responses.push({ type: 'question', sender: 'bot', questionData: q, id: `${botMessageIdBase}-q0` });
+        }
+        return responses;
+    }, []);
+
     // --- Handler para Enviar Mensagem ---
     const handleSendMessage = async (userQuery) => {
         const newUserMessage = { type: 'text', sender: 'user', content: userQuery, id: `user-${Date.now()}` }; // Adiciona ID
@@ -139,26 +167,10 @@ function App() {
                 botResponses.push({ type: 'text', sender: 'bot', content: data.commentary, id: `${botMessageIdBase}-comment` });
             }
 
-            // <<< LÓGICA DO CARROSSEL AQUI >>>
-            if (data?.questions?.length > 0) {
-                if (data.questions.length > 1) { // Mais de uma questão, usar carrossel
-                    botResponses.push({
-                        type: 'question_carousel', // Novo tipo
-                        sender: 'bot',
-                        questionsData: data.questions.filter(q => q && q.alternativas && q.resposta_letra), // Filtra inválidas
-                        id: `${botMessageIdBase}-carousel`
-                    });
-                } else { // Apenas uma questão, renderizar normalmente
-                    const q = data.questions[0];
-                    if (q && q.alternativas && q.resposta_letra) {
-                        botResponses.push({ type: 'question', sender: 'bot', questionData: q, id: `${botMessageIdBase}-q0` });
-                    } else {
-                        botResponses.push({ type: 'text', sender: 'bot', content: `(Dados de questão incompletos)`, id: `${botMessageIdBase}-qerr0` });
-                    }
-                }
-            }
+            // <<< LÓGICA DO CARROSSEL AQUI (Refatorada) >>>
+            const questionResponses = processBotQuestions(data.questions, botMessageIdBase);
+            botResponses.push(...questionResponses);
             // <<< FIM DA LÓGICA DO CARROSSEL >>>
-
 
             if (botResponses.length === 0 && response.ok) {
                 botResponses.push({ type: 'text', sender: 'bot', content: 'Não tenho uma resposta específica para isso no momento.', id: `${botMessageIdBase}-fallback` });

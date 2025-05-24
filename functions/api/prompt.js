@@ -1,28 +1,30 @@
-import { createTextPreview } from "./filter"; // Certifique-se que est�� importado/definido
+import { createTextPreview } from "./filter"; // Certifique-se que está importado/definido
 
 export function createAnalysisPrompt(history, userQuery) {
   const analysisPrompt = `
-      Você é um assistente focado em ajudar estudantes com questões do PAVE UFPel.
-      Analise a ��ltima mensagem do usuário neste histórico:
+      Voc�� é um assistente focado em ajudar estudantes com questões do PAVE UFPel.
+      Analise a última mensagem do usuário neste histórico:
       ${JSON.stringify(history)}
 
       Última mensagem do usuário: "${userQuery}"
 
       Sua Tarefa:
       1.  Determine a intenção principal: BUSCAR_QUESTAO (mostrar existente), CRIAR_QUESTAO (gerar nova), CONVERSAR (responder pergunta/comentário), DESCONHECIDO.
-      1,5. Se o usario pedir por uma questao mas nao falar que quer que essa questao seja criada gerada ou algum termo do tipo NAO detecte como CRIAR_QUESTAO e sim como BUSCAR_QUESTAO
-      2.  Se BUSCAR_QUESTAO ou CRIAR_QUESTAO, extraia entidades: 'materia', 'topico', 'ano' (use null se não encontrar). Tente ser específico (ex: 'Trigonometria' em vez de apenas 'Matemática' se possível).
+      1.5. Se o usuário pedir por uma questão mas não falar explicitamente que quer que essa questão seja CRIADA/GERADA ou algum termo similar, detecte como BUSCAR_QUESTAO.
+      2.  Se BUSCAR_QUESTAO ou CRIAR_QUESTAO, extraia entidades: 'materia', 'topico', 'ano' (use null se não encontrar). Tente ser específico.
       3.  **SE a intenção for CRIAR_QUESTAO:**
-          a.  Gere uma questão INÉDITA de múltipla escolha (A-E) sobre o tópico/descrição extraído, no estilo do vestibular PAVE da UFPEL voce pode usar markdown para negrito etc.
-          b.  **TENTE** formatar essa questão GERADA como um objeto JSON dentro do campo "generated_question". A estrutura DEVE ser: { "materia": "...", "topico": "...", "texto_questao": "...", "alternativas": [ { "letra": "A", "texto": "..." }, ... ], "resposta_letra": "..." }. Use null para matéria/tópico se não conseguir definir.
-          c.  Inclua um breve comentário introdutório (exemplo: "Certo, elaborei esta questão:") no in��cio do "responseText" APENAS se o "generated_question" for null.
-      4.  **SE a intenção for CONVERSAR:** Gere uma resposta textual apropriada e coloque-a em "responseText". O campo "generated_question" DEVE ser null.
-      5.  **SE a intenção for BUSCAR_QUESTAO ou DESCONHECIDO:** Os campos "generated_question" e "responseText" DEVEM ser null.
+          a.  Verifique se o usuário pediu explicitamente por MAIS DE UMA questão (ex: "crie algumas questões", "gere 3 questões", "faça umas questões"). Se não for explícito, gere apenas UMA.
+          b.  Gere a(s) questão(ões) INÉDITA(S) de múltipla escolha (A-E) sobre o tópico/descrição extraído, no estilo do PAVE UFPel. Você pode usar markdown.
+          c.  **Formate a(s) questão(ões) GERADA(S) como um ARRAY de objetos JSON dentro do campo "generated_questions". Mesmo que você gere apenas UMA questão, coloque-a dentro de um array.** A estrutura de CADA objeto de questão DEVE ser: { "id": "gen-temp-id-${Math.random()}", "materia": "...", "topico": "...", "texto_questao": "...", "alternativas": [ { "letra": "A", "texto": "..." }, ... ], "resposta_letra": "..." }. Use null para matéria/tópico se não conseguir definir. O campo "id" pode ser um placeholder.
+          d.  Você PODE fornecer um breve comentário introdutório (ex: "Certo, elaborei estas questões:") no campo "responseText". Se você não fornecer um "responseText" mas criar questões, um comentário padrão será usado.
+          e.  Se não conseguir gerar o JSON de questões no formato de array, mas puder gerar o texto das questões, coloque o texto completo em "responseText" e deixe "generated_questions" como null.
+      4.  **SE a intenção for CONVERSAR:** Gere uma resposta textual apropriada e coloque-a em "responseText". O campo "generated_questions" DEVE ser null.
+      5.  **SE a intenção for BUSCAR_QUESTAO ou DESCONHECIDO:** Os campos "generated_questions" e "responseText" DEVEM ser null.
       6.  Retorne ESTRITAMENTE um objeto JSON válido com a estrutura:
           {
             "intent": "...",
             "entities": { "materia": "...", "topico": "...", "ano": ... } | null,
-            "generated_question": { ... (objeto da questão) ... } | null,
+            "generated_questions": [ { ... (objeto da questão) ... }, ... ] | null, // << NOTA: PLURAL e ARRAY
             "responseText": "..." | null
           }
       `;

@@ -54,12 +54,11 @@ async function callGeminiAPI(
 }
 
 export async function onRequestPost(context) {
-  const functionName = "/api/ask (v12 - Híbrido Vetor+IA Sem Filtro Manual)"; // Nova versão
+  const functionName = "/api/ask (v13 - Criação Múltipla & Carrossel)"; // Nova versão
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
   let allQuestionsR2Data = null;
 
   try {
-    // ... (Configuração inicial, validação, chamada de análise da IA - inalterado) ...
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
     const r2Bucket = env.QUESTOES_PAVE_BUCKET;
@@ -87,7 +86,7 @@ export async function onRequestPost(context) {
     const history = requestData?.history;
     if (!Array.isArray(history) || history.length === 0) {
       return new Response(
-        JSON.stringify({ error: "Histórico inválido ou vazio." }),
+        JSON.stringify({ error: "Hist��rico inválido ou vazio." }),
         { status: 400 }
       );
     }
@@ -98,7 +97,7 @@ export async function onRequestPost(context) {
         : null;
     if (!userQuery) {
       return new Response(
-        JSON.stringify({ error: "Query do usuário inválida no histórico." }),
+        JSON.stringify({ error: "Query do usu��rio inválida no histórico." }),
         { status: 400 }
       );
     }
@@ -106,7 +105,22 @@ export async function onRequestPost(context) {
 
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const safetySettings = [
-      /* ... suas configurações ... */
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
     ];
 
     const analysisPromptText = createAnalysisPrompt(history, userQuery);
@@ -136,8 +150,9 @@ export async function onRequestPost(context) {
     }
 
     let intent = aiAnalysis?.intent || "DESCONHECIDO";
-    let entities = aiAnalysis?.entities || null; // Mantemos as entidades para passar à IA de re-ranking
-    let generated_question = aiAnalysis?.generated_question || null;
+    let entities = aiAnalysis?.entities || null;
+    // MUDANÇA: Esperar 'generated_questions' (plural) como um array
+    let generatedQuestionsFromAI = aiAnalysis?.generated_questions || null;
     let responseTextForUser = aiAnalysis?.responseText || null;
     let commentary = "";
     let questionsToReturn = [];
@@ -145,18 +160,19 @@ export async function onRequestPost(context) {
     console.log(
       `[LOG] ${functionName}: IA Parsed (análise) - Intent: ${intent}, Entities: ${JSON.stringify(
         entities
-      )}`
+      )}, Generated Questions Count: ${generatedQuestionsFromAI?.length || 0}`
     );
 
-    // Validações pós-análise (inalteradas)
+    // Validações pós-análise
     if (
       intent === "CRIAR_QUESTAO" &&
-      !generated_question &&
+      (!Array.isArray(generatedQuestionsFromAI) ||
+        generatedQuestionsFromAI.length === 0) && // Verifica se é array e não está vazio
       !responseTextForUser
     ) {
       intent = "DESCONHECIDO";
       commentary =
-        "Pedi para gerar uma questão, mas não consegui obter o conteúdo.";
+        "Pedi para gerar questão(ões), mas não consegui obter o conteúdo.";
     }
     if (intent === "CONVERSAR" && !responseTextForUser) {
       intent = "DESCONHECIDO";
@@ -239,7 +255,7 @@ export async function onRequestPost(context) {
               candidateIds.includes(q.id.toString())
             );
             console.log(
-              `[LOG] ${functionName}: ${candidatesForReRanking.length} candidatas de alta confiança prontas para re-ranking.`
+              `[LOG] ${functionName}: ${candidatesForReRanking.length} candidatas de alta confian��a prontas para re-ranking.`
             );
           } else {
             console.log(
@@ -329,27 +345,73 @@ export async function onRequestPost(context) {
         }
         break; // Fim do case 'BUSCAR_QUESTAO'
 
-      // ... (outros cases inalterados) ...
       case "CRIAR_QUESTAO":
-        if (generated_question) {
-          const qData = generated_question;
-          qData.id = qData.id || `gen-${Date.now()}`;
-          qData.referencia = qData.referencia || "Texto gerado por IA.";
-          questionsToReturn = [qData];
+        if (
+          Array.isArray(generatedQuestionsFromAI) &&
+          generatedQuestionsFromAI.length > 0
+        ) {
+          questionsToReturn = generatedQuestionsFromAI
+            .map((qData, index) => {
+              // Validação básica do objeto qData
+              if (
+                !qData ||
+                typeof qData !== "object" ||
+                !qData.texto_questao ||
+                !qData.alternativas ||
+                !qData.resposta_letra
+              ) {
+                console.warn(
+                  `[WARN] ${functionName}: Objeto de questão gerado pela IA inválido no índice ${index}:`,
+                  qData
+                );
+                return null; // Marcar para remover
+              }
+              return {
+                ...qData, // Mantém os dados da IA
+                id:
+                  qData.id && qData.id.startsWith("gen-temp-id-")
+                    ? `gen-${Date.now()}-${index}`
+                    : qData.id || `gen-${Date.now()}-${index}`,
+                referencia: qData.referencia || "Texto gerado por IA.",
+                // Garantir que campos essenciais existam
+                materia: qData.materia || "Gerada por IA",
+                topico: qData.topico || "Gerado por IA",
+              };
+            })
+            .filter(Boolean); // Remove quaisquer questões nulas (inválidas)
+
+          if (questionsToReturn.length > 0) {
+            // Usa o responseText da IA se fornecido, senão cria um genérico
+            commentary =
+              responseTextForUser ||
+              (questionsToReturn.length > 1
+                ? "Certo! Elaborei estas questões para você:"
+                : "Certo! Elaborei esta questão para você:");
+          } else {
+            // Caso todos os objetos em generatedQuestionsFromAI fossem inválidos
+            commentary =
+              "Tentei criar as questões, mas os dados recebidos não estavam no formato esperado.";
+          }
         } else if (responseTextForUser) {
+          // Fallback para texto puro se o JSON falhar
           const parsedFallback = parseAiGeneratedQuestion(responseTextForUser);
           if (parsedFallback) {
             commentary = "Criei esta questão (formato alternativo):";
-            questionsToReturn = [parsedFallback];
+            questionsToReturn = [parsedFallback]; // parseAiGeneratedQuestion retorna um objeto, colocamos em array
           } else {
-            commentary = `Tentei criar, mas o formato não veio como esperado: "${responseTextForUser}"`;
+            commentary = `Tentei criar, mas o formato não veio como esperado: "${createTextPreview(
+              responseTextForUser,
+              50
+            )}"`;
           }
         } else {
+          // Se não tem nem JSON nem texto de fallback
           if (!commentary)
             commentary =
-              "Deveria criar uma questão, mas não recebi os dados. 😥";
+              "Deveria criar uma ou mais questões, mas não recebi os dados. 😥";
         }
-        break;
+        break; // Fim do case 'CRIAR_QUESTAO'
+
       case "CONVERSAR":
         commentary = responseTextForUser;
         break;
