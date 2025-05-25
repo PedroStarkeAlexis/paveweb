@@ -6,7 +6,7 @@ import {
 import { createAnalysisPrompt, createQuestionReRankingPrompt } from "./prompt";
 import {
   parseAiGeneratedQuestion,
-  removeAccents,
+  // removeAccents,
   createTextPreview,
 } from "./filter";
 
@@ -19,7 +19,7 @@ async function callGeminiAPI(
   genAIInstance,
   modelName,
   safetySettings,
-  callType = "genérica"
+  callType = "gen��rica"
 ) {
   console.log(
     `[LOG] Enviando prompt ${callType.toUpperCase()} para Gemini (${createTextPreview(
@@ -54,7 +54,7 @@ async function callGeminiAPI(
 }
 
 export async function onRequestPost(context) {
-  const functionName = "/api/ask (v14 - INFO_PAVE Card)"; // Nova versão
+  const functionName = "/api/ask (v16 - Dev Model Selector Update)"; // Nova versão
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
   let allQuestionsR2Data = null;
 
@@ -64,14 +64,6 @@ export async function onRequestPost(context) {
     const r2Bucket = env.QUESTOES_PAVE_BUCKET;
     const vectorIndex = env.QUESTIONS_INDEX;
     const aiBinding = env.AI;
-    const modelName = env.MODEL_NAME || "gemini-1.5-flash-latest";
-
-    if (!r2Bucket || !geminiApiKey || !vectorIndex || !aiBinding) {
-      throw new Error(
-        "Bindings R2, GEMINI_API_KEY, QUESTIONS_INDEX ou AI não configurados."
-      );
-    }
-    console.log(`[LOG] ${functionName}: Configs OK. Modelo: ${modelName}`);
 
     let requestData;
     try {
@@ -82,6 +74,26 @@ export async function onRequestPost(context) {
         { status: 400 }
       );
     }
+
+    // Lógica para determinar o nome do modelo
+    const userPreferredModel = requestData?.modelName;
+    const modelName =
+      userPreferredModel || env.MODEL_NAME || "gemini-2.5-flash-preview-05-20";
+
+    if (
+      !env.QUESTOES_PAVE_BUCKET ||
+      !env.GEMINI_API_KEY ||
+      !env.QUESTIONS_INDEX ||
+      !env.AI
+    ) {
+      // Verificação mais robusta dos bindings
+      throw new Error(
+        "Bindings R2, GEMINI_API_KEY, QUESTIONS_INDEX ou AI não configurados."
+      );
+    }
+    console.log(
+      `[LOG] ${functionName}: Configs OK. Modelo a ser usado: ${modelName}`
+    );
 
     const history = requestData?.history;
     if (!Array.isArray(history) || history.length === 0) {
@@ -142,7 +154,7 @@ export async function onRequestPost(context) {
         `[ERRO] ${functionName}: Falha na ANÁLISE da API Gemini:`,
         error
       );
-      const commentary = `Desculpe, tive um problema ao processar seu pedido inicial: ${error.message}.`;
+      const commentary = `Desculpe, tive um problema ao processar seu pedido inicial: ${error.message}. Usando modelo: ${modelName}.`;
       return new Response(
         JSON.stringify({ commentary: commentary, questions: [] }),
         { status: 503 }
@@ -151,12 +163,11 @@ export async function onRequestPost(context) {
 
     let intent = aiAnalysis?.intent || "DESCONHECIDO";
     let entities = aiAnalysis?.entities || null;
-    // MUDANÇA: Esperar 'generated_questions' (plural) como um array
     let generatedQuestionsFromAI = aiAnalysis?.generated_questions || null;
     let responseTextForUser = aiAnalysis?.responseText || null;
     let commentary = "";
     let questionsToReturn = [];
-    let displayCard = null; // <<< NOVO: Campo para sinalizar o card
+    let displayCard = null;
 
     console.log(
       `[LOG] ${functionName}: IA Parsed (análise) - Intent: ${intent}, Entities: ${JSON.stringify(
@@ -170,19 +181,18 @@ export async function onRequestPost(context) {
     if (
       intent === "CRIAR_QUESTAO" &&
       (!Array.isArray(generatedQuestionsFromAI) ||
-        generatedQuestionsFromAI.length === 0) && // Verifica se é array e não está vazio
+        generatedQuestionsFromAI.length === 0) &&
       !responseTextForUser
     ) {
       intent = "DESCONHECIDO";
       commentary =
         "Pedi para gerar questão(ões), mas não consegui obter o conteúdo.";
     }
-    // Se for INFO_PAVE, responseTextForUser é esperado. Se CONVERSAR, também.
     if (
       (intent === "CONVERSAR" || intent === "INFO_PAVE") &&
       !responseTextForUser
     ) {
-      intent = "DESCONHECIDO"; // Ou trata INFO_PAVE de forma diferente se responseText for obrigatório
+      intent = "DESCONHECIDO";
       commentary = "Não consegui formular uma resposta para isso.";
     }
 
@@ -190,19 +200,15 @@ export async function onRequestPost(context) {
     switch (intent) {
       case "BUSCAR_QUESTAO":
         try {
-          // Verifica query vaga (mantido)
           const isQueryTooVague =
             userQuery.toLowerCase().split(" ").length < 2 &&
             !userQuery.toLowerCase().includes("pave");
-          // const hasUsefulEntities = entities && (entities.materia || entities.topico); // Não precisamos mais checar isso para pedir detalhes
-          if (isQueryTooVague /* && !hasUsefulEntities */) {
-            // Podemos manter a condição ou simplificar
+          if (isQueryTooVague) {
             commentary =
               "Para te ajudar a encontrar questões, poderia me dar mais detalhes? Como a matéria ou o tópico. 😊";
             break;
           }
 
-          // Carrega R2 (mantido)
           const r2Object = await r2Bucket.get("questoes.json");
           if (!r2Object)
             throw new Error("Falha ao acessar R2 (questoes.json).");
@@ -216,7 +222,6 @@ export async function onRequestPost(context) {
             break;
           }
 
-          // Busca Vetorial e Filtro de Score (mantido)
           let highConfidenceMatches = [];
           try {
             console.log(
@@ -248,13 +253,11 @@ export async function onRequestPost(context) {
               `[ERRO] ${functionName}: Falha na busca vetorial:`,
               vectorError
             );
-            // Se a busca vetorial falhar completamente, não há candidatas para a IA
             commentary =
               "Tive um problema com a busca semântica. Não consigo encontrar questões agora.";
-            break; // Sai do switch
+            break;
           }
 
-          // Obter Dados Completos (MODIFICADO: direto dos highConfidenceMatches)
           let candidatesForReRanking = [];
           if (highConfidenceMatches.length > 0) {
             const candidateIds = highConfidenceMatches.map((match) => match.id);
@@ -268,18 +271,14 @@ export async function onRequestPost(context) {
             console.log(
               `[LOG] ${functionName}: Nenhuma candidata de alta confiança encontrada após busca vetorial e filtro de score.`
             );
-            // Não há mais fallback para filtro manual aqui
           }
 
-          // --- FILTRO MANUAL REMOVIDO ---
-
-          // Re-ranking com IA (se houver candidatas)
           if (candidatesForReRanking.length > 0) {
             const reRankingPromptText = createQuestionReRankingPrompt(
               userQuery,
-              candidatesForReRanking,
+              candidatesForReRanking.slice(0, MAX_CANDIDATES_FOR_RERANKING),
               entities
-            ); // Passa as entidades como contexto para a IA
+            );
             if (!reRankingPromptText) {
               commentary = "Não consegui preparar as opções para escolher.";
               break;
@@ -312,7 +311,6 @@ export async function onRequestPost(context) {
                   console.log(
                     `[LOG] ${functionName}: IA selecionou ${questionsToReturn.length} questão(ões).`
                   );
-                  // Nenhum commentary
                 } else {
                   commentary = `Selecionei referências (${questionIdsToFind.join(
                     ", "
@@ -334,10 +332,9 @@ export async function onRequestPost(context) {
                 `[ERRO] ${functionName}: Falha no RE-RANKING:`,
                 selectionError
               );
-              commentary = `Tive um problema ao selecionar a melhor questão.`;
+              commentary = `Tive um problema ao selecionar a melhor questão. (Modelo: ${modelName})`;
             }
           } else {
-            // Nenhuma candidata após Vectorize + Score
             commentary = `Não encontrei questões relevantes para "${createTextPreview(
               userQuery,
               30
@@ -350,7 +347,7 @@ export async function onRequestPost(context) {
           );
           commentary = `Ocorreu um problema ao buscar as questões (${error.message}).`;
         }
-        break; // Fim do case 'BUSCAR_QUESTAO'
+        break;
 
       case "CRIAR_QUESTAO":
         if (
@@ -359,7 +356,6 @@ export async function onRequestPost(context) {
         ) {
           questionsToReturn = generatedQuestionsFromAI
             .map((qData, index) => {
-              // Validação básica do objeto qData
               if (
                 !qData ||
                 typeof qData !== "object" ||
@@ -371,40 +367,36 @@ export async function onRequestPost(context) {
                   `[WARN] ${functionName}: Objeto de questão gerado pela IA inválido no índice ${index}:`,
                   qData
                 );
-                return null; // Marcar para remover
+                return null;
               }
               return {
-                ...qData, // Mantém os dados da IA
+                ...qData,
                 id:
                   qData.id && qData.id.startsWith("gen-temp-id-")
                     ? `gen-${Date.now()}-${index}`
                     : qData.id || `gen-${Date.now()}-${index}`,
                 referencia: qData.referencia || "Texto gerado por IA.",
-                // Garantir que campos essenciais existam
                 materia: qData.materia || "Gerada por IA",
                 topico: qData.topico || "Gerado por IA",
               };
             })
-            .filter(Boolean); // Remove quaisquer questões nulas (inválidas)
+            .filter(Boolean);
 
           if (questionsToReturn.length > 0) {
-            // Usa o responseText da IA se fornecido, senão cria um genérico
             commentary =
               responseTextForUser ||
               (questionsToReturn.length > 1
-                ? "Certo! Elaborei estas questões para você:"
+                ? "Certo! Elaborei estas questões para voc��:"
                 : "Certo! Elaborei esta questão para você:");
           } else {
-            // Caso todos os objetos em generatedQuestionsFromAI fossem inválidos
             commentary =
               "Tentei criar as questões, mas os dados recebidos não estavam no formato esperado.";
           }
         } else if (responseTextForUser) {
-          // Fallback para texto puro se o JSON falhar
           const parsedFallback = parseAiGeneratedQuestion(responseTextForUser);
           if (parsedFallback) {
             commentary = "Criei esta questão (formato alternativo):";
-            questionsToReturn = [parsedFallback]; // parseAiGeneratedQuestion retorna um objeto, colocamos em array
+            questionsToReturn = [parsedFallback];
           } else {
             commentary = `Tentei criar, mas o formato não veio como esperado: "${createTextPreview(
               responseTextForUser,
@@ -412,24 +404,19 @@ export async function onRequestPost(context) {
             )}"`;
           }
         } else {
-          // Se não tem nem JSON nem texto de fallback
           if (!commentary)
             commentary =
               "Deveria criar uma ou mais questões, mas não recebi os dados. 😥";
         }
-        break; // Fim do case 'CRIAR_QUESTAO'
-
-      // <<< NOVO CASE / L��GICA PARA INFO_PAVE >>>
-      case "INFO_PAVE":
-        commentary = responseTextForUser; // A IA deve fornecer o texto para acompanhar o card
-        displayCard = "pave_info_recommendation"; // Sinaliza para o frontend
-        // questionsToReturn permanece []
         break;
 
-      case "CONVERSAR": // Agora CONVERSAR é para outros tipos de conversa que não são INFO_PAVE
+      case "INFO_PAVE":
         commentary = responseTextForUser;
-        // questionsToReturn permanece []
-        // displayCard permanece null
+        displayCard = "pave_info_recommendation";
+        break;
+
+      case "CONVERSAR":
+        commentary = responseTextForUser;
         break;
 
       case "DESCONHECIDO":
@@ -439,9 +426,8 @@ export async function onRequestPost(context) {
             "Não entendi bem seu pedido. Posso buscar ou criar questões do PAVE, ou conversar sobre o processo seletivo.";
         }
         break;
-    } // Fim do switch
+    }
 
-    // --- Retorno Final ---
     console.log(
       `[LOG] ${functionName}: Retornando final. Comentário: "${createTextPreview(
         commentary,
@@ -452,7 +438,7 @@ export async function onRequestPost(context) {
       JSON.stringify({
         commentary: commentary || null,
         questions: questionsToReturn,
-        displayCard: displayCard, // <<< NOVO: Inclui o sinalizador no retorno
+        displayCard: displayCard,
       }),
       {
         headers: { "Content-Type": "application/json" },
@@ -460,13 +446,17 @@ export async function onRequestPost(context) {
       }
     );
   } catch (error) {
-    // Catch Geral Final
     console.error(
       `[ERRO] ${functionName}: Erro GERAL INESPERADO:`,
       error,
       error.stack
     );
-    const commentary = `Ocorreu um erro inesperado aqui do meu lado: ${error.message}.`;
+    // Ensure modelName is available for the general error message
+    const currentModelName =
+      context.requestData?.modelName ||
+      context.env.MODEL_NAME ||
+      "gemini-2.5-flash-preview-05-20";
+    const commentary = `Ocorreu um erro inesperado aqui do meu lado (modelo: ${currentModelName}): ${error.message}.`;
     return new Response(
       JSON.stringify({
         commentary: commentary,

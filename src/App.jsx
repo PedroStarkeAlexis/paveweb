@@ -2,11 +2,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
-// --- Importar p��ginas/features ---
+// --- Importar páginas/features ---
 import HomePage from './pages/HomePage';
 import ChatInterface from './features/chat/components/ChatInterface';
 import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage';
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
+import DevModelSelector from './components/dev/DevModelSelector'; // <<< NOVO IMPORT
 
 // --- Importar componentes comuns e hooks globais ---
 import ThemeToggleButton from './components/common/ThemeToggleButton';
@@ -50,6 +51,10 @@ function NavLink({ to, icon: IconComponent, children }) {
     );
 }
 
+// --- Constante para o Modelo Padrão ---
+const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash-preview-05-20'; // Ou o que estiver em env.MODEL_NAME
+const DEV_MODEL_STORAGE_KEY = 'dev_selected_gemini_model';
+
 // --- Componente Principal App ---
 function App() {
     // --- Estado do Chat ---
@@ -68,6 +73,12 @@ function App() {
         return false;
     };
     const [darkMode, setDarkMode] = useState(getInitialThemePreference);
+
+    // --- NOVO: Estados para o Menu de Desenvolvedor ---
+    const [isDevMenuOpen, setIsDevMenuOpen] = useState(false);
+    const [selectedModelName, setSelectedModelName] = useState(
+        () => localStorage.getItem(DEV_MODEL_STORAGE_KEY) || DEFAULT_GEMINI_MODEL
+    );
 
     // --- Hook e Lógica de Tema ---
     useDarkModeToggle(darkMode, setDarkMode);
@@ -100,6 +111,28 @@ function App() {
         }
     }, [setDarkMode]);
 
+    // --- NOVO: Efeito para o atalho do menu de desenvolvedor ---
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toUpperCase() === 'M') {
+                event.preventDefault();
+                setIsDevMenuOpen(prev => !prev);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+
+    // --- NOVO: Handler para selecionar modelo e persistir ---
+    const handleSelectModel = (modelId) => {
+        setSelectedModelName(modelId);
+        localStorage.setItem(DEV_MODEL_STORAGE_KEY, modelId);
+        // Opcional: Fechar o menu ao selecionar
+        // setIsDevMenuOpen(false);
+    };
+
     // --- Handler para Enviar Mensagem ---
     const handleSendMessage = async (userQuery) => {
         const newUserMessage = { type: 'text', sender: 'user', content: userQuery, id: `user-${Date.now()}` }; // Adiciona ID
@@ -117,10 +150,15 @@ function App() {
         if (historyForAPI.length === 0) { setIsLoading(false); return; }
 
         try {
+            const requestBody = {
+                history: historyForAPI,
+                modelName: selectedModelName, // <<< NOVO: Envia o modelo selecionado
+            };
+
             const response = await fetch('/api/ask', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ history: historyForAPI }),
+                body: JSON.stringify(requestBody), // <<< USA requestBody
             });
             const responseBody = await response.text();
             if (!response.ok) {
@@ -178,7 +216,7 @@ function App() {
             }
 
             // Fallback se nenhuma resposta foi preparada e a API retornou OK
-            // (mas não se j�� tivermos um card de info, pois ele já é uma resposta)
+            // (mas não se já tivermos um card de info, pois ele já é uma resposta)
             if (botResponses.length === 0 && response.ok && data?.displayCard !== "pave_info_recommendation") {
                 botResponses.push({ type: 'text', sender: 'bot', content: 'Não tenho uma resposta específica para isso no momento.', id: `${botMessageIdBase}-fallback` });
             }
@@ -269,6 +307,14 @@ function App() {
 
             <ThemeToggleButton isDarkMode={darkMode} toggleDarkMode={handleThemeToggle} />
             <BottomNavBar items={bottomNavItems} />
+
+            {/* <<< NOVO: Renderiza o Seletor de Modelo >>> */}
+            <DevModelSelector
+                isOpen={isDevMenuOpen}
+                onClose={() => setIsDevMenuOpen(false)}
+                currentModel={selectedModelName}
+                onSelectModel={handleSelectModel}
+            />
         </div>
     );
 }

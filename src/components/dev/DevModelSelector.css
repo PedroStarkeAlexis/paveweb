@@ -1,0 +1,157 @@
+.dev-model-selector-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000; /* Alto z-index */
+}
+
+.dev-model-selector-modal {
+  background-color: var(--bg-primary);
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+.dev-model-selector-modal h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.4em;
+  color: var(--text-primary);
+}
+
+.dev-model-selector-modal p {
+  margin-bottom: 20px;
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.dev-model-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 25px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px; /* Para a barra de rolagem não colar */
+}
+
+.dev-model-option {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.dev-model-option:hover {
+  background-color: var(--bg-tertiary);
+}
+.dev-model-option input[type="radio"] {
+  margin-right: 12px;
+  accent-color: var(--brand-primary); /* Estiliza o radio button */
+  width: 16px;
+  height: 16px;
+}
+
+.dev-model-name {
+  font-size: 0.95em;
+  flex-grow: 1;
+}
+.dev-model-current-tag {
+  font-size: 0.75em;
+  background-color: var(--brand-primary);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+.dev-model-close-btn {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  background-color: var(--brand-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.dev-model-close-btn:hover {
+  background-color: var(--brand-primary-hover);
+}
+
+.dev-model-shortcut-info {
+  font-size: 0.8em;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+.dev-model-shortcut-info strong {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Dark mode */
+[data-theme="dark"] .dev-model-selector-modal {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+[data-theme="dark"] .dev-model-selector-modal h2 {
+  color: var(--text-primary);
+}
+[data-theme="dark"] .dev-model-selector-modal p {
+  color: var(--text-secondary);
+}
+[data-theme="dark"] .dev-model-option {
+  border-color: var(--border-secondary);
+}
+[data-theme="dark"] .dev-model-option:hover {
+  background-color: #3a3a3a; /* Um pouco mais escuro que o modal */
+}
+[data-theme="dark"] .dev-model-current-tag {
+  /* background-color: var(--brand-primary); */ /* Já usa */
+  color: #1a202c; /* Texto escuro no badge */
+}
+[data-theme="dark"] .dev-model-shortcut-info {
+  color: var(--text-muted);
+}
+[data-theme="dark"] .dev-model-shortcut-info strong {
+  color: var(--text-secondary);
+}
+
+/* Scrollbar para a lista de modelos */
+.dev-model-list::-webkit-scrollbar {
+  width: 6px;
+}
+.dev-model-list::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 3px;
+}
+.dev-model-list::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+  border-radius: 3px;
+}
+[data-theme="dark"] .dev-model-list::-webkit-scrollbar-track {
+  background: #444;
+}
+[data-theme="dark"] .dev-model-list::-webkit-scrollbar-thumb {
+  background-color: #666;
+}
