@@ -3,13 +3,14 @@ import './DevModelSelector.css';
 
 // ATUALIZADO: Lista de modelos baseada na imagem
 const AVAILABLE_MODELS = [
-  { id: 'gemini-2.5-flash-preview-05-20', name: 'Gemini 2.5 Flash Preview 05-20 (Padrão)' },
+  { id: 'gemini-2.5-flash-preview-05-20', name: 'Gemini 2.5 Flash Preview 05-20' },
+  { id: 'gemini-2.5-flash-preview-04-17', name: 'gemini 2.5 flash preview 04-17'},
   { id: 'gemini-2.5-pro-preview-05-06', name: 'Gemini 2.5 Pro Preview 05-06' },
   { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash' },
   { id: 'gemini-2.0-flash-lite-latest', name: 'Gemini 2.0 Flash-Lite' },
-  { id: 'gemini-1.5-flash-latest', name: 'Gemini 1.5 Flash' },
+  { id: 'gemini-1.5-flash', name: 'gemini-1.5-flash' },
   { id: 'gemini-1.5-flash-8b', name: 'Gemini 1.5 Flash-8B' },
-  { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro' },
+ 
   // Adicionar aqui modelos legados que estavam antes, se ainda quiser testá-los
   // { id: 'gemini-1.0-pro', name: 'Gemini 1.0 Pro (Legado)' },
 ];
