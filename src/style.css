@@ -1,4 +1,4 @@
-/* // src/style.css */
+
 /* Importar uma fonte moderna (já existente) */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
 
@@ -189,16 +189,25 @@ code {
 .sidebar-footer {
   text-align: center;
   padding: 10px 0;
-  border-top: 1px solid #f3f4f6; /* Linha clara */
+  border-top: 1px solid #f3f4f600; /* Linha clara */
 }
 .sidebar-footer ul {
   padding: 0;
   margin-bottom: 10px;
 }
 .sidebar-footer a {
-  font-weight: 400;
+  display: flex; /* Adicionado */
+  align-items: center; /* Adicionado */
+  padding: 10px 15px; /* Adicionado */
+  color: var(--text-secondary); /* Alterado de var(--text-muted) */
+  font-weight: 500; /* Alterado de 400 */
   font-size: 0.9em;
-  color: var(--text-muted); /* Usa variável */
+  border-radius: 6px; /* Adicionado */
+  margin: 0 10px; /* Adicionado */
+  transition: background-color 0.2s ease, color 0.2s ease; /* Adicionado */
+  white-space: nowrap; /* Adicionado */
+  overflow: hidden; /* Adicionado */
+  text-overflow: ellipsis; /* Adicionado */
 }
 .sidebar-footer a:hover {
   background-color: #f3f4f6;
@@ -212,7 +221,7 @@ code {
   margin-top: 10px;
 }
 
-/* --- Estilos da ��rea Principal (do Projeto 2) --- */
+/* --- Estilos da Área Principal (do Projeto 2) --- */
 .main-content {
   flex-grow: 1;
   height: 100%;
@@ -760,9 +769,7 @@ code {
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
-[data-theme="dark"] #root {
-  /* Nenhum estilo específico necessário aqui geralmente */
-}
+/* [data-theme="dark"] #root { Nenhum estilo específico necessário aqui geralmente } */
 
 /* Sidebar */
 [data-theme="dark"] .sidebar {
@@ -805,14 +812,18 @@ code {
   border-top-color: #3a3a3a00;
 }
 [data-theme="dark"] .sidebar-footer a {
-  color: var(--text-muted);
+  color: var(--text-secondary); /* Aplicando consistência com os links do nav */
 }
 [data-theme="dark"] .sidebar-footer a:hover {
   background-color: #3a3a3a;
   color: var(--text-primary);
 }
-[data-theme="dark"] .copyright {
-  color: #666666;
+.copyright {
+  font-size: 0.75em;
+  color: #9ca3af; /* Cinza claro */
+  text-align: center;
+  padding: 0 15px;
+  margin-top: 10px;
 }
 
 /* Main Content e Containers */
@@ -1039,9 +1050,7 @@ code {
   animation-delay: -0.16s; /* Começa no meio do ciclo da primeira */
 }
 
-.typing-dot:nth-of-type(3) {
-  /* animation-delay: 0s; // Já �� o padrão, não precisa definir */
-}
+/* .typing-dot:nth-of-type(3) { animation-delay: 0s; } // Já é o padrão, não precisa definir */
 
 /* Keyframes da animação para uma bolinha */
 @keyframes typing-dot-animation {
@@ -1177,6 +1186,7 @@ code {
   height: 16px;
   color: var(--text-muted);
   vertical-align: middle;
+  flex-shrink: 0; /* Adicionado para consistência */
 }
 .sidebar-footer a:hover .sidebar-icon-footer {
   color: var(--text-primary);
