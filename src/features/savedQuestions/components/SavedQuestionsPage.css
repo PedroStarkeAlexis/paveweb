@@ -1,0 +1,120 @@
+.saved-questions-page-container {
+  width: 100%;
+  max-width: 850px; /* Consistente com outros containers de página */
+  margin: 0 auto;
+  padding: 30px 20px; /* Padding um pouco maior */
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.saved-questions-title {
+  font-size: 1.8em;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-primary);
+  margin-bottom: 10px; /* Reduzido, o gap do container já espaça */
+}
+
+.saved-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaço entre os cards de questão */
+}
+
+/* Mensagens de estado (loading, error, no results) */
+.saved-questions-message {
+  text-align: center;
+  padding: 30px 15px;
+  font-size: 1.1em;
+  color: var(--text-muted);
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px dashed var(--border-secondary);
+}
+.saved-questions-message.error {
+  color: var(--error-primary);
+  background-color: var(--error-secondary);
+  border-color: var(--error-primary);
+  font-weight: 500;
+}
+
+/* Estilo para o estado vazio */
+.saved-questions-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+.saved-questions-empty-state h2 {
+  font-size: 1.5em;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.saved-questions-empty-state p {
+  font-size: 1em;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 500px;
+}
+/*
+.empty-state-cta {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: var(--brand-primary);
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+.empty-state-cta:hover {
+  background-color: var(--brand-primary-hover);
+}
+*/
+
+/* Dark Mode */
+[data-theme="dark"] .saved-questions-title {
+  color: var(--text-primary);
+  border-bottom-color: var(--border-primary);
+}
+[data-theme="dark"] .saved-questions-message {
+  color: var(--text-muted);
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+}
+[data-theme="dark"] .saved-questions-message.error {
+  color: var(--error-primary);
+  background-color: var(--error-secondary);
+  border-color: var(--error-primary);
+}
+[data-theme="dark"] .saved-questions-empty-state {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-primary);
+}
+[data-theme="dark"] .saved-questions-empty-state h2 {
+  color: var(--text-primary);
+}
+[data-theme="dark"] .saved-questions-empty-state p {
+  color: var(--text-secondary);
+}
+/*
+[data-theme="dark"] .empty-state-cta {
+  // Estilos já usam vars
+}
+*/
+
+@media (max-width: 768px) {
+  .saved-questions-page-container {
+    padding: 25px 15px;
+  }
+  .saved-questions-title {
+    font-size: 1.6em;
+  }
+}

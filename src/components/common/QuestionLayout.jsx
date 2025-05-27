@@ -102,7 +102,7 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
                 itemClass += ' correct-choice';
               }
             } else if (choiceStatus === 'incorrect-choice') {
-              icon = '✖';
+              icon = '��';
               letterBoxClass += ' feedback-incorrect';
               itemClass += ' incorrect-choice';
             }
