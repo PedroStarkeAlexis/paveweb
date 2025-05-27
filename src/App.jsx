@@ -6,6 +6,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ChatInterface from './features/chat/components/ChatInterface';
 import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage';
+import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage'; // Nova página
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
 import DevModelSelector from './components/dev/DevModelSelector'; // <<< NOVO IMPORT
 
@@ -20,9 +21,12 @@ import IconCalculator from './components/icons/IconCalculator';
 import IconChat from './components/icons/IconChat';
 import IconBook from './components/icons/IconBook';
 import IconHelp from './components/icons/IconHelp';
+import IconBookmark from './components/icons/IconBookmark'; // Novo ícone para Salvos
 
 // Importar CSS global principal
 import './style.css';
+// Importar o SavedQuestionsProvider
+import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext';
 
 // --- Componente NavLink (para Sidebar) ---
 function NavLink({ to, icon: IconComponent, children }) {
@@ -247,6 +251,7 @@ function App() {
         { to: "/calculadora", icon: IconCalculator, label: "Calculadora" },
         { to: "/chat", icon: IconChat, label: "Chat IA" },
         { to: "/banco-questoes", icon: IconBook, label: "Questões" },
+        { to: "/questoes-salvas", icon: IconBookmark, label: "Salvas" }, // Novo item na BottomNav
     ];
 
     return (
@@ -261,6 +266,7 @@ function App() {
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
+                        <NavLink to="/questoes-salvas" icon={IconBookmark}>Salvas</NavLink> {/* Novo item na Sidebar */}
                     </ul>
                 </nav>
                 <div className="sidebar-footer">
@@ -301,6 +307,7 @@ function App() {
                     />
                     <Route path="/banco-questoes" element={<QuestionBankPage />} />
                     <Route path="/calculadora" element={<CalculadoraPage />} />
+                    <Route path="/questoes-salvas" element={<SavedQuestionsPage />} /> {/* Rota para a nova página */}
                     <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>Página não encontrada (404)</h2></div>} />
                 </Routes>
             </main>
@@ -319,4 +326,12 @@ function App() {
     );
 }
 
-export default App;
+// Envolver App com SavedQuestionsProvider
+function AppWrapper() {
+    return (
+        <SavedQuestionsProvider>
+            <App />
+        </SavedQuestionsProvider>
+    );
+}
+export default AppWrapper;

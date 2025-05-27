@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useSavedQuestions } from '../../hooks/useSavedQuestions'; // Importar o hook
+import IconBookmark from '../icons/IconBookmark'; // Ícone para salvar
+import IconBookmarkFilled from '../icons/IconBookmarkFilled'; // Ícone para salvo
 
 function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
+  const { savedQuestionIds, addSavedQuestion, removeSavedQuestion, isQuestionSaved } = useSavedQuestions();
 
   const safeQuestionData = questionData || {};
 
@@ -16,6 +20,8 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
     resposta_letra = null,
     id = safeQuestionData.id || `question-fallback-${Math.random().toString(36).substring(2, 9)}`
   } = safeQuestionData;
+
+  const isCurrentlySaved = isQuestionSaved(id.toString());
 
   useEffect(() => {
     setAnswered(false);
@@ -35,6 +41,15 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
     if (answered) return;
     setAnswered(true);
     setFeedback({});
+  };
+
+  const handleSaveToggle = (e) => {
+    e.stopPropagation(); // Evitar que o clique se propague para outros elementos
+    if (isCurrentlySaved) {
+      removeSavedQuestion(id.toString());
+    } else {
+      addSavedQuestion(id.toString());
+    }
   };
 
   const sourceTag = ano
@@ -112,13 +127,25 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
         })}
       </div>
 
-      <div className="question-footer">
-        {!answered && <button className="show-answer-btn" onClick={handleShowAnswerClick}>Mostrar Resposta</button>}
-        {answered && (
-          <span className="correct-answer-text">
-            Correta: {resposta_letra || 'N/D'}) {(alternativas || []).find(a => a.letra === resposta_letra)?.texto || ''}
-          </span>
+      <div className={`question-footer ${!isInsideCarousel ? 'with-save-btn' : ''}`}>
+        {!isInsideCarousel && ( // Não mostrar botão de salvar dentro do carrossel do chat por enquanto
+          <button
+            className={`save-question-btn ${isCurrentlySaved ? 'saved' : ''}`}
+            onClick={handleSaveToggle}
+            aria-label={isCurrentlySaved ? 'Remover questão dos salvos' : 'Salvar questão'}
+            title={isCurrentlySaved ? 'Remover dos Salvos' : 'Salvar Questão'}
+          >
+            {isCurrentlySaved ? <IconBookmarkFilled /> : <IconBookmark />}
+          </button>
         )}
+        <div style={{ marginLeft: isInsideCarousel ? 'auto' : '0' }}> {/* Empurra para a direita se só tiver o botão de resposta */}
+          {!answered && <button className="show-answer-btn" onClick={handleShowAnswerClick}>Mostrar Resposta</button>}
+          {answered && (
+            <span className="correct-answer-text">
+              Correta: {resposta_letra || 'N/D'}) {(alternativas || []).find(a => a.letra === resposta_letra)?.texto || ''}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
