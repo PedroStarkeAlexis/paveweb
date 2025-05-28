@@ -21,10 +21,14 @@ import IconCalculator from './components/icons/IconCalculator';
 import IconChat from './components/icons/IconChat';
 import IconBook from './components/icons/IconBook';
 import IconHelp from './components/icons/IconHelp';
-import IconBookmark from './components/icons/IconBookmark'; // Novo ícone para Salvos
-
+import IconBookmark from './components/icons/IconBookmark'; // Ícone para Salvos
+import IconEllipsisHorizontal from './components/icons/IconEllipsisHorizontal'; // Ícone para o "Mais"
+import IconSun from './components/icons/IconSun'; // Ícone Sol para menu
+import IconMoon from './components/icons/IconMoon'; // Ícone Lua para menu
+import IconDocumentText from './components/icons/IconDocumentText'; // Ícone para Info PAVE
 // Importar CSS global principal
 import './style.css';
+import MoreMenu from './components/common/MoreMenu'; // Componente para o menu "Mais"
 // Importar o SavedQuestionsProvider
 import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext';
 
@@ -55,7 +59,7 @@ function NavLink({ to, icon: IconComponent, children }) {
     );
 }
 
-// --- Constante para o Modelo Padrão ---
+// --- Constante para o Modelo Padr��o ---
 const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash-preview-05-20'; // Ou o que estiver em env.MODEL_NAME
 const DEV_MODEL_STORAGE_KEY = 'dev_selected_gemini_model';
 
@@ -66,15 +70,18 @@ function App() {
     const [isLoading, setIsLoading] = useState(false);
 
     // --- Estado do Tema ---
+    // Modificada para priorizar localStorage, depois o sistema
     const getInitialThemePreference = () => {
         if (typeof window !== 'undefined') {
             const storedPreference = localStorage.getItem('theme-preference');
             if (storedPreference) {
+                // Se existe preferência salva, usa ela
                 return storedPreference === 'dark';
             }
+            // Se não há preferência salva, usa o tema do sistema
             return window.matchMedia('(prefers-color-scheme: dark)').matches;
         }
-        return false;
+        return false; // Fallback para SSR ou ambientes sem window
     };
     const [darkMode, setDarkMode] = useState(getInitialThemePreference);
 
@@ -83,10 +90,13 @@ function App() {
     const [selectedModelName, setSelectedModelName] = useState(
         () => localStorage.getItem(DEV_MODEL_STORAGE_KEY) || DEFAULT_GEMINI_MODEL
     );
+    const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false); // Reativado para o menu "Mais"
 
     // --- Hook e Lógica de Tema ---
-    useDarkModeToggle(darkMode, setDarkMode);
+    useDarkModeToggle(darkMode, setDarkMode); // Este hook aplica a classe e o data-attribute
 
+    // handleThemeToggle agora explicitamente salva a preferência do usuário
+    // no localStorage, indicando uma escolha manual.
     const handleThemeToggle = useCallback(() => {
         setDarkMode(prevMode => {
             const newMode = !prevMode;
@@ -97,10 +107,13 @@ function App() {
         });
     }, [setDarkMode]);
 
+    // useEffect para escutar mudanças no tema do sistema
+    // S�� atualiza o tema do app se NENHUMA preferência manual foi salva.
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const matcher = window.matchMedia('(prefers-color-scheme: dark)');
             const listener = ({ matches: isDark }) => {
+                // Só muda o tema do app se o usuário NÃO tiver feito uma escolha manual antes
                 if (!localStorage.getItem('theme-preference')) {
                     setDarkMode(isDark);
                 }
@@ -240,25 +253,32 @@ function App() {
     useEffect(() => {
         if (messages.length === 0) {
             setMessages([
-                { type: 'text', sender: 'bot', content: 'Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir! 😊', id: `bot-initial-${Date.now()}` }
+                { type: 'text', sender: 'bot', content: 'Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir! ����', id: `bot-initial-${Date.now()}` }
             ]);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Executa apenas na montagem inicial
 
+    // Itens para a BottomNavBar (Mobile)
     const bottomNavItems = [
         { to: "/", icon: IconHome, label: "Início" },
-        { to: "/calculadora", icon: IconCalculator, label: "Calculadora" },
+        { to: "/calculadora", icon: IconCalculator, label: "Calculadora" }, // Calculadora de volta
         { to: "/chat", icon: IconChat, label: "Chat IA" },
         { to: "/banco-questoes", icon: IconBook, label: "Questões" },
-        { to: "/questoes-salvas", icon: IconBookmark, label: "Salvas" }, // Novo item na BottomNav
+        { type: 'button', onClick: () => setIsMoreMenuOpen(true), icon: IconEllipsisHorizontal, label: "Mais" },
+    ];
+
+    // Itens passados por prop para o menu "Mais"
+    const moreMenuItems = [
+        { to: "/informacoes-pave", icon: IconDocumentText, label: "Info PAVE" },
+        // "Calculadora" e "Salvas" foram removidas daqui
     ];
 
     return (
-        <div className="app-container">
+        <div className="app-container" data-theme={darkMode ? 'dark' : 'light'}> {/* Garante que data-theme esteja no container principal */}
             <aside className="sidebar">
                 <div className="sidebar-header">
-                    <span className="logo-placeholder">LOGO AQUI</span>
+                    <span className="logo-placeholder">Central PAVE</span> {/* Alterado para nome do app */}
                 </div>
                 <nav className="sidebar-nav">
                     <ul>
@@ -266,21 +286,28 @@ function App() {
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
-                        <NavLink to="/questoes-salvas" icon={IconBookmark}>Salvas</NavLink> {/* Novo item na Sidebar */}
+                        {/* "Info PAVE" foi removido da Sidebar */}
                     </ul>
                 </nav>
                 <div className="sidebar-footer">
                     <ul>
+                        {/* BOTÃO DE TEMA REDONDO E ANIMADO NA SIDEBAR */}
+                        <li className="theme-toggle-sidebar-container"> {/* Classe para controlar o container do botão */}
+                            <ThemeToggleButton
+                                isDarkMode={darkMode}
+                                toggleDarkMode={handleThemeToggle}
+                            />
+                        </li>
                         <li>
                             {/*
                           O atributo data-az-l precisa do ID do SURVEY ou WIDGET específico do Appzi.
                           A 'token' (rcbhq) é para o script principal, NÃO para data-az-l.
-                          Vá ao seu painel Appzi, encontre o ID do survey/widget que quer abrir
+                          V�� ao seu painel Appzi, encontre o ID do survey/widget que quer abrir
                           e substitua o placeholder abaixo.
                         */}
                             <a
                                 href="#" // Appzi deve lidar com o clique.
-                                data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc158" // <<< SUBSTITUA ESTE VALOR
+                                data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc1dbc158" // <<< SUBSTITUA ESTE VALOR
                                 onClick={(e) => e.preventDefault()} // Opcional: Garante que o link não navegue
                             >
                                 <IconHelp className="sidebar-icon-footer" />
@@ -307,12 +334,13 @@ function App() {
                     />
                     <Route path="/banco-questoes" element={<QuestionBankPage />} />
                     <Route path="/calculadora" element={<CalculadoraPage />} />
-                    <Route path="/questoes-salvas" element={<SavedQuestionsPage />} /> {/* Rota para a nova página */}
+                    <Route path="/questoes-salvas" element={<SavedQuestionsPage />} />
+                    {/* <Route path="/informacoes-pave" element={<InformacoesPavePage />} />  Adicionar a rota quando o componente da página existir */}
                     <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>Página não encontrada (404)</h2></div>} />
                 </Routes>
             </main>
 
-            <ThemeToggleButton isDarkMode={darkMode} toggleDarkMode={handleThemeToggle} />
+            {/* O ThemeToggleButton fixo foi removido, pois o toggle agora está na sidebar (desktop) e MoreMenu (mobile) */}
             <BottomNavBar items={bottomNavItems} />
 
             {/* <<< NOVO: Renderiza o Seletor de Modelo >>> */}
@@ -321,6 +349,15 @@ function App() {
                 onClose={() => setIsDevMenuOpen(false)}
                 currentModel={selectedModelName}
                 onSelectModel={handleSelectModel}
+            />
+            {/* Renderiza o Menu "Mais" - Este menu não será aberto pela BottomNavBar agora,
+                 mas sim pelo botão "Mais" na BottomNavBar */}
+            <MoreMenu
+                isOpen={isMoreMenuOpen}
+                onClose={() => setIsMoreMenuOpen(false)}
+                items={moreMenuItems}
+                isDarkMode={darkMode}
+                onToggleTheme={handleThemeToggle}
             />
         </div>
     );

@@ -3,15 +3,30 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './BottomNavBar.css';
 
-const NavItem = ({ to, icon: IconComponent, label }) => {
+const NavItem = ({ item }) => {
   const location = useLocation();
-  const isActive = location.pathname === to;
+
+  // Se for um botão (como o "Mais")
+  if (item.type === 'button') {
+    return (
+      <button
+        className="bottom-nav-item bottom-nav-button" // Adiciona classe específica para estilização se necessário
+        onClick={item.onClick}
+        aria-label={item.label}
+      >
+        {item.icon && <item.icon className="bottom-nav-icon" />}
+        <span className="bottom-nav-label">{item.label}</span>
+      </button>
+    );
+  }
+
+  // Se for um link normal
+  const isActive = location.pathname === item.to;
 
   return (
-    <Link to={to} className={`bottom-nav-item ${isActive ? 'active' : ''}`}>
-      {/* CORREÇÃO: Renderiza o IconComponent diretamente se ele existir */}
-      {IconComponent && <IconComponent className="bottom-nav-icon" />}
-      <span className="bottom-nav-label">{label}</span>
+    <Link to={item.to} className={`bottom-nav-item ${isActive ? 'active' : ''}`}>
+      {item.icon && <item.icon className="bottom-nav-icon" />}
+      <span className="bottom-nav-label">{item.label}</span>
     </Link>
   );
 };
@@ -24,12 +39,7 @@ function BottomNavBar({ items }) {
   return (
     <nav className="bottom-nav-bar">
       {items.map((item) => (
-        <NavItem
-          key={item.to}
-          to={item.to}
-          icon={item.icon} // Passa o componente SVG (referência da função/classe)
-          label={item.label}
-        />
+        <NavItem key={item.label || item.to} item={item} />
       ))}
     </nav>
   );

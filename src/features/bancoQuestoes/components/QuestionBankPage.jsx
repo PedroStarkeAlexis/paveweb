@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-
+import { Link } from 'react-router-dom';
 import Filters from './Filters.jsx'; // Certifique-se que o caminho e extensão estão corretos
 import QuestionLayout from '../../../components/common/QuestionLayout'; // Caminho correto
 
@@ -173,6 +173,13 @@ function QuestionBankPage() {
                     onFilterChange={handleFilterChange}
                 />
             )}
+
+            {/* Link para Questões Salvas */}
+            <div className="saved-questions-link-container">
+                <Link to="/questoes-salvas" className="saved-questions-page-link">
+                    Ver Questões Salvas
+                </Link>
+            </div>
 
             <div className="results-summary">
                 {!isLoading && ( // Mostra mesmo se houver erro, para o erro ser visível

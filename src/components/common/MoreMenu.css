@@ -1,0 +1,164 @@
+.more-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* Fundo escurecido */
+  display: flex;
+  align-items: flex-end; /* Alinha o painel na parte inferior */
+  justify-content: center;
+  z-index: 1010; /* Acima do ThemeToggleButton, mas abaixo de modais de sistema se houver */
+}
+
+.more-menu-panel {
+  background-color: var(--bg-primary);
+  width: 100%;
+  max-width: 500px; /* Limita a largura em telas maiores */
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+  padding: 15px 0 20px 0; /* Padding vertical, horizontal será nos itens */
+  max-height: 70vh; /* Altura máxima, permite scroll interno se muitos itens */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.more-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px 15px 20px;
+  border-bottom: 1px solid var(--border-primary);
+  flex-shrink: 0;
+}
+
+.more-menu-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.more-menu-close-btn {
+  background: none;
+  border: none;
+  padding: 5px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.more-menu-close-btn:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.more-menu-close-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.more-menu-nav {
+  padding: 10px 0 0 0; /* Espaço acima dos itens */
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.more-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 25px; /* Padding horizontal maior */
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 1em;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-radius: 0;
+  /* Adicionado para botões dentro do menu */
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.more-menu-item:hover,
+.more-menu-item.active {
+  background-color: var(--bg-tertiary);
+  color: var(--brand-primary);
+}
+
+.more-menu-item-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--text-muted); /* Cor do ícone mais suave */
+  flex-shrink: 0;
+}
+.more-menu-item:hover .more-menu-item-icon,
+.more-menu-item.active .more-menu-item-icon {
+  color: var(
+    --brand-primary
+  ); /* Ícone acompanha cor do texto no hover/active */
+}
+
+.more-menu-item-label {
+  flex-grow: 1;
+}
+
+/* Estilo específico para o botão de toggle de tema se precisar diferenciar */
+.more-menu-theme-toggle {
+  /* Pode não precisar de estilos adicionais se .more-menu-item for suficiente */
+}
+
+/* Dark Mode */
+[data-theme="dark"] .more-menu-panel {
+  background-color: var(--bg-tertiary); /* Painel um pouco mais escuro */
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+}
+[data-theme="dark"] .more-menu-header {
+  border-bottom-color: var(--border-primary);
+}
+[data-theme="dark"] .more-menu-title {
+  color: var(--text-primary);
+}
+[data-theme="dark"] .more-menu-close-btn {
+  color: var(--text-muted);
+}
+[data-theme="dark"] .more-menu-close-btn:hover {
+  background-color: #4a4a4a;
+  color: var(--text-primary);
+}
+[data-theme="dark"] .more-menu-item {
+  color: var(--text-secondary);
+}
+[data-theme="dark"] .more-menu-item:hover,
+[data-theme="dark"] .more-menu-item.active {
+  background-color: #3a3a3a; /* Fundo do item no hover/active */
+  color: var(--brand-primary);
+}
+[data-theme="dark"] .more-menu-item-icon {
+  color: var(--text-muted);
+}
+[data-theme="dark"] .more-menu-item:hover .more-menu-item-icon,
+[data-theme="dark"] .more-menu-item.active .more-menu-item-icon {
+  color: var(--brand-primary);
+}
+
+/* Adiciona um "handle" visual no topo do painel (opcional) */
+.more-menu-panel::before {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 4px;
+  background-color: var(--border-secondary);
+  border-radius: 2px;
+  margin: -5px auto 10px auto; /* Acima do padding, centralizado */
+  flex-shrink: 0;
+}
+[data-theme="dark"] .more-menu-panel::before {
+  background-color: var(--border-secondary);
+}

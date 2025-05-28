@@ -33,6 +33,22 @@
   border-radius: 6px;
   position: relative; /* Para posicionar elementos filhos se necessário */
   overflow: hidden; /* Para text-overflow funcionar */
+  /* Adicionado para botões */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Estilo específico para botões na BottomNavBar, se necessário */
+.bottom-nav-button {
+  /*  Pode adicionar estilos específicos se um botão precisar ser diferente de um Link */
+  /*  Por exemplo, se o estado "active" não se aplicar a botões. */
+}
+.bottom-nav-button:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: -2px; /* Outline interno para não aumentar tamanho */
 }
 
 .bottom-nav-item:hover,
@@ -42,7 +58,7 @@
 
 .bottom-nav-icon {
   width: 22px; /* Tamanho expl��cito para o SVG */
-  height: 22px; /* Tamanho explícito para o SVG */
+  height: 22px; /* Tamanho expl��cito para o SVG */
   margin-bottom: 4px; /* Aumentar espaço entre ícone e label */
   color: inherit;
   flex-shrink: 0; /* Evita que o ícone encolha */

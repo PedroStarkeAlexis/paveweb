@@ -1,133 +1,127 @@
 /* src/components/common/ThemeToggleButton.css */
-/* Estilos Base e Posicionamento Fixo */
+/* Estilos Base */
 .theme-toggle {
-    position: fixed;
-    bottom: 25px; /* Distância ajustada */
-    right: 25px;
-    z-index: 1000;
-    background-color: var(--bg-tertiary); /* Usa variável */
-    border: 1px solid var(--border-secondary); /* Usa variável */
-    border-radius: 50%;
-    padding: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    overflow: hidden;
-    width: 44px;
-    height: 44px;
-    margin: 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  /* Removido position: fixed e bottom/right/z-index */
+  background-color: transparent;
+  border: 1px solid var(--border-secondary);
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  width: 44px;
+  height: 44px;
+  margin: 0; /* Reset de margem para o botão em si */
+}
+
+/* Estilo específico para o botão dentro da sidebar-footer */
+.sidebar-footer .theme-toggle {
+  /* A margem será controlada pelo li.theme-toggle-sidebar-container */
+}
+
+/* Ajuste específico para quando o botão está na sidebar */
+.sidebar-footer .theme-toggle {
+  /*  Garante que a borda seja sutil ou combine com o fundo da sidebar no modo claro */
+  /* border-color: transparent; */ /* Ou var(--border-primary) para uma borda leve */
+  /* background-color: transparent;  */ /* Para se misturar com o fundo da sidebar */
 }
 
 .theme-toggle:hover,
 .theme-toggle:focus-visible {
-    background-color: #e5e7eb; /* Cor específica hover light */
-    border-color: #9ca3af;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  background-color: #e5e7eb; /* Cor específica hover light */
+  border-color: #9ca3af;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Estilos SVG (Ícone Sol/Lua) */
 .sun-and-moon {
-    width: 100%;
-    height: 100%;
-    stroke-linecap: round;
+  width: 100%;
+  height: 100%;
+  stroke-linecap: round;
 }
 
 .sun-and-moon > :is(.moon, .sun, .sun-beams) {
-    transform-origin: center center;
+  transform-origin: center center;
 }
 .sun-and-moon > :is(.moon, .sun) {
-    fill: var(--text-secondary); /* Usa variável */
+  fill: var(--text-secondary); /* Usa variável */
 }
 .theme-toggle:is(:hover, :focus-visible) > .sun-and-moon > :is(.moon, .sun) {
-    fill: var(--text-primary); /* Usa variável */
+  fill: var(--text-primary); /* Usa variável */
 }
 .sun-and-moon > .sun-beams {
-    stroke: var(--text-secondary); /* Usa variável */
-    stroke-width: 2px;
+  stroke: var(--text-secondary); /* Usa variável */
+  stroke-width: 2px;
 }
 .theme-toggle:is(:hover, :focus-visible) .sun-and-moon > .sun-beams {
-    stroke: var(--text-primary); /* Usa variável */
+  stroke: var(--text-primary); /* Usa variável */
 }
 
 /* Lógica de animação/transformação do SVG para Dark Mode */
 [data-theme="dark"] .sun-and-moon > .sun {
-    transform: scale(1.75);
+  transform: scale(1.75);
 }
 [data-theme="dark"] .sun-and-moon > .sun-beams {
-    opacity: 0;
+  opacity: 0;
 }
 [data-theme="dark"] .sun-and-moon > .moon > circle {
-    transform: translateX(-7px);
+  transform: translateX(-7px);
 }
 
 /* Suporte a CX para navegadores modernos */
 @supports (cx: 1) {
-    [data-theme="dark"] .sun-and-moon > .moon > circle {
-        transform: translateX(0);
-        /* Ajuste fino se o centro do SVG não for 12,12 */
-        /* Se viewBox é 0 0 24 24, cx=17 pode ser o correto para o círculo da máscara */
-         cx: 17;
-    }
+  [data-theme="dark"] .sun-and-moon > .moon > circle {
+    transform: translateX(0);
+    /* Ajuste fino se o centro do SVG não for 12,12 */
+    /* Se viewBox é 0 0 24 24, cx=17 pode ser o correto para o círculo da máscara */
+    cx: 17;
+  }
 }
 
 /* Animações (com prefers-reduced-motion) */
 @media (prefers-reduced-motion: no-preference) {
-    .sun-and-moon > .sun {
-        transition: transform .5s cubic-bezier(.5,1.25,.75,1.25); /* Ease Elastic 3 */
-    }
-    .sun-and-moon > .sun-beams {
-        transition: transform .5s cubic-bezier(.5,1.5,.75,1.25), /* Ease Elastic 4 */
-                    opacity .5s cubic-bezier(.25,0,.3,1); /* Ease 3 */
-    }
+  .sun-and-moon > .sun {
+    transition: transform 0.5s cubic-bezier(0.5, 1.25, 0.75, 1.25); /* Ease Elastic 3 */
+  }
+  .sun-and-moon > .sun-beams {
+    transition: transform 0.5s cubic-bezier(0.5, 1.5, 0.75, 1.25),
+      /* Ease Elastic 4 */ opacity 0.5s cubic-bezier(0.25, 0, 0.3, 1); /* Ease 3 */
+  }
+  .sun-and-moon .moon > circle {
+    transition: transform 0.25s cubic-bezier(0, 0, 0, 1); /* Ease Out 5 */
+  }
+  @supports (cx: 1) {
     .sun-and-moon .moon > circle {
-        transition: transform .25s cubic-bezier(0,0,0,1); /* Ease Out 5 */
+      transition: cx 0.25s cubic-bezier(0, 0, 0, 1); /* Ease Out 5 */
     }
-    @supports (cx: 1) {
-        .sun-and-moon .moon > circle {
-            transition: cx .25s cubic-bezier(0,0,0,1); /* Ease Out 5 */
-        }
-    }
+  }
 
-    [data-theme="dark"] .sun-and-moon > .sun {
-        transition-timing-function: cubic-bezier(.25,0,.3,1); /* Ease 3 */
-        transition-duration: .25s;
-        transform: scale(1.75);
-    }
-    [data-theme="dark"] .sun-and-moon > .sun-beams {
-        transition-duration: .15s;
-        transform: rotateZ(-25deg);
-        opacity: 0;
-    }
-    [data-theme="dark"] .sun-and-moon > .moon > circle {
-        transition-duration: .5s;
-        transition-delay: .25s;
-    }
+  [data-theme="dark"] .sun-and-moon > .sun {
+    transition-timing-function: cubic-bezier(0.25, 0, 0.3, 1); /* Ease 3 */
+    transition-duration: 0.25s;
+    transform: scale(1.75);
+  }
+  [data-theme="dark"] .sun-and-moon > .sun-beams {
+    transition-duration: 0.15s;
+    transform: rotateZ(-25deg);
+    opacity: 0;
+  }
+  [data-theme="dark"] .sun-and-moon > .moon > circle {
+    transition-duration: 0.5s;
+    transition-delay: 0.25s;
+  }
 }
-
 
 /* --- DARK MODE para ThemeToggleButton --- */
 [data-theme="dark"] .theme-toggle {
-    background-color: #3a3a3a; /* Fundo escuro */
-    border-color: var(--border-secondary);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  /* background-color: #3a3a3a; Será transparente */
+  border-color: var(--border-secondary);
 }
 [data-theme="dark"] .theme-toggle:is(:hover, :focus-visible) {
-    background-color: #444;
-    border-color: #777;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  background-color: #444;
+  border-color: #777;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 /* Cores do ícone já usam variáveis --text-secondary/--text-primary */
-
-/* --- Responsividade ThemeToggleButton --- */
- @media (max-width: 600px) {
-     .theme-toggle {
-         bottom: 15px;
-         right: 15px;
-         width: 40px;
-         height: 40px;
-         padding: 6px;
-     }
- }

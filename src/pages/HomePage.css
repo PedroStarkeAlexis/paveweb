@@ -19,7 +19,7 @@
 
 .home-header-revised h1 {
   font-size: 2.4em; /* Um pouco menor */
-  font-weight: 700;
+  font-weight: 700; /* Revertido */
   color: var(--text-primary);
   margin-bottom: 12px;
   line-height: 1.25;
@@ -27,7 +27,7 @@
 
 .home-subtitle-revised {
   font-size: 1.1em; /* Um pouco menor */
-  color: var(--text-secondary);
+  color: var(--text-secondary); /* Revertido */
   max-width: 700px;
   margin: 0 auto;
   line-height: 1.65;
@@ -38,17 +38,17 @@
   /* Permitir que os cards fiquem um pouco menores antes de quebrar */
   grid-template-columns: repeat(
     auto-fit,
-    minmax(260px, 1fr)
-  ); /* Min de 260px */
+    minmax(260px, 1fr) /* Revertido para 260px */
+  );
   gap: 25px; /* Gap entre cards um pouco menor */
   width: 100%;
 }
 
 .home-feature-card {
   background-color: var(--bg-primary);
-  border-radius: 18px; /* Levemente menos arredondado */
+  border-radius: 18px; /* Revertido */
   border: 1px solid var(--border-primary);
-  padding: 25px; /* Padding interno reduzido */
+  padding: 25px; /* Revertido */
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -71,7 +71,7 @@
   border-color: var(--brand-primary); // Pode manter ou controlar via motion
 } */
 
-/* Link invisível que cobre o card */
+/* Link invis��vel que cobre o card */
 .home-feature-card-link-overlay {
   position: absolute;
   top: 0;
@@ -82,36 +82,37 @@
   border-radius: inherit; /* Herda o border-radius do card */
 }
 .home-feature-card-link-overlay:focus-visible {
-  /* Estilo de foco para o card todo */
   outline: 3px solid var(--brand-primary);
   outline-offset: 2px;
-  box-shadow: 0 0 0 3px var(--brand-primary); /* Adiciona um brilho sutil */
+  box-shadow: 0 0 0 3px var(--brand-primary);
 }
 
 .home-feature-card-content {
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Gap interno reduzido */
+  gap: 12px; /* Revertido */
   flex-grow: 1;
+  z-index: 2; /* Para o conteúdo ficar acima do overlay e permitir hover/foco no link */
 }
 
+/* Reintroduzido .home-feature-icon-wrapper */
 .home-feature-icon-wrapper {
-  width: 50px; /* Ícone menor */
+  width: 50px;
   height: 50px;
   border-radius: 50%;
   background-color: var(--brand-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8em; /* Tamanho do emoji/ícone dentro do círculo menor */
+  font-size: 1.8em;
   color: var(--brand-primary);
   margin-bottom: 5px;
   flex-shrink: 0;
 }
 
 .home-feature-card h3 {
-  font-size: 1.2em; /* Título do card menor */
-  font-weight: 600;
+  font-size: 1.2em; /* Revertido */
+  font-weight: 600; /* Revertido */
   color: var(--text-primary);
   margin: 0;
   line-height: 1.3;
@@ -119,37 +120,20 @@
 
 .home-feature-card p {
   font-size: 0.88em; /* Descrição menor */
-  color: var(--text-secondary);
-  line-height: 1.55; /* Ajustar line-height para legibilidade */
-  margin: 0;
-  flex-grow: 1;
+  color: var(--text-secondary); /* Reintroduzido */
+  line-height: 1.55; /* Reintroduzido */
+  margin: 0; /* Reintroduzido */
+  flex-grow: 1; /* Reintroduzido */
 }
-
-/* Opcional: Footer do card se quiser um botão/link explícito dentro */
-/*
-.home-feature-card-footer {
-  margin-top: auto; // Empurra para o final
-  padding-top: 15px;
-}
-.home-feature-card-cta {
-  color: var(--brand-primary);
-  font-weight: 500;
-  text-decoration: none;
-  font-size: 0.95em;
-}
-.home-feature-card-cta:hover {
-  text-decoration: underline;
-}
-*/
 
 /* Dark Mode */
 [data-theme="dark"] .home-page-container-revised {
-
 }
 [data-theme="dark"] .home-header-revised h1 {
   color: var(--text-primary);
 }
 [data-theme="dark"] .home-subtitle-revised {
+  /* Reintroduzido */
   color: var(--text-secondary);
 }
 [data-theme="dark"] .home-feature-card {
@@ -164,6 +148,7 @@
   border-color: var(--brand-primary);
 } */
 [data-theme="dark"] .home-feature-icon-wrapper {
+  /* Reintroduzido */
   background-color: #374151;
   color: var(--brand-primary);
 }
@@ -171,6 +156,7 @@
   color: var(--text-primary);
 }
 [data-theme="dark"] .home-feature-card p {
+  /* Reintroduzido */
   color: var(--text-secondary);
 }
 /*
@@ -189,13 +175,10 @@
     font-size: 2em;
   }
   .home-subtitle-revised {
-    font-size: 1em;
+    font-size: 1em; /* Revertido */
   }
   .home-features-grid-revised {
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(240px, 1fr)
-    ); /* Min card size menor */
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr) /* Revertido */);
     gap: 20px;
   }
   .home-feature-card {
@@ -203,13 +186,14 @@
   }
   .home-feature-icon-wrapper {
     width: 45px;
-    height: 45px;
-    font-size: 1.6em;
+    height: 45px; /* Revertido */
+    font-size: 1.6em; /* Revertido */
   }
   .home-feature-card h3 {
-    font-size: 1.1em;
+    font-size: 1.1em; /* Revertido */
   }
   .home-feature-card p {
+    /* Revertido */
     font-size: 0.85em;
   }
 }
@@ -220,9 +204,6 @@
   }
   .home-header-revised h1 {
     font-size: 1.8em;
-  }
-  .home-subtitle-revised {
-    font-size: 1em;
   }
   .home-features-grid-revised {
     grid-template-columns: 1fr; /* Uma coluna */
