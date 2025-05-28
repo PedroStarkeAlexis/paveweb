@@ -253,7 +253,7 @@ function App() {
     useEffect(() => {
         if (messages.length === 0) {
             setMessages([
-                { type: 'text', sender: 'bot', content: 'Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir! ����', id: `bot-initial-${Date.now()}` }
+                { type: 'text', sender: 'bot', content: 'Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir!', id: `bot-initial-${Date.now()}` }
             ]);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
