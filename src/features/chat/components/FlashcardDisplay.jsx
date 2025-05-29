@@ -6,7 +6,7 @@ import './FlashcardDisplay.css';
 function FlashcardDisplay({ flashcardsData }) {
   if (!flashcardsData || flashcardsData.length === 0) {
     // Isso não deve acontecer se a API e o ChatBox estiverem tratando bem
-    // mas é uma boa salvaguarda.
+    // mas �� uma boa salvaguarda.
     return <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Nenhum flashcard para exibir.</p>;
   }
 
@@ -25,3 +25,5 @@ function FlashcardDisplay({ flashcardsData }) {
     </div>
   );
 }
+
+export default React.memo(FlashcardDisplay);
