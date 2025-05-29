@@ -435,14 +435,3 @@
   fill: var(--brand-primary);
   color: var(--brand-primary);
 }
-[data-theme="dark"] .save-question-btn {
-  color: var(--text-muted);
-}
-[data-theme="dark"] .save-question-btn:hover {
-  background-color: #3a3a3a; /* Fundo escuro sutil no hover */
-  color: var(--text-primary);
-}
-[data-theme="dark"] .save-question-btn.saved svg {
-  fill: var(--brand-primary);
-  color: var(--brand-primary);
-}

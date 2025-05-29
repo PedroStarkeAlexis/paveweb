@@ -1103,8 +1103,9 @@ code {
   .chat-interface-container,
   .question-bank-container,
   .home-page-container-revised, /* Adicionado para a HomePage */
-  .calc-wizard-container {
-    /* Adicionado para a Calculadora */
+  .calc-wizard-container, /* Adicionado para a Calculadora */
+  .saved-questions-page-container {
+    /* Adicionado .saved-questions-page-container */
     /* <<< ADICIONADO/AJUSTADO: Padding extra no container do chat >>> */
     /* O padding-bottom geral no main-content já deve ajudar,
         mas podemos adicionar mais especificamente ao chat se necessário.

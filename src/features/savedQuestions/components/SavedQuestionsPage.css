@@ -6,6 +6,13 @@
   display: flex;
   flex-direction: column;
   gap: 25px;
+
+  /* Adicionar estas propriedades para scroll interno */
+  flex-grow: 1;
+  min-height: 0; /* Crucial para scroll funcionar em flex children */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-secondary) transparent;
 }
 
 .saved-questions-title {
@@ -15,6 +22,17 @@
   padding-bottom: 15px;
   border-bottom: 1px solid var(--border-primary);
   margin-bottom: 10px; /* Reduzido, o gap do container já espaça */
+}
+
+.saved-questions-page-container::-webkit-scrollbar {
+  width: 6px;
+}
+.saved-questions-page-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.saved-questions-page-container::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+  border-radius: 3px;
 }
 
 .saved-questions-list {
