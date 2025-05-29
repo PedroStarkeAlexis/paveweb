@@ -150,6 +150,51 @@ function App() {
         // setIsDevMenuOpen(false);
     };
 
+    // --- Handler para Solicitar Explicação ---
+    const handleRequestExplanation = async (question, userAnswerLetter) => {
+        if (!question || !question.id) {
+            console.error("handleRequestExplanation: Dados da questão inválidos.");
+            return;
+        }
+        setIsLoading(true); // Indica que o chat está processando
+
+        const thinkingMessage = { type: 'text', sender: 'bot', content: `Ok, estou preparando uma explicação para a questão sobre "${question.topico || question.materia || 'este assunto'}"...`, id: `bot-explain-thinking-${Date.now()}` };
+        setMessages(prev => [...prev, thinkingMessage]);
+
+        try {
+            const requestBody = {
+                question: question, // Objeto completo da questão
+                userAnswerLetter: userAnswerLetter, // Letra que o usuário marcou, ou null
+                preferredModel: selectedModelName, // Envia o modelo selecionado
+            };
+
+            const response = await fetch('/api/explain', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody),
+            });
+            const responseBody = await response.text();
+
+            // Remove a mensagem "pensando..."
+            setMessages(prev => prev.filter(m => m.id !== thinkingMessage.id));
+
+            if (!response.ok) {
+                let errorMsg = `Erro ${response.status}`;
+                try { errorMsg = JSON.parse(responseBody).error || errorMsg; } catch (e) { /* ignora erro de parse */ }
+                throw new Error(errorMsg);
+            }
+            const data = JSON.parse(responseBody);
+            const explanationResponse = { type: 'text', sender: 'bot', content: data.explanation, id: `bot-explain-${question.id}-${Date.now()}` };
+            setMessages(prev => [...prev, explanationResponse]);
+
+        } catch (error) {
+            setMessages(prev => prev.filter(m => m.id !== thinkingMessage.id)); // Remove "pensando" em caso de erro também
+            const errorResponse = { type: 'text', sender: 'bot', content: `Desculpe, ocorreu um problema ao buscar a explicação: ${error.message}`, id: `err-explain-${question.id}-${Date.now()}` };
+            setMessages(prev => [...prev, errorResponse]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
     // --- Handler para Enviar Mensagem ---
     const handleSendMessage = async (userQuery) => {
         const newUserMessage = { type: 'text', sender: 'user', content: userQuery, id: `user-${Date.now()}` }; // Adiciona ID
@@ -362,6 +407,7 @@ function App() {
                                 messages={messages}
                                 isLoading={isLoading}
                                 onSendMessage={handleSendMessage}
+                                onRequestExplanation={handleRequestExplanation} // <<< NOVA PROP
                             />
                         }
                     />

@@ -5,10 +5,12 @@ import { useSavedQuestions } from '../../hooks/useSavedQuestions'; // Importar o
 import IconBookmark from '../icons/IconBookmark'; // Ícone para salvar
 import IconBookmarkFilled from '../icons/IconBookmarkFilled'; // Ícone para salvo
 
-function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
+function QuestionLayoutInternal({ questionData, isInsideCarousel = false, onRequestExplanation }) { // <<< NOVA PROP
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
   const { savedQuestionIds, addSavedQuestion, removeSavedQuestion, isQuestionSaved } = useSavedQuestions();
+  const [isExplanationLoading, setIsExplanationLoading] = useState(false);
+  const [explanationRequested, setExplanationRequested] = useState(false);
 
   const safeQuestionData = questionData || {};
 
@@ -26,21 +28,36 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
   useEffect(() => {
     setAnswered(false);
     setFeedback({});
+    setIsExplanationLoading(false);
+    setExplanationRequested(false);
   }, [safeQuestionData]);
 
   const handleAlternativeClick = (clickedLetter) => {
     if (answered) return;
     setAnswered(true);
     const isCorrect = clickedLetter === resposta_letra;
+    // Armazena a letra que o usuário clicou para a explicação
     setFeedback({
-      [clickedLetter]: isCorrect ? 'correct-choice' : 'incorrect-choice',
+      choice: clickedLetter,
+      status: isCorrect ? 'correct-choice' : 'incorrect-choice'
     });
   };
 
-  const handleShowAnswerClick = () => {
-    if (answered) return;
+  const handleExplainOrShowAnswerClick = async () => {
+    if (explanationRequested && isExplanationLoading) return; // Evita múltiplos cliques enquanto carrega
+
+    // Sempre marca como respondido e revela a resposta na UI
     setAnswered(true);
-    setFeedback({});
+    if (Object.keys(feedback).length === 0) { // Se o usuário não clicou em nenhuma alternativa antes
+      setFeedback({ choice: null, status: null }); // Marca como respondido mas sem escolha do usuário
+    }
+
+    if (onRequestExplanation) {
+      setIsExplanationLoading(true);
+      setExplanationRequested(true); // Marca que a explicação foi solicitada
+      await onRequestExplanation(safeQuestionData, feedback.choice); // feedback.choice é a letra que o usuário clicou
+      setIsExplanationLoading(false);
+    }
   };
 
   const handleSaveToggle = (e) => {
@@ -139,8 +156,21 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
           </button>
         )}
         <div style={{ marginLeft: isInsideCarousel ? 'auto' : '0' }}> {/* Empurra para a direita se só tiver o botão de resposta */}
-          {!answered && <button className="show-answer-btn" onClick={handleShowAnswerClick}>Mostrar Resposta</button>}
-          {answered && (
+          {!answered && (
+            <button
+              className="show-answer-btn" // Manter a classe para estilo, mas o texto muda
+              onClick={handleExplainOrShowAnswerClick}
+              disabled={isExplanationLoading}
+            >
+              {isExplanationLoading ? "Explicando..." : (onRequestExplanation ? "Explicar Resposta" : "Mostrar Resposta")}
+            </button>
+          )}
+          {answered && onRequestExplanation && !explanationRequested && ( // Se já respondeu, mas não pediu explicação
+            <button className="show-answer-btn" onClick={handleExplainOrShowAnswerClick} disabled={isExplanationLoading}>
+              {isExplanationLoading ? "Explicando..." : "Explicar Resposta"}
+            </button>
+          )}
+          {answered && (!onRequestExplanation || (onRequestExplanation && explanationRequested && !isExplanationLoading)) && ( // Mostra texto se não tem como pedir explicação ou se já pediu e não está carregando
             <span className="correct-answer-text">
               Correta: {resposta_letra || 'N/D'}) {(alternativas || []).find(a => a.letra === resposta_letra)?.texto || ''}
             </span>
