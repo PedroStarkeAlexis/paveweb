@@ -1,0 +1,93 @@
+/* src/features/chat/components/Flashcard.css */
+
+.flashcard-wrapper {
+  /* Este wrapper ajuda a alinhar o flashcard dentro do FlashcardDisplay */
+  display: flex;
+  justify-content: center;
+}
+
+.flashcard {
+  background-color: transparent; /* O contêiner externo é transparente */
+  width: 240px; /* Um pouco mais largo que a demo */
+  height: 160px; /* Um pouco mais alto que a demo */
+  border: none;
+  border-radius: 10px; /* O mesmo que flashcard-inner */
+  cursor: pointer;
+  perspective: 1000px; /* Para efeito 3D */
+  box-shadow: none;
+  /* margin: 5px; /* Pequena margem se estiverem muito colados no grid */
+}
+
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Efeito de virada mais suave */
+  transform-style: preserve-3d;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Sombra sutil */
+  border-radius: 10px; /* Borda arredondada */
+}
+
+.flashcard.flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 15px; /* Padding interno */
+  box-sizing: border-box;
+  border-radius: 10px; /* Consistente com o inner */
+  border: 1px solid var(--border-secondary);
+  background-color: var(--bg-primary); /* Fundo do card */
+  color: var(--text-primary);
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+  background-color: var(
+    --bg-secondary
+  ); /* Fundo um pouco diferente para o verso */
+}
+
+.flashcard:hover .flashcard-inner {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12); /* Sombra mais pronunciada no hover */
+}
+
+.flashcard-term {
+  font-size: 1.1em; /* Tamanho do termo */
+  font-weight: 600; /* Mais destaque para o termo */
+  color: var(--text-primary);
+}
+
+.flashcard-definition {
+  font-size: 0.95em; /* Tamanho da definição */
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Dark Mode */
+[data-theme="dark"] .flashcard-front {
+  background-color: var(--bg-tertiary); /* Fundo do card escuro */
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+[data-theme="dark"] .flashcard-back {
+  background-color: #3a3a3a; /* Fundo um pouco diferente para o verso escuro */
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+[data-theme="dark"] .flashcard-term {
+  color: var(--text-primary);
+}

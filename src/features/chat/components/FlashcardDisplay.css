@@ -1,0 +1,30 @@
+/* src/features/chat/components/FlashcardDisplay.css */
+
+.flashcard-display-container {
+  /* Este é o wrapper que vai no ChatBox */
+  align-self: flex-start; /* Alinha como uma mensagem de bot */
+  width: 100%;
+  max-width: 100%; /* Ocupa a largura da bolha do chat */
+  /* margin-bottom: 10px; /* Espaço abaixo do conjunto de flashcards */
+  /* Não precisa de padding ou background aqui, pois será estilizado como uma mensagem de bot */
+}
+
+.flashcard-display-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Espaço entre os flashcards */
+  padding: 15px; /* Padding interno do container dos flashcards */
+  justify-content: center; /* Centraliza os cards se não preencherem a linha */
+  /* background-color: var(--bg-secondary); /* Fundo sutil para o grid, opcional */
+  /* border-radius: 8px; */ /* Se tiver fundo, arredondar */
+}
+
+/* Responsividade para o grid */
+@media (max-width: 768px) {
+  .flashcard-display-grid {
+    gap: 12px;
+    padding: 12px;
+  }
+}
+
+/* Os flashcards individuais terão seus próprios estilos em Flashcard.css */

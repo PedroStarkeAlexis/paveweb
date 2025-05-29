@@ -165,6 +165,7 @@ export async function onRequestPost(context) {
     let entities = aiAnalysis?.entities || null;
     let generatedQuestionsFromAI = aiAnalysis?.generated_questions || null;
     let responseTextForUser = aiAnalysis?.responseText || null;
+    let generatedFlashcardsFromAI = aiAnalysis?.generated_flashcards || null; // Novo campo
     let commentary = "";
     let questionsToReturn = [];
     let displayCard = null;
@@ -174,6 +175,8 @@ export async function onRequestPost(context) {
         entities
       )}, Generated Questions Count: ${
         generatedQuestionsFromAI?.length || 0
+      }, Generated Flashcards Count: ${
+        generatedFlashcardsFromAI?.length || 0
       }, ResponseText: "${createTextPreview(responseTextForUser, 30)}"`
     );
 
@@ -189,12 +192,24 @@ export async function onRequestPost(context) {
         "Pedi para gerar questão(ões), mas não consegui obter o conteúdo.";
     }
     if (
+      intent === "CRIAR_FLASHCARDS" && // Nova validação
+      (!Array.isArray(generatedFlashcardsFromAI) ||
+        generatedFlashcardsFromAI.length === 0) &&
+      !responseTextForUser // Se não houver flashcards E nem texto alternativo
+    ) {
+      intent = "DESCONHECIDO";
+      commentary =
+        "Pedi para gerar flashcards, mas não consegui obter o conteúdo.";
+    }
+    if (
       (intent === "CONVERSAR" || intent === "INFO_PAVE") &&
       !responseTextForUser
     ) {
       intent = "DESCONHECIDO";
       commentary = "Não consegui formular uma resposta para isso.";
     }
+
+    let flashcardsToReturn = []; // Novo: para armazenar flashcards processados
 
     // --- Lógica Baseada na Intenção ---
     switch (intent) {
@@ -349,6 +364,59 @@ export async function onRequestPost(context) {
         }
         break;
 
+      case "CRIAR_FLASHCARDS": // Novo case
+        if (
+          Array.isArray(generatedFlashcardsFromAI) &&
+          generatedFlashcardsFromAI.length > 0
+        ) {
+          flashcardsToReturn = generatedFlashcardsFromAI
+            .map((fcData, index) => {
+              if (
+                !fcData ||
+                typeof fcData !== "object" ||
+                !fcData.term ||
+                !fcData.definition
+              ) {
+                console.warn(
+                  `[WARN] ${functionName}: Objeto de flashcard gerado pela IA inválido no índice ${index}:`,
+                  fcData
+                );
+                return null;
+              }
+              return {
+                ...fcData,
+                id:
+                  fcData.id && fcData.id.startsWith("gen-fc-id-")
+                    ? `gen-fc-${Date.now()}-${index}`
+                    : fcData.id || `gen-fc-${Date.now()}-${index}`,
+                // Não precisamos de matéria/tópico para flashcards por enquanto, a menos que a IA forneça
+              };
+            })
+            .filter(Boolean);
+
+          if (flashcardsToReturn.length > 0) {
+            commentary =
+              responseTextForUser ||
+              (flashcardsToReturn.length > 1
+                ? "Certo! Preparei estes flashcards para você:"
+                : "Certo! Preparei este flashcard para você:");
+          } else {
+            commentary =
+              "Tentei criar os flashcards, mas os dados recebidos não estavam no formato esperado.";
+          }
+        } else if (responseTextForUser) {
+          // Fallback se a IA enviar texto em vez de JSON de flashcards
+          commentary = `Recebi esta informação sobre flashcards: "${createTextPreview(
+            responseTextForUser,
+            80
+          )}" Mas não consegui formatá-los.`;
+        } else {
+          if (!commentary)
+            commentary =
+              "Deveria criar flashcards, mas não recebi os dados. 😥";
+        }
+        break;
+
       case "CRIAR_QUESTAO":
         if (
           Array.isArray(generatedQuestionsFromAI) &&
@@ -432,13 +500,17 @@ export async function onRequestPost(context) {
       `[LOG] ${functionName}: Retornando final. Comentário: "${createTextPreview(
         commentary,
         50
-      )}", Questões: ${questionsToReturn.length}, DisplayCard: ${displayCard}`
+      )}", Questões: ${questionsToReturn.length}, Flashcards: ${
+        flashcardsToReturn.length
+      }, DisplayCard: ${displayCard}`
     );
     return new Response(
       JSON.stringify({
         commentary: commentary || null,
         questions: questionsToReturn,
+        flashcards: flashcardsToReturn, // Novo campo na resposta
         displayCard: displayCard,
+        // Adicione intent e entities aqui se o frontend precisar para depuração ou lógica condicional
       }),
       {
         headers: { "Content-Type": "application/json" },
