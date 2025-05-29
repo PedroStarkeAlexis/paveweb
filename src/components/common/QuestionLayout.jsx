@@ -136,9 +136,12 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
             title={isCurrentlySaved ? 'Remover dos Salvos' : 'Salvar Questão'}
           >
             {isCurrentlySaved ? <IconBookmarkFilled /> : <IconBookmark />}
+            <span style={{ marginLeft: '8px', lineHeight: '1' }}> {/* Adicionado marginLeft e lineHeight para melhor alinhamento */}
+              {isCurrentlySaved ? 'Salvo' : 'Salvar'}
+            </span>
           </button>
         )}
-        <div style={{ marginLeft: !isInsideCarousel ? '0' : 'auto' }}> {/* Empurra para a direita se SÓ tiver o botão de resposta (no carrossel) */}
+        <div style={{ marginLeft: !isInsideCarousel ? '0' : 'auto' }}> {/* Empurra para a direita se S�� tiver o botão de resposta (no carrossel) */}
           {!answered && <button className="show-answer-btn" onClick={handleShowAnswerClick}>Mostrar Resposta</button>}
           {answered && (
             <span className="correct-answer-text">
