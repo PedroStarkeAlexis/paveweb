@@ -267,21 +267,18 @@
 
 /* Estilos para o novo botão de Salvar */
 .save-question-btn {
-  background-color: var(--bg-primary); /* Igual ao .show-answer-btn */
-  border: 1px solid var(--border-secondary); /* Borda sutil para estado não salvo */
-  color: var(--text-secondary); /* Igual ao .show-answer-btn */
-  padding: 6px 12px; /* Próximo ao .show-answer-btn (que é 5px 12px) */
-  border-radius: 6px; /* Igual ao .show-answer-btn */
+  /* Estilo base copiado do .show-answer-btn */
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  font-weight: normal; /* Ou o peso padrão herdado */
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: left; /* Para alinhar conteúdo à esquerda se o botão for maior que o conteúdo */
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-  margin-right: auto; /* Empurra para a esquerda */
-  gap: 6px; /* Espaço entre ícone e texto */
-  font-weight: normal; /* Para combinar com .show-answer-btn (que não tem font-weight explícito) */
-  font-size: 0.85em; /* Igual ao .show-answer-btn */
+  /* margin-right: auto;  Removido, .question-footer.with-save-btn com space-between cuida disso */
+  /* display: flex e gap removidos pois não há mais ícone */
 }
 .save-question-btn:hover:not(.saved) {
   background-color: #f9fafb;
@@ -291,20 +288,10 @@
 .save-question-btn span {
   /* Estilo para o texto dentro do botão */
   line-height: 1; /* Garante que o texto não adicione altura extra */
-  display: inline; /* Comportamento adequado no flex */
   white-space: nowrap; /* Impede que o texto quebre */
+  /* display: inline; ou inline-block removido, o padrão deve ser suficiente */
 }
-.save-question-btn svg {
-  width: 16px; /* Ícone um pouco menor */
-  height: 16px;
-  flex-shrink: 0; /* Para o ícone não encolher */
-  vertical-align: middle; /* Tenta alinhar melhor com o texto inline */
-  /* A cor do ícone será herdada de 'color' do botão */
-}
-.save-question-btn.saved svg {
-  fill: white; /* Ícone branco quando salvo */
-  color: white;
-}
+/* SVG removido, então as regras para .save-question-btn svg não são mais necessárias */
 
 /* Ajuste para o footer quando o botão de salvar está presente */
 .question-footer.with-save-btn {
@@ -315,13 +302,13 @@
 .save-question-btn.saved {
   background-color: var(--brand-primary);
   color: white;
-  border-color: var(--brand-primary);
+  border: 1px solid var(--brand-primary); /* Garante a borda no estado salvo */
   font-weight: 500; /* Destaque para o texto "Salvo" */
 }
 /* Hover para o botão salvo */
 .save-question-btn.saved:hover {
   background-color: var(--brand-primary-hover);
-  border-color: var(--brand-primary-hover);
+  border: 1px solid var(--brand-primary-hover); /* Garante a borda no hover do estado salvo */
   color: white;
 }
 
@@ -435,11 +422,6 @@
   color: white;
   border-color: var(--brand-primary);
 }
-[data-theme="dark"] .save-question-btn.saved svg {
-  fill: white;
-  color: white;
-}
-
 [data-theme="dark"] .save-question-btn.saved:hover {
   background-color: var(--brand-primary-hover);
   border-color: var(--brand-primary-hover);

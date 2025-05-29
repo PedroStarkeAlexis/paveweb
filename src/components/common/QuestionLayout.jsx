@@ -135,7 +135,6 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
             aria-label={isCurrentlySaved ? 'Remover questão dos salvos' : 'Salvar questão'}
             title={isCurrentlySaved ? 'Remover dos Salvos' : 'Salvar Questão'}
           >
-            {isCurrentlySaved ? <IconBookmarkFilled /> : <IconBookmark />}
             <span>
               {isCurrentlySaved ? 'Salvo' : 'Salvar'}
             </span>
