@@ -128,7 +128,7 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
       </div>
 
       <div className={`question-footer ${!isInsideCarousel ? 'with-save-btn' : ''}`}>
-        {!isInsideCarousel && ( // Não mostrar botão de salvar dentro do carrossel do chat por enquanto
+        {!isInsideCarousel && (
           <button
             className={`save-question-btn ${isCurrentlySaved ? 'saved' : ''}`}
             onClick={handleSaveToggle}
@@ -138,7 +138,7 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
             {isCurrentlySaved ? <IconBookmarkFilled /> : <IconBookmark />}
           </button>
         )}
-        <div style={{ marginLeft: isInsideCarousel ? 'auto' : '0' }}> {/* Empurra para a direita se só tiver o botão de resposta */}
+        <div style={{ marginLeft: !isInsideCarousel ? '0' : 'auto' }}> {/* Empurra para a direita se SÓ tiver o botão de resposta (no carrossel) */}
           {!answered && <button className="show-answer-btn" onClick={handleShowAnswerClick}>Mostrar Resposta</button>}
           {answered && (
             <span className="correct-answer-text">
