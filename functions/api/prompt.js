@@ -100,37 +100,3 @@ Sua Tarefa:
 4.  NÃO adicione NENHUMA outra palavra, explicação ou formatação fora do objeto JSON. Sua resposta deve ser APENAS o JSON.
 `;
 }
-
-/**
- * Cria o prompt para a IA explicar uma questão.
- * @param {object} question O objeto completo da questão (texto_questao, alternativas, resposta_letra, materia, topico).
- * @param {string|null} userAnswerLetter A letra da alternativa que o usuário selecionou (ou null se não respondeu ou acertou).
- * @returns {string} O prompt para a IA.
- */
-export function createExplanationPrompt(question, userAnswerLetter) {
-  const correctAnswer = question.alternativas.find(alt => alt.letra === question.resposta_letra);
-  let userAnswer = null;
-  if (userAnswerLetter && userAnswerLetter !== question.resposta_letra) {
-    userAnswer = question.alternativas.find(alt => alt.letra === userAnswerLetter);
-  }
-
-  let prompt = `
-Você é um tutor especialista que explica questões do PAVE UFPel de forma clara e concisa.
-A questão é sobre "${question.materia || 'não especificado'}" / "${question.topico || 'não especificado'}".
-
-Texto da Questão:
-"${question.texto_questao}"
-
-Alternativas:
-${question.alternativas.map(alt => `${alt.letra}) ${alt.texto}`).join("\n")}
-
-A resposta correta é a letra ${correctAnswer.letra}: "${correctAnswer.texto}".
-Sua Tarefa:
-1. Explique detalhadamente por que a alternativa "${correctAnswer.letra}" é a correta, relacionando-a com o texto da questão.
-`;
-  if (userAnswer) {
-    prompt += `2. O usuário respondeu "${userAnswer.letra}) ${userAnswer.texto}". Explique por que essa alternativa está incorreta, também com base na questão.\n`;
-  }
-  prompt += `3. Seja didático e use uma linguagem acessível. Formate sua resposta usando markdown leve (negrito para ênfase, listas se apropriado). Não inclua saudações ou frases introdutórias como "Claro, aqui está a explicação:", apenas a explicação em si.`;
-    return prompt;
-  }
