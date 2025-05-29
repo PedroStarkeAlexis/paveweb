@@ -27,6 +27,7 @@ export function createAnalysisPrompt(history, userQuery) {
       5.  **SE a intenção for INFO_PAVE:**
           a.  Gere uma resposta textual curta e amigável confirmando o pedido de informação e sugerindo consultar a página  (ex: "Para informações detalhadas sobre o PAVE, o ideal é consultar a página de informações ou o edital mais recente."). Coloque essa resposta em "responseText".Você pode usar markdown.
           b.  Os campos "generated_questions" e "generated_flashcards" DEVEM ser null.
+          #NAO USE SEMPRE A MESMA COISA ESCRITA NOS EXEMPLOS DE COMENTARY PODE VARIAR#
       6.  **SE a intenção for CONVERSAR (e não for INFO_PAVE):** Gere uma resposta textual apropriada e coloque-a em "responseText". Os campos "generated_questions" e "generated_flashcards" DEVEM ser null.Você pode usar markdown.
       7.  **SE a intenção for BUSCAR_QUESTAO ou DESCONHECIDO:** Os campos "generated_questions", "generated_flashcards" e "responseText" DEVEM ser null.
       8.  Retorne ESTRITAMENTE um objeto JSON válido com a estrutura:
