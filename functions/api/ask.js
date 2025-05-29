@@ -19,7 +19,7 @@ async function callGeminiAPI(
   genAIInstance,
   modelName,
   safetySettings,
-  callType = "gen��rica"
+  callType = "generica"
 ) {
   console.log(
     `[LOG] Enviando prompt ${callType.toUpperCase()} para Gemini (${createTextPreview(
