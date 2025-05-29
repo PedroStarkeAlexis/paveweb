@@ -74,8 +74,14 @@
 
 .flashcard-back {
   transform: rotateY(180deg);
-  /* O background-color já está definido acima e será o mesmo para frente e verso, como na demo */
+  /* Revertendo o fundo do verso para o estilo anterior (cinza mais claro) */
+  background-color: var(--bg-secondary); /* Cor para modo claro */
 }
+[data-theme="dark"] .flashcard-back {
+  /* Cor específica para o verso no modo escuro, como na versão anterior */
+  background-color: #3a3a3a;
+}
+
 
 .flashcard:hover .flashcard-inner {
   /* Usando variáveis de sombra da demo para hover */
@@ -115,19 +121,4 @@
   word-break: break-word; /* Adicionado da demo */
 }
 
-/*
-  Nota: As variáveis light-dark() já cuidam da alternância de tema.
-  Se o seu projeto usa data-theme="dark" para temas, e as variáveis
-  --dark-card-bg, --dark-border, etc., estão definidas no :root[data-theme="dark"],
-  então a sintaxe light-dark() pode não ser necessária aqui e poderíamos
-  usar as variáveis diretamente (ex: background-color: var(--flashcard-bg);)
-  e definir --flashcard-bg separadamente para light e dark.
-  No entanto, seguindo a estrutura do CSS que você forneceu, estou usando light-dark()
-  e assumindo que essas variáveis (--light-X, --dark-X) estarão disponíveis.
-  Se você já tem variáveis como --bg-primary, --text-primary definidas para os temas
-  no seu style.css, o ideal seria mapear os conceitos da demo para essas variáveis existentes
-  para manter a consistência total com o seu design system,
-  por exemplo: background-color: var(--card-bg, var(--light-card-bg));
-  E no [data-theme="dark"] definir: --card-bg: var(--dark-card-bg);
-  Mas, para minimizar alterações fora deste arquivo, usei light-dark() como na sua referência.
-*/
+
