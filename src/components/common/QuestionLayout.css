@@ -274,11 +274,12 @@
   padding: 5px 12px;
   border-radius: 6px;
   font-size: 0.85em;
-  font-weight: normal; /* Ou o peso padrão herdado */
+  font-weight: 400; /* Peso padrão para consistência */
+  font-family: inherit; /* Garante mesma fonte */
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-  /* margin-right: auto;  Removido, .question-footer.with-save-btn com space-between cuida disso */
-  /* display: flex e gap removidos pois não há mais ícone */
+  margin-left: 0; /* Garante que não haja margem auto empurrando */
+  margin-right: 0; /* Garante que não haja margem auto empurrando */
 }
 .save-question-btn:hover:not(.saved) {
   background-color: #f9fafb;
@@ -289,12 +290,13 @@
   /* Estilo para o texto dentro do botão */
   line-height: 1; /* Garante que o texto não adicione altura extra */
   white-space: nowrap; /* Impede que o texto quebre */
-  /* display: inline; ou inline-block removido, o padrão deve ser suficiente */
 }
 /* SVG removido, então as regras para .save-question-btn svg não são mais necessárias */
 
 /* Ajuste para o footer quando o botão de salvar está presente */
 .question-footer.with-save-btn {
+  display: flex; /* Reafirmação */
+  align-items: center; /* Alinha verticalmente os botões */
   justify-content: space-between; /* Botão salvar à esquerda, texto/botão de resposta à direita */
 }
 
@@ -411,6 +413,12 @@
   background-color: var(--bg-primary);
   border-color: var(--border-secondary);
   color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  font-weight: 400; /* Peso padrão para consistência */
+  font-family: inherit; /* Garante mesma fonte */
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 [data-theme="dark"] .save-question-btn:hover:not(.saved) {
   background-color: #27272a; /* Igual ao hover dark do .show-answer-btn */
