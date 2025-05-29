@@ -274,12 +274,11 @@
   padding: 5px 12px;
   border-radius: 6px;
   font-size: 0.85em;
-  font-weight: 400; /* Peso padrão para consistência */
+  font-weight: 400;
   font-family: inherit; /* Garante mesma fonte */
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-  margin-left: 0; /* Garante que não haja margem auto empurrando */
-  margin-right: 0; /* Garante que não haja margem auto empurrando */
+  margin-right: 8px; /* Espaçamento à direita */
 }
 .save-question-btn:hover:not(.saved) {
   background-color: #f9fafb;
@@ -291,7 +290,6 @@
   line-height: 1; /* Garante que o texto não adicione altura extra */
   white-space: nowrap; /* Impede que o texto quebre */
 }
-/* SVG removido, então as regras para .save-question-btn svg não são mais necessárias */
 
 /* Ajuste para o footer quando o botão de salvar está presente */
 .question-footer.with-save-btn {
@@ -304,13 +302,14 @@
 .save-question-btn.saved {
   background-color: var(--brand-primary);
   color: white;
-  border: 1px solid var(--brand-primary); /* Garante a borda no estado salvo */
+  border: 1px solid var(--brand-primary); /* Garante que a borda também mude */
   font-weight: 500; /* Destaque para o texto "Salvo" */
+  /* As demais propriedades (padding, border-radius, font-size, font-family) são herdadas de .save-question-btn */
 }
 /* Hover para o botão salvo */
 .save-question-btn.saved:hover {
   background-color: var(--brand-primary-hover);
-  border: 1px solid var(--brand-primary-hover); /* Garante a borda no hover do estado salvo */
+  border: 1px solid var(--brand-primary-hover); /* Garante que a borda também mude no hover */
   color: white;
 }
 
@@ -416,7 +415,7 @@
   padding: 5px 12px;
   border-radius: 6px;
   font-size: 0.85em;
-  font-weight: 400; /* Peso padrão para consistência */
+  font-weight: 400;
   font-family: inherit; /* Garante mesma fonte */
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
