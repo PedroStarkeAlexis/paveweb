@@ -210,6 +210,20 @@ function App() {
                 });
             }
 
+            // 3. Adiciona Flashcards, se houver
+            if (data?.flashcards?.length > 0) { // NOVO: Checa por flashcards
+                // Validação simples dos dados dos flashcards
+                const validFlashcards = data.flashcards.filter(fc => fc && fc.term && fc.definition);
+                if (validFlashcards.length > 0) {
+                    botResponses.push({
+                        type: 'flashcard_display', // NOVO TIPO DE MENSAGEM
+                        sender: 'bot',
+                        flashcardsData: validFlashcards,
+                        id: `${botMessageIdBase}-flashcards`
+                    });
+                }
+            }
+
             // 3. Adiciona questões (lógica do carrossel existente)
             if (data?.questions?.length > 0) {
                 if (data.questions.length > 1) {

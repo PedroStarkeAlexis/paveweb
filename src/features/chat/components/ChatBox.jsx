@@ -3,6 +3,7 @@ import Message from './Message';
 import QuestionLayout from '../../../components/common/QuestionLayout';
 import QuestionCarousel from './QuestionCarousel';
 import InfoPaveCard from './InfoPaveCard';
+import FlashcardDisplay from './FlashcardDisplay'; // Importar o novo componente
 
 function ChatBox({ messages, isLoading }) {
   const chatBoxRef = useRef(null);
@@ -25,6 +26,8 @@ function ChatBox({ messages, isLoading }) {
           return <QuestionLayout key={msg.id || `q-${index}`} questionData={msg.questionData} />;
         } else if (msg.type === 'text' && typeof msg.content === 'string') {
           return <Message key={msg.id || `msg-${index}`} sender={msg.sender} text={msg.content} />;
+        } else if (msg.type === 'flashcard_display' && msg.flashcardsData && msg.flashcardsData.length > 0) { // NOVO: Condição para flashcards
+          return <FlashcardDisplay key={msg.id || `flashcards-${index}`} flashcardsData={msg.flashcardsData} />;
         } else if (msg.type === 'pave_info_card') {
           return <InfoPaveCard key={msg.id || `infocard-${index}`} />;
         }
