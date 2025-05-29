@@ -165,9 +165,9 @@ function App() {
 
             // Se a mensagem for do tipo flashcard_display, criar uma representação textual
             if (msg.type === 'flashcard_display' && msg.flashcardsData && msg.flashcardsData.length > 0) {
-                let flashcardsText = ""; // Inicia como string vazia
+                let flashcardsText = "Flashcards Gerados (Termos):\n"; // Indicador
                 msg.flashcardsData.forEach((fc, index) => {
-                    flashcardsText += `Termo: ${fc.term}\nDefinição: ${fc.definition}\n\n`; // Formato mais simples, cada flashcard em duas linhas, separados por uma linha em branco
+                    flashcardsText += `  - ${fc.term}\n`; // Adiciona apenas o termo, formatado como item de lista
                 });
                 return { role: 'model', parts: [{ text: flashcardsText.trim() }] };
             }
