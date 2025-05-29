@@ -19,45 +19,22 @@ body {
 
 html {
   /* Variáveis de cor base para Light Mode (podem ser sobrescritas) */
-  /* NOVAS VARIÁVEIS GLOBAIS INSPIRADAS NA DEMO */
-  --light-bg: #f8f9fa;
-  --light-surface: #ffffff;
-  --light-text-primary: #202124;
-  --light-text-secondary: #5f6368;
-  --light-primary: #34a853; /* Google Green */
-  --light-primary-hover: #2e8a49;
-  --light-border: #dadce0;
-  --light-error: #d93025;
-  --light-card-bg: #e6f4ea; /* Light green tint for cards */
-  --light-disabled-bg: #e0e0e0;
-  --light-disabled-text: #a0a0a0;
-  --light-shadow-color-1: rgba(60, 64, 67, 0.15);
-  --light-shadow-color-2: rgba(60, 64, 67, 0.1);
-  --light-focus-shadow-color: rgba(52, 168, 83, 0.2);
-  --light-button-focus-shadow-color: rgba(52, 168, 83, 0.3);
-  --light-button-text: white;
-
-  /* Variáveis do projeto original mantidas e mapeadas para as novas, se necessário */
-  --bg-primary: var(--light-surface);
-  --bg-secondary: var(--light-bg);
-  --bg-tertiary: #f9fafb; /* Mantido do original ou mapear para --light-surface se for mais apropriado */
-  --text-primary: var(--light-text-primary);
-  --text-secondary: var(--light-text-secondary);
-  --text-muted: #5f6368; /* Mapeado para --light-text-secondary ou um cinza específico */
-  --border-primary: var(--light-border);
-  --border-secondary: #d1d5db; /* Mantido ou mapear para --light-border */
-  --brand-primary: var(--light-primary);
-  --brand-primary-hover: var(--light-primary-hover);
-  --brand-secondary: #e0f2fe; /* Cor azul claro mantida para elementos que não são o card principal */
-  --brand-secondary-text: #000000; /* Texto sobre --brand-secondary */
-  --error-primary: var(--light-error);
-  --error-secondary: #fef2f2; /* Fundo claro para erro */
-  --success-primary: #10b981; /* Verde de sucesso do projeto original */
-  --success-secondary: #f0fdf4; /* Fundo claro para sucesso */
-
-  /* Dimensões dos Flashcards (da demo) */
-  --flashcard-width: 220px;
-  --flashcard-height: 150px;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f8;
+  --bg-tertiary: #f9fafb;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+  --brand-primary: #10a37f; /* Verde */
+  --brand-primary-hover: #0f8e6c;
+  --brand-secondary: #e0f2fe; /* Azul claro */
+  --brand-secondary-text: #000000;
+  --error-primary: #ef4444;
+  --error-secondary: #fef2f2;
+  --success-primary: #10b981; /* Ajustado do verde */
+  --success-secondary: #f0fdf4;
 
   color-scheme: light; /* Define o esquema de cores padrão */
   transition: color 0.3s ease, background-color 0.3s ease; /* Transi��ão global */
@@ -760,47 +737,26 @@ code {
 
 /* ============================ */
 /* ======== DARK MODE ========= */
-/* ============================ */ /* rtl:ignore */
+/* ============================ */
 
 /* Define variáveis de cor para o modo escuro */
 [data-theme="dark"] {
-  /* NOVAS VARIÁVEIS DARK MODE INSPIRADAS NA DEMO */
-  --dark-bg: #202124;
-  --dark-surface: #2d2e30;
-  --dark-text-primary: #e8eaed;
-  --dark-text-secondary: #bdc1c6;
-  --dark-primary: #81c995; /* Lighter green for dark mode */
-  --dark-primary-hover: #a0d3b0;
-  --dark-border: #5f6368;
-  --dark-error: #f28b82;
-  --dark-card-bg: #3c4043; /* Darker grey for cards */
-  --dark-disabled-bg: #3c4043;
-  --dark-disabled-text: #7f8184;
-  --dark-shadow-color-1: rgba(0, 0, 0, 0.3);
-  --dark-shadow-color-2: rgba(0, 0, 0, 0.2);
-  --dark-focus-shadow-color: rgba(129, 201, 149, 0.3);
-  --dark-button-focus-shadow-color: rgba(129, 201, 149, 0.4);
-  --dark-button-text: var(--dark-bg);
-
-  /* Mapeamento das variáveis do projeto para as novas variáveis dark */
-  --bg-primary: var(--dark-surface);
-  --bg-secondary: var(--dark-bg);
-  --bg-tertiary: #2c2c2c; /* Mantido ou mapear para --dark-surface ou --dark-card-bg */
-  --text-primary: var(--dark-text-primary);
-  --text-secondary: var(--dark-text-secondary);
-  --text-muted: #888888; /* Mantido ou mapear para --dark-text-secondary */
-  --border-primary: var(--dark-border);
-  --border-secondary: #555555; /* Mantido ou mapear para --dark-border */
-  --brand-primary: var(--dark-primary);
-  --brand-primary-hover: var(--dark-primary-hover);
-  --brand-secondary: #374151; /* Cinza escuro mantido */
-  --brand-secondary-text: var(
-    --dark-text-primary
-  ); /* Texto claro sobre cinza escuro */
-  --error-primary: var(--dark-error);
-  --error-secondary: #4a1d1d; /* Fundo mais escuro para erro em dark mode */
-  --success-primary: #34d399; /* Verde claro de sucesso mantido */
-  --success-secondary: #064e3b; /* Fundo escuro para sucesso mantido */
+  --bg-primary: #1e1e1e; /* Fundo principal escuro */
+  --bg-secondary: #121212; /* Fundo geral mais escuro */
+  --bg-tertiary: #2c2c2c; /* Fundo da sidebar/cards */
+  --text-primary: #e0e0e0; /* Texto principal claro */
+  --text-secondary: #b0b0b0; /* Texto secundário */
+  --text-muted: #888888; /* Texto 'muted' */
+  --border-primary: #444444; /* Bordas primárias */
+  --border-secondary: #555555; /* Bordas secundárias */
+  --brand-primary: #10b981; /* Verde mais brilhante */
+  --brand-primary-hover: #0f8e6c; /* Verde hover */
+  --brand-secondary: #374151; /* Azul claro vira cinza escuro */
+  --brand-secondary-text: #e5e7eb; /* Texto sobre cinza escuro */
+  --error-primary: #f74c4c; /* Rosa/Vermelho claro */
+  --error-secondary: #871c1c; /* Fundo roxo escuro para erro */
+  --success-primary: #34d399; /* Verde claro */
+  --success-secondary: #064e3b; /* Fundo verde escuro para sucesso */
 
   color-scheme: dark;
 }

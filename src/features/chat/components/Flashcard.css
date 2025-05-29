@@ -7,17 +7,15 @@
 }
 
 .flashcard {
-  background-color: transparent; /* O contêiner externo �� transparente */
-  width: var(--flashcard-width); /* Usa variável global */
-  height: var(--flashcard-height); /* Usa variável global */
+  background-color: transparent; /* O contêiner externo é transparente */
+  width: 240px; /* Um pouco mais largo que a demo */
+  height: 160px; /* Um pouco mais alto que a demo */
   border: none;
   border-radius: 10px; /* O mesmo que flashcard-inner */
   cursor: pointer;
   perspective: 1000px; /* Para efeito 3D */
   box-shadow: none;
   /* margin: 5px; /* Pequena margem se estiverem muito colados no grid */
-  flex-grow: 0; /* Adicionado para não crescerem demais no flex */
-  flex-shrink: 0; /* Adicionado para não encolherem demais */
 }
 
 .flashcard-inner {
@@ -27,7 +25,7 @@
   text-align: center;
   transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Efeito de virada mais suave */
   transform-style: preserve-3d;
-  box-shadow: 0 1px 2px var(--light-shadow-color-2); /* Sombra da demo */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Sombra sutil */
   border-radius: 10px; /* Borda arredondada */
 }
 
@@ -49,89 +47,47 @@
   padding: 15px; /* Padding interno */
   box-sizing: border-box;
   border-radius: 10px; /* Consistente com o inner */
-  border: 1px solid var(--light-border); /* Borda da demo */
-  background-color: var(--light-card-bg); /* Fundo do card da demo */
+  border: 1px solid var(--border-secondary);
+  background-color: var(--bg-primary); /* Fundo do card */
   color: var(--text-primary);
-  word-break: break-word; /* Para quebrar palavras longas */
-  overflow-y: auto; /* Adiciona scroll se o conteúdo for muito grande */
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-secondary) transparent;
 }
 
 .flashcard-back {
   transform: rotateY(180deg);
   background-color: var(
-    --light-card-bg
-  ); /* Mesmo fundo para frente e verso, conforme demo */
+    --bg-secondary
+  ); /* Fundo um pouco diferente para o verso */
 }
 
 .flashcard:hover .flashcard-inner {
-  box-shadow: 0 4px 8px var(--light-shadow-color-1); /* Sombra hover da demo */
-}
-
-.flashcard:hover .flashcard-front,
-.flashcard:hover .flashcard-back {
-  border-color: var(--light-primary); /* Borda hover da demo */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12); /* Sombra mais pronunciada no hover */
 }
 
 .flashcard-term {
-  font-size: 1.2em; /* Ajustado para mais semelhança, era 1.3em na demo */
-  font-weight: 500;
-  color: var(--light-text-primary);
+  font-size: 1.1em; /* Tamanho do termo */
+  font-weight: 600; /* Mais destaque para o termo */
+  color: var(--text-primary);
 }
 
 .flashcard-definition {
-  font-size: 1em;
-  color: var(--light-text-secondary);
+  font-size: 0.95em; /* Tamanho da definição */
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
 /* Dark Mode */
 [data-theme="dark"] .flashcard-front {
-  background-color: var(--dark-card-bg); /* Fundo do card escuro da demo */
+  background-color: var(--bg-tertiary); /* Fundo do card escuro */
   color: var(--text-primary);
-  border-color: var(--dark-border); /* Borda dark da demo */
+  border-color: var(--border-primary);
 }
 
 [data-theme="dark"] .flashcard-back {
-  background-color: var(--dark-card-bg); /* Mesmo fundo para frente e verso */
+  background-color: #3a3a3a; /* Fundo um pouco diferente para o verso escuro */
   color: var(--text-primary);
-  border-color: var(--dark-border);
+  border-color: var(--border-primary);
 }
 
 [data-theme="dark"] .flashcard-term {
-  color: var(--dark-text-primary);
-}
-[data-theme="dark"] .flashcard-definition {
-  color: var(--dark-text-secondary);
-}
-
-[data-theme="dark"] .flashcard-inner {
-  box-shadow: 0 1px 2px var(--dark-shadow-color-2);
-}
-[data-theme="dark"] .flashcard:hover .flashcard-inner {
-  box-shadow: 0 4px 8px var(--dark-shadow-color-1);
-}
-[data-theme="dark"] .flashcard:hover .flashcard-front,
-[data-theme="dark"] .flashcard:hover .flashcard-back {
-  border-color: var(--dark-primary);
-}
-
-/* Scrollbar para flashcards */
-.flashcard-front::-webkit-scrollbar,
-.flashcard-back::-webkit-scrollbar {
-  width: 5px;
-}
-.flashcard-front::-webkit-scrollbar-track,
-.flashcard-back::-webkit-scrollbar-track {
-  background: transparent;
-}
-.flashcard-front::-webkit-scrollbar-thumb,
-.flashcard-back::-webkit-scrollbar-thumb {
-  background-color: var(--border-primary);
-  border-radius: 3px;
-}
-[data-theme="dark"] .flashcard-front::-webkit-scrollbar-thumb,
-[data-theme="dark"] .flashcard-back::-webkit-scrollbar-thumb {
-  background-color: var(--border-secondary);
+  color: var(--text-primary);
 }
