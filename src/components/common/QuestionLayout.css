@@ -267,32 +267,31 @@
 
 /* Estilos para o novo botão de Salvar */
 .save-question-btn {
-  background: none; /* Estado base não salvo */
+  background-color: var(--bg-primary); /* Igual ao .show-answer-btn */
   border: 1px solid var(--border-secondary); /* Borda sutil para estado não salvo */
-  color: var(--text-muted);
-  padding: 8px 16px; /* Padding para pílula com texto */
-  border-radius: 20px; /* Formato de pílula */
+  color: var(--text-secondary); /* Igual ao .show-answer-btn */
+  padding: 6px 12px; /* Próximo ao .show-answer-btn (que é 5px 12px) */
+  border-radius: 6px; /* Igual ao .show-answer-btn */
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
   margin-right: auto; /* Empurra para a esquerda */
-  gap: 8px; /* Espaço entre ícone e texto */
-  font-weight: 500; /* Peso da fonte para o texto */
-  font-size: 0.9em; /* Tamanho da fonte do texto */
+  gap: 6px; /* Espaço entre ícone e texto */
+  font-weight: normal; /* Para combinar com .show-answer-btn (que não tem font-weight explícito) */
+  font-size: 0.85em; /* Igual ao .show-answer-btn */
 }
 .save-question-btn:hover:not(.saved) {
-  background-color: var(
-    --bg-tertiary
-  ); /* Fundo sutil no hover para não salvo */
-  color: var(--text-primary);
-  border-color: var(--border-primary);
+  background-color: #f9fafb; /* Igual ao hover do .show-answer-btn */
+  border-color: #9ca3af; /* Igual ao hover do .show-answer-btn */
+  color: var(--text-primary); /* Igual ao hover do .show-answer-btn */
 }
 .save-question-btn svg {
   width: 20px;
   height: 20px;
   flex-shrink: 0; /* Para o ícone não encolher */
+  /* A cor do ícone será herdada de 'color' do botão */
 }
 .save-question-btn.saved svg {
   fill: white; /* Ícone branco quando salvo */
@@ -314,7 +313,7 @@
 .save-question-btn.saved:hover {
   background-color: var(--brand-primary-hover);
   border-color: var(--brand-primary-hover);
-  color: white; /* Manter texto branco */
+  color: white;
 }
 
 /* --- Seção: Dark Mode para QuestionLayout --- */
@@ -413,26 +412,26 @@
   color: #a7f3d0; /* Texto da resposta correta verde claro */
 }
 [data-theme="dark"] .save-question-btn {
+  background-color: var(--bg-primary);
   border-color: var(--border-secondary);
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 [data-theme="dark"] .save-question-btn:hover:not(.saved) {
-  background-color: #3a3a3a; /* Fundo escuro sutil no hover */
+  background-color: #27272a; /* Igual ao hover dark do .show-answer-btn */
+  border-color: #777; /* Igual ao hover dark do .show-answer-btn */
   color: var(--text-primary);
-  border-color: var(--border-secondary);
 }
 [data-theme="dark"] .save-question-btn.saved {
   background-color: var(--brand-primary);
-  color: var(
-    --bg-primary
-  ); /* Texto escuro para contraste com --brand-primary no dark mode */
+  color: white; /* Texto branco para bom contraste com --brand-primary */
   border-color: var(--brand-primary);
 }
 [data-theme="dark"] .save-question-btn.saved svg {
-  fill: var(--bg-primary);
-  color: var(--bg-primary);
+  fill: white;
+  color: white;
 }
 [data-theme="dark"] .save-question-btn.saved:hover {
   background-color: var(--brand-primary-hover);
   border-color: var(--brand-primary-hover);
+  color: white; /* Manter color do texto no hover */
 }
