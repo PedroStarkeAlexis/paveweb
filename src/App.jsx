@@ -159,12 +159,31 @@ function App() {
 
         const HISTORY_LENGTH = 8;
         const historyForAPI = updatedMessages.slice(-HISTORY_LENGTH).map(msg => {
-            if (msg && typeof msg.sender === 'string' && typeof msg.content === 'string') {
-                return { role: msg.sender === 'user' ? 'user' : 'model', parts: [{ text: msg.content }] };
-            } return null;
+            if (!msg) return null;
+
+            const role = msg.sender === 'user' ? 'user' : 'model';
+
+            // Se a mensagem for do tipo flashcard_display, criar uma representação textual
+            if (msg.type === 'flashcard_display' && msg.flashcardsData && msg.flashcardsData.length > 0) {
+                let flashcardsText = ""; // Inicia como string vazia
+                msg.flashcardsData.forEach((fc, index) => {
+                    flashcardsText += `Termo: ${fc.term}\nDefinição: ${fc.definition}\n\n`; // Formato mais simples, cada flashcard em duas linhas, separados por uma linha em branco
+                });
+                return { role: 'model', parts: [{ text: flashcardsText.trim() }] };
+            }
+            // Para mensagens de texto ou outros tipos que tenham conteúdo textual direto
+            else if (typeof msg.content === 'string' && msg.content.trim() !== '') {
+                return { role, parts: [{ text: msg.content }] };
+            }
+            // Para outros tipos de mensagens (como question_carousel, pave_info_card)
+            // que não têm um 'content' textual direto para o histórico da IA,
+            // e cujo comentário introdutório já foi adicionado como uma mensagem de texto separada.
+            // Poderíamos adicionar uma representação textual deles também, se necessário no futuro.
+            // Por agora, eles não adicionarão uma entrada separada ao historyForAPI além do seu comentário.
+            return null;
         }).filter(Boolean);
 
-        if (historyForAPI.length === 0) { setIsLoading(false); return; }
+        if (historyForAPI.length === 0 && userQuery) { setIsLoading(false); return; } // Pequena correção, só retorna se não houver userQuery também
 
         try {
             const requestBody = {

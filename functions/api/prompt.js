@@ -22,10 +22,10 @@ export function createAnalysisPrompt(history, userQuery) {
       4.  **SE a intenção for CRIAR_FLASHCARDS:**
           a.  Gere um conjunto de flashcards (termo e definição) sobre o 'topico' extraído.
           b.  **Formate os flashcards GERADOS como um ARRAY de objetos JSON dentro do campo "generated_flashcards".** A estrutura de CADA objeto de flashcard DEVE ser: { "id": "gen-fc-id-${Math.random()}", "term": "Termo conciso", "definition": "Definição concisa" }. O campo "id" pode ser um placeholder.
-          c.  Você PODE fornecer um breve comentário introdutório (ex: "Ok, aqui estão alguns flashcards sobre [tópico]:") no campo "responseText".
+          c.  Você PODE fornecer um breve comentário introdutório (ex: "Ok, aqui estão alguns flashcards sobre [tópico]:") no campo "responseText(deixe o topico em negrito usando markdown)".
           d.  O campo "generated_questions" DEVE ser null.
       5.  **SE a intenção for INFO_PAVE:**
-          a.  Gere uma resposta textual curta e amigável confirmando o pedido de informação e sugerindo consultar a página oficial (ex: "Para informações detalhadas sobre o PAVE, o ideal é consultar a página de informações ou o edital mais recente."). Coloque essa resposta em "responseText".Você pode usar markdown.
+          a.  Gere uma resposta textual curta e amigável confirmando o pedido de informação e sugerindo consultar a página  (ex: "Para informações detalhadas sobre o PAVE, o ideal é consultar a página de informações ou o edital mais recente."). Coloque essa resposta em "responseText".Você pode usar markdown.
           b.  Os campos "generated_questions" e "generated_flashcards" DEVEM ser null.
       6.  **SE a intenção for CONVERSAR (e não for INFO_PAVE):** Gere uma resposta textual apropriada e coloque-a em "responseText". Os campos "generated_questions" e "generated_flashcards" DEVEM ser null.Você pode usar markdown.
       7.  **SE a intenção for BUSCAR_QUESTAO ou DESCONHECIDO:** Os campos "generated_questions", "generated_flashcards" e "responseText" DEVEM ser null.
