@@ -64,7 +64,7 @@
     light-dark(var(--light-border, #dadce0), var(--dark-border, #5f6368));
   background-color: light-dark(
     var(--light-card-bg, #e6f4ea),
-    var(--dark-card-bg, #3c4043)
+    var(--dark-card-bg, #2c2c2c)
   );
   color: light-dark(
     var(--light-text-primary, #202124),
