@@ -35,7 +35,7 @@ const slideVariants = {
   }),
 };
 
-function QuestionCarousel({ questionsData, onRequestExplanation }) { // <<< NOVA PROP
+function QuestionCarousel({ questionsData }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
@@ -107,11 +107,7 @@ function QuestionCarousel({ questionsData, onRequestExplanation }) { // <<< NOVA
           >
             {currentQuestion && (
               // Passar uma prop para QuestionLayout para que ele não renderize sua borda/fundo
-              <QuestionLayout
-                questionData={currentQuestion}
-                isInsideCarousel={true}
-                onRequestExplanation={onRequestExplanation} // <<< PASSAR PROP
-              />
+              <QuestionLayout questionData={currentQuestion} isInsideCarousel={true} />
             )}
           </motion.div>
         </AnimatePresence>
