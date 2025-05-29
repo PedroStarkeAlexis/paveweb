@@ -29,24 +29,27 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false, onRequ
     setAnswered(false);
     setFeedback({});
     setIsExplanationLoading(false);
+    setExplanationRequested(false);
   }, [safeQuestionData]);
 
   const handleAlternativeClick = (clickedLetter) => {
-    // Permite clicar mesmo se 'answered' for true, para o caso de querer pedir explicação após já ter visto a resposta.
-    // A principal mudança de estado é 'answered' e 'feedback.choice'.
+    if (answered) return;
     setAnswered(true);
-    setFeedback({ choice: clickedLetter }); // Guarda apenas a letra que o usuário clicou
+    const isCorrect = clickedLetter === resposta_letra;
+    // Armazena a letra que o usuário clicou para a explicação
+    setFeedback({
+      choice: clickedLetter,
+      status: isCorrect ? 'correct-choice' : 'incorrect-choice'
+    });
   };
 
   const handleExplainOrShowAnswerClick = async () => {
-    if (isExplanationLoading) return; // Evita múltiplos cliques enquanto carrega
+    if (explanationRequested && isExplanationLoading) return; // Evita múltiplos cliques enquanto carrega
 
     // Sempre marca como respondido e revela a resposta na UI
     setAnswered(true);
-    // Se feedback.choice não está definido, significa que o usuário clicou direto em "Explicar/Mostrar"
-    // sem antes selecionar uma alternativa.
-    if (feedback.choice === undefined) {
-      setFeedback({ choice: null }); // Indica que a resposta foi revelada sem escolha prévia.
+    if (Object.keys(feedback).length === 0) { // Se o usuário não clicou em nenhuma alternativa antes
+      setFeedback({ choice: null, status: null }); // Marca como respondido mas sem escolha do usuário
     }
 
     if (onRequestExplanation) {
@@ -85,14 +88,14 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false, onRequ
   return (
     <div className={layoutClassName} id={id.toString()} data-correct-answer={resposta_letra}>
       <div className="question-header">
-        {tags.length > 0 ? tags : <span className="question-tag">Questão Genérica</span>}
+        {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
       </div>
 
       <div className="question-body">
         {React.isValidElement(texto_questao) ? texto_questao : <ReactMarkdown remarkPlugins={[remarkGfm]}>{textoQuestaoString}</ReactMarkdown>}
         {referenciaString && (
           <div className="question-reference">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{`Referência: ${referenciaString}`}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{referenciaString}</ReactMarkdown>
           </div>
         )}
       </div>
@@ -108,12 +111,14 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false, onRequ
           let itemClass = 'alternative-item';
 
           if (answered) {
-            const userClickedThisAlternative = altLetter === feedback.choice;
-            if (isCorrectAnswer) { // Se esta alternativa é a correta
+            if (isCorrectAnswer) {
               icon = '✔';
               letterBoxClass += ' feedback-correct';
               itemClass += ' correct-answer';
-            } else if (userClickedThisAlternative) { // Se esta não é a correta, mas foi a clicada
+              if (choiceStatus === 'correct-choice') {
+                itemClass += ' correct-choice';
+              }
+            } else if (choiceStatus === 'incorrect-choice') {
               icon = '✗';
               letterBoxClass += ' feedback-incorrect';
               itemClass += ' incorrect-choice';
@@ -150,29 +155,22 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false, onRequ
             {isCurrentlySaved ? <IconBookmarkFilled /> : <IconBookmark />}
           </button>
         )}
-        {/* Container para o botão e/ou texto da resposta correta */}
-        <div style={{
-          marginLeft: isInsideCarousel || (!isInsideCarousel && !isCurrentlySaved) ? 'auto' : '0',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px' // Espaço entre o botão (se visível) e o texto da resposta
-        }}>
-          {/* Botão Explicar/Mostrar Resposta */}
-          {(!answered || onRequestExplanation) && (
+        <div style={{ marginLeft: isInsideCarousel ? 'auto' : '0' }}> {/* Empurra para a direita se só tiver o botão de resposta */}
+          {!answered && (
             <button
-              className="show-answer-btn"
+              className="show-answer-btn" // Manter a classe para estilo, mas o texto muda
               onClick={handleExplainOrShowAnswerClick}
               disabled={isExplanationLoading}
             >
-              {isExplanationLoading
-                ? "Explicando..."
-                : onRequestExplanation
-                ? "Explicar Resposta"
-                : "Mostrar Resposta"}
+              {isExplanationLoading ? "Explicando..." : (onRequestExplanation ? "Explicar Resposta" : "Mostrar Resposta")}
             </button>
           )}
-          {/* Texto da Resposta Correta */}
-          {answered && (
+          {answered && onRequestExplanation && !explanationRequested && ( // Se já respondeu, mas não pediu explicação
+            <button className="show-answer-btn" onClick={handleExplainOrShowAnswerClick} disabled={isExplanationLoading}>
+              {isExplanationLoading ? "Explicando..." : "Explicar Resposta"}
+            </button>
+          )}
+          {answered && (!onRequestExplanation || (onRequestExplanation && explanationRequested && !isExplanationLoading)) && ( // Mostra texto se não tem como pedir explicação ou se já pediu e não está carregando
             <span className="correct-answer-text">
               Correta: {resposta_letra || 'N/D'}) {(alternativas || []).find(a => a.letra === resposta_letra)?.texto || ''}
             </span>
