@@ -1,27 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './DevModelSelector.css';
 
-// ATUALIZADO: Lista de modelos baseada na imagem
-const AVAILABLE_MODELS = [
-  { id: 'gemini-2.5-flash-preview-05-20', name: 'Gemini 2.5 Flash Preview 05-20' },
-  { id: 'gemini-2.5-flash-preview-04-17', name: 'gemini 2.5 flash preview 04-17'},
-  { id: 'gemini-2.5-pro-preview-05-06', name: 'Gemini 2.5 Pro Preview 05-06' },
-  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash' },
-  { id: 'gemini-2.0-flash-lite-latest', name: 'Gemini 2.0 Flash-Lite' },
-  { id: 'gemini-1.5-flash', name: 'gemini-1.5-flash' },
-  { id: 'gemini-1.5-flash-8b', name: 'Gemini 1.5 Flash-8B' },
- 
-  // Adicionar aqui modelos legados que estavam antes, se ainda quiser testá-los
-  // { id: 'gemini-1.0-pro', name: 'Gemini 1.0 Pro (Legado)' },
-];
-
 function DevModelSelector({ isOpen, onClose, currentModel, onSelectModel }) {
+  const [models, setModels] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Only fetch models if the modal is open and we haven't fetched them yet.
+    if (isOpen && models.length === 0 && !isLoading) {
+      const fetchModels = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+          const response = await fetch('/api/get-models');
+          if (!response.ok) {
+            throw new Error(`Falha ao buscar modelos: ${response.statusText}`);
+          }
+          const data = await response.json();
+          setModels(data);
+        } catch (err) {
+          setError(err.message);
+          console.error("Erro ao buscar modelos:", err);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchModels();
+    }
+    // Dependency array: runs when `isOpen` changes.
+  }, [isOpen, models.length, isLoading]);
+
   if (!isOpen) {
     return null;
   }
 
-  const handleModelChange = (event) => {
-    onSelectModel(event.target.value);
+  const handleModelChange = (event) => onSelectModel(event.target.value);
+
+  const renderContent = () => {
+    if (isLoading) {
+      return <p>Carregando modelos...</p>;
+    }
+    if (error) {
+      return <p style={{ color: 'var(--error-primary)' }}>Erro: {error}</p>;
+    }
+    if (models.length === 0) {
+      return <p>Nenhum modelo disponível encontrado.</p>;
+    }
+    return models.map((model) => (
+      <label key={model.id} className="dev-model-option">
+        <input
+          type="radio"
+          name="gemini-model"
+          value={model.id}
+          checked={currentModel === model.id}
+          onChange={handleModelChange}
+        />
+        <span className="dev-model-name">{model.name}</span>
+        {model.id === currentModel && <span className="dev-model-current-tag">(Atual)</span>}
+      </label>
+    ));
   };
 
   return (
@@ -30,19 +69,7 @@ function DevModelSelector({ isOpen, onClose, currentModel, onSelectModel }) {
         <h2>Selecionar Modelo Gemini (Dev)</h2>
         <p>O modelo selecionado será usado para as próximas chamadas à API.</p>
         <div className="dev-model-list">
-          {AVAILABLE_MODELS.map((model) => (
-            <label key={model.id} className="dev-model-option">
-              <input
-                type="radio"
-                name="gemini-model"
-                value={model.id}
-                checked={currentModel === model.id}
-                onChange={handleModelChange}
-              />
-              <span className="dev-model-name">{model.name}</span>
-              {model.id === currentModel && <span className="dev-model-current-tag">(Atual)</span>}
-            </label>
-          ))}
+          {renderContent()}
         </div>
         <button onClick={onClose} className="dev-model-close-btn">
           Fechar
