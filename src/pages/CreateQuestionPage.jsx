@@ -99,7 +99,7 @@ function CreateQuestionPage() {
   const isFormValid = formData.subject && (formData.topic || formData.customTopic.trim() !== '');
 
   return (
-    <div className="create-question-page-container">
+    <div className="create-question-page-container question-bank-container">
       {pageState === 'FORM' && (
         <>
           <h1 className="create-question-title">Gerador de Questões ✨</h1>

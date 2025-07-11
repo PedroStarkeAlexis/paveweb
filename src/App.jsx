@@ -321,8 +321,6 @@ function App() {
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
                         <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
-                        <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
-                        <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
                         {/* "Info PAVE" foi removido da Sidebar */}
                     </ul>
@@ -372,8 +370,6 @@ function App() {
                     />
                     <Route path="/banco-questoes" element={<QuestionBankPage />} />
                     <Route path="/calculadora" element={<CalculadoraPage />} />
-                    <Route path="/criar-questao" element={<CreateQuestionPage />} />
-                    <Route path="/criar-questao" element={<CreateQuestionPage />} />
                     <Route path="/criar-questao" element={<CreateQuestionPage />} />
                     <Route path="/questoes-salvas" element={<SavedQuestionsPage />} />
                     {/* <Route path="/informacoes-pave" element={<InformacoesPavePage />} />  Adicionar a rota quando o componente da página existir */}

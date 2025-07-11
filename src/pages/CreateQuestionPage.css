@@ -1,37 +1,31 @@
-.create-question-page {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  padding: 30px;
-  max-width: 900px;
-  margin: 0 auto;
-  background-color: var(--bg-primary);
-  border-radius: 8px;
-  box-shadow: var(--shadow-elevation-low);
-}
+/* src/pages/CreateQuestionPage.css */
 
-.create-question-header {
+.create-question-page-container {
+  padding: 20px;
+  max-width: 800px; /* Mesma largura do QuestionBankPage */
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-secondary);
+  gap: 20px;
 }
 
 .create-question-title {
   font-size: 1.8em;
   font-weight: 600;
   color: var(--text-primary);
+  border-bottom: 1px solid var(--border-secondary);
+  padding-bottom: 15px;
+  margin-bottom: 5px;
 }
 
 .create-question-subtitle {
   font-size: 1em;
   color: var(--text-secondary);
   line-height: 1.6;
+  margin-bottom: 20px;
 }
 
 .generation-form {
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 25px;
@@ -176,6 +170,7 @@
   gap: 20px;
 }
 
+/* Dark Mode */
 [data-theme="dark"] .create-question-title {
   color: var(--text-primary);
   border-bottom-color: var(--border-primary);
@@ -218,5 +213,8 @@
 @media (max-width: 600px) {
   .form-grid {
     grid-template-columns: 1fr;
+  }
+  .create-question-page-container {
+    padding: 15px;
   }
 }
