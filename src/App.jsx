@@ -9,6 +9,7 @@ import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPa
 import CreateQuestionPage from './pages/CreateQuestionPage';
 import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage'; // Nova página
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
+import FlashcardGeneratorPage from './features/flashcardGenerator/FlashcardGeneratorPage';
 import DevModelSelector from './components/dev/DevModelSelector'; // <<< NOVO IMPORT
 
 // --- Importar componentes comuns e hooks globais ---
@@ -321,6 +322,7 @@ function App() {
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
                         <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
+                        <NavLink to="/gerador-flashcards" icon={IconSparkles}>Gerador de Flashcards</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
                         {/* "Info PAVE" foi removido da Sidebar */}
                     </ul>
@@ -375,7 +377,8 @@ function App() {
                     />
                     <Route path="/banco-questoes" element={<QuestionBankPage />} />
                     <Route path="/calculadora" element={<CalculadoraPage />} />
-                    {/* <Route path="/criar-questao" element={<CreateQuestionPage />} /> */}
+                    <Route path="/criar-questao" element={<CreateQuestionPage />} />
+                    <Route path="/gerador-flashcards" element={<FlashcardGeneratorPage />} />
                     <Route path="/questoes-salvas" element={<SavedQuestionsPage />} />
                     {/* <Route path="/informacoes-pave" element={<InformacoesPavePage />} />  Adicionar a rota quando o componente da página existir */}
                     <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>Página não encontrada (404)</h2></div>} />
