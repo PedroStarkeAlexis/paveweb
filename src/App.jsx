@@ -327,12 +327,17 @@ function App() {
                 </nav>
                 <div className="sidebar-footer">
                     <ul>
-                        {/* BOTÃO DE TEMA REDONDO E ANIMADO NA SIDEBAR */}
-                        <li className="theme-toggle-sidebar-container"> {/* Classe para controlar o container do botão */}
-                            <ThemeToggleButton
-                                isDarkMode={darkMode}
-                                toggleDarkMode={handleThemeToggle}
-                            />
+                        <li>
+                            <a
+                                href="#" 
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleThemeToggle();
+                                }}
+                            >
+                                {darkMode ? <IconSun className="sidebar-icon-footer" /> : <IconMoon className="sidebar-icon-footer" />}
+                                <span className="nav-link-text">{darkMode ? 'Modo Claro' : 'Modo Escuro'}</span>
+                            </a>
                         </li>
                         <li>
                             {/*
