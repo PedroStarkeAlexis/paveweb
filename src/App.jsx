@@ -22,7 +22,7 @@ import IconCalculator from './components/icons/IconCalculator';
 import IconChat from './components/icons/IconChat';
 import IconBook from './components/icons/IconBook';
 import IconHelp from './components/icons/IconHelp';
-import IconSparkles from './components/icons/IconSparkles';
+import IconSparkles from './components/icons/IconSparkles'; // Novo ícone
 import IconBookmark from './components/icons/IconBookmark'; // Ícone para Salvos
 import IconEllipsisHorizontal from './components/icons/IconEllipsisHorizontal'; // Ícone para o "Mais"
 import IconSun from './components/icons/IconSun'; // Ícone Sol para menu
@@ -109,7 +109,7 @@ function App() {
         });
     }, [setDarkMode]);
 
-    // useEffect para escutar mudanças no tema do sistema
+    // useEffect para escutar mudan��as no tema do sistema
     // S�� atualiza o tema do app se NENHUMA preferência manual foi salva.
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -180,7 +180,7 @@ function App() {
             // Para outros tipos de mensagens (como question_carousel, pave_info_card)
             // que não têm um 'content' textual direto para o histórico da IA,
             // e cujo comentário introdutório já foi adicionado como uma mensagem de texto separada.
-            // Poderíamos adicionar uma representação textual deles também, se necessário no futuro.
+            // Poder��amos adicionar uma representação textual deles também, se necessário no futuro.
             // Por agora, eles não adicionarão uma entrada separada ao historyForAPI além do seu comentário.
             return null;
         }).filter(Boolean);
@@ -270,7 +270,7 @@ function App() {
             // Fallback se nenhuma resposta foi preparada e a API retornou OK
             // (mas não se já tivermos um card de info, pois ele já é uma resposta)
             if (botResponses.length === 0 && response.ok && data?.displayCard !== "pave_info_recommendation") {
-                botResponses.push({ type: 'text', sender: 'bot', content: 'Não tenho uma resposta específica para isso no momento.', id: `${botMessageIdBase}-fallback` });
+                botResponses.push({ type: 'text', sender: 'bot', content: 'Não tenho uma resposta espec��fica para isso no momento.', id: `${botMessageIdBase}-fallback` });
             }
 
             if (botResponses.length > 0) { setMessages(prev => [...prev, ...botResponses]); }

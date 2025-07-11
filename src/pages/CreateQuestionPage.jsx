@@ -122,7 +122,7 @@ function CreateQuestionPage() {
               </div>
               <div className="form-group form-group-full">
                 <label htmlFor="customTopic">...ou descreva um Tópico Personalizado</label>
-                <textarea id="customTopic" name="customTopic" value={formData.customTopic} onChange={handleInputChange} placeholder="Ex: A participação do Brasil na Segunda Guerra Mundial" rows="3"></textarea>
+                <textarea id="customTopic" name="customTopic" value={formData.customTopic} onChange={handleInputChange} placeholder="Ex: A participa��ão do Brasil na Segunda Guerra Mundial" rows="3"></textarea>
               </div>
               <div className="form-group">
                 <label htmlFor="count">Quantidade</label>
