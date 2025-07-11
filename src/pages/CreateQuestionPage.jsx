@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import QuestionLayout from '../components/common/QuestionLayout';
+import QuestionCarousel from '../features/chat/components/QuestionCarousel';
 import './CreateQuestionPage.css';
 
 // Componente para o indicador de carregamento
