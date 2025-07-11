@@ -6,6 +6,9 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ChatInterface from './features/chat/components/ChatInterface';
 import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage';
+import CreateQuestionPage from './pages/CreateQuestionPage'; // Nova página
+import CreateQuestionPage from './pages/CreateQuestionPage'; // Nova página
+import CreateQuestionPage from './pages/CreateQuestionPage'; // Nova página
 import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage'; // Nova página
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
 import DevModelSelector from './components/dev/DevModelSelector'; // <<< NOVO IMPORT
@@ -21,6 +24,9 @@ import IconCalculator from './components/icons/IconCalculator';
 import IconChat from './components/icons/IconChat';
 import IconBook from './components/icons/IconBook';
 import IconHelp from './components/icons/IconHelp';
+import IconSparkles from './components/icons/IconSparkles'; // Novo ícone
+import IconSparkles from './components/icons/IconSparkles'; // Novo ícone
+import IconSparkles from './components/icons/IconSparkles'; // Novo ícone
 import IconBookmark from './components/icons/IconBookmark'; // Ícone para Salvos
 import IconEllipsisHorizontal from './components/icons/IconEllipsisHorizontal'; // Ícone para o "Mais"
 import IconSun from './components/icons/IconSun'; // Ícone Sol para menu
@@ -318,6 +324,9 @@ function App() {
                         <NavLink to="/" icon={IconHome}>Início</NavLink>
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
+                        <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
+                        <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
+                        <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
                         {/* "Info PAVE" foi removido da Sidebar */}
                     </ul>
@@ -367,6 +376,9 @@ function App() {
                     />
                     <Route path="/banco-questoes" element={<QuestionBankPage />} />
                     <Route path="/calculadora" element={<CalculadoraPage />} />
+                    <Route path="/criar-questao" element={<CreateQuestionPage />} />
+                    <Route path="/criar-questao" element={<CreateQuestionPage />} />
+                    <Route path="/criar-questao" element={<CreateQuestionPage />} />
                     <Route path="/questoes-salvas" element={<SavedQuestionsPage />} />
                     {/* <Route path="/informacoes-pave" element={<InformacoesPavePage />} />  Adicionar a rota quando o componente da página existir */}
                     <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>Página não encontrada (404)</h2></div>} />
