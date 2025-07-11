@@ -6,9 +6,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ChatInterface from './features/chat/components/ChatInterface';
 import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage';
-import CreateQuestionPage from './pages/CreateQuestionPage'; // Nova página
-import CreateQuestionPage from './pages/CreateQuestionPage'; // Nova página
-import CreateQuestionPage from './pages/CreateQuestionPage'; // Nova página
+import CreateQuestionPage from './pages/CreateQuestionPage';
 import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage'; // Nova página
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
 import DevModelSelector from './components/dev/DevModelSelector'; // <<< NOVO IMPORT
@@ -24,9 +22,7 @@ import IconCalculator from './components/icons/IconCalculator';
 import IconChat from './components/icons/IconChat';
 import IconBook from './components/icons/IconBook';
 import IconHelp from './components/icons/IconHelp';
-import IconSparkles from './components/icons/IconSparkles'; // Novo ícone
-import IconSparkles from './components/icons/IconSparkles'; // Novo ícone
-import IconSparkles from './components/icons/IconSparkles'; // Novo ícone
+import IconSparkles from './components/icons/IconSparkles';
 import IconBookmark from './components/icons/IconBookmark'; // Ícone para Salvos
 import IconEllipsisHorizontal from './components/icons/IconEllipsisHorizontal'; // Ícone para o "Mais"
 import IconSun from './components/icons/IconSun'; // Ícone Sol para menu
