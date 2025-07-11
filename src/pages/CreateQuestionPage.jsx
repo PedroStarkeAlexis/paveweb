@@ -139,9 +139,7 @@ function CreateQuestionPage() {
           <button onClick={handleReset} className="back-to-form-button">← Gerar Outra Questão</button>
           {error && <div className="error-message-box">{error}</div>}
           {generatedQuestions.length > 0 && (
-            <div className="questions-list">
-              {generatedQuestions.map(q => <QuestionLayout key={q.id} questionData={q} />)}
-            </div>
+            <QuestionCarousel questionsData={generatedQuestions} />
           )}
         </div>
       )}
