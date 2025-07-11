@@ -1,0 +1,222 @@
+.create-question-page {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: var(--bg-primary);
+  border-radius: 8px;
+  box-shadow: var(--shadow-elevation-low);
+}
+
+.create-question-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.create-question-title {
+  font-size: 1.8em;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.create-question-subtitle {
+  font-size: 1em;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.generation-form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+}
+
+.form-group select,
+.form-group textarea,
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 1em;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group select:focus,
+.form-group textarea:focus,
+.form-group input[type="number"]:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 1px var(--brand-primary);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group select:disabled {
+  background-color: var(--bg-secondary);
+  cursor: not-allowed;
+}
+
+.generate-button {
+  align-self: flex-start;
+  padding: 10px 25px;
+  background-color: var(--brand-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.generate-button:hover:not(:disabled) {
+  background-color: var(--brand-primary-hover);
+}
+
+.generate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loading State */
+.loading-indicator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 50px 0;
+  flex-grow: 1;
+}
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid var(--border-primary);
+  border-bottom-color: var(--brand-primary);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.loading-text {
+  font-size: 1.1em;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Result State */
+.results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.back-to-form-button {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--brand-primary);
+  font-weight: 500;
+  font-size: 0.95em;
+  cursor: pointer;
+  padding: 5px 0;
+}
+.error-message-box {
+  background-color: var(--error-secondary);
+  color: var(--error-primary);
+  border: 1px solid var(--error-primary);
+  padding: 15px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+[data-theme="dark"] .create-question-title {
+  color: var(--text-primary);
+  border-bottom-color: var(--border-primary);
+}
+
+[data-theme="dark"] .create-question-subtitle {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .form-group label {
+  color: var(--text-secondary);
+}
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea,
+[data-theme="dark"] .form-group input[type="number"] {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+[data-theme="dark"] .form-group select:disabled {
+  background-color: var(--bg-primary);
+}
+[data-theme="dark"] .generate-button:disabled {
+  background-color: #555;
+  color: #aaa;
+}
+[data-theme="dark"] .loading-spinner {
+  border-color: var(--border-primary);
+  border-bottom-color: var(--brand-primary);
+}
+[data-theme="dark"] .loading-text {
+  color: var(--text-secondary);
+}
+[data-theme="dark"] .error-message-box {
+  background-color: var(--error-secondary);
+  color: var(--error-primary);
+  border-color: var(--error-primary);
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
