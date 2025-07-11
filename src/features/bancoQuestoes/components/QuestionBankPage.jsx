@@ -179,6 +179,9 @@ function QuestionBankPage() {
                 <Link to="/questoes-salvas" className="saved-questions-page-link">
                     Ver Questões Salvas
                 </Link>
+                <Link to="/criar-questao" className="create-question-page-link">
+                    Criar Questão
+                </Link>
             </div>
 
             <div className="results-summary">

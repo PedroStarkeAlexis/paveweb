@@ -375,7 +375,7 @@ function App() {
                     />
                     <Route path="/banco-questoes" element={<QuestionBankPage />} />
                     <Route path="/calculadora" element={<CalculadoraPage />} />
-                    <Route path="/criar-questao" element={<CreateQuestionPage />} />
+                    {/* <Route path="/criar-questao" element={<CreateQuestionPage />} /> */}
                     <Route path="/questoes-salvas" element={<SavedQuestionsPage />} />
                     {/* <Route path="/informacoes-pave" element={<InformacoesPavePage />} />  Adicionar a rota quando o componente da página existir */}
                     <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>Página não encontrada (404)</h2></div>} />
