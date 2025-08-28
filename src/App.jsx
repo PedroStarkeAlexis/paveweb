@@ -39,14 +39,17 @@ import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext';
 function NavLink({ to, icon: IconComponent, children }) {
     const location = useLocation();
     const isActive = !to.startsWith('http') && location.pathname === to;
-    const linkClass = isActive ? 'active' : '';
+
+    const baseClasses = "flex items-center px-4 py-2 mx-2 rounded-md text-sm font-medium transition-colors duration-200";
+    const activeClasses = "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white";
+    const inactiveClasses = "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700";
 
     if (to.startsWith('http')) {
         return (
             <li>
-                <a href={to} target="_blank" rel="noopener noreferrer" className="external-link">
-                    {IconComponent && <IconComponent className="sidebar-icon" />}
-                    <span className="nav-link-text">{children}</span>
+                <a href={to} target="_blank" rel="noopener noreferrer" className={`${baseClasses} ${inactiveClasses}`}>
+                    {IconComponent && <IconComponent className="h-5 w-5 mr-3 text-gray-400" />}
+                    <span>{children}</span>
                 </a>
             </li>
         );
@@ -54,14 +57,13 @@ function NavLink({ to, icon: IconComponent, children }) {
 
     return (
         <li>
-            <Link to={to} className={linkClass}>
-                {IconComponent && <IconComponent className="sidebar-icon" />}
-                <span className="nav-link-text">{children}</span>
+            <Link to={to} className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}>
+                {IconComponent && <IconComponent className={`h-5 w-5 mr-3 ${isActive ? 'text-gray-700 dark:text-gray-200' : 'text-gray-400'}`} />}
+                <span>{children}</span>
             </Link>
         </li>
     );
 }
-
 // --- Constante para o Modelo Padr��o ---
 const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash-preview-05-20'; // Ou o que estiver em env.MODEL_NAME
 const DEV_MODEL_STORAGE_KEY = 'dev_selected_gemini_model';
@@ -311,34 +313,34 @@ function App() {
     ];
 
     return (
-        <div className="app-container" data-theme={darkMode ? 'dark' : 'light'}> {/* Garante que data-theme esteja no container principal */}
-            <aside className="sidebar">
-                <div className="sidebar-header">
-                    <span className="logo-placeholder">Central PAVE</span> {/* Alterado para nome do app */}
+        <div className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200" data-theme={darkMode ? 'dark' : 'light'}>
+            <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+                <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+                    <span className="text-xl font-semibold text-emerald-600">Central PAVE</span>
                 </div>
-                <nav className="sidebar-nav">
-                    <ul>
+                <nav className="flex-1 overflow-y-auto py-4">
+                    <ul className="space-y-1">
                         <NavLink to="/" icon={IconHome}>Início</NavLink>
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
                         <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
                         <NavLink to="/gerador-flashcards" icon={IconSparkles}>Gerador de Flashcards</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
-                        {/* "Info PAVE" foi removido da Sidebar */}
                     </ul>
                 </nav>
-                <div className="sidebar-footer">
-                    <ul>
+                <div className="flex-shrink-0 p-2 border-t border-gray-200 dark:border-gray-700">
+                    <ul className="space-y-1">
                         <li>
                             <a
-                                href="#" 
+                                href="#"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     handleThemeToggle();
                                 }}
+                                className="flex items-center px-4 py-2 mx-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                             >
-                                {darkMode ? <IconSun className="sidebar-icon-footer" /> : <IconMoon className="sidebar-icon-footer" />}
-                                <span className="nav-link-text">{darkMode ? 'Modo Claro' : 'Modo Escuro'}</span>
+                                {darkMode ? <IconSun className="h-5 w-5 mr-3 text-gray-400" /> : <IconMoon className="h-5 w-5 mr-3 text-gray-400" />}
+                                <span>{darkMode ? 'Modo Claro' : 'Modo Escuro'}</span>
                             </a>
                         </li>
                         <li>
@@ -352,17 +354,18 @@ function App() {
                                 href="#" // Appzi deve lidar com o clique.
                                 data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc1dbc158" // <<< SUBSTITUA ESTE VALOR
                                 onClick={(e) => e.preventDefault()} // Opcional: Garante que o link não navegue
+                                className="flex items-center px-4 py-2 mx-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                             >
-                                <IconHelp className="sidebar-icon-footer" />
-                                <span className="nav-link-text">Ajuda</span>
+                                <IconHelp className="h-5 w-5 mr-3 text-gray-400" />
+                                <span>Ajuda</span>
                             </a>
                         </li>
                     </ul>
-                    <div className="copyright"> Desenvolvido por Pedro Alexis {new Date().getFullYear()} </div>
+                    <div className="text-center text-xs text-gray-500 mt-4 px-4"> Desenvolvido por Pedro Alexis {new Date().getFullYear()} </div>
                 </div>
             </aside>
 
-            <main className="main-content">
+            <main className="flex-1 flex flex-col overflow-hidden">
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route
@@ -380,8 +383,8 @@ function App() {
                     <Route path="/criar-questao" element={<CreateQuestionPage />} />
                     <Route path="/gerador-flashcards" element={<FlashcardGeneratorPage />} />
                     <Route path="/questoes-salvas" element={<SavedQuestionsPage />} />
-                    {/* <Route path="/informacoes-pave" element={<InformacoesPavePage />} />  Adicionar a rota quando o componente da página existir */}
-                    <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>Página não encontrada (404)</h2></div>} />
+                    {/* Adicionar a rota quando o componente da página existir */}
+                    <Route path="*" element={<div className="p-10 text-center"><h2>Página não encontrada (404)</h2></div>} />
                 </Routes>
             </main>
 
