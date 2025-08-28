@@ -9,13 +9,18 @@ function Message({ sender, text }) { // Recebe sender e text como props
 
   return (
     // Renderiza a div da bolha com as classes corretas
-    <div className={`message ${sender === 'user' ? 'user-message' : 'bot-message'}`}>
+    <div
+      className={`max-w-[85%] md:max-w-[80%] py-2.5 px-4 rounded-2xl leading-relaxed break-words transition-colors duration-300 ${sender === 'user'
+          ? 'self-end bg-blue-100 dark:bg-blue-900/60 text-blue-900 dark:text-blue-100 rounded-br-lg'
+          : 'self-start bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 rounded-bl-lg'
+        }`}
+    >
       {/*
         Renderiza o conteúdo usando ReactMarkdown.
         O conteúdo (markdownContent) é passado como filho direto do componente.
         remarkPlugins={[remarkGfm]} habilita funcionalidades extras como tabelas, etc.
       */}
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-ul:my-2 prose-ol:my-2">
         {markdownContent}
       </ReactMarkdown>
     </div>
