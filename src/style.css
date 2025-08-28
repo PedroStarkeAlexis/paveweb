@@ -1,10 +1,6 @@
 /* Importar uma fonte moderna (já existente) */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* --- Reset Básico e Estilos Globais --- */
 * {
   margin: 0;
