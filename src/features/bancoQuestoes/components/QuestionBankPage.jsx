@@ -41,6 +41,7 @@ function QuestionBankPage() {
     const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, totalItems: 0, limit: 10 }); // Limite padrão
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [hasSearched, setHasSearched] = useState(false); // Novo: controla se uma busca já foi feita
     const [isLoadingFilters, setIsLoadingFilters] = useState(true);
 
     // Função para buscar dados da API
@@ -95,9 +96,11 @@ function QuestionBankPage() {
             const data = JSON.parse(responseBodyText);
             setQuestionsToDisplay(data.questions || []);
             setPagination(prev => ({ ...prev, ...data.pagination, currentPage: page })); // Garante que currentPage seja atualizado corretamente
+            setHasSearched(true); // Marca que uma busca foi realizada
 
         } catch (err) {
             console.error("[QuestionBankPage] Erro no fetch das questões:", err);
+            setHasSearched(true); // Marca que uma busca foi tentada, para mostrar o erro
             setError(err.message || "Falha ao buscar dados.");
             setQuestionsToDisplay([]); // Limpa questões em caso de erro
             setPagination(prev => ({ ...prev, currentPage: 1, totalPages: 1, totalItems: 0 }));
@@ -106,7 +109,7 @@ function QuestionBankPage() {
         }
     }, [pagination.limit]); // Dependência no limit da paginação
 
-    // Efeito para buscar opções de filtro (uma vez) e carga inicial
+    // Efeito para buscar opções de filtro (uma vez na montagem)
     useEffect(() => {
         const loadInitialData = async () => {
             setIsLoadingFilters(true);
@@ -125,21 +128,15 @@ function QuestionBankPage() {
             } finally {
                 setIsLoadingFilters(false);
             }
-            // Carga inicial de questões (página 1, sem filtros, sem query)
-            // A API /api/search-questions deve retornar uma lista vazia ou as primeiras X se não houver query/filtro.
-            fetchData(1, { ano: null, materia: null, etapa: null }, '');
         };
         loadInitialData();
-    }, [fetchData]); // fetchData é memoizado
+    }, []); // Roda apenas uma vez
 
     // Handler para quando os filtros mudam
     const handleFilterChange = useCallback((filterName, value) => {
-        setFilters(prevFilters => {
-            const newFilters = { ...prevFilters, [filterName]: value };
-            fetchData(1, newFilters, searchQuery); // Busca da página 1 com novos filtros
-            return newFilters;
-        });
-    }, [searchQuery, fetchData]);
+        // Apenas atualiza o estado dos filtros, não busca mais automaticamente
+        setFilters(prevFilters => ({ ...prevFilters, [filterName]: value }));
+    }, []);
 
     // Handler para quando a busca é submetida
     const handleSearch = useCallback((query) => {
@@ -184,31 +181,35 @@ function QuestionBankPage() {
                 </Link>
             </div>
 
-            <div className="results-summary">
-                {!isLoading && ( // Mostra mesmo se houver erro, para o erro ser visível
+            {/* Mostra o resumo apenas se uma busca foi feita e não está carregando */}
+            {hasSearched && !isLoading && (
+                <div className="results-summary">
                     <p className="results-count">
                         {pagination.totalItems} questão(ões) encontrada(s).
                         {pagination.totalPages > 0 && ` Exibindo página ${pagination.currentPage} de ${pagination.totalPages}.`}
                     </p>
-                )}
-            </div>
+                </div>
+            )}
 
             {/* Container da Lista de Questões (sem virtualização por agora) */}
             <div className="question-list-container"> {/* Use uma classe genérica para estilização */}
                 {isLoading && <p className="loading-message">Carregando questões...</p>}
-                {error && !isLoading && <p className="error-message">Erro ao carregar questões: {error}</p>}
-                {!isLoading && !error && questionsToDisplay.length === 0 && (
+                {!isLoading && !hasSearched && (
+                    <p className="no-results-message">Use a busca ou os filtros para encontrar questões.</p>
+                )}
+                {hasSearched && error && !isLoading && <p className="error-message">Erro ao carregar questões: {error}</p>}
+                {hasSearched && !isLoading && !error && questionsToDisplay.length === 0 && (
                     <p className="no-results-message">Nenhuma questão encontrada com os critérios atuais.</p>
                 )}
-                {!isLoading && !error && questionsToDisplay.length > 0 && (
+                {hasSearched && !isLoading && !error && questionsToDisplay.length > 0 && (
                     questionsToDisplay.map((question) => (
                         <QuestionLayout key={question.id || `q-${Math.random()}`} questionData={question} />
                     ))
                 )}
             </div>
 
-            {/* Controles de Paginação */}
-            {!isLoading && !error && pagination.totalPages > 1 && (
+            {/* Controles de Paginação (só aparecem após uma busca bem-sucedida com mais de uma página) */}
+            {hasSearched && !isLoading && !error && pagination.totalPages > 1 && (
                 <div className="pagination-controls">
                     <button onClick={handlePrevPage} disabled={pagination.currentPage === 1 || isLoading}>
                         Anterior
