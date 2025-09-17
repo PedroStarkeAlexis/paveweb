@@ -1,0 +1,111 @@
+.filter-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  display: flex;
+  align-items: flex-end; /* Alinha na base */
+}
+
+.filter-modal-content {
+  background-color: var(--bg-primary);
+  width: 100%;
+  max-height: 80vh;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-primary);
+  flex-shrink: 0;
+}
+
+.filter-modal-header h2 {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.filter-modal-header div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clear-button, .close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.clear-button {
+  color: var(--brand-primary);
+  font-weight: 500;
+}
+
+.close-button {
+  font-size: 1.8em;
+  color: var(--text-muted);
+}
+
+.filter-modal-form {
+  padding: 20px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.filter-modal-form .form-group {
+  margin-bottom: 20px;
+}
+.filter-modal-form .form-group label {
+  display: block;
+  font-size: 0.9em;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.filter-modal-form .form-group select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  font-size: 1em;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.filter-modal-footer {
+  padding: 20px;
+  border-top: 1px solid var(--border-primary);
+  flex-shrink: 0;
+}
+
+.apply-filters-button {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--brand-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+/* Dark Mode */
+[data-theme="dark"] .filter-modal-content { background-color: var(--bg-tertiary); }
+[data-theme="dark"] .filter-modal-header { border-bottom-color: var(--border-primary); }
+[data-theme="dark"] .filter-modal-footer { border-top-color: var(--border-primary); }
+[data-theme="dark"] .filter-modal-form .form-group select {
+  background-color: var(--bg-primary);
+  border-color: var(--border-primary);
+}

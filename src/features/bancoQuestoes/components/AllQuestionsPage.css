@@ -1,0 +1,97 @@
+.all-questions-page-container {
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.all-questions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.all-questions-header .title-section h1 {
+  font-size: 1.8em;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.all-questions-header .title-section p {
+  color: var(--text-secondary);
+}
+
+.mobile-filter-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.mobile-filter-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.results-summary {
+  font-size: 0.9em;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.results-list {
+  flex-grow: 1;
+  overflow-y: auto; /* Scroll aqui! */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-right: 10px; /* Espaço para a scrollbar */
+  margin-right: -10px; /* Compensa o padding */
+}
+.results-list::-webkit-scrollbar { width: 6px; }
+.results-list::-webkit-scrollbar-track { background: transparent; }
+.results-list::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+  border-radius: 3px;
+}
+[data-theme="dark"] .results-list::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+}
+
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border-primary);
+  margin-top: 20px;
+}
+
+.pagination-controls button {
+  padding: 8px 15px;
+  border: 1px solid var(--border-secondary);
+  background-color: var(--bg-primary);
+  border-radius: 6px;
+}
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .pagination-controls {
+  border-top-color: var(--border-primary);
+}
+[data-theme="dark"] .pagination-controls button {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-primary);
+}
