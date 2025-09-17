@@ -4,10 +4,10 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
 // --- Importar páginas/features ---
 import HomePage from './pages/HomePage';
-import ChatPage from './features/chat/ChatPage.jsx'; // <<< CORRIGIDO: Adicionada extensão .jsx
+import ChatPage from './features/chat/ChatPage'; // <<< NOVO: Página que gerencia o chat
 import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage';
 import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage';
-import CalculadoraPage from './features/calculadora/CalculadoraPage.jsx'; // Caminho atualizado e corrigido
+import CalculadoraPage from './features/calculadora/CalculadoraPage.jsx'; // Caminho atualizado
 // As páginas de criação foram desativadas da navegação, mas os imports podem ser mantidos para o futuro
 // import CreateQuestionPage from './features/questionCreator/CreateQuestionPage';
 // import FlashcardGeneratorPage from './features/flashcardGenerator/FlashcardGeneratorPage';
