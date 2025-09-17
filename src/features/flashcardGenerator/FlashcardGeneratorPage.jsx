@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import './FlashcardGeneratorPage.css';
-import Flashcard from './components/Flashcard'; // Supondo que o componente Flashcard seja criado
+import './FlashcardGenerator.css';
+import Flashcard from './Flashcard'; // Supondo que o componente Flashcard seja criado
 
 const FlashcardGeneratorPage = () => {
     const [topic, setTopic] = useState('');

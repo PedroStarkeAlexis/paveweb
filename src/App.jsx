@@ -4,13 +4,12 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
 // --- Importar páginas/features ---
 import HomePage from './pages/HomePage';
-import ChatPage from './features/chat/ChatPage'; // <<< NOVO: Página que gerencia o chat
+import ChatInterface from './features/chat/components/ChatInterface';
 import QuestionBankPage from './features/bancoQuestoes/components/QuestionBankPage';
-import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage';
-import CalculadoraPage from './features/calculadora/CalculadoraPage.jsx'; // Caminho atualizado
-// As páginas de criação foram desativadas da navegação, mas os imports podem ser mantidos para o futuro
-// import CreateQuestionPage from './features/questionCreator/CreateQuestionPage';
-// import FlashcardGeneratorPage from './features/flashcardGenerator/FlashcardGeneratorPage';
+import CreateQuestionPage from './pages/CreateQuestionPage';
+import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage'; // Nova página
+import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
+import FlashcardGeneratorPage from './features/flashcardGenerator/FlashcardGeneratorPage';
 import DevModelSelector from './components/dev/DevModelSelector'; // <<< NOVO IMPORT
 
 // --- Importar componentes comuns e hooks globais ---
@@ -24,7 +23,8 @@ import IconCalculator from './components/icons/IconCalculator';
 import IconChat from './components/icons/IconChat';
 import IconBook from './components/icons/IconBook';
 import IconHelp from './components/icons/IconHelp';
-// import IconSparkles from './components/icons/IconSparkles'; // Desativado
+import IconSparkles from './components/icons/IconSparkles'; // Novo ícone
+import IconBookmark from './components/icons/IconBookmark'; // Ícone para Salvos
 import IconEllipsisHorizontal from './components/icons/IconEllipsisHorizontal'; // Ícone para o "Mais"
 import IconSun from './components/icons/IconSun'; // Ícone Sol para menu
 import IconMoon from './components/icons/IconMoon'; // Ícone Lua para menu
@@ -32,6 +32,8 @@ import IconDocumentText from './components/icons/IconDocumentText'; // Ícone pa
 // Importar CSS global principal
 import './style.css';
 import MoreMenu from './components/common/MoreMenu'; // Componente para o menu "Mais"
+// Importar o SavedQuestionsProvider
+import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext';
 
 // --- Componente NavLink (para Sidebar) ---
 function NavLink({ to, icon: IconComponent, children }) {
@@ -60,12 +62,16 @@ function NavLink({ to, icon: IconComponent, children }) {
     );
 }
 
-// --- Constante para o Modelo Padrão ---
+// --- Constante para o Modelo Padr��o ---
 const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash-preview-05-20'; // Ou o que estiver em env.MODEL_NAME
 const DEV_MODEL_STORAGE_KEY = 'dev_selected_gemini_model';
 
 // --- Componente Principal App ---
 function App() {
+    // --- Estado do Chat ---
+    const [messages, setMessages] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
     // --- Estado do Tema ---
     // Modificada para priorizar localStorage, depois o sistema
     const getInitialThemePreference = () => {
@@ -104,7 +110,7 @@ function App() {
         });
     }, [setDarkMode]);
 
-    // useEffect para escutar mudanças no tema do sistema
+    // useEffect para escutar mudan��as no tema do sistema
     // S�� atualiza o tema do app se NENHUMA preferência manual foi salva.
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -147,6 +153,148 @@ function App() {
         // setIsDevMenuOpen(false);
     };
 
+    // --- Handler para Enviar Mensagem ---
+    const handleSendMessage = async (userQuery) => {
+        const newUserMessage = { type: 'text', sender: 'user', content: userQuery, id: `user-${Date.now()}` }; // Adiciona ID
+        const updatedMessages = [...messages, newUserMessage];
+        setMessages(updatedMessages);
+        setIsLoading(true);
+
+        const HISTORY_LENGTH = 8;
+        const historyForAPI = updatedMessages.slice(-HISTORY_LENGTH).map(msg => {
+            if (!msg) return null;
+
+            const role = msg.sender === 'user' ? 'user' : 'model';
+
+            // Se a mensagem for do tipo flashcard_display, criar uma representação textual
+            if (msg.type === 'flashcard_display' && msg.flashcardsData && msg.flashcardsData.length > 0) {
+                let flashcardsText = "Flashcards Gerados (Termos):\n"; // Indicador
+                msg.flashcardsData.forEach((fc, index) => {
+                    flashcardsText += `  - ${fc.term}\n`; // Adiciona apenas o termo, formatado como item de lista
+                });
+                return { role: 'model', parts: [{ text: flashcardsText.trim() }] };
+            }
+            // Para mensagens de texto ou outros tipos que tenham conteúdo textual direto
+            else if (typeof msg.content === 'string' && msg.content.trim() !== '') {
+                return { role, parts: [{ text: msg.content }] };
+            }
+            // Para outros tipos de mensagens (como question_carousel, pave_info_card)
+            // que não têm um 'content' textual direto para o histórico da IA,
+            // e cujo comentário introdutório já foi adicionado como uma mensagem de texto separada.
+            // Poder��amos adicionar uma representação textual deles também, se necessário no futuro.
+            // Por agora, eles não adicionarão uma entrada separada ao historyForAPI além do seu comentário.
+            return null;
+        }).filter(Boolean);
+
+        if (historyForAPI.length === 0 && userQuery) { setIsLoading(false); return; } // Pequena correção, só retorna se não houver userQuery também
+
+        try {
+            const requestBody = {
+                history: historyForAPI,
+                modelName: selectedModelName, // <<< NOVO: Envia o modelo selecionado
+            };
+
+            const response = await fetch('/api/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody), // <<< USA requestBody
+            });
+            const responseBody = await response.text();
+            if (!response.ok) {
+                let errorMsg = `Erro ${response.status}`;
+                try { errorMsg = JSON.parse(responseBody).error || errorMsg; } catch (e) { /* ignora erro de parse */ }
+                throw new Error(errorMsg);
+            }
+            let data;
+            try { data = JSON.parse(responseBody); }
+            catch (e) { throw new Error("Resposta inesperada do servidor."); }
+
+            const botResponses = [];
+            const botMessageIdBase = `bot-${Date.now()}`;
+
+            // 1. Adiciona o comentário/resposta textual da IA, se houver
+            if (data?.commentary?.trim()) {
+                botResponses.push({
+                    type: 'text',
+                    sender: 'bot',
+                    content: data.commentary,
+                    id: `${botMessageIdBase}-comment`
+                });
+            }
+
+            // 2. Adiciona o card de informações do PAVE, se sinalizado
+            if (data?.displayCard === "pave_info_recommendation") {
+                botResponses.push({
+                    type: 'pave_info_card', // <<< NOVO TIPO DE MENSAGEM
+                    sender: 'bot',
+                    id: `${botMessageIdBase}-paveinfocard`
+                    // Não precisa de dados extras, o card é estático por enquanto
+                });
+            }
+
+            // 3. Adiciona Flashcards, se houver
+            if (data?.flashcards?.length > 0) { // NOVO: Checa por flashcards
+                // Validação simples dos dados dos flashcards
+                const validFlashcards = data.flashcards.filter(fc => fc && fc.term && fc.definition);
+                if (validFlashcards.length > 0) {
+                    botResponses.push({
+                        type: 'flashcard_display', // NOVO TIPO DE MENSAGEM
+                        sender: 'bot',
+                        flashcardsData: validFlashcards,
+                        id: `${botMessageIdBase}-flashcards`
+                    });
+                }
+            }
+
+            // 3. Adiciona questões (lógica do carrossel existente)
+            if (data?.questions?.length > 0) {
+                if (data.questions.length > 1) {
+                    botResponses.push({
+                        type: 'question_carousel',
+                        sender: 'bot',
+                        questionsData: data.questions.filter(q => q && q.alternativas && q.resposta_letra),
+                        id: `${botMessageIdBase}-carousel`
+                    });
+                } else {
+                    const q = data.questions[0];
+                    if (q && q.alternativas && q.resposta_letra) {
+                        botResponses.push({ type: 'question', sender: 'bot', questionData: q, id: `${botMessageIdBase}-q0` });
+                    } else {
+                        // Only add this error if no other meaningful response (like a comment or info card) is present
+                        if (botResponses.length === 0 || data.displayCard !== "pave_info_recommendation") {
+                            botResponses.push({ type: 'text', sender: 'bot', content: `(Dados de questão incompletos)`, id: `${botMessageIdBase}-qerr0` });
+                        }
+                    }
+                }
+            }
+
+            // Fallback se nenhuma resposta foi preparada e a API retornou OK
+            // (mas não se já tivermos um card de info, pois ele já é uma resposta)
+            if (botResponses.length === 0 && response.ok && data?.displayCard !== "pave_info_recommendation") {
+                botResponses.push({ type: 'text', sender: 'bot', content: 'Não tenho uma resposta espec��fica para isso no momento.', id: `${botMessageIdBase}-fallback` });
+            }
+
+            if (botResponses.length > 0) { setMessages(prev => [...prev, ...botResponses]); }
+
+        } catch (error) {
+            console.error("Erro no handleSendMessage:", error);
+            const errorResponse = { type: 'text', sender: 'bot', content: `Desculpe, ocorreu um problema: ${error.message}`, id: `err-${Date.now()}` };
+            setMessages(prev => [...prev, errorResponse]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // --- Efeito Inicial do Chat ---
+    useEffect(() => {
+        if (messages.length === 0) {
+            setMessages([
+                { type: 'text', sender: 'bot', content: 'Que bom te ver por aqui! 👋 Eu posso buscar questões do PAVE pra você ou, se preferir, criar uma nova. É só pedir!', id: `bot-initial-${Date.now()}` }
+            ]);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Executa apenas na montagem inicial
+
     // Itens para a BottomNavBar (Mobile)
     const bottomNavItems = [
         { to: "/", icon: IconHome, label: "Início" },
@@ -173,8 +321,8 @@ function App() {
                         <NavLink to="/" icon={IconHome}>Início</NavLink>
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
-                        {/* <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink> */}
-                        {/* <NavLink to="/gerador-flashcards" icon={IconSparkles}>Gerador de Flashcards</NavLink> */}
+                        <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
+                        <NavLink to="/gerador-flashcards" icon={IconSparkles}>Gerador de Flashcards</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
                         {/* "Info PAVE" foi removido da Sidebar */}
                     </ul>
@@ -183,7 +331,7 @@ function App() {
                     <ul>
                         <li>
                             <a
-                                href="#"
+                                href="#" 
                                 onClick={(e) => {
                                     e.preventDefault();
                                     handleThemeToggle();
@@ -217,11 +365,20 @@ function App() {
             <main className="main-content">
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/chat" element={<ChatPage modelName={selectedModelName} />} />
+                    <Route
+                        path="/chat"
+                        element={
+                            <ChatInterface
+                                messages={messages}
+                                isLoading={isLoading}
+                                onSendMessage={handleSendMessage}
+                            />
+                        }
+                    />
                     <Route path="/banco-questoes" element={<QuestionBankPage />} />
                     <Route path="/calculadora" element={<CalculadoraPage />} />
-                    {/* <Route path="/criar-questao" element={<CreateQuestionPage />} /> */}
-                    {/* <Route path="/gerador-flashcards" element={<FlashcardGeneratorPage />} /> */}
+                    <Route path="/criar-questao" element={<CreateQuestionPage />} />
+                    <Route path="/gerador-flashcards" element={<FlashcardGeneratorPage />} />
                     <Route path="/questoes-salvas" element={<SavedQuestionsPage />} />
                     {/* <Route path="/informacoes-pave" element={<InformacoesPavePage />} />  Adicionar a rota quando o componente da página existir */}
                     <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>Página não encontrada (404)</h2></div>} />
@@ -251,4 +408,12 @@ function App() {
     );
 }
 
-export default App;
+// Envolver App com SavedQuestionsProvider
+function AppWrapper() {
+    return (
+        <SavedQuestionsProvider>
+            <App />
+        </SavedQuestionsProvider>
+    );
+}
+export default AppWrapper;
