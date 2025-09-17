@@ -310,6 +310,17 @@ function App() {
         // "Calculadora" e "Salvas" foram removidas daqui
     ];
 
+    const handleAppziHelpClick = (e) => {
+        e.preventDefault();
+        const appziWidgetId = "5bbe131b-96af-48f5-986b-dc8cd1dbc158"; // ID do widget Appzi
+
+        if (window.appzi) {
+            window.appzi.openWidget(appziWidgetId);
+        } else {
+            console.warn("Appzi não está carregado. Não é possível abrir o widget.");
+        }
+    };
+
     return (
         <div className="app-container" data-theme={darkMode ? 'dark' : 'light'}> {/* Garante que data-theme esteja no container principal */}
             <aside className="sidebar">
@@ -344,16 +355,10 @@ function App() {
                             </a>
                         </li>
                         <li>
-                            {/*
-                          O atributo data-az-l precisa do ID do SURVEY ou WIDGET específico do Appzi.
-                          A 'token' (rcbhq) é para o script principal, NÃO para data-az-l.
-                          V�� ao seu painel Appzi, encontre o ID do survey/widget que quer abrir
-                          e substitua o placeholder abaixo.
-                        */}
                             <a
-                                href="#" // Appzi deve lidar com o clique.
-                                data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc1dbc158" // <<< SUBSTITUA ESTE VALOR
-                                onClick={(e) => e.preventDefault()} // Opcional: Garante que o link não navegue
+                                href="#"
+                                data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc158"
+                                onClick={handleAppziHelpClick} // Use the new handler
                             >
                                 <IconHelp className="sidebar-icon-footer" />
                                 <span className="nav-link-text">Ajuda</span>

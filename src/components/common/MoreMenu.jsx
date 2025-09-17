@@ -30,16 +30,13 @@ const NavLinkItem = ({ to, icon: IconComponent, label, onClick }) => {
 
 function MoreMenu({ isOpen, onClose, items, isDarkMode, onToggleTheme }) {
   const handleAppziClick = (e) => {
-    e.preventDefault(); // Previne navegação padrão
-    // Para o Appzi, você precisa do ID do SURVEY ou WIDGET específico.
-    // A 'token' (rcbhq) é para o script principal do Appzi.
-    // Este data-az-l deve ser o ID do seu widget de ajuda/feedback.
-    const appziWidgetId = "5bbe131b-96af-48f5-986b-dc8cd1dbc158"; // SUBSTITUA COM SEU ID
+    e.preventDefault();
+    const appziWidgetId = "5bbe131b-96af-48f5-986b-dc8cd1dbc158"; // ID do widget Appzi
 
     if (window.appzi) {
-      window.appzi.openWidget(appziWidgetId);
+        window.appzi.openWidget(appziWidgetId);
     } else {
-      console.warn("Appzi não está carregado. Não é possível abrir o widget.");
+        console.warn("Appzi não está carregado. Não é possível abrir o widget.");
     }
     onClose(); // Fecha o menu "Mais"
   };
