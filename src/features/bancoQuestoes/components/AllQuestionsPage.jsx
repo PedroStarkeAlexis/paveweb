@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import QuestionLayout from '../../../components/common/QuestionLayout';
 import FiltersDesktop from './FiltersDesktop';
 import FilterModalMobile from './FilterModalMobile';
-import useWindowSize from '../../../hooks/useWindowSize';
+import useWindowSize from '../../../hooks/useWindowSize'; // A importação agora vai funcionar
 import './AllQuestionsPage.css';
 
 function AllQuestionsPage() {
@@ -167,4 +167,4 @@ function AllQuestionsPage() {
   );
 }
 
-export default AllQuestionsPage;
+export default AllQuestionsPage;
