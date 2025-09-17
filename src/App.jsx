@@ -36,16 +36,22 @@ import MoreMenu from './components/common/MoreMenu';
 import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext';
 
 // --- Componente NavLink (para Sidebar) ---
-function NavLink({ to, icon: IconComponent, children }) {
+function NavLink({ to, icon: IconComponent, children, isFooter = false }) {
     const location = useLocation();
-    const isActive = !to.startsWith('http') && location.pathname.startsWith(to); // Updated to startsWith for nested routes
+    // CORREÇÃO: Lógica de 'isActive' ajustada
+    // Para a home ('/'), a correspondência deve ser exata. Para as outras, `startsWith` funciona bem.
+    const isActive = !to.startsWith('http') && (to === '/' ? location.pathname === to : location.pathname.startsWith(to));
     const linkClass = isActive ? 'active' : '';
+
+    const Icon = isFooter ? 
+        <IconComponent className="sidebar-icon-footer" /> : 
+        <IconComponent className="sidebar-icon" />;
 
     if (to.startsWith('http')) {
         return (
             <li>
                 <a href={to} target="_blank" rel="noopener noreferrer" className="external-link">
-                    {IconComponent && <IconComponent className="sidebar-icon" />}
+                    {Icon}
                     <span className="nav-link-text">{children}</span>
                 </a>
             </li>
@@ -55,12 +61,13 @@ function NavLink({ to, icon: IconComponent, children }) {
     return (
         <li>
             <Link to={to} className={linkClass}>
-                {IconComponent && <IconComponent className="sidebar-icon" />}
+                {Icon}
                 <span className="nav-link-text">{children}</span>
             </Link>
         </li>
     );
 }
+
 
 // --- Constante para o Modelo Padrão ---
 const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash-preview-05-20';
@@ -226,6 +233,7 @@ function App() {
         { to: "/banco-questoes", icon: IconBook, label: "Questões" },
         { type: 'button', onClick: () => setIsMoreMenuOpen(true), icon: IconEllipsisHorizontal, label: "Mais" },
     ];
+    // CORREÇÃO: "Questões Salvas" adicionado ao menu mobile
     const moreMenuItems = [
         { to: "/questoes-salvas", icon: IconBookmark, label: "Questões Salvas" },
         { to: "/informacoes-pave", icon: IconDocumentText, label: "Info PAVE" },
@@ -252,11 +260,13 @@ function App() {
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
-                        <NavLink to="/questoes-salvas" icon={IconBookmark}>Questões Salvas</NavLink>
+                        {/* CORREÇÃO: Link "Questões Salvas" removido daqui */}
                     </ul>
                 </nav>
                 <div className="sidebar-footer">
                     <ul>
+                        {/* CORREÇÃO: Link "Questões Salvas" adicionado ao footer */}
+                        <NavLink to="/questoes-salvas" icon={IconBookmark} isFooter={true}>Questões Salvas</NavLink>
                         <li>
                             <a href="#" onClick={(e) => { e.preventDefault(); handleThemeToggle(); }}>
                                 {darkMode ? <IconSun className="sidebar-icon-footer" /> : <IconMoon className="sidebar-icon-footer" />}
@@ -278,12 +288,10 @@ function App() {
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/chat" element={<ChatInterface messages={messages} isLoading={isLoading} onSendMessage={handleSendMessage} />} />
-                    {/* ROTAS ATUALIZADAS PARA O BANCO DE QUESTÕES */}
                     <Route path="/banco-questoes" element={<QuestionHubPage />} />
                     <Route path="/banco-questoes/todas" element={<AllQuestionsPage />} />
                     <Route path="/banco-questoes/materias" element={<SubjectSelectionPage />} />
                     <Route path="/banco-questoes/materia/:subject" element={<QuestionListPage />} />
-                    {/* FIM DAS ROTAS ATUALIZADAS */}
                     <Route path="/calculadora" element={<CalculadoraPage />} />
                     <Route path="/criar-questao" element={<CreateQuestionPage />} />
                     <Route path="/gerador-flashcards" element={<FlashcardGeneratorPage />} />
