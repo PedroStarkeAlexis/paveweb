@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Filters from './Filters.jsx'; // Certifique-se que o caminho e extensão estão corretos
 import QuestionLayout from '../../../components/common/QuestionLayout'; // Caminho correto
+import '../styles/QuestionBankPage.css'; // Importar os estilos
 
-// Componente para o campo de busca (mantido)
+// Componente para o campo de busca (melhorado)
 const SearchInput = ({ onSearch, isLoading, initialQuery = '' }) => {
     const [searchTerm, setSearchTerm] = useState(initialQuery);
 
@@ -18,17 +19,19 @@ const SearchInput = ({ onSearch, isLoading, initialQuery = '' }) => {
 
     return (
         <form onSubmit={handleSearchSubmit} className="search-section">
-            <input
-                type="search"
-                placeholder="Buscar questões por tema, conceito..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input-field"
-                disabled={isLoading}
-            />
-            <button type="submit" className="search-button" disabled={isLoading || !searchTerm.trim()}>
-                {isLoading ? 'Buscando...' : 'Buscar'}
-            </button>
+            <div className="search-input-container">
+                <input
+                    type="search"
+                    placeholder="Buscar questões por tema, conceito... (opcional)"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input-field"
+                    disabled={isLoading}
+                />
+                <button type="submit" className="search-button" disabled={isLoading}>
+                    {isLoading ? 'Buscando...' : 'Buscar'}
+                </button>
+            </div>
         </form>
     );
 };
@@ -51,6 +54,18 @@ function QuestionBankPage() {
         console.log(`[QuestionBankPage] Fetching data - Page: ${page}, Query: "${currentSearchQuery}", Filters:`, currentFilters);
 
         try {
+            // Verifica se há pelo menos algum critério de busca (query OU filtros)
+            const hasQuery = currentSearchQuery && currentSearchQuery.trim() !== '';
+            const hasFilters = currentFilters.materia || currentFilters.ano || currentFilters.etapa;
+            
+            if (!hasQuery && !hasFilters) {
+                // Se não há nem query nem filtros, não faz a busca
+                setQuestionsToDisplay([]);
+                setPagination(prev => ({ ...prev, currentPage: 1, totalPages: 1, totalItems: 0 }));
+                setHasSearched(false);
+                return;
+            }
+
             const params = new URLSearchParams({
                 page: page.toString(),
                 limit: pagination.limit.toString()
@@ -58,7 +73,7 @@ function QuestionBankPage() {
 
             let apiPath = '/api/search-questions'; // Usaremos sempre esta API agora
 
-            if (currentSearchQuery && currentSearchQuery.trim() !== '') {
+            if (hasQuery) {
                 params.set('query', currentSearchQuery.trim());
             }
             if (currentFilters.materia) {
@@ -144,6 +159,11 @@ function QuestionBankPage() {
         fetchData(1, filters, query); // Busca da página 1 com nova query
     }, [filters, fetchData]);
 
+    // Handler para aplicar apenas os filtros (novo)
+    const handleApplyFilters = useCallback(() => {
+        fetchData(1, filters, searchQuery); // Busca com filtros atuais
+    }, [filters, searchQuery, fetchData]);
+
     // Handlers para paginação
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= pagination.totalPages && newPage !== pagination.currentPage && !isLoading) {
@@ -155,21 +175,46 @@ function QuestionBankPage() {
 
     return (
         <div className="question-bank-container">
-            <SearchInput onSearch={handleSearch} isLoading={isLoading} initialQuery={searchQuery} />
+            <div className="search-and-filters-container">
+                <SearchInput onSearch={handleSearch} isLoading={isLoading} initialQuery={searchQuery} />
 
-            {isLoadingFilters && <p className="loading-message">Carregando filtros...</p>}
-            {!isLoadingFilters && filterOptions.materias.length === 0 && !error && (
-                <p className="error-message">Opções de filtro não puderam ser carregadas.</p>
-            )}
-            {!isLoadingFilters && filterOptions.materias.length > 0 && (
-                <Filters
-                    anos={filterOptions.anos}
-                    materias={filterOptions.materias}
-                    etapas={filterOptions.etapas}
-                    filterValues={filters}
-                    onFilterChange={handleFilterChange}
-                />
-            )}
+                {isLoadingFilters && <p className="loading-message">Carregando filtros...</p>}
+                {!isLoadingFilters && filterOptions.materias.length === 0 && !error && (
+                    <p className="error-message">Opções de filtro não puderam ser carregadas.</p>
+                )}
+                {!isLoadingFilters && filterOptions.materias.length > 0 && (
+                    <div className="filters-container">
+                        <Filters
+                            anos={filterOptions.anos}
+                            materias={filterOptions.materias}
+                            etapas={filterOptions.etapas}
+                            filterValues={filters}
+                            onFilterChange={handleFilterChange}
+                        />
+                        <div className="filter-actions">
+                            <button 
+                                className="apply-filters-button" 
+                                onClick={handleApplyFilters}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Aplicando...' : 'Aplicar Filtros'}
+                            </button>
+                            <button 
+                                className="clear-filters-button" 
+                                onClick={() => {
+                                    setFilters({ ano: null, materia: null, etapa: null });
+                                    setSearchQuery('');
+                                    setHasSearched(false);
+                                    setQuestionsToDisplay([]);
+                                }}
+                                disabled={isLoading}
+                            >
+                                Limpar
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
 
             {/* Link para Questões Salvas */}
             <div className="saved-questions-link-container">
@@ -195,7 +240,14 @@ function QuestionBankPage() {
             <div className="question-list-container"> {/* Use uma classe genérica para estilização */}
                 {isLoading && <p className="loading-message">Carregando questões...</p>}
                 {!isLoading && !hasSearched && (
-                    <p className="no-results-message">Use a busca ou os filtros para encontrar questões.</p>
+                    <div className="search-help">
+                        <h3>Como buscar questões:</h3>
+                        <ul>
+                            <li>📝 <strong>Digite um termo</strong> e clique em "Buscar" para pesquisar por conteúdo</li>
+                            <li>🔍 <strong>Use os filtros</strong> (matéria, ano, etapa) e clique em "Aplicar Filtros"</li>
+                            <li>⚡ <strong>Combine ambos</strong> para resultados mais precisos</li>
+                        </ul>
+                    </div>
                 )}
                 {hasSearched && error && !isLoading && <p className="error-message">Erro ao carregar questões: {error}</p>}
                 {hasSearched && !isLoading && !error && questionsToDisplay.length === 0 && (
