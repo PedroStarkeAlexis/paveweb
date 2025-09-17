@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import ChatBox from './ChatBox';
 import InputArea from './InputArea';
+import './ChatInterface.css';
 
-function ChatInterface({ messages, isLoading, onSendMessage }) {
+function ChatInterface({ messages, isLoading, onSendMessage, showSuggestions = false }) {
   const [hasUserTyped, setHasUserTyped] = useState(false);
 
-  const suggestions = ["Quais são as questões mais recentes?", "Me mostre questões de matemática", "Como funciona o PAVE?"];
+  const suggestions = [
+    "Questões de matemática do PAVE",
+    "Como funciona o PAVE?",
+    "Questões mais recentes",
+    "Me ajude a estudar física",
+    "Questões de biologia",
+    "Informações sobre o vestibular"
+  ];
 
   const handleUserInput = (message) => {
     setHasUserTyped(true);
@@ -14,7 +22,8 @@ function ChatInterface({ messages, isLoading, onSendMessage }) {
 
   return (
     <div className="chat-interface-container">
-      {!hasUserTyped && (
+      <ChatBox messages={messages} isLoading={isLoading} />
+      {showSuggestions && !hasUserTyped && (
         <div className="chat-suggestions">
           {suggestions.map((suggestion, index) => (
             <button
@@ -27,7 +36,6 @@ function ChatInterface({ messages, isLoading, onSendMessage }) {
           ))}
         </div>
       )}
-      <ChatBox messages={messages} isLoading={isLoading} />
       <InputArea onSendMessage={handleUserInput} isLoading={isLoading} />
     </div>
   );

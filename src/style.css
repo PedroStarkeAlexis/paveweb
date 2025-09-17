@@ -226,8 +226,22 @@ code {
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto; /* Scroll apenas no main-content */
   background-color: var(--bg-primary); /* Usa variável */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-secondary) transparent;
+}
+
+/* Scrollbar do main-content */
+.main-content::-webkit-scrollbar {
+  width: 6px;
+}
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.main-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+  border-radius: 3px;
 }
 
 /* Container que limita largura (usado pelo Chat e Banco de Questões) */
@@ -243,25 +257,22 @@ code {
   flex-grow: 1;
   min-height: 0; /* Crucial para scroll funcionar */
   padding: 20px 15px; /* Padding padrão */
-  overflow-y: auto; /* Scroll interno */
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-secondary) transparent; /* Scroll transparente */
+  overflow: visible; /* Removido o scroll daqui */
 }
 .chat-interface-container::-webkit-scrollbar,
 .question-bank-container::-webkit-scrollbar,
 .home-page-container::-webkit-scrollbar {
-  width: 6px;
+  display: none; /* Removido os scrollbars dos containers internos */
 }
 .chat-interface-container::-webkit-scrollbar-track,
 .question-bank-container::-webkit-scrollbar-track,
 .home-page-container::-webkit-scrollbar-track {
-  background: transparent;
+  display: none; /* Removido os scrollbars dos containers internos */
 }
 .chat-interface-container::-webkit-scrollbar-thumb,
 .question-bank-container::-webkit-scrollbar-thumb,
 .home-page-container::-webkit-scrollbar-thumb {
-  background-color: var(--border-secondary);
-  border-radius: 3px;
+  display: none; /* Removido os scrollbars dos containers internos */
 }
 
 /* Ajuste específico para o container do chat ter menos padding */
@@ -273,26 +284,23 @@ code {
 /* --- ESTILOS DO CHAT (do Projeto 2) --- */
 .chat-box {
   flex-grow: 1;
-  overflow-y: auto;
+  overflow: visible; /* Removido o scroll do chat-box */
   padding: 20px 5px;
   margin-bottom: 15px;
   background-color: transparent;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-secondary) transparent;
   padding-bottom: 75px; /* AJUSTE ESTE VALOR CONFORME O NECESSÁRIO */
 }
 .chat-box::-webkit-scrollbar {
-  width: 6px;
+  display: none; /* Removido scrollbar do chat-box */
 }
 .chat-box::-webkit-scrollbar-track {
-  background: transparent;
+  display: none; /* Removido scrollbar do chat-box */
 }
 .chat-box::-webkit-scrollbar-thumb {
-  background-color: var(--border-secondary);
-  border-radius: 3px;
+  display: none; /* Removido scrollbar do chat-box */
 }
 
 /* COMENTE OU REMOVA ESTES ESTILOS ANTIGOS: */
