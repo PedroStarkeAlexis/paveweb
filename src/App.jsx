@@ -320,10 +320,12 @@ function App() {
                     <ul>
                         <NavLink to="/" icon={IconHome}>Início</NavLink>
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
-                        <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
-                        <NavLink to="/criar-questao" icon={IconSparkles}>Criar Questão</NavLink>
-                        <NavLink to="/gerador-flashcards" icon={IconSparkles}>Gerador de Flashcards</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
+                        <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
+                        {/* Links para criar questão e gerar flashcard removidos/ocultos
+                        <NavLink to="/criar-questao" icon={IconSparkles} style={{ display: 'none' }}>Criar Questão</NavLink>
+                        <NavLink to="/gerador-flashcards" icon={IconSparkles} style={{ display: 'none' }}>Gerador de Flashcards</NavLink>
+                        */}
                         {/* "Info PAVE" foi removido da Sidebar */}
                     </ul>
                 </nav>
