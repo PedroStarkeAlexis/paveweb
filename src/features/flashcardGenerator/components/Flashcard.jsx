@@ -1,6 +1,6 @@
 // src/features/flashcardGenerator/Flashcard.jsx
 import React, { useState } from 'react';
-import './Flashcard.css';
+import './Flashcard.css'; // Path is now relative to components folder
 
 function Flashcard({ term, definition, id }) {
   const [isFlipped, setIsFlipped] = useState(false);
