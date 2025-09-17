@@ -13,7 +13,7 @@ const SearchInput = ({ onSearch, isLoading, initialQuery = '' }) => {
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
-        onSearch(searchTerm.trim());
+        onSearch(searchTerm.trim() || ''); // Allow empty search term
     };
 
     return (
@@ -26,7 +26,7 @@ const SearchInput = ({ onSearch, isLoading, initialQuery = '' }) => {
                 className="search-input-field"
                 disabled={isLoading}
             />
-            <button type="submit" className="search-button" disabled={isLoading || !searchTerm.trim()}>
+            <button type="submit" className="search-button" disabled={isLoading}>
                 {isLoading ? 'Buscando...' : 'Buscar'}
             </button>
         </form>
