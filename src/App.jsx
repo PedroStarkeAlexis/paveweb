@@ -4,10 +4,10 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 // --- Importar páginas/features ---
 import HomePage from './pages/HomePage';
 import ChatInterface from './features/chat/components/ChatInterface';
-import QuestionHubPage from './pages/QuestionHubPage';
-import AllQuestionsPage from './features/bancoQuestoes/components/AllQuestionsPage';
-import SubjectSelectionPage from './features/bancoQuestoes/components/SubjectSelectionPage';
-import QuestionListPage from './features/bancoQuestoes/components/QuestionListPage';
+import QuestionHubPage from './pages/QuestionHubPage'; // <<< NOVO HUB
+import AllQuestionsPage from './features/bancoQuestoes/components/AllQuestionsPage'; // <<< NOVA PÁGINA
+import SubjectSelectionPage from './features/bancoQuestoes/components/SubjectSelectionPage'; // <<< NOVA PÁGINA
+import QuestionListPage from './features/bancoQuestoes/components/QuestionListPage'; // <<< NOVA PÁGINA
 import CreateQuestionPage from './pages/CreateQuestionPage';
 import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage';
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
@@ -38,20 +38,21 @@ import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext';
 // --- Componente NavLink (para Sidebar) ---
 function NavLink({ to, icon: IconComponent, children, isFooter = false }) {
     const location = useLocation();
+    // CORREÇÃO: Lógica de 'isActive' ajustada
+    // Para a home ('/'), a correspondência deve ser exata. Para as outras, `startsWith` funciona bem.
     const isActive = !to.startsWith('http') && (to === '/' ? location.pathname === to : location.pathname.startsWith(to));
-    
-    const baseLinkClasses = "flex items-center p-2.5 mx-2.5 rounded-md transition-colors duration-200 text-text-secondary hover:bg-bg-tertiary hover:text-text-primary";
-    const activeLinkClasses = "bg-brand-secondary text-brand-secondary-text font-semibold";
-    
-    const iconClasses = `shrink-0 ${isFooter ? 'w-4 h-4' : 'w-5 h-5'} ${isActive ? 'text-brand-primary' : 'text-text-muted'}`;
-    const textClasses = "overflow-hidden text-ellipsis whitespace-nowrap text-sm";
+    const linkClass = isActive ? 'active' : '';
+
+    const Icon = isFooter ? 
+        <IconComponent className="sidebar-icon-footer" /> : 
+        <IconComponent className="sidebar-icon" />;
 
     if (to.startsWith('http')) {
         return (
             <li>
-                <a href={to} target="_blank" rel="noopener noreferrer" className={baseLinkClasses}>
-                    <IconComponent className={`${iconClasses} mr-2.5`} />
-                    <span className={textClasses}>{children}</span>
+                <a href={to} target="_blank" rel="noopener noreferrer" className="external-link">
+                    {Icon}
+                    <span className="nav-link-text">{children}</span>
                 </a>
             </li>
         );
@@ -59,9 +60,9 @@ function NavLink({ to, icon: IconComponent, children, isFooter = false }) {
 
     return (
         <li>
-            <Link to={to} className={`${baseLinkClasses} ${isActive ? activeLinkClasses : ''}`}>
-                <IconComponent className={`${iconClasses} mr-2.5`} />
-                <span className={textClasses}>{children}</span>
+            <Link to={to} className={linkClass}>
+                {Icon}
+                <span className="nav-link-text">{children}</span>
             </Link>
         </li>
     );
@@ -232,6 +233,7 @@ function App() {
         { to: "/banco-questoes", icon: IconBook, label: "Questões" },
         { type: 'button', onClick: () => setIsMoreMenuOpen(true), icon: IconEllipsisHorizontal, label: "Mais" },
     ];
+    // CORREÇÃO: "Questões Salvas" adicionado ao menu mobile
     const moreMenuItems = [
         { to: "/questoes-salvas", icon: IconBookmark, label: "Questões Salvas" },
         { to: "/informacoes-pave", icon: IconDocumentText, label: "Info PAVE" },
@@ -247,40 +249,42 @@ function App() {
     };
 
     return (
-        <div className="flex h-screen w-screen bg-bg-secondary">
-            <aside className="hidden md:flex flex-col w-[240px] shrink-0 p-2">
-                <div className="px-4 py-3 mb-4">
-                    <span className="text-lg font-semibold text-brand-primary">Central PAVE</span>
+        <div className="app-container" data-theme={darkMode ? 'dark' : 'light'}>
+            <aside className="sidebar">
+                <div className="sidebar-header">
+                    <span className="logo-placeholder">Central PAVE</span>
                 </div>
-                <nav className="flex-grow">
+                <nav className="sidebar-nav">
                     <ul>
                         <NavLink to="/" icon={IconHome}>Início</NavLink>
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
+                        {/* CORREÇÃO: Link "Questões Salvas" removido daqui */}
                     </ul>
                 </nav>
-                <div className="py-2">
+                <div className="sidebar-footer">
                     <ul>
+                        {/* CORREÇÃO: Link "Questões Salvas" adicionado ao footer */}
                         <NavLink to="/questoes-salvas" icon={IconBookmark} isFooter={true}>Questões Salvas</NavLink>
                         <li>
-                            <a href="#" onClick={(e) => { e.preventDefault(); handleThemeToggle(); }} className="flex items-center p-2.5 mx-2.5 rounded-md transition-colors duration-200 text-text-secondary hover:bg-bg-tertiary hover:text-text-primary">
-                                {darkMode ? <IconSun className="w-4 h-4 mr-2.5 text-text-muted" /> : <IconMoon className="w-4 h-4 mr-2.5 text-text-muted" />}
-                                <span className="text-sm">{darkMode ? 'Modo Claro' : 'Modo Escuro'}</span>
+                            <a href="#" onClick={(e) => { e.preventDefault(); handleThemeToggle(); }}>
+                                {darkMode ? <IconSun className="sidebar-icon-footer" /> : <IconMoon className="sidebar-icon-footer" />}
+                                <span className="nav-link-text">{darkMode ? 'Modo Claro' : 'Modo Escuro'}</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#" data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc158" onClick={handleAppziHelpClick} className="flex items-center p-2.5 mx-2.5 rounded-md transition-colors duration-200 text-text-secondary hover:bg-bg-tertiary hover:text-text-primary">
-                                <IconHelp className="w-4 h-4 mr-2.5 text-text-muted" />
-                                <span className="text-sm">Ajuda</span>
+                            <a href="#" data-az-l="5bbe131b-96af-48f5-986b-dc8cd1dbc158" onClick={handleAppziHelpClick}>
+                                <IconHelp className="sidebar-icon-footer" />
+                                <span className="nav-link-text">Ajuda</span>
                             </a>
                         </li>
                     </ul>
-                    <div className="px-4 mt-2 text-center text-xs text-text-muted"> Desenvolvido por Pedro Alexis {new Date().getFullYear()} </div>
+                    <div className="copyright"> Desenvolvido por Pedro Alexis {new Date().getFullYear()} </div>
                 </div>
             </aside>
 
-            <main className="flex-grow h-full flex flex-col overflow-y-auto bg-bg-primary md:rounded-l-2xl">
+            <main className="main-content">
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/chat" element={<ChatInterface messages={messages} isLoading={isLoading} onSendMessage={handleSendMessage} />} />
@@ -292,7 +296,7 @@ function App() {
                     <Route path="/criar-questao" element={<CreateQuestionPage />} />
                     <Route path="/gerador-flashcards" element={<FlashcardGeneratorPage />} />
                     <Route path="/questoes-salvas" element={<SavedQuestionsPage />} />
-                    <Route path="*" element={<div className="p-10 text-center"><h2>Página não encontrada (404)</h2></div>} />
+                    <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>Página não encontrada (404)</h2></div>} />
                 </Routes>
             </main>
 
