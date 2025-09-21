@@ -5,6 +5,7 @@
   border: 1px solid var(--border-primary);
   border-radius: 8px;
   margin-top: 5px;
+  margin-bottom: 8px; /* Pequena margem na parte inferior */
   background-color: var(--bg-primary);
   align-self: flex-start; /* Para chat */
   max-width: 100%;
@@ -50,10 +51,21 @@
   flex: 1;
 }
 
+.question-tag {
+  background-color: #e5e7eb;
+  color: var(--text-secondary);
+  font-size: 0.8em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 .question-menu-container {
   position: relative;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+  z-index: 1;
 }
 
 .question-menu-button {
@@ -68,6 +80,7 @@
   cursor: pointer;
   border-radius: 4px;
   transition: all 0.2s ease;
+  flex-shrink: 0; /* Impede que o botão encolha */
 }
 
 .question-menu-button:hover {
@@ -78,6 +91,7 @@
 .question-menu-button svg {
   width: 18px;
   height: 18px;
+  pointer-events: none; /* Garante que o clique funcione */
 }
 
 .question-dropdown {
@@ -92,6 +106,18 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   overflow: hidden;
+  animation: dropdownFadeIn 0.15s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dropdown-item {
@@ -284,7 +310,10 @@
 [data-theme="dark"] .question-tag.generated-ai-tag { background-color: #818cf8; color: #fff; }
 
 /* Menu dropdown no modo escuro */
-[data-theme="dark"] .question-menu-button { color: var(--text-secondary); }
+[data-theme="dark"] .question-menu-button { 
+  color: var(--text-secondary); 
+  background-color: transparent;
+}
 [data-theme="dark"] .question-menu-button:hover { 
   background-color: rgba(255, 255, 255, 0.1); 
   color: var(--text-primary); 
@@ -303,7 +332,7 @@
 [data-theme="dark"] .question-reference { color: var(--text-muted); }
 [data-theme="dark"] .alternative-item { border-color: transparent; background-color: var(--bg-primary); }
 [data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover { 
-  background-color: #27272a; 
+  background-color: rgba(255, 255, 255, 0.05); 
   border-color: var(--border-secondary); 
 }
 [data-theme="dark"] #question-bank-list .alternative-item:hover { 
