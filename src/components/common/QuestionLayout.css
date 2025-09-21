@@ -31,15 +31,16 @@
 
 /* --- Seção: Cabeçalho da Questão (Tags + Menu) --- */
 .question-header {
+  position: relative; /* <<< MUDANÇA CRÍTICA 1: Habilita posicionamento absoluto para filhos */
   padding: 10px 15px;
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--border-primary);
   display: flex;
-  /* justify-content: space-between; <-- REMOVIDO */
   align-items: center;
   gap: 12px;
   border-radius: 8px 8px 0 0;
   transition: background-color 0.3s ease, border-color 0.3s ease;
+  padding-right: 50px; /* <<< MUDANÇA CRÍTICA 2: Adiciona espaço à direita para o menu não sobrepor as tags */
 }
 
 .question-tags {
@@ -70,12 +71,10 @@
 }
 
 .question-menu-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
+  position: absolute; /* <<< MUDANÇA CRÍTICA 3: Posicionamento absoluto */
+  top: 10px; /* <<< MUDANÇA CRÍTICA 4: Alinha no topo */
+  right: 15px; /* <<< MUDANÇA CRÍTICA 5: Alinha à direita */
   z-index: 1;
-  margin-left: auto; /* <<< A SOLUÇÃO DEFINITIVA! */
 }
 
 .question-menu-button {
