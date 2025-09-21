@@ -45,10 +45,10 @@
 .question-tags {
   display: flex;
   flex-wrap: wrap;
-  align-items: center; /* Garante alinhamento vertical se houver quebra de linha */
-  /* Removido 'gap', margem será aplicada no filho */
+  align-items: center;
+  gap: 8px; /* A maneira mais robusta de espaçar itens flexíveis */
   flex: 1;
-  min-width: 0; /* Permite que o container encolha se necessário */
+  min-width: 0;
 }
 
 .question-tag {
@@ -58,15 +58,7 @@
   padding: 3px 8px;
   border-radius: 4px;
   white-space: nowrap;
-  margin-right: 8px; /* Adicionado espaço à direita */
-  margin-bottom: 8px; /* Adicionado espaço abaixo para quando quebrar a linha */
 }
-
-.question-tag:last-child {
-  margin-right: 0; /* Remove a margem do último item para não criar espaço extra */
-}
-
-
 .question-tag.pave-tag {
   background-color: var(--brand-primary);
   color: #fff;
@@ -84,7 +76,6 @@
   align-items: center;
   flex-shrink: 0;
   z-index: 1;
-  margin-bottom: 8px; /* Alinha com a margem das tags */
 }
 
 .question-menu-button {
@@ -93,11 +84,11 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: none;
-  background-color: transparent;
-  color: var(--text-muted);
+  border: 1px solid var(--border-secondary); /* Borda sutil para visibilidade */
+  background-color: var(--bg-primary); /* Fundo para se destacar */
+  color: var(--text-secondary); /* Cor mais forte para o ícone */
   cursor: pointer;
-  border-radius: 50%;
+  border-radius: 6px; /* Bordas levemente arredondadas */
   transition: all 0.2s ease;
   flex-shrink: 0;
 }
@@ -105,6 +96,7 @@
 .question-menu-button:hover {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
+  border-color: var(--text-secondary);
 }
 
 .question-menu-button svg {
@@ -312,12 +304,14 @@
 
 /* Menu dropdown no modo escuro */
 [data-theme="dark"] .question-menu-button {
-  color: var(--text-muted);
-  background-color: transparent;
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
+  border-color: var(--border-secondary);
 }
 [data-theme="dark"] .question-menu-button:hover {
   background-color: rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
+  border-color: var(--text-secondary);
 }
 [data-theme="dark"] .question-dropdown {
   background-color: var(--bg-primary);
