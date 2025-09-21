@@ -39,8 +39,8 @@
   padding: 10px 15px;
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--border-primary);
-  display: flex;
-  justify-content: space-between; /* <<< A FORMA MAIS SIMPLES */
+  display: grid; /* <<< MUDANÇA PARA GRID */
+  grid-template-columns: 1fr auto; /* <<< COLUNAS: 1 CRESCE, 1 SE AJUSTA */
   align-items: center;
   gap: 12px;
   border-radius: 8px 8px 0 0;
