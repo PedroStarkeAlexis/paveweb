@@ -59,6 +59,16 @@
   border-radius: 4px;
   white-space: nowrap;
 }
+.question-tag.pave-tag {
+  background-color: var(--brand-primary);
+  color: #fff;
+  font-weight: 500;
+}
+.question-tag.generated-ai-tag {
+  background-color: #6366f1; /* Roxo para IA */
+  color: #fff;
+  font-weight: 500;
+}
 
 .question-menu-container {
   position: relative;
@@ -74,8 +84,8 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: none;
-  background-color: transparent;
+  border: 1px solid var(--border-secondary); /* Temporário para debug */
+  background-color: var(--bg-primary); /* Temporário para debug */
   color: var(--text-secondary);
   cursor: pointer;
   border-radius: 4px;
