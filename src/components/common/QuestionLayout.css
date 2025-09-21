@@ -106,7 +106,7 @@
 .alternative-item {
   display: flex;
   align-items: stretch; /* Faz a letra e o texto terem a mesma altura */
-  border: 1px solid var(--border-secondary);
+  border: 2px solid transparent; /* Borda transparente para estabilidade */
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -116,19 +116,21 @@
 .question-layout.answered .alternative-item { cursor: default; }
 .question-layout:not(.answered) .alternative-item:hover {
   background-color: #f9fafb;
-  border-color: #9ca3af;
+  border-color: var(--border-secondary);
 }
 /* --- Sub-Seção: Ajustes para QuestionLayout dentro do Banco de Questões --- */
 #question-bank-list .alternative-item { cursor: default; }
 #question-bank-list .alternative-item:hover {
   background-color: var(--bg-primary);
-  border-color: var(--border-secondary);
+  border-color: transparent;
 }
 
 .alternative-letter {
   font-weight: bold;
   border-right: 1px solid var(--border-secondary);
+  width: 45px; /* Largura fixa para evitar mudanças de layout */
   min-width: 45px;
+  max-width: 45px;
   padding: 10px 0; /* Vertical, horizontal é pelo flex */
   display: inline-flex; /* Para centralizar conteúdo */
   justify-content: center;
@@ -156,6 +158,20 @@
 .alternative-text em, .alternative-text i { font-style: italic; }
 
 /* --- Seção: Feedback Visual das Alternativas --- */
+.alternative-item.correct-answer {
+  border-color: var(--success-primary);
+  background-color: var(--success-secondary);
+}
+
+.alternative-item.incorrect-choice {
+  border-color: var(--error-primary);
+  background-color: var(--error-secondary);
+}
+
+.alternative-item.neutral-answer {
+  opacity: 0.7;
+}
+
 .alternative-letter.feedback-correct {
   background-color: var(--success-primary);
   color: #fff;
@@ -180,14 +196,14 @@
 
 /* --- Seção: Footer da Questão (Botão Mostrar Resposta / Texto Resposta Correta) --- */
 .question-footer {
-  padding: 10px 15px;
+  padding: 12px 15px;
   background-color: var(--bg-tertiary);
   border-radius: 0 0 8px 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px; /* Espaço entre os botões */
-  min-height: 52px; /* Altura para acomodar botões */
+  gap: 12px; /* Espaço entre os botões */
+  min-height: 54px; /* Altura para acomodar botões */
   transition: background-color 0.3s ease;
 }
 
@@ -196,55 +212,64 @@
   margin-left: auto;
 }
 
-/* CORREÇÃO: Nova classe base para os botões do footer */
+/* --- Sistema de Botões do Footer --- */
 .q-footer-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 6px;
-  font-size: 0.85em;
+  font-size: 0.875em;
   font-weight: 500;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.2s ease-in-out;
+  white-space: nowrap;
 }
 .q-footer-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 /* Botão Primário (Mostrar Resposta) */
 .q-footer-btn-primary {
-  background-color: var(--bg-primary);
-  border-color: var(--border-secondary);
-  color: var(--text-secondary);
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: #fff;
+  font-weight: 600;
 }
 .q-footer-btn-primary:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
-  color: var(--text-primary);
+  background-color: var(--brand-secondary);
+  border-color: var(--brand-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.q-footer-btn-primary:active {
+  transform: translateY(0);
 }
 
 /* Botão Secundário (Salvar) */
 .q-footer-btn-secondary {
-  background-color: var(--bg-secondary);
-  border-color: var(--border-primary);
+  background-color: var(--bg-primary);
+  border-color: var(--border-secondary);
   color: var(--text-secondary);
 }
 .q-footer-btn-secondary:hover:not(.saved) {
-  background-color: var(--bg-tertiary);
-  border-color: var(--border-secondary);
+  background-color: var(--bg-secondary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
 }
 
 /* Estado Salvo */
 .q-footer-btn-secondary.saved {
-  background-color: var(--brand-secondary);
-  color: var(--brand-primary);
-  border-color: var(--brand-primary);
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success-primary);
+  border-color: var(--success-primary);
 }
 .q-footer-btn-secondary.saved:hover {
-  opacity: 0.85;
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--success-secondary);
 }
 
 
@@ -253,9 +278,10 @@
 }
 
 .correct-answer-text {
-  font-size: 0.9em;
+  font-size: 0.875em;
   color: var(--success-primary);
   font-weight: 500;
+  line-height: 1.4;
 }
 
 
@@ -268,9 +294,9 @@
 [data-theme="dark"] .question-tag.generated-ai-tag { background-color: #818cf8; color: #fff; }
 [data-theme="dark"] .question-body { color: var(--text-primary); }
 [data-theme="dark"] .question-reference { color: var(--text-muted); }
-[data-theme="dark"] .alternative-item { border-color: var(--border-secondary); background-color: var(--bg-primary); }
-[data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover { background-color: #27272a; border-color: #777; }
-[data-theme="dark"] #question-bank-list .alternative-item:hover { background-color: var(--bg-primary); border-color: var(--border-secondary); }
+[data-theme="dark"] .alternative-item { border-color: transparent; background-color: var(--bg-primary); }
+[data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover { background-color: #27272a; border-color: var(--border-secondary); }
+[data-theme="dark"] #question-bank-list .alternative-item:hover { background-color: var(--bg-primary); border-color: transparent; }
 [data-theme="dark"] .alternative-letter { border-right-color: var(--border-secondary); background-color: #3a3a3a; color: var(--text-secondary); }
 [data-theme="dark"] .alternative-text { color: var(--text-primary); }
 [data-theme="dark"] .alternative-letter.feedback-correct { background-color: var(--success-primary); color: #111; border-color: var(--success-primary); }
@@ -282,9 +308,32 @@
 [data-theme="dark"] .question-footer { background-color: #3a3a3a; }
 
 /* Dark Mode para Botões do Footer */
-[data-theme="dark"] .q-footer-btn-primary { background-color: var(--bg-primary); border-color: var(--border-secondary); color: var(--text-secondary); }
-[data-theme="dark"] .q-footer-btn-primary:hover { background-color: #27272a; border-color: #777; color: var(--text-primary); }
-[data-theme="dark"] .q-footer-btn-secondary { background-color: var(--bg-primary); border-color: var(--border-secondary); color: var(--text-secondary); }
-[data-theme="dark"] .q-footer-btn-secondary:hover:not(.saved) { background-color: #27272a; border-color: #777; }
-[data-theme="dark"] .q-footer-btn-secondary.saved { background-color: rgba(16, 185, 129, 0.15); color: var(--brand-primary); border-color: var(--brand-primary); }
+[data-theme="dark"] .q-footer-btn-primary { 
+  background-color: var(--brand-primary); 
+  border-color: var(--brand-primary); 
+  color: #fff; 
+}
+[data-theme="dark"] .q-footer-btn-primary:hover { 
+  background-color: var(--brand-secondary); 
+  border-color: var(--brand-secondary); 
+  color: #fff; 
+}
+[data-theme="dark"] .q-footer-btn-secondary { 
+  background-color: var(--bg-primary); 
+  border-color: var(--border-secondary); 
+  color: var(--text-secondary); 
+}
+[data-theme="dark"] .q-footer-btn-secondary:hover:not(.saved) { 
+  background-color: #27272a; 
+  border-color: #777; 
+  color: var(--text-primary);
+}
+[data-theme="dark"] .q-footer-btn-secondary.saved { 
+  background-color: rgba(16, 185, 129, 0.15); 
+  color: #a7f3d0; 
+  border-color: #10b981; 
+}
+[data-theme="dark"] .q-footer-btn-secondary.saved:hover {
+  background-color: rgba(16, 185, 129, 0.2);
+}
 [data-theme="dark"] .correct-answer-text { color: #a7f3d0; }

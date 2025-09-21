@@ -81,6 +81,9 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
               icon = '✗';
               letterBoxClass += ' feedback-incorrect';
               itemClass += ' incorrect-choice';
+            } else if (answered && !choiceStatus) {
+              // Alternativa não clicada mas resposta já foi revelada
+              itemClass += ' neutral-answer';
             }
           }
 
