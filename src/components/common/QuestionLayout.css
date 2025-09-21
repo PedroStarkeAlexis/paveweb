@@ -1,13 +1,14 @@
 /* --- Seção: Container Principal do QuestionLayout --- */
 .question-layout {
+  position: relative; /* <<< MUDANÇA CRÍTICA: Necessário para o posicionamento absoluto do menu */
   border: 1px solid var(--border-primary);
   border-radius: 8px;
   margin-top: 5px;
-  margin-bottom: 8px; /* Pequena margem na parte inferior */
+  margin-bottom: 8px;
   background-color: var(--bg-primary);
-  align-self: flex-start; /* Para chat */
+  align-self: flex-start;
   max-width: 100%;
-  width: 100%; /* Garante que ele tente ocupar o espaço do pai */
+  width: 100%;
   box-sizing: border-box;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
   transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -22,29 +23,25 @@
   max-width: 100%;
   align-self: stretch;
 }
-/* ESCONDE O MENU NO MODO CARROSSEL USANDO CSS */
-.question-layout.carousel-item-mode .question-menu-container {
-  display: none;
-}
-
 
 /* --- Sub-Seção: Ajuste para QuestionLayout dentro do Banco de Questões --- */
 #question-bank-list .question-layout {
   align-self: stretch;
-  margin-bottom: 0; /* O gap da lista #question-bank-list cuida disso */
+  margin-bottom: 0;
 }
 
-/* --- Seção: Cabeçalho da Questão (Tags + Menu) --- */
+/* --- Seção: Cabeçalho da Questão --- */
 .question-header {
-  padding: 10px 15px;
+  padding: 10px 50px 10px 15px; /* <<< MUDANÇA: Adiciona espaço à direita para o menu */
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--border-primary);
-  display: grid; /* <<< MUDANÇA PARA GRID */
-  grid-template-columns: 1fr auto; /* <<< COLUNAS: 1 CRESCE, 1 SE AJUSTA */
+  display: flex;
   align-items: center;
   gap: 12px;
   border-radius: 8px 8px 0 0;
   transition: background-color 0.3s ease, border-color 0.3s ease;
+  min-height: 53px;
+  box-sizing: border-box;
 }
 
 .question-tags {
@@ -74,12 +71,12 @@
   font-weight: 500;
 }
 
+/* --- Menu Posicionado Absolutamente --- */
 .question-menu-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  z-index: 1;
+  position: absolute; /* <<< MUDANÇA CRÍTICA */
+  top: 10px;          /* <<< MUDANÇA CRÍTICA */
+  right: 15px;         /* <<< MUDANÇA CRÍTICA */
+  z-index: 2;          /* <<< GARANTE QUE FIQUE POR CIMA */
 }
 
 .question-menu-button {
@@ -160,7 +157,7 @@
   color: var(--text-secondary);
 }
 
-/* --- Seção: Corpo da Questão (Enunciado e Referência) --- */
+/* --- Seção: Corpo da Questão --- */
 .question-body {
   padding: 15px 15px 10px 15px;
   font-size: 1em;
@@ -173,16 +170,15 @@
 }
 .question-body p:last-of-type:not(.question-reference) {
   margin-bottom: 0;
-} /* Se não for a referência, remove margem */
+}
 .question-reference {
   font-size: 0.8em;
   color: var(--text-muted);
   text-align: right;
   margin-top: 15px;
-  margin-bottom: 0; /* Garantir que não adicione espaço extra abaixo */
+  margin-bottom: 0;
   line-height: 1.4;
 }
-/* --- Sub-Seção: Markdown no Corpo da Questão --- */
 .question-body ul,
 .question-body ol {
   margin-top: 0.5em;
@@ -205,20 +201,19 @@
 }
 .alternative-item {
   display: flex;
-  align-items: stretch; /* Faz a letra e o texto terem a mesma altura */
-  border: 2px solid transparent; /* Borda transparente para estabilidade */
+  align-items: stretch;
+  border: 2px solid transparent;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease;
   background-color: var(--bg-primary);
-  overflow: hidden; /* Para o border-radius funcionar com filhos */
+  overflow: hidden;
 }
 .question-layout.answered .alternative-item { cursor: default; }
 .question-layout:not(.answered) .alternative-item:hover {
   background-color: #f9fafb;
   border-color: var(--border-secondary);
 }
-/* --- Sub-Seção: Ajustes para QuestionLayout dentro do Banco de Questões --- */
 #question-bank-list .alternative-item { cursor: default; }
 #question-bank-list .alternative-item:hover {
   background-color: var(--bg-primary);
@@ -228,18 +223,18 @@
 .alternative-letter {
   font-weight: bold;
   border-right: 1px solid var(--border-secondary);
-  width: 45px; /* Largura fixa para evitar mudanças de layout */
+  width: 45px;
   min-width: 45px;
   max-width: 45px;
-  padding: 10px 0; /* Vertical, horizontal é pelo flex */
-  display: inline-flex; /* Para centralizar conteúdo */
+  padding: 10px 0;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   background-color: var(--bg-tertiary);
   color: var(--text-secondary);
   font-size: 1em;
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  align-self: stretch; /* Ocupa toda altura do .alternative-item */
+  align-self: stretch;
 }
 .alternative-text {
   flex-grow: 1;
@@ -247,7 +242,6 @@
   font-size: 0.95em;
   padding: 12px 15px;
 }
-/* --- Sub-Seção: Markdown nas Alternativas --- */
 .alternative-text p { margin: 0; white-space: pre-wrap; }
 .alternative-text ul, .alternative-text ol { margin-top: 0.5em; margin-bottom: 0.5em; padding-left: 1.5em; }
 .alternative-text ul { list-style-type: disc; }
@@ -257,21 +251,18 @@
 .alternative-text strong, .alternative-text b { font-weight: bold; }
 .alternative-text em, .alternative-text i { font-style: italic; }
 
-/* --- Seção: Feedback Visual das Alternativas --- */
+/* --- Seção: Feedback Visual --- */
 .alternative-item.correct-answer {
   border-color: var(--success-primary);
   background-color: var(--success-secondary);
 }
-
 .alternative-item.incorrect-choice {
   border-color: var(--error-primary);
   background-color: var(--error-secondary);
 }
-
 .alternative-item.neutral-answer {
   opacity: 0.7;
 }
-
 .alternative-letter.feedback-correct {
   background-color: var(--success-primary);
   color: #fff;
@@ -288,7 +279,6 @@
 }
 .alternative-item.correct-answer .alternative-letter { border-right-color: #a7f3d0; }
 .alternative-item.incorrect-choice .alternative-letter { border-right-color: #fecaca; }
-/* --- Sub-Seção: Estilo Estático para Banco de Questões --- */
 #question-bank-list .alternative-item.correct-answer-static {
   border-color: #a7f3d0;
   background-color: var(--success-secondary);
@@ -298,76 +288,31 @@
   font-weight: 500;
 }
 
-/* --- Seção: Dark Mode para QuestionLayout --- */
+/* --- Dark Mode --- */
 [data-theme="dark"] .question-layout { background-color: var(--bg-tertiary); border-color: var(--border-primary); }
 [data-theme="dark"] .question-layout.carousel-item-mode { background-color: transparent; }
 [data-theme="dark"] .question-header { background-color: #3a3a3a; border-bottom-color: var(--border-primary); }
 [data-theme="dark"] .question-tag { background-color: #444; color: var(--text-secondary); }
 [data-theme="dark"] .question-tag.pave-tag { background-color: var(--brand-primary); color: #111; }
 [data-theme="dark"] .question-tag.generated-ai-tag { background-color: #818cf8; color: #fff; }
-
-/* Menu dropdown no modo escuro */
-[data-theme="dark"] .question-menu-button {
-  color: var(--text-secondary);
-  background-color: var(--bg-primary);
-  border-color: var(--border-secondary);
-}
-[data-theme="dark"] .question-menu-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
-  border-color: var(--text-secondary);
-}
-[data-theme="dark"] .question-dropdown {
-  background-color: var(--bg-primary);
-  border-color: var(--border-primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
+[data-theme="dark"] .question-menu-button { color: var(--text-secondary); background-color: var(--bg-primary); border-color: var(--border-secondary); }
+[data-theme="dark"] .question-menu-button:hover { background-color: rgba(255, 255, 255, 0.1); color: var(--text-primary); border-color: var(--text-secondary); }
+[data-theme="dark"] .question-dropdown { background-color: var(--bg-primary); border-color: var(--border-primary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
 [data-theme="dark"] .dropdown-item { color: var(--text-primary); }
 [data-theme="dark"] .dropdown-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 [data-theme="dark"] .dropdown-item svg { color: var(--text-secondary); }
-
-/* Alternativas no modo escuro */
 [data-theme="dark"] .question-body { color: var(--text-primary); }
 [data-theme="dark"] .question-reference { color: var(--text-muted); }
 [data-theme="dark"] .alternative-item { border-color: transparent; background-color: var(--bg-primary); }
-[data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: var(--border-secondary);
-}
-[data-theme="dark"] #question-bank-list .alternative-item:hover {
-  background-color: var(--bg-primary);
-  border-color: transparent;
-}
-[data-theme="dark"] .alternative-letter {
-  border-right-color: var(--border-secondary);
-  background-color: #3a3a3a;
-  color: var(--text-secondary);
-}
+[data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover { background-color: rgba(255, 255, 255, 0.05); border-color: var(--border-secondary); }
+[data-theme="dark"] #question-bank-list .alternative-item:hover { background-color: var(--bg-primary); border-color: transparent; }
+[data-theme="dark"] .alternative-letter { border-right-color: var(--border-secondary); background-color: #3a3a3a; color: var(--text-secondary); }
 [data-theme="dark"] .alternative-text { color: var(--text-primary); }
-
-/* Feedback das alternativas no modo escuro */
-[data-theme="dark"] .alternative-letter.feedback-correct {
-  background-color: #10b981;
-  color: #fff;
-  border-color: #10b981;
-}
-[data-theme="dark"] .alternative-letter.feedback-incorrect {
-  background-color: #ef4444;
-  color: #fff;
-  border-color: #ef4444;
-}
-[data-theme="dark"] .alternative-item.correct-answer {
-  border-color: #10b981;
-  background-color: rgba(16, 185, 129, 0.1);
-}
-[data-theme="dark"] .alternative-item.incorrect-choice {
-  border-color: #ef4444;
-  background-color: rgba(239, 68, 68, 0.1);
-}
+[data-theme="dark"] .alternative-letter.feedback-correct { background-color: #10b981; color: #fff; border-color: #10b981; }
+[data-theme="dark"] .alternative-letter.feedback-incorrect { background-color: #ef4444; color: #fff; border-color: #ef4444; }
+[data-theme="dark"] .alternative-item.correct-answer { border-color: #10b981; background-color: rgba(16, 185, 129, 0.1); }
+[data-theme="dark"] .alternative-item.incorrect-choice { border-color: #ef4444; background-color: rgba(239, 68, 68, 0.1); }
 [data-theme="dark"] .alternative-item.correct-answer .alternative-letter { border-right-color: #10b981; }
 [data-theme="dark"] .alternative-item.incorrect-choice .alternative-letter { border-right-color: #ef4444; }
-[data-theme="dark"] #question-bank-list .alternative-item.correct-answer-static {
-  border-color: #10b981;
-  background-color: rgba(16, 185, 129, 0.1);
-}
+[data-theme="dark"] #question-bank-list .alternative-item.correct-answer-static { border-color: #10b981; background-color: rgba(16, 185, 129, 0.1); }
 [data-theme="dark"] #question-bank-list .alternative-item.correct-answer-static .alternative-text { color: #a7f3d0; }

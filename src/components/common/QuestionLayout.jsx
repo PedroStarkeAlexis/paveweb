@@ -81,8 +81,7 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
 
   const tags = [sourceTag, etapa ? <span key="etapa" className="question-tag">Etapa {etapa}</span> : null, materia ? <span key="materia" className="question-tag">{materia}</span> : null, topico ? <span key="topico" className="question-tag">{topico}</span> : null].filter(Boolean);
 
-  // A CONDIÇÃO "!isInsideCarousel" FOI REMOVIDA PARA GARANTIR QUE O MENU SEMPRE APAREÇA
-  const menuComponent = (
+  const menuComponent = !isInsideCarousel && (
     <div className="question-menu-container" ref={dropdownRef}>
       <button 
         className="question-menu-button" 
@@ -113,9 +112,11 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
         <div className="question-tags">
           {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
         </div>
-        {/* Renderiza o menu. Se estiver no carrossel, o CSS vai escondê-lo. */}
-        {menuComponent}
       </div>
+      
+      {/* O MENU AGORA É IRMÃO DO HEADER, NÃO FILHO */}
+      {menuComponent}
+
       <div className="question-body">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{typeof texto_questao === 'string' ? texto_questao : String(texto_questao || '')}</ReactMarkdown>
         {referencia && <div className="question-reference"><ReactMarkdown remarkPlugins={[remarkGfm]}>{referencia}</ReactMarkdown></div>}
