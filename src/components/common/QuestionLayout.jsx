@@ -81,36 +81,40 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
 
   const tags = [sourceTag, etapa ? <span key="etapa" className="question-tag">Etapa {etapa}</span> : null, materia ? <span key="materia" className="question-tag">{materia}</span> : null, topico ? <span key="topico" className="question-tag">{topico}</span> : null].filter(Boolean);
 
+  // A CONDIÇÃO "!isInsideCarousel" FOI REMOVIDA PARA GARANTIR QUE O MENU SEMPRE APAREÇA
+  const menuComponent = (
+    <div className="question-menu-container" ref={dropdownRef}>
+      <button 
+        className="question-menu-button" 
+        onClick={toggleDropdown}
+        aria-label="Menu de opções"
+      >
+        <IconEllipsisHorizontal />
+      </button>
+      {showDropdown && (
+        <div className="question-dropdown">
+          {!answered && (
+            <button className="dropdown-item" onClick={handleShowAnswerClick}>
+              <span>Mostrar Resposta</span>
+            </button>
+          )}
+          <button className="dropdown-item" onClick={handleSaveToggle}>
+            {isCurrentlySaved ? <IconBookmarkFilled /> : <IconBookmark />}
+            <span>{isCurrentlySaved ? 'Remover dos Salvos' : 'Salvar Questão'}</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className={`question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`} id={id.toString()} data-correct-answer={resposta_letra}>
       <div className="question-header">
         <div className="question-tags">
           {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
         </div>
-        {!isInsideCarousel && (
-          <div className="question-menu-container" ref={dropdownRef}>
-            <button 
-              className="question-menu-button" 
-              onClick={toggleDropdown}
-              aria-label="Menu de opções"
-            >
-              <IconEllipsisHorizontal />
-            </button>
-            {showDropdown && (
-              <div className="question-dropdown">
-                {!answered && (
-                  <button className="dropdown-item" onClick={handleShowAnswerClick}>
-                    <span>Mostrar Resposta</span>
-                  </button>
-                )}
-                <button className="dropdown-item" onClick={handleSaveToggle}>
-                  {isCurrentlySaved ? <IconBookmarkFilled /> : <IconBookmark />}
-                  <span>{isCurrentlySaved ? 'Remover dos Salvos' : 'Salvar Questão'}</span>
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+        {/* Renderiza o menu. Se estiver no carrossel, o CSS vai escondê-lo. */}
+        {menuComponent}
       </div>
       <div className="question-body">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{typeof texto_questao === 'string' ? texto_questao : String(texto_questao || '')}</ReactMarkdown>
@@ -135,7 +139,6 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
               letterBoxClass += ' feedback-incorrect';
               itemClass += ' incorrect-choice';
             } else if (answered && !choiceStatus) {
-              // Alternativa não clicada mas resposta já foi revelada
               itemClass += ' neutral-answer';
             }
           }
