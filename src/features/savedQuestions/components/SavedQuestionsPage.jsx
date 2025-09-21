@@ -36,10 +36,6 @@ function SavedQuestionsPage() {
     setIsLoading(true);
     setError(null);
     try {
-      // Usar a API /api/search-questions sem query para pegar todas as questões,
-      // assumindo que ela retorna todas se não houver query.
-      // Adicionar um limit grande para garantir que todas sejam retornadas.
-      // Idealmente, a API deveria ter uma forma de buscar por IDs específicos.
       const response = await fetch(`/api/search-questions?limit=10000`); // Limite alto
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: `Erro ${response.status}` }));
@@ -59,14 +55,11 @@ function SavedQuestionsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [savedQuestionIds]); // Dependência nos IDs salvos
+  }, [savedQuestionIds]);
 
   useEffect(() => {
     fetchAllQuestions();
-  }, [fetchAllQuestions]); // Re-busca quando a lista de IDs salvos muda
-  useEffect(() => {
-    fetchAllQuestions();
-  }, [fetchAllQuestions]); // Re-busca quando a lista de IDs salvos muda
+  }, [fetchAllQuestions]);
 
   const envShowPlaceholder = typeof import.meta !== 'undefined' &&
     import.meta.env &&
@@ -74,7 +67,7 @@ function SavedQuestionsPage() {
 
   const showPlaceholder = envShowPlaceholder && savedQuestionIds.length === 0 && !isLoading && !error;
 
-  const renderContent = () => {
+  const renderListContent = () => {
     if (isLoading) {
       return <div className="saved-questions-message">Carregando questões salvas...</div>;
     }
@@ -83,43 +76,38 @@ function SavedQuestionsPage() {
     }
     if (showPlaceholder) {
       return (
-        <div className="saved-questions-list">
+        <>
           <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '10px' }}>
             Modo de Desenvolvimento: Exibindo questão de exemplo.
           </p>
           <QuestionLayout questionData={placeholderQuestion} />
-        </div>
+        </>
       );
     }
-    if (savedQuestionIds.length === 0) {
-      return (
-        <div className="saved-questions-empty-state">
-          <h2>Nenhuma Questão Salva Ainda</h2>
-          <p>Você ainda não salvou nenhuma questão. Navegue pelo banco de questões ou peça ao assistente para encontrar e salvar as que mais te interessam!</p>
-        </div>
-      );
+    if (savedQuestionsData.length > 0) {
+      return savedQuestionsData.map((question) => (
+        <QuestionLayout key={question.id} questionData={question} />
+      ));
     }
-    if (savedQuestionsData.length === 0 && savedQuestionIds.length > 0 && !isLoading) {
+    if (savedQuestionIds.length > 0 && !isLoading) {
       return <div className="saved-questions-message">Não foi possível encontrar os dados completos das questões salvas. Tente novamente mais tarde.</div>;
     }
     return (
-      <div className="saved-questions-page-container">
-        <h1 className="saved-questions-title">Minhas Questões Salvas</h1>
-        {savedQuestionsData.length > 0 ? (
-          <div className="saved-questions-list">
-            {savedQuestionsData.map((question) => (
-              <QuestionLayout key={question.id} questionData={question} />
-            ))}
-          </div>
-        ) : (
-          // Esta mensagem pode aparecer brevemente se os IDs existem mas os dados ainda não foram encontrados
-          !isLoading && <div className="saved-questions-message">Nenhuma questão salva para exibir.</div>
-        )}
+      <div className="saved-questions-empty-state">
+        <h2>Nenhuma Questão Salva Ainda</h2>
+        <p>Você ainda não salvou nenhuma questão. Navegue pelo banco de questões ou peça ao assistente para encontrar e salvar as que mais te interessam!</p>
       </div>
     );
   };
 
-  return renderContent();
+  return (
+    <div className="saved-questions-page-container">
+      <h1 className="saved-questions-title">Minhas Questões Salvas</h1>
+      <div className="saved-questions-list">
+        {renderListContent()}
+      </div>
+    </div>
+  );
 }
 
 export default SavedQuestionsPage;

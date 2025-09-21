@@ -35,7 +35,7 @@
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--border-primary);
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; <-- REMOVIDO */
   align-items: center;
   gap: 12px;
   border-radius: 8px 8px 0 0;
@@ -46,8 +46,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px; /* A maneira mais robusta de espaçar itens flexíveis */
-  flex: 1;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -76,6 +75,7 @@
   align-items: center;
   flex-shrink: 0;
   z-index: 1;
+  margin-left: auto; /* <<< A SOLUÇÃO DEFINITIVA! */
 }
 
 .question-menu-button {
@@ -84,11 +84,11 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: 1px solid var(--border-secondary); /* Borda sutil para visibilidade */
-  background-color: var(--bg-primary); /* Fundo para se destacar */
-  color: var(--text-secondary); /* Cor mais forte para o ícone */
+  border: 1px solid var(--border-secondary);
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
   cursor: pointer;
-  border-radius: 6px; /* Bordas levemente arredondadas */
+  border-radius: 6px;
   transition: all 0.2s ease;
   flex-shrink: 0;
 }
