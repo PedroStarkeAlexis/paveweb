@@ -1,3 +1,4 @@
+/* // src/components/common/QuestionLayout.css */
 
 /* --- Seção: Container Principal do QuestionLayout --- */
 .question-layout {
@@ -155,11 +156,6 @@
 .alternative-text em, .alternative-text i { font-style: italic; }
 
 /* --- Seção: Feedback Visual das Alternativas --- */
-.feedback-icon {
-  width: 24px;
-  height: 24px;
-  color: #fff;
-}
 .alternative-letter.feedback-correct {
   background-color: var(--success-primary);
   color: #fff;
@@ -220,14 +216,14 @@
 
 /* Botão Primário (Mostrar Resposta) */
 .q-footer-btn-primary {
-  background-color: var(--brand-primary);
-  border-color: var(--brand-primary);
-  color: white;
+  background-color: var(--bg-primary);
+  border-color: var(--border-secondary);
+  color: var(--text-secondary);
 }
 .q-footer-btn-primary:hover {
-  background-color: var(--brand-primary-hover);
-  border-color: var(--brand-primary-hover);
-  color: white;
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+  color: var(--text-primary);
 }
 
 /* Botão Secundário (Salvar) */
@@ -273,7 +269,7 @@
 [data-theme="dark"] .question-body { color: var(--text-primary); }
 [data-theme="dark"] .question-reference { color: var(--text-muted); }
 [data-theme="dark"] .alternative-item { border-color: var(--border-secondary); background-color: var(--bg-primary); }
-[data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover { background-color: var(--bg-tertiary); border-color: #777; }
+[data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover { background-color: #27272a; border-color: #777; }
 [data-theme="dark"] #question-bank-list .alternative-item:hover { background-color: var(--bg-primary); border-color: var(--border-secondary); }
 [data-theme="dark"] .alternative-letter { border-right-color: var(--border-secondary); background-color: #3a3a3a; color: var(--text-secondary); }
 [data-theme="dark"] .alternative-text { color: var(--text-primary); }
@@ -286,8 +282,8 @@
 [data-theme="dark"] .question-footer { background-color: #3a3a3a; }
 
 /* Dark Mode para Botões do Footer */
-[data-theme="dark"] .q-footer-btn-primary { background-color: var(--brand-primary); border-color: var(--brand-primary); color: #1a202c; }
-[data-theme="dark"] .q-footer-btn-primary:hover { background-color: var(--brand-primary-hover); border-color: var(--brand-primary-hover); color: #1a202c; }
+[data-theme="dark"] .q-footer-btn-primary { background-color: var(--bg-primary); border-color: var(--border-secondary); color: var(--text-secondary); }
+[data-theme="dark"] .q-footer-btn-primary:hover { background-color: #27272a; border-color: #777; color: var(--text-primary); }
 [data-theme="dark"] .q-footer-btn-secondary { background-color: var(--bg-primary); border-color: var(--border-secondary); color: var(--text-secondary); }
 [data-theme="dark"] .q-footer-btn-secondary:hover:not(.saved) { background-color: #27272a; border-color: #777; }
 [data-theme="dark"] .q-footer-btn-secondary.saved { background-color: rgba(16, 185, 129, 0.15); color: var(--brand-primary); border-color: var(--brand-primary); }

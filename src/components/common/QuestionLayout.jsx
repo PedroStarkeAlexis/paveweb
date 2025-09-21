@@ -4,8 +4,6 @@ import remarkGfm from 'remark-gfm';
 import { useSavedQuestions } from '../../hooks/useSavedQuestions';
 import IconBookmark from '../icons/IconBookmark';
 import IconBookmarkFilled from '../icons/IconBookmarkFilled';
-import IconCheckCircle from '../icons/IconCheckCircle'; // NOVO
-import IconXCircle from '../icons/IconXCircle'; // NOVO
 
 function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
   const [answered, setAnswered] = useState(false);
@@ -70,17 +68,17 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
           const altLetter = alt.letra;
           const choiceStatus = feedback[altLetter];
           const isCorrectAnswer = altLetter === resposta_letra;
-          let iconContent = altLetter;
+          let icon = altLetter;
           let letterBoxClass = 'alternative-letter';
           let itemClass = 'alternative-item';
 
           if (answered) {
             if (isCorrectAnswer) {
-              iconContent = <IconCheckCircle className="feedback-icon" />;
+              icon = '✔';
               letterBoxClass += ' feedback-correct';
               itemClass += ' correct-answer';
             } else if (choiceStatus === 'incorrect-choice') {
-              iconContent = <IconXCircle className="feedback-icon" />;
+              icon = '✗';
               letterBoxClass += ' feedback-incorrect';
               itemClass += ' incorrect-choice';
             }
@@ -88,7 +86,7 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
 
           return (
             <div key={altLetter} className={itemClass} data-letter={altLetter} role="button" tabIndex={answered ? -1 : 0} onClick={() => handleAlternativeClick(altLetter)} onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter); }}>
-              <span className={letterBoxClass}>{iconContent}</span>
+              <span className={letterBoxClass}>{icon}</span>
               <div className="alternative-text"><ReactMarkdown remarkPlugins={[remarkGfm]}>{typeof alt.texto === 'string' ? alt.texto : String(alt.texto || '')}</ReactMarkdown></div>
             </div>
           );
