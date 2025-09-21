@@ -2,14 +2,54 @@
 <html lang="pt-br">
   <head>
     <!-- Appzi: Capture Insightful Feedback -->
+    <script async src="https://w.appzi.io/w.js?token=rcbhq"></script>
+    <!-- End Appzi -->
 
-<script async src="https://w.appzi.io/w.js?token=rcbhq"></script>
-
-<!-- End Appzi -->
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/Simu.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Central PAVE</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuração do Tailwind para a CDN -->
+    <script>
+      tailwind.config = {
+        darkMode: ['class', '[data-theme="dark"]'],
+        theme: {
+          extend: {
+            colors: {
+              'bg-primary': 'var(--bg-primary)',
+              'bg-secondary': 'var(--bg-secondary)',
+              'bg-tertiary': 'var(--bg-tertiary)',
+              'text-primary': 'var(--text-primary)',
+              'text-secondary': 'var(--text-secondary)',
+              'text-muted': 'var(--text-muted)',
+              'border-primary': 'var(--border-primary)',
+              'border-secondary': 'var(--border-secondary)',
+              'brand': {
+                primary: 'var(--brand-primary)',
+                'primary-hover': 'var(--brand-primary-hover)',
+                secondary: 'var(--brand-secondary)',
+                'secondary-text': 'var(--brand-secondary-text)',
+              },
+              'error': {
+                primary: 'var(--error-primary)',
+                secondary: 'var(--error-secondary)',
+              },
+              'success': {
+                primary: 'var(--success-primary)',
+                secondary: 'var(--success-secondary)',
+              },
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
