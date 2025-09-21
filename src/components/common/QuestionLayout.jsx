@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useSavedQuestions } from '../../hooks/useSavedQuestions';
 import IconBookmark from '../icons/IconBookmark';
 import IconBookmarkFilled from '../icons/IconBookmarkFilled';
+import IconEllipsisHorizontal from '../icons/IconEllipsisHorizontal';
 
 function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
   const { addSavedQuestion, removeSavedQuestion, isQuestionSaved } = useSavedQuestions();
 
   const safeQuestionData = questionData || {};
@@ -22,7 +25,22 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
   useEffect(() => {
     setAnswered(false);
     setFeedback({});
+    setShowDropdown(false);
   }, [safeQuestionData]);
+
+  // Fechar dropdown ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showDropdown]);
 
   const handleAlternativeClick = (clickedLetter) => {
     if (answered) return;
@@ -37,6 +55,7 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
     if (answered) return;
     setAnswered(true);
     setFeedback({});
+    setShowDropdown(false);
   };
 
   const handleSaveToggle = (e) => {
@@ -46,6 +65,12 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
     } else {
       addSavedQuestion(id.toString());
     }
+    setShowDropdown(false);
+  };
+
+  const toggleDropdown = (e) => {
+    e.stopPropagation();
+    setShowDropdown(!showDropdown);
   };
 
   const sourceTag = ano
@@ -58,7 +83,35 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
 
   return (
     <div className={`question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`} id={id.toString()} data-correct-answer={resposta_letra}>
-      <div className="question-header">{tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}</div>
+      <div className="question-header">
+        <div className="question-tags">
+          {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
+        </div>
+        {!isInsideCarousel && (
+          <div className="question-menu-container" ref={dropdownRef}>
+            <button 
+              className="question-menu-button" 
+              onClick={toggleDropdown}
+              aria-label="Menu de opções"
+            >
+              <IconEllipsisHorizontal />
+            </button>
+            {showDropdown && (
+              <div className="question-dropdown">
+                {!answered && (
+                  <button className="dropdown-item" onClick={handleShowAnswerClick}>
+                    <span>Mostrar Resposta</span>
+                  </button>
+                )}
+                <button className="dropdown-item" onClick={handleSaveToggle}>
+                  {isCurrentlySaved ? <IconBookmarkFilled /> : <IconBookmark />}
+                  <span>{isCurrentlySaved ? 'Remover dos Salvos' : 'Salvar Questão'}</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
       <div className="question-body">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{typeof texto_questao === 'string' ? texto_questao : String(texto_questao || '')}</ReactMarkdown>
         {referencia && <div className="question-reference"><ReactMarkdown remarkPlugins={[remarkGfm]}>{referencia}</ReactMarkdown></div>}
@@ -74,11 +127,11 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
 
           if (answered) {
             if (isCorrectAnswer) {
-              icon = '✔';
+              icon = '✓';
               letterBoxClass += ' feedback-correct';
               itemClass += ' correct-answer';
             } else if (choiceStatus === 'incorrect-choice') {
-              icon = '✗';
+              icon = '✕';
               letterBoxClass += ' feedback-incorrect';
               itemClass += ' incorrect-choice';
             } else if (answered && !choiceStatus) {
@@ -94,18 +147,6 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
             </div>
           );
         })}
-      </div>
-      <div className="question-footer">
-        {!isInsideCarousel && (
-          <button className={`q-footer-btn q-footer-btn-secondary ${isCurrentlySaved ? 'saved' : ''}`} onClick={handleSaveToggle} aria-label={isCurrentlySaved ? 'Remover questão' : 'Salvar questão'}>
-            {isCurrentlySaved ? <IconBookmarkFilled /> : <IconBookmark />}
-            <span>{isCurrentlySaved ? 'Salvo' : 'Salvar'}</span>
-          </button>
-        )}
-        <div className="footer-answer-section">
-          {!answered && <button className="q-footer-btn q-footer-btn-primary" onClick={handleShowAnswerClick}>Mostrar Resposta</button>}
-          {answered && <span className="correct-answer-text">Correta: {resposta_letra || 'N/D'}) {(alternativas || []).find(a => a.letra === resposta_letra)?.texto || ''}</span>}
-        </div>
       </div>
     </div>
   );
