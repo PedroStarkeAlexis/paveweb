@@ -46,7 +46,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center; /* Garante alinhamento vertical se houver quebra de linha */
-  gap: 8px; /* Espaçamento entre as tags */
+  /* Removido 'gap', margem será aplicada no filho */
   flex: 1;
   min-width: 0; /* Permite que o container encolha se necessário */
 }
@@ -58,7 +58,15 @@
   padding: 3px 8px;
   border-radius: 4px;
   white-space: nowrap;
+  margin-right: 8px; /* Adicionado espaço à direita */
+  margin-bottom: 8px; /* Adicionado espaço abaixo para quando quebrar a linha */
 }
+
+.question-tag:last-child {
+  margin-right: 0; /* Remove a margem do último item para não criar espaço extra */
+}
+
+
 .question-tag.pave-tag {
   background-color: var(--brand-primary);
   color: #fff;
@@ -76,6 +84,7 @@
   align-items: center;
   flex-shrink: 0;
   z-index: 1;
+  margin-bottom: 8px; /* Alinha com a margem das tags */
 }
 
 .question-menu-button {
@@ -84,24 +93,24 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: none; /* Removido borda para um visual mais limpo */
-  background-color: transparent; /* Botão transparente por padrão */
-  color: var(--text-muted); /* Cor mais sutil para o ícone */
+  border: none;
+  background-color: transparent;
+  color: var(--text-muted);
   cursor: pointer;
-  border-radius: 50%; /* Botão circular */
+  border-radius: 50%;
   transition: all 0.2s ease;
-  flex-shrink: 0; /* Impede que o botão encolha */
+  flex-shrink: 0;
 }
 
 .question-menu-button:hover {
-  background-color: var(--bg-secondary); /* Fundo sutil no hover */
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
 }
 
 .question-menu-button svg {
   width: 18px;
   height: 18px;
-  pointer-events: none; /* Garante que o clique funcione */
+  pointer-events: none;
 }
 
 .question-dropdown {

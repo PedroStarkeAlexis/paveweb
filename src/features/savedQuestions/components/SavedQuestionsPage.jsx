@@ -3,6 +3,25 @@ import { useSavedQuestions } from '../../../hooks/useSavedQuestions';
 import QuestionLayout from '../../../components/common/QuestionLayout';
 import './SavedQuestionsPage.css'; // Criaremos este CSS
 
+// Objeto da questão de exemplo para desenvolvimento
+const placeholderQuestion = {
+  id: "placeholder-1",
+  ano: 2024,
+  etapa: 1,
+  materia: "Desenvolvimento",
+  topico: "Placeholder",
+  texto_questao: "Esta é uma questão de exemplo para visualização em ambiente de desenvolvimento. Ela aparece quando não há questões salvas e o backend não está conectado.\n\nQual a principal vantagem de usar um placeholder como este?",
+  referencia: "Gerado localmente para desenvolvimento.",
+  alternativas: [
+    { letra: "A", texto: "Facilita a visualização do layout e estilo do componente." },
+    { letra: "B", texto: "Adiciona dados desnecessários à produção." },
+    { letra: "C", texto: "Testa a performance da API de busca." },
+    { letra: "D", texto: "Substitui a necessidade de testes unitários." },
+    { letra: "E", texto: "Não possui nenhuma vantagem." }
+  ],
+  resposta_letra: "A"
+};
+
 function SavedQuestionsPage() {
   const { savedQuestionIds } = useSavedQuestions();
   const [savedQuestionsData, setSavedQuestionsData] = useState([]);
@@ -45,46 +64,62 @@ function SavedQuestionsPage() {
   useEffect(() => {
     fetchAllQuestions();
   }, [fetchAllQuestions]); // Re-busca quando a lista de IDs salvos muda
+  useEffect(() => {
+    fetchAllQuestions();
+  }, [fetchAllQuestions]); // Re-busca quando a lista de IDs salvos muda
 
-  if (isLoading) {
-    return <div className="saved-questions-message">Carregando questões salvas...</div>;
-  }
+  const envShowPlaceholder = typeof import.meta !== 'undefined' &&
+    import.meta.env &&
+    (import.meta.env.VITE_SHOW_PLACEHOLDER === 'true' || import.meta.env.VITE_SHOW_PLACEHOLDER === true || import.meta.env.DEV);
 
-  if (error) {
-    return <div className="saved-questions-message error">{error}</div>;
-  }
+  const showPlaceholder = envShowPlaceholder && savedQuestionIds.length === 0 && !isLoading && !error;
 
-  if (savedQuestionIds.length === 0) {
+  const renderContent = () => {
+    if (isLoading) {
+      return <div className="saved-questions-message">Carregando questões salvas...</div>;
+    }
+    if (error) {
+      return <div className="saved-questions-message error">{error}</div>;
+    }
+    if (showPlaceholder) {
+      return (
+        <div className="saved-questions-list">
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '10px' }}>
+            Modo de Desenvolvimento: Exibindo questão de exemplo.
+          </p>
+          <QuestionLayout questionData={placeholderQuestion} />
+        </div>
+      );
+    }
+    if (savedQuestionIds.length === 0) {
+      return (
+        <div className="saved-questions-empty-state">
+          <h2>Nenhuma Questão Salva Ainda</h2>
+          <p>Você ainda não salvou nenhuma questão. Navegue pelo banco de questões ou peça ao assistente para encontrar e salvar as que mais te interessam!</p>
+        </div>
+      );
+    }
+    if (savedQuestionsData.length === 0 && savedQuestionIds.length > 0 && !isLoading) {
+      return <div className="saved-questions-message">Não foi possível encontrar os dados completos das questões salvas. Tente novamente mais tarde.</div>;
+    }
     return (
-      <div className="saved-questions-empty-state">
-        <h2>Nenhuma Questão Salva Ainda</h2>
-        <p>Você ainda não salvou nenhuma questão. Navegue pelo banco de questões ou peça ao assistente para encontrar e salvar as que mais te interessam!</p>
-        {/* Opcional: Link para o banco de questões */}
-        {/* <Link to="/banco-questoes" className="empty-state-cta">Explorar Questões</Link> */}
+      <div className="saved-questions-page-container">
+        <h1 className="saved-questions-title">Minhas Questões Salvas</h1>
+        {savedQuestionsData.length > 0 ? (
+          <div className="saved-questions-list">
+            {savedQuestionsData.map((question) => (
+              <QuestionLayout key={question.id} questionData={question} />
+            ))}
+          </div>
+        ) : (
+          // Esta mensagem pode aparecer brevemente se os IDs existem mas os dados ainda não foram encontrados
+          !isLoading && <div className="saved-questions-message">Nenhuma questão salva para exibir.</div>
+        )}
       </div>
     );
-  }
+  };
 
-  if (savedQuestionsData.length === 0 && savedQuestionIds.length > 0 && !isLoading) {
-    return <div className="saved-questions-message">Não foi possível encontrar os dados completos das questões salvas. Tente novamente mais tarde.</div>;
-  }
-
-
-  return (
-    <div className="saved-questions-page-container">
-      <h1 className="saved-questions-title">Minhas Questões Salvas</h1>
-      {savedQuestionsData.length > 0 ? (
-        <div className="saved-questions-list">
-          {savedQuestionsData.map((question) => (
-            <QuestionLayout key={question.id} questionData={question} />
-          ))}
-        </div>
-      ) : (
-        // Esta mensagem pode aparecer brevemente se os IDs existem mas os dados ainda não foram encontrados
-        !isLoading && <div className="saved-questions-message">Nenhuma questão salva para exibir.</div>
-      )}
-    </div>
-  );
+  return renderContent();
 }
 
 export default SavedQuestionsPage;
