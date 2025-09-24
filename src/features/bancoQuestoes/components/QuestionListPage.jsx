@@ -87,7 +87,7 @@ function QuestionListPage() {
   };
 
   return (
-    <div className="question-list-page-container">
+    <div className="page-container">
       <header className="question-list-header">
         <h1>Questões de {subject}</h1>
         <div className="filter-group">
@@ -130,4 +130,4 @@ function QuestionListPage() {
   );
 }
 
-export default QuestionListPage;
+export default QuestionListPage;

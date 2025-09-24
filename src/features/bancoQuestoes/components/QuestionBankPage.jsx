@@ -154,7 +154,7 @@ function QuestionBankPage() {
     const handlePrevPage = () => handlePageChange(pagination.currentPage - 1);
 
     return (
-        <div className="question-bank-container">
+        <div className="page-container">
             <SearchInput onSearch={handleSearch} isLoading={isLoading} initialQuery={searchQuery} />
 
             {isLoadingFilters && <p className="loading-message">Carregando filtros...</p>}
