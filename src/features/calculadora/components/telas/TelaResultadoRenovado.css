@@ -92,6 +92,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    margin-top: 20px; /* Adiciona espaço acima do botão de compartilhar */
     /* Estilos do botão em ShareButton.css */
 }
 
