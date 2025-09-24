@@ -88,10 +88,6 @@
   cursor: not-allowed;
 }
 
-.chat-input-container.loading {
-  /* Estilos para quando estiver carregando, se necessário */
-}
-
 /* --- Dark Mode --- */
 [data-theme="dark"] .chat-input-container {
   background-color: var(--bg-tertiary);
@@ -117,4 +113,19 @@
 [data-theme="dark"] .chat-send-button:disabled {
   background-color: var(--border-secondary);
   color: var(--text-muted);
+}
+
+/* --- Responsividade para Mobile - Ajuste para Bottom Navigation Bar --- */
+@media (max-width: 768px) {
+  .chat-input-container {
+    /* Ajusta o bottom para ficar acima da bottom nav bar (60px + margem) */
+    bottom: 75px; /* 60px da nav + 15px de margem */
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-input-container {
+    /* Ajusta o bottom para telas menores onde a nav bar tem 55px */
+    bottom: 70px; /* 55px da nav + 15px de margem */
+  }
 }
