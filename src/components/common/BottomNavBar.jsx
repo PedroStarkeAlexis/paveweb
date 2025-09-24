@@ -8,10 +8,25 @@ const NavItem = ({ item }) => {
 
   // Se for um botão (como o "Mais")
   if (item.type === 'button') {
+    const handleClick = (e) => {
+      // vibração curta de 5ms quando suportado
+      try {
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+          navigator.vibrate(5);
+        }
+      } catch (err) {
+        // nada - falha silente em ambientes onde `navigator` não existe
+      }
+
+      if (typeof item.onClick === 'function') {
+        item.onClick(e);
+      }
+    };
+
     return (
       <button
         className="bottom-nav-item bottom-nav-button" // Adiciona classe específica para estilização se necessário
-        onClick={item.onClick}
+        onClick={handleClick}
         aria-label={item.label}
       >
         {item.icon && <item.icon className="bottom-nav-icon" />}
