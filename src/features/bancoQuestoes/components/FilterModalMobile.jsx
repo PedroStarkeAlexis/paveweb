@@ -15,7 +15,7 @@ function FilterModalMobile({ isOpen, onClose, initialFilters, onApplyFilters, op
   };
   
   const handleClear = () => {
-    setLocalFilters({ ano: null, materia: null });
+    setLocalFilters({ ano: null, materia: null, etapa: null });
   };
   
   const handleSubmit = (e) => {
@@ -63,6 +63,14 @@ function FilterModalMobile({ isOpen, onClose, initialFilters, onApplyFilters, op
                   {options.anos.map(a => <option key={a} value={a}>{a}</option>)}
                 </select>
               </div>
+              <div className="form-group">
+                <label htmlFor="etapa-mobile">Etapa</label>
+                <select id="etapa-mobile" name="etapa" value={localFilters.etapa || 'todos'} onChange={handleSelectChange}>
+                  <option value="todos">Todas as etapas</option>
+                  {/* Assumindo que as opções de etapa virão de options.etapas */}
+                  {options.etapas && options.etapas.map(e => <option key={e} value={e}>{e}</option>)}
+                </select>
+              </div>
               <footer className="filter-modal-footer">
                 <button type="submit" className="apply-filters-button">Aplicar Filtros</button>
               </footer>
@@ -74,4 +82,4 @@ function FilterModalMobile({ isOpen, onClose, initialFilters, onApplyFilters, op
   );
 }
 
-export default FilterModalMobile;
+export default FilterModalMobile;

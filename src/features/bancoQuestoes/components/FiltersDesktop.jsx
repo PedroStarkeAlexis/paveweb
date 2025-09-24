@@ -46,8 +46,16 @@ function FiltersDesktop({ filters, onFilterChange, options }) {
           {options.anos.map(a => <option key={a} value={a}>{a}</option>)}
         </select>
       </div>
+      <div className="filter-item">
+        <label htmlFor="etapa">Etapa</label>
+        <select id="etapa" name="etapa" value={filters.etapa || 'todos'} onChange={handleSelectChange}>
+          <option value="todos">Todas</option>
+          {/* Assumindo que as opções de etapa virão de options.etapas */}
+          {options.etapas && options.etapas.map(e => <option key={e} value={e}>{e}</option>)}
+        </select>
+      </div>
     </form>
   );
 }
 
-export default FiltersDesktop;
+export default FiltersDesktop;
