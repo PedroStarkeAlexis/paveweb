@@ -87,6 +87,61 @@ code {
     monospace;
 }
 
+/* --- Estilos para a caixa de input de mensagem (Chat) --- */
+.chat-input-form {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid var(--border-primary);
+  background-color: var(--bg-secondary);
+}
+
+.chat-input-form textarea {
+  flex-grow: 1;
+  border: 1px solid var(--border-secondary);
+  border-radius: 18px;
+  padding: 10px 15px;
+  font-size: 1em;
+  resize: none;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  max-height: 150px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.chat-input-form textarea:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+}
+
+.chat-input-form .send-button {
+  background-color: var(--brand-primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+
+.chat-input-form .send-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.chat-input-form .send-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* --- Fim dos estilos para a caixa de input de mensagem --- */
+
 /* --- Estrutura Principal (Sidebar + Conteúdo - do Projeto 2) --- */
 .app-container {
   display: flex;
