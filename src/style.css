@@ -1184,7 +1184,7 @@ code {
 
   /* Ajuste do botão de tema para não colidir com a bottom nav */
   .theme-toggle {
-    bottom: 75px; /* Sobe um pouco (60px da nav + 15px de margem) */
+    bottom: 85px; /* Sobe um pouco (60px da nav + 15px de margem) */
   }
 }
 
