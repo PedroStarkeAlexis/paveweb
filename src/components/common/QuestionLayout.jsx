@@ -6,12 +6,20 @@ import IconBookmark from '../icons/IconBookmark';
 import IconBookmarkFilled from '../icons/IconBookmarkFilled';
 import IconEllipsisHorizontal from '../icons/IconEllipsisHorizontal';
 
+// Objeto para customizar a renderização de elementos Markdown
+const markdownComponents = {
+  // Sobrescreve a renderização padrão de <blockquote> (gerado por `>`)
+  blockquote: ({ node, ...props }) => <div className="question-reference" {...props} />
+};
+
 const ContextBlock = ({ bloco }) => {
   switch (bloco.tipo) {
     case 'texto':
       return (
         <div className="context-block context-text">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{bloco.conteudo_markdown}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+            {bloco.conteudo_markdown}
+          </ReactMarkdown>
         </div>
       );
     case 'imagem':
@@ -20,7 +28,9 @@ const ContextBlock = ({ bloco }) => {
           <img src={bloco.url_imagem} alt={bloco.legenda_markdown || 'Imagem de apoio da questão'} />
           {bloco.legenda_markdown && (
             <figcaption>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{bloco.legenda_markdown}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                {bloco.legenda_markdown}
+              </ReactMarkdown>
             </figcaption>
           )}
         </figure>
@@ -99,7 +109,7 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
 
   const sourceTag = ano
     ? (<span key="src" className="question-tag pave-tag">PAVE {ano}</span>)
-    : (dados_questao?.referencia?.toLowerCase().includes("ia") || !ano ?
+    : (texto_questao.toLowerCase().includes("ia") || !ano ?
       <span key="src" className="question-tag generated-ai-tag">Gerada por IA✨</span>
       : <span key="src" className="question-tag">Outra Fonte</span>);
 
@@ -147,7 +157,9 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
             {contexto.map((bloco, index) => <ContextBlock key={index} bloco={bloco} />)}
           </div>
         )}
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{typeof texto_questao === 'string' ? texto_questao : String(texto_questao || '')}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+          {typeof texto_questao === 'string' ? texto_questao : String(texto_questao || '')}
+        </ReactMarkdown>
       </div>
 
       <div className="alternatives-container">
@@ -176,7 +188,11 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
           return (
             <div key={altLetter} className={itemClass} data-letter={altLetter} role="button" tabIndex={answered ? -1 : 0} onClick={() => handleAlternativeClick(altLetter)} onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter); }}>
               <span className={letterBoxClass}>{icon}</span>
-              <div className="alternative-text"><ReactMarkdown remarkPlugins={[remarkGfm]}>{typeof alt.texto === 'string' ? alt.texto : String(alt.texto || '')}</ReactMarkdown></div>
+              <div className="alternative-text">
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                  {typeof alt.texto === 'string' ? alt.texto : String(alt.texto || '')}
+                </ReactMarkdown>
+              </div>
             </div>
           );
         })}
