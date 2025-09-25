@@ -132,12 +132,6 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
   return (
     <div className={`question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`} id={id_questao} data-correct-answer={resposta_letra}>
       
-      {contexto && contexto.length > 0 && (
-        <div className="question-context-container">
-          {contexto.map((bloco, index) => <ContextBlock key={index} bloco={bloco} />)}
-        </div>
-      )}
-
       <div className="question-header">
         <div className="question-tags">
           {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
@@ -146,10 +140,18 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
       
       {menuComponent}
 
+      {/* ÁREA DE CONTEÚDO CORRIGIDA */}
+      {contexto && contexto.length > 0 && (
+        <div className="question-context-container">
+          {contexto.map((bloco, index) => <ContextBlock key={index} bloco={bloco} />)}
+        </div>
+      )}
+
       <div className="question-body">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{typeof texto_questao === 'string' ? texto_questao : String(texto_questao || '')}</ReactMarkdown>
         {referencia && <div className="question-reference"><ReactMarkdown remarkPlugins={[remarkGfm]}>{referencia}</ReactMarkdown></div>}
       </div>
+
       <div className="alternatives-container">
         {(alternativas || []).map(alt => {
           const altLetter = alt.letra;

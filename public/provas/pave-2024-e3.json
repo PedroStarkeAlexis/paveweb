@@ -14,7 +14,7 @@
       "etapa": 3,
       "materia": "Ci&ecirc;ncias da Natureza",
       "topico": "Evolucionismo",
-      "texto_questao": "1. Darwin e Lamarck s&atilde;o os pesquisadores mais conhecidos pelas suas teorias evolucionistas. Um dos principais exemplos que podemos ressaltar entre as diferen&ccedil;as de suas teorias &eacute; aquele relacionado ao pesco&ccedil;o das girafas. De acordo com as teorias de Lamarck, o que ocorre com o pesco&ccedil;o das girafas?",
+      "texto_questao": "Darwin e Lamarck s&atilde;o os pesquisadores mais conhecidos pelas suas teorias evolucionistas. Um dos principais exemplos que podemos ressaltar entre as diferen&ccedil;as de suas teorias &eacute; aquele relacionado ao pesco&ccedil;o das girafas. De acordo com as teorias de Lamarck, o que ocorre com o pesco&ccedil;o das girafas?",
       "alternativas": [
         { "letra": "A", "texto": "Lamarck afirma que as girafas s&atilde;o imut&aacute;veis, e desde sempre foram assim como s&atilde;o hoje." },
         { "letra": "B", "texto": "Segundo Lamarck, os pesco&ccedil;os longos surgiram de uma s&eacute;rie de muta&ccedil;&otilde;es que ocorreram nas girafas." },
@@ -30,7 +30,7 @@
     "contexto": [
       {
         "tipo": "texto",
-        "conteudo_html": "<p><b>18. Observe a charge a seguir.</b></p>"
+        "conteudo_html": "<p><b>Observe a charge a seguir.</b></p>"
       },
       {
         "tipo": "imagem",
@@ -64,7 +64,7 @@
       "etapa": 3,
       "materia": "F&iacute;sica",
       "topico": "Lei de Coulomb",
-      "texto_questao": "4. No s&eacute;culo XVIII, Charles-Augustin de Coulomb fez importantes contribui&ccedil;&otilde;es para a eletrost&aacute;tica com a formula&ccedil;&atilde;o da Lei de Coulomb.\n\nTendo em mente suas descobertas, considere que em um campo el&eacute;trico est&atilde;o posicionadas duas cargas el&eacute;tricas puntiformes Q1 e Q2, de cargas 5µC e -4µC, respectivamente. Elas est&atilde;o separadas por uma dist&acirc;ncia de 3m no v&aacute;cuo. (dados: constante eletrost&aacute;tica: k=9x10⁹Nm²/C²).\n\nAssinale a alternativa que indica, respectivamente, o valor da for&ccedil;a el&eacute;trica entre as cargas, o tipo de intera&ccedil;&atilde;o entre as cargas e o campo el&eacute;trico a uma dist&acirc;ncia de 2m de Q1.",
+      "texto_questao": "No s&eacute;culo XVIII, Charles-Augustin de Coulomb fez importantes contribui&ccedil;&otilde;es para a eletrost&aacute;tica com a formula&ccedil;&atilde;o da Lei de Coulomb.\n\nTendo em mente suas descobertas, considere que em um campo el&eacute;trico est&atilde;o posicionadas duas cargas el&eacute;tricas puntiformes Q1 e Q2, de cargas 5µC e -4µC, respectivamente. Elas est&atilde;o separadas por uma dist&acirc;ncia de 3m no v&aacute;cuo. (dados: constante eletrost&aacute;tica: k=9x10⁹Nm²/C²).\n\nAssinale a alternativa que indica, respectivamente, o valor da for&ccedil;a el&eacute;trica entre as cargas, o tipo de intera&ccedil;&atilde;o entre as cargas e o campo el&eacute;trico a uma dist&acirc;ncia de 2m de Q1.",
       "referencia": "Refer&ecirc;ncia: GASPAR, Alberto. F&iacute;sica, volume &uacute;nico. 1. ed. S&atilde;o Paulo: &Aacute;tica, 2005.",
       "alternativas": [
         { "letra": "A", "texto": "0,2N; atra&ccedil;&atilde;o eletrost&aacute;tica; 11,25x10⁴N/C." },
@@ -76,4 +76,4 @@
       "resposta_letra": "E"
     }
   }
-]
+]
