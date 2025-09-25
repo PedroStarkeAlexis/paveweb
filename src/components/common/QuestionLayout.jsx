@@ -10,17 +10,18 @@ const ContextBlock = ({ bloco }) => {
   switch (bloco.tipo) {
     case 'texto':
       return (
-        <div
-          className="context-block context-text"
-          dangerouslySetInnerHTML={{ __html: bloco.conteudo_html }}
-        />
+        <div className="context-block context-text">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{bloco.conteudo_markdown}</ReactMarkdown>
+        </div>
       );
     case 'imagem':
       return (
         <figure className="context-block context-image">
-          <img src={bloco.url_imagem} alt={bloco.legenda_html || 'Imagem de apoio da questão'} />
-          {bloco.legenda_html && (
-            <figcaption dangerouslySetInnerHTML={{ __html: bloco.legenda_html }} />
+          <img src={bloco.url_imagem} alt={bloco.legenda_markdown || 'Imagem de apoio da questão'} />
+          {bloco.legenda_markdown && (
+            <figcaption>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{bloco.legenda_markdown}</ReactMarkdown>
+            </figcaption>
           )}
         </figure>
       );
@@ -40,7 +41,7 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
 
   const {
     ano = null, etapa = null, materia = "Indefinida", topico = "Indefinido",
-    texto_questao = '', referencia = null, alternativas = [], resposta_letra = null,
+    texto_questao = '', alternativas = [], resposta_letra = null,
     id = dados_questao?.id || id_questao
   } = dados_questao || {};
 
@@ -98,7 +99,7 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
 
   const sourceTag = ano
     ? (<span key="src" className="question-tag pave-tag">PAVE {ano}</span>)
-    : (referencia?.toLowerCase().includes("ia") || !ano ?
+    : (dados_questao?.referencia?.toLowerCase().includes("ia") || !ano ?
       <span key="src" className="question-tag generated-ai-tag">Gerada por IA✨</span>
       : <span key="src" className="question-tag">Outra Fonte</span>);
 
@@ -140,16 +141,13 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
       
       {menuComponent}
 
-      {/* ÁREA DE CONTEÚDO CORRIGIDA */}
-      {contexto && contexto.length > 0 && (
-        <div className="question-context-container">
-          {contexto.map((bloco, index) => <ContextBlock key={index} bloco={bloco} />)}
-        </div>
-      )}
-
       <div className="question-body">
+        {contexto && contexto.length > 0 && (
+          <div className="question-context-container">
+            {contexto.map((bloco, index) => <ContextBlock key={index} bloco={bloco} />)}
+          </div>
+        )}
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{typeof texto_questao === 'string' ? texto_questao : String(texto_questao || '')}</ReactMarkdown>
-        {referencia && <div className="question-reference"><ReactMarkdown remarkPlugins={[remarkGfm]}>{referencia}</ReactMarkdown></div>}
       </div>
 
       <div className="alternatives-container">

@@ -5,7 +5,7 @@
       {
         "tipo": "imagem",
         "url_imagem": "/images/pave/q1_girafas.png",
-        "legenda_html": null
+        "legenda_markdown": null
       }
     ],
     "dados_questao": {
@@ -30,12 +30,12 @@
     "contexto": [
       {
         "tipo": "texto",
-        "conteudo_html": "<p><b>Observe a charge a seguir.</b></p>"
+        "conteudo_markdown": "**Observe a charge a seguir.**"
       },
       {
         "tipo": "imagem",
         "url_imagem": "/images/pave/q18_charge_ditadura.png",
-        "legenda_html": "<p>Fonte: https://repositorio.ufsc.br/xmlui/handle/praxis/63. Acesso em: 14/12/2022.</p>"
+        "legenda_markdown": "*Fonte: https://repositorio.ufsc.br/xmlui/handle/praxis/63. Acesso em: 14/12/2022.*"
       }
     ],
     "dados_questao": {
@@ -64,8 +64,7 @@
       "etapa": 3,
       "materia": "F&iacute;sica",
       "topico": "Lei de Coulomb",
-      "texto_questao": "No s&eacute;culo XVIII, Charles-Augustin de Coulomb fez importantes contribui&ccedil;&otilde;es para a eletrost&aacute;tica com a formula&ccedil;&atilde;o da Lei de Coulomb.\n\nTendo em mente suas descobertas, considere que em um campo el&eacute;trico est&atilde;o posicionadas duas cargas el&eacute;tricas puntiformes Q1 e Q2, de cargas 5µC e -4µC, respectivamente. Elas est&atilde;o separadas por uma dist&acirc;ncia de 3m no v&aacute;cuo. (dados: constante eletrost&aacute;tica: k=9x10⁹Nm²/C²).\n\nAssinale a alternativa que indica, respectivamente, o valor da for&ccedil;a el&eacute;trica entre as cargas, o tipo de intera&ccedil;&atilde;o entre as cargas e o campo el&eacute;trico a uma dist&acirc;ncia de 2m de Q1.",
-      "referencia": "Refer&ecirc;ncia: GASPAR, Alberto. F&iacute;sica, volume &uacute;nico. 1. ed. S&atilde;o Paulo: &Aacute;tica, 2005.",
+      "texto_questao": "No s&eacute;culo XVIII, Charles-Augustin de Coulomb fez importantes contribui&ccedil;&otilde;es para a eletrost&aacute;tica com a formula&ccedil;&atilde;o da Lei de Coulomb.\n\n*Refer&ecirc;ncia: GASPAR, Alberto. F&iacute;sica, volume &uacute;nico. 1. ed. S&atilde;o Paulo: &Aacute;tica, 2005.*\n\nTendo em mente suas descobertas, considere que em um campo el&eacute;trico est&atilde;o posicionadas duas cargas el&eacute;tricas puntiformes Q1 e Q2, de cargas 5µC e -4µC, respectivamente. Elas est&atilde;o separadas por uma dist&acirc;ncia de 3m no v&aacute;cuo. (dados: constante eletrost&aacute;tica: k=9x10⁹Nm²/C²).\n\nAssinale a alternativa que indica, respectivamente, o valor da for&ccedil;a el&eacute;trica entre as cargas, o tipo de intera&ccedil;&atilde;o entre as cargas e o campo el&eacute;trico a uma dist&acirc;ncia de 2m de Q1.",
       "alternativas": [
         { "letra": "A", "texto": "0,2N; atra&ccedil;&atilde;o eletrost&aacute;tica; 11,25x10⁴N/C." },
         { "letra": "B", "texto": "0,02N; atra&ccedil;&atilde;o eletrost&aacute;tica; 1,125x10⁴N/C." },
