@@ -121,7 +121,7 @@ function HomePage() {
           to="/criar-questao"
           icon={<IconWrapper label="Gerador de Questões IA">✨</IconWrapper>}
           title="Gerador de Questões"
-          description="Crie questões inéditas sobre qualquer t��pico ou matéria no estilo do PAVE."
+          description="Crie questões inéditas sobre qualquer tópico ou matéria no estilo do PAVE."
         />
         <FeatureCard
           to="/banco-questoes"
