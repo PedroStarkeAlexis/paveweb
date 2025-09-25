@@ -6,21 +6,17 @@ import IconBookmark from '../icons/IconBookmark';
 import IconBookmarkFilled from '../icons/IconBookmarkFilled';
 import IconEllipsisHorizontal from '../icons/IconEllipsisHorizontal';
 
-// Objeto para customizar a renderização de elementos Markdown
 const markdownComponents = {
-  // Sobrescreve a renderização padrão de <blockquote> (gerado por `>`)
   blockquote: ({ node, ...props }) => <div className="question-reference" {...props} />
 };
 
-const ContextBlock = ({ bloco }) => {
+const CorpoBloco = ({ bloco }) => {
   switch (bloco.tipo) {
     case 'texto':
       return (
-        <div className="context-block context-text">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-            {bloco.conteudo_markdown}
-          </ReactMarkdown>
-        </div>
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+          {bloco.conteudo_markdown}
+        </ReactMarkdown>
       );
     case 'imagem':
       return (
@@ -41,7 +37,7 @@ const ContextBlock = ({ bloco }) => {
 };
 
 function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
-  const { id_questao, contexto, dados_questao } = itemProva;
+  const { id_questao, dados_questao } = itemProva;
   
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
@@ -51,7 +47,7 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
 
   const {
     ano = null, etapa = null, materia = "Indefinida", topico = "Indefinido",
-    texto_questao = '', alternativas = [], resposta_letra = null,
+    corpo_questao = [], alternativas = [], resposta_letra = null,
     id = dados_questao?.id || id_questao
   } = dados_questao || {};
 
@@ -109,7 +105,7 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
 
   const sourceTag = ano
     ? (<span key="src" className="question-tag pave-tag">PAVE {ano}</span>)
-    : (texto_questao.toLowerCase().includes("ia") || !ano ?
+    : (corpo_questao.some(b => b.conteudo_markdown?.toLowerCase().includes("ia")) || !ano ?
       <span key="src" className="question-tag generated-ai-tag">Gerada por IA✨</span>
       : <span key="src" className="question-tag">Outra Fonte</span>);
 
@@ -152,14 +148,9 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
       {menuComponent}
 
       <div className="question-body">
-        {contexto && contexto.length > 0 && (
-          <div className="question-context-container">
-            {contexto.map((bloco, index) => <ContextBlock key={index} bloco={bloco} />)}
-          </div>
-        )}
-        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-          {typeof texto_questao === 'string' ? texto_questao : String(texto_questao || '')}
-        </ReactMarkdown>
+        {corpo_questao && corpo_questao.length > 0 && corpo_questao.map((bloco, index) => (
+          <CorpoBloco key={index} bloco={bloco} />
+        ))}
       </div>
 
       <div className="alternatives-container">

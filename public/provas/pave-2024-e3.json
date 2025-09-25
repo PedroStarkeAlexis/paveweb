@@ -1,20 +1,23 @@
 [
   {
     "id_questao": "pave_2024_e3_q1",
-    "contexto": [
-      {
-        "tipo": "imagem",
-        "url_imagem": "https://labetno.ufpa.br/images/galeria_em_artigos/image03_grd.png",
-        "legenda_markdown": null
-      }
-    ],
     "dados_questao": {
       "id": 1,
       "ano": 2024,
       "etapa": 3,
       "materia": "Ci&ecirc;ncias da Natureza",
       "topico": "Evolucionismo",
-      "texto_questao": "Darwin e Lamarck s&atilde;o os pesquisadores mais conhecidos pelas suas teorias evolucionistas. Um dos principais exemplos que podemos ressaltar entre as diferen&ccedil;as de suas teorias &eacute; aquele relacionado ao pesco&ccedil;o das girafas. De acordo com as teorias de Lamarck, o que ocorre com o pesco&ccedil;o das girafas?",
+      "corpo_questao": [
+        {
+          "tipo": "texto",
+          "conteudo_markdown": "Darwin e Lamarck s&atilde;o os pesquisadores mais conhecidos pelas suas teorias evolucionistas. Um dos principais exemplos que podemos ressaltar entre as diferen&ccedil;as de suas teorias &eacute; aquele relacionado ao pesco&ccedil;o das girafas. De acordo com as teorias de Lamarck, o que ocorre com o pesco&ç;o das girafas?"
+        },
+        {
+          "tipo": "imagem",
+          "url_imagem": "/images/pave/q1_girafas.png",
+          "legenda_markdown": null
+        }
+      ],
       "alternativas": [
         { "letra": "A", "texto": "Lamarck afirma que as girafas s&atilde;o imut&aacute;veis, e desde sempre foram assim como s&atilde;o hoje." },
         { "letra": "B", "texto": "Segundo Lamarck, os pesco&ccedil;os longos surgiram de uma s&eacute;rie de muta&ccedil;&otilde;es que ocorreram nas girafas." },
@@ -27,24 +30,27 @@
   },
   {
     "id_questao": "pave_2024_e3_q18",
-    "contexto": [
-      {
-        "tipo": "texto",
-        "conteudo_markdown": "**Observe a charge a seguir.**"
-      },
-      {
-        "tipo": "imagem",
-        "url_imagem": "/images/pave/q18_charge_ditadura.png",
-        "legenda_markdown": "> *Fonte: https://repositorio.ufsc.br/xmlui/handle/praxis/63. Acesso em: 14/12/2022.*"
-      }
-    ],
     "dados_questao": {
       "id": 18,
       "ano": 2024,
       "etapa": 3,
       "materia": "Ci&ecirc;ncias Humanas",
       "topico": "Ditadura Militar no Brasil",
-      "texto_questao": "A respeito da ditadura militar no Brasil (1964-1985), &eacute; correto afirmar:",
+      "corpo_questao": [
+        {
+          "tipo": "texto",
+          "conteudo_markdown": "**Observe a charge a seguir.**"
+        },
+        {
+          "tipo": "imagem",
+          "url_imagem": "/images/pave/q18_charge_ditadura.png",
+          "legenda_markdown": "> *Fonte: https://repositorio.ufsc.br/xmlui/handle/praxis/63. Acesso em: 14/12/2022.*"
+        },
+        {
+          "tipo": "texto",
+          "conteudo_markdown": "A respeito da ditadura militar no Brasil (1964-1985), &eacute; correto afirmar:"
+        }
+      ],
       "alternativas": [
         { "letra": "A", "texto": "Apesar de ainda tratar o golpe de 1964 como uma “revolu&ccedil;&atilde;o”, o alto comando das For&ccedil;as Armadas nos dias de hoje evita fazer comemora&ccedil;&otilde;es p&uacute;blicas na data de anivers&aacute;rio do evento." },
         { "letra": "B", "texto": "Entre as institui&ccedil;&otilde;es que se opuseram ao golpe e &agrave; tortura em 1964 estavam a Igreja Cat&oacute;lica, a Ordem dos Advogados do Brasil (OAB), o Congresso Nacional, o Supremo Tribunal Federal, al&eacute;m dos grandes meios de comunica&ccedil;&atilde;o." },
@@ -57,14 +63,18 @@
   },
   {
     "id_questao": "pave_2024_e3_q4",
-    "contexto": [],
     "dados_questao": {
       "id": 4,
       "ano": 2024,
       "etapa": 3,
       "materia": "F&iacute;sica",
       "topico": "Lei de Coulomb",
-      "texto_questao": "No s&eacute;culo XVIII, Charles-Augustin de Coulomb fez importantes contribui&ccedil;&otilde;es para a eletrost&aacute;tica com a formula&ccedil;&atilde;o da Lei de Coulomb.\n\n> *Refer&ecirc;ncia: GASPAR, Alberto. F&iacute;sica, volume &uacute;nico. 1. ed. S&atilde;o Paulo: &Aacute;tica, 2005.*\n\nTendo em mente suas descobertas, considere que em um campo el&eacute;trico est&atilde;o posicionadas duas cargas el&eacute;tricas puntiformes Q1 e Q2, de cargas 5µC e -4µC, respectivamente. Elas est&atilde;o separadas por uma dist&acirc;ncia de 3m no v&aacute;cuo. (dados: constante eletrost&aacute;tica: k=9x10⁹Nm²/C²).\n\nAssinale a alternativa que indica, respectivamente, o valor da for&ccedil;a el&eacute;trica entre as cargas, o tipo de intera&ccedil;&atilde;o entre as cargas e o campo el&eacute;trico a uma dist&acirc;ncia de 2m de Q1.",
+      "corpo_questao": [
+        {
+          "tipo": "texto",
+          "conteudo_markdown": "No s&eacute;culo XVIII, Charles-Augustin de Coulomb fez importantes contribui&ccedil;&otilde;es para a eletrost&aacute;tica com a formula&ccedil;&atilde;o da Lei de Coulomb.\n\n> *Refer&ecirc;ncia: GASPAR, Alberto. F&iacute;sica, volume &uacute;nico. 1. ed. S&atilde;o Paulo: &Aacute;tica, 2005.*\n\nTendo em mente suas descobertas, considere que em um campo el&eacute;trico est&atilde;o posicionadas duas cargas el&eacute;tricas puntiformes Q1 e Q2, de cargas 5µC e -4µC, respectivamente. Elas est&atilde;o separadas por uma dist&acirc;ncia de 3m no v&aacute;cuo. (dados: constante eletrost&aacute;tica: k=9x10⁹Nm²/C²).\n\nAssinale a alternativa que indica, respectivamente, o valor da for&ccedil;a el&eacute;trica entre as cargas, o tipo de intera&ccedil;&atilde;o entre as cargas e o campo el&eacute;trico a uma dist&acirc;ncia de 2m de Q1."
+        }
+      ],
       "alternativas": [
         { "letra": "A", "texto": "0,2N; atra&ccedil;&atilde;o eletrost&aacute;tica; 11,25x10⁴N/C." },
         { "letra": "B", "texto": "0,02N; atra&ccedil;&atilde;o eletrost&aacute;tica; 1,125x10⁴N/C." },
