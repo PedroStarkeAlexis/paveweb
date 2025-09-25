@@ -122,31 +122,23 @@
       "id": 5,
       "ano": 2024,
       "etapa": 3,
-      "materia": "Ciências da Natureza",
-      "topico": "Eletrodinâmica",
+      "materia": "Ci&ecirc;ncias da Natureza",
+      "topico": "Eletrodin&acirc;mica",
       "corpo_questao": [
         {
           "tipo": "texto",
-          "conteudo_markdown": "Observe a tabela a seguir, que mostra os efeitos fisiológicos diretos da eletricidade.\n\n| Intensidade | Efeito | Causas |\n| :--- | :--- | :--- |\n| 1 a 3 mA | Percepção | A passagem da corrente provoca formigamento. Não existe perigo. |\n| 3 a 10 mA | Eletrização | A passagem da corrente provoca movimentos. |\n| 10 mA | Tetanização | A passagem da corrente provoca contrações musculares, agarramento ou repulsão. |\n| 25 mA | Parada Respiratória | A corrente atravessa o cérebro. |\n| 25 a 30 mA | Asfixia | A corrente atravessa o tórax. |\n| 60 a 75 mA | Fibrilação Ventricular | A corrente atravessa o coração. |"
-        },
-        {
-          "tipo": "texto",
-          "conteudo_markdown": "> *Fonte: adaptado de https://manualdotrabalhoseguro.blogspot.com/2014/07/quais-sao-os-efeitos-do-choque-eletrico.html. Acesso em: 25/05/2024.*"
-        },
-        {
-          "tipo": "texto",
-          "conteudo_markdown": "Considere que por um fio passam 2,8x10⁻¹ C de carga. Se uma pessoa, por acidente, encostar nesse fio por 10s, quais os efeitos da corrente no seu corpo?"
+          "conteudo_markdown": "Observe a tabela a seguir, que mostra os efeitos fisiol&oacute;gicos diretos da eletricidade.\n\n| Intensidade | Efeito | Causas |\n| :--- | :--- | :--- |\n| 1 a 3 mA | Percep&ccedil;&atilde;o | A passagem da corrente provoca formigamento. N&atilde;o existe perigo. |\n| 3 a 10 mA | Eletriza&ccedil;&atilde;o | A passagem da corrente provoca movimentos. |\n| 10 mA | Tetaniza&ccedil;&atilde;o | A passagem da corrente provoca contra&ccedil;&otilde;es musculares, agarramento ou repuls&atilde;o. |\n| 25 mA | Parada Respirat&oacute;ria | A corrente atravessa o c&eacute;rebro. |\n| 25 a 30 mA | Asfixia | A corrente atravessa o t&oacute;rax. |\n| 60 a 75 mA | Fibrila&ccedil;&atilde;o Ventricular | A corrente atravessa o cora&ccedil;&atilde;o. |\n\n> *Fonte: adaptado de https://manualdotrabalhoseguro.blogspot.com/2014/07/quais-sao-os-efeitos-do-choque-eletrico.html. Acesso em: 25/05/2024.*\n\nConsidere que por um fio passam 2,8x10⁻¹ C de carga. Se uma pessoa, por acidente, encostar nesse fio por 10s, quais os efeitos da corrente no seu corpo?"
         }
       ],
       "alternativas": [
-        { "letra": "A", "texto": "Percepção." },
+        { "letra": "A", "texto": "Percep&ccedil;&atilde;o." },
         { "letra": "B", "texto": "Asfixia." },
-        { "letra": "C", "texto": "Eletrização." },
-        { "letra": "D", "texto": "Tetanização." },
-        { "letra": "E", "texto": "Parada Respiratória." },
+        { "letra": "C", "texto": "Eletriza&ccedil;&atilde;o." },
+        { "letra": "D", "texto": "Tetaniza&ccedil;&atilde;o." },
+        { "letra": "E", "texto": "Parada Respirat&oacute;ria." },
         { "letra": "F", "texto": "I.R." }
       ],
-      "resposta_letra": null
+      "resposta_letra": "E"
     }
   },
   {
