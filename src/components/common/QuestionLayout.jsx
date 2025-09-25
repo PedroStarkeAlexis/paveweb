@@ -6,19 +6,43 @@ import IconBookmark from '../icons/IconBookmark';
 import IconBookmarkFilled from '../icons/IconBookmarkFilled';
 import IconEllipsisHorizontal from '../icons/IconEllipsisHorizontal';
 
-function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
+const ContextBlock = ({ bloco }) => {
+  switch (bloco.tipo) {
+    case 'texto':
+      return (
+        <div
+          className="context-block context-text"
+          dangerouslySetInnerHTML={{ __html: bloco.conteudo_html }}
+        />
+      );
+    case 'imagem':
+      return (
+        <figure className="context-block context-image">
+          <img src={bloco.url_imagem} alt={bloco.legenda_html || 'Imagem de apoio da questão'} />
+          {bloco.legenda_html && (
+            <figcaption dangerouslySetInnerHTML={{ __html: bloco.legenda_html }} />
+          )}
+        </figure>
+      );
+    default:
+      return null;
+  }
+};
+
+function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
+  const { id_questao, contexto, dados_questao } = itemProva;
+  
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const { addSavedQuestion, removeSavedQuestion, isQuestionSaved } = useSavedQuestions();
 
-  const safeQuestionData = questionData || {};
   const {
     ano = null, etapa = null, materia = "Indefinida", topico = "Indefinido",
     texto_questao = '', referencia = null, alternativas = [], resposta_letra = null,
-    id = safeQuestionData.id || `question-fallback-${Math.random().toString(36).substring(2, 9)}`
-  } = safeQuestionData;
+    id = dados_questao?.id || id_questao
+  } = dados_questao || {};
 
   const isCurrentlySaved = isQuestionSaved(id.toString());
 
@@ -26,9 +50,8 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
     setAnswered(false);
     setFeedback({});
     setShowDropdown(false);
-  }, [safeQuestionData]);
+  }, [id_questao]);
 
-  // Fechar dropdown ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -75,7 +98,7 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
 
   const sourceTag = ano
     ? (<span key="src" className="question-tag pave-tag">PAVE {ano}</span>)
-    : (safeQuestionData.referencia?.toLowerCase().includes("ia") || !ano ?
+    : (referencia?.toLowerCase().includes("ia") || !ano ?
       <span key="src" className="question-tag generated-ai-tag">Gerada por IA✨</span>
       : <span key="src" className="question-tag">Outra Fonte</span>);
 
@@ -107,14 +130,20 @@ function QuestionLayoutInternal({ questionData, isInsideCarousel = false }) {
   );
 
   return (
-    <div className={`question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`} id={id.toString()} data-correct-answer={resposta_letra}>
+    <div className={`question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`} id={id_questao} data-correct-answer={resposta_letra}>
+      
+      {contexto && contexto.length > 0 && (
+        <div className="question-context-container">
+          {contexto.map((bloco, index) => <ContextBlock key={index} bloco={bloco} />)}
+        </div>
+      )}
+
       <div className="question-header">
         <div className="question-tags">
           {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
         </div>
       </div>
       
-      {/* O MENU AGORA É IRMÃO DO HEADER, NÃO FILHO */}
       {menuComponent}
 
       <div className="question-body">

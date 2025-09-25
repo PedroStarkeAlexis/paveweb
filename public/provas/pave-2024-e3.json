@@ -1,0 +1,79 @@
+[
+  {
+    "id_questao": "pave_2024_e3_q1",
+    "contexto": [
+      {
+        "tipo": "imagem",
+        "url_imagem": "/images/pave/q1_girafas.png",
+        "legenda_html": null
+      }
+    ],
+    "dados_questao": {
+      "id": 1,
+      "ano": 2024,
+      "etapa": 3,
+      "materia": "Ci&ecirc;ncias da Natureza",
+      "topico": "Evolucionismo",
+      "texto_questao": "1. Darwin e Lamarck s&atilde;o os pesquisadores mais conhecidos pelas suas teorias evolucionistas. Um dos principais exemplos que podemos ressaltar entre as diferen&ccedil;as de suas teorias &eacute; aquele relacionado ao pesco&ccedil;o das girafas. De acordo com as teorias de Lamarck, o que ocorre com o pesco&ccedil;o das girafas?",
+      "alternativas": [
+        { "letra": "A", "texto": "Lamarck afirma que as girafas s&atilde;o imut&aacute;veis, e desde sempre foram assim como s&atilde;o hoje." },
+        { "letra": "B", "texto": "Segundo Lamarck, os pesco&ccedil;os longos surgiram de uma s&eacute;rie de muta&ccedil;&otilde;es que ocorreram nas girafas." },
+        { "letra": "C", "texto": "De acordo com Lamarck, o pesco&ccedil;o longo surgiu da necessidade de alcan&ccedil;ar folhas mais altas nas &aacute;rvores, a qual levava as girafas a esticarem seus pesco&ccedil;os, aumentando-os de tamanho." },
+        { "letra": "D", "texto": "Conforme Lamarck, os pesco&ccedil;os das girafas n&atilde;o crescem." },
+        { "letra": "E", "texto": "Para Lamarck, somente as girafas mais aptas conseguem sobreviver." }
+      ],
+      "resposta_letra": "C"
+    }
+  },
+  {
+    "id_questao": "pave_2024_e3_q18",
+    "contexto": [
+      {
+        "tipo": "texto",
+        "conteudo_html": "<p><b>18. Observe a charge a seguir.</b></p>"
+      },
+      {
+        "tipo": "imagem",
+        "url_imagem": "/images/pave/q18_charge_ditadura.png",
+        "legenda_html": "<p>Fonte: https://repositorio.ufsc.br/xmlui/handle/praxis/63. Acesso em: 14/12/2022.</p>"
+      }
+    ],
+    "dados_questao": {
+      "id": 18,
+      "ano": 2024,
+      "etapa": 3,
+      "materia": "Ci&ecirc;ncias Humanas",
+      "topico": "Ditadura Militar no Brasil",
+      "texto_questao": "A respeito da ditadura militar no Brasil (1964-1985), &eacute; correto afirmar:",
+      "alternativas": [
+        { "letra": "A", "texto": "Apesar de ainda tratar o golpe de 1964 como uma “revolu&ccedil;&atilde;o”, o alto comando das For&ccedil;as Armadas nos dias de hoje evita fazer comemora&ccedil;&otilde;es p&uacute;blicas na data de anivers&aacute;rio do evento." },
+        { "letra": "B", "texto": "Entre as institui&ccedil;&otilde;es que se opuseram ao golpe e &agrave; tortura em 1964 estavam a Igreja Cat&oacute;lica, a Ordem dos Advogados do Brasil (OAB), o Congresso Nacional, o Supremo Tribunal Federal, al&eacute;m dos grandes meios de comunica&ccedil;&atilde;o." },
+        { "letra": "C", "texto": "Em 2014, o relat&oacute;rio da Comiss&atilde;o Nacional da Verdade identificou 434 pessoas mortas e desaparecidas e milhares de torturados pela ditadura, al&eacute;m de indicar que pelo menos 8.350 ind&iacute;genas e 1.196 camponeses foram assassinados em disputas pelas terras no per&iacute;odo ditatorial." },
+        { "letra": "D", "texto": "Assim como a Argentina, o Brasil foi um dos poucos pa&iacute;ses da Am&eacute;rica do Sul que condenou os militares respons&aacute;veis por crimes de lesa-humanidade durante o per&iacute;odo ditatorial." },
+        { "letra": "E", "texto": "A ditadura no Brasil foi obra dos militares, tendo pouco respaldo de empres&aacute;rios e de grandes propriet&aacute;rios de terras ao regime autorit&aacute;rio." }
+      ],
+      "resposta_letra": "C"
+    }
+  },
+  {
+    "id_questao": "pave_2024_e3_q4",
+    "contexto": [],
+    "dados_questao": {
+      "id": 4,
+      "ano": 2024,
+      "etapa": 3,
+      "materia": "F&iacute;sica",
+      "topico": "Lei de Coulomb",
+      "texto_questao": "4. No s&eacute;culo XVIII, Charles-Augustin de Coulomb fez importantes contribui&ccedil;&otilde;es para a eletrost&aacute;tica com a formula&ccedil;&atilde;o da Lei de Coulomb.\n\nTendo em mente suas descobertas, considere que em um campo el&eacute;trico est&atilde;o posicionadas duas cargas el&eacute;tricas puntiformes Q1 e Q2, de cargas 5µC e -4µC, respectivamente. Elas est&atilde;o separadas por uma dist&acirc;ncia de 3m no v&aacute;cuo. (dados: constante eletrost&aacute;tica: k=9x10⁹Nm²/C²).\n\nAssinale a alternativa que indica, respectivamente, o valor da for&ccedil;a el&eacute;trica entre as cargas, o tipo de intera&ccedil;&atilde;o entre as cargas e o campo el&eacute;trico a uma dist&acirc;ncia de 2m de Q1.",
+      "referencia": "Refer&ecirc;ncia: GASPAR, Alberto. F&iacute;sica, volume &uacute;nico. 1. ed. S&atilde;o Paulo: &Aacute;tica, 2005.",
+      "alternativas": [
+        { "letra": "A", "texto": "0,2N; atra&ccedil;&atilde;o eletrost&aacute;tica; 11,25x10⁴N/C." },
+        { "letra": "B", "texto": "0,02N; atra&ccedil;&atilde;o eletrost&aacute;tica; 1,125x10⁴N/C." },
+        { "letra": "C", "texto": "0,02N; repuls&atilde;o eletrost&aacute;tica; 112,5x10⁴N/C." },
+        { "letra": "D", "texto": "0,2N; repuls&atilde;o eletrost&aacute;tica; 11,25x10³N/C." },
+        { "letra": "E", "texto": "0,02N; atra&ccedil;&atilde;o eletrost&aacute;tica; 1,125x10³N/C." }
+      ],
+      "resposta_letra": "E"
+    }
+  }
+]
