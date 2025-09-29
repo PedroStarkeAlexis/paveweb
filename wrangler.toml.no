@@ -27,6 +27,11 @@ CF_ENV = "development"
 # Segredo para proteger a função de indexação durante o desenvolvimento local:
 INDEXING_SECRET = "XSAASX"
 
+# Configuração do uploader/R2 utilizado para servir provas
+PAVE_UPLOADER_BASE_URL = "https://pave-uploader.pedroalexis016.workers.dev"
+PAVE_UPLOADER_ADMIN_USER = "admin"
+PAVE_UPLOADER_ADMIN_PASSWORD = "admin123"
+
 # --- Bindings de Recursos da Cloudflare ---
 # Estes bindings conectam suas funções aos serviços da Cloudflare.
 # Para `wrangler pages dev`, estas definições permitem o acesso local.

@@ -1,12 +1,47 @@
-# React + Vite
+# PAVE React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Front-end da plataforma PAVE construído com React + Vite e integrado às funções do Cloudflare Pages/Workers.
 
-Currently, two official plugins are available:
+## Desenvolvimento local
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm install
+npm run dev
+```
 
-## Expanding the ESLint configuration
+As funções (`functions/api`) podem ser executadas com `wrangler pages dev` usando as variáveis configuradas em `wrangler.toml.no`.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Integração com o bucket R2
+
+As provas passaram a ser servidas pelo Worker `pave-uploader` que protege os JSONs com Basic Auth. O front consome essas informações através da rota `/api/prova`, que atua como proxy seguro.
+
+### Variáveis de ambiente necessárias
+
+Configure no Cloudflare Pages (Preview/Production) e também no desenvolvimento local (`wrangler.toml`):
+
+| Variável                         | Descrição                                                                                              |
+|---------------------------------|----------------------------------------------------------------------------------------------------------|
+| `PAVE_UPLOADER_BASE_URL`        | URL base do Worker responsável por expor as provas (`https://pave-uploader...workers.dev`).             |
+| `PAVE_UPLOADER_ADMIN_USER`      | Usuário do Basic Auth. Por padrão usamos `admin`.                                                         |
+| `PAVE_UPLOADER_ADMIN_PASSWORD`  | Senha do Basic Auth. **Defina como segredo** no dashboard (`wrangler secret put`).                       |
+
+> Em desenvolvimento local você pode manter a combinação padrão (`admin` / `admin123`) para testar rapidamente.
+
+### Consumindo as provas no front-end
+
+O componente `AllQuestionsPage` agora busca os dados com:
+
+```jsx
+await fetch('/api/prova?name=pave-2024-e3');
+```
+
+O json retornado segue a estrutura documentada no repositório do uploader (`corpo_questao`, `alternativas`, `gabarito`, etc.) e é renderizado por `QuestionLayout`.
+
+## Testes, lint e build
+
+```bash
+npm run lint
+npm run build
+```
+
+> O repositório ainda contém avisos/erros de lint herdados em arquivos não alterados. Corrija-os conforme necessário antes de subir para produção.

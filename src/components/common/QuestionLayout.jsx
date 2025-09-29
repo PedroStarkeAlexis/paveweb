@@ -7,25 +7,29 @@ import IconBookmarkFilled from '../icons/IconBookmarkFilled';
 import IconEllipsisHorizontal from '../icons/IconEllipsisHorizontal';
 
 const markdownComponents = {
-  blockquote: ({ node, ...props }) => <div className="question-reference" {...props} />
+  blockquote: ({ ...props }) => <div className="question-reference" {...props} />
 };
 
 const CorpoBloco = ({ bloco }) => {
   switch (bloco.tipo) {
     case 'texto':
+    case 'texto_markdown':
       return (
         <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-          {bloco.conteudo_markdown}
+          {bloco.conteudo_markdown || bloco.conteudo}
         </ReactMarkdown>
       );
     case 'imagem':
       return (
         <figure className="context-block context-image">
-          <img src={bloco.url_imagem} alt={bloco.legenda_markdown || 'Imagem de apoio da questão'} />
-          {bloco.legenda_markdown && (
+          <img 
+            src={bloco.url_imagem || bloco.url} 
+            alt={bloco.alt_text || bloco.legenda_markdown || 'Imagem de apoio da questão'} 
+          />
+          {(bloco.legenda_markdown || bloco.legenda) && (
             <figcaption>
               <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-                {bloco.legenda_markdown}
+                {bloco.legenda_markdown || bloco.legenda}
               </ReactMarkdown>
             </figcaption>
           )}
@@ -37,7 +41,10 @@ const CorpoBloco = ({ bloco }) => {
 };
 
 function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
-  const { id_questao, dados_questao } = itemProva;
+  // Suporte para ambas as estruturas: nova (direta) e antiga (aninhada)
+  const isOldStructure = itemProva.dados_questao !== undefined;
+  const questionData = isOldStructure ? itemProva.dados_questao : itemProva;
+  const questionId = isOldStructure ? itemProva.id_questao : itemProva.id;
   
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
@@ -47,9 +54,13 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
 
   const {
     ano = null, etapa = null, materia = "Indefinida", topico = "Indefinido",
-    corpo_questao = [], alternativas = [], resposta_letra = null,
-    id = dados_questao?.id || id_questao
-  } = dados_questao || {};
+    corpo_questao = [], alternativas = [], 
+    gabarito = null, resposta_letra = null, // suporte para ambos os nomes
+    id = questionData?.id || questionId
+  } = questionData || {};
+
+  // Use gabarito se disponível, senão resposta_letra para compatibilidade
+  const respostaCorreta = gabarito || resposta_letra;
 
   const isCurrentlySaved = isQuestionSaved(id.toString());
 
@@ -57,7 +68,7 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
     setAnswered(false);
     setFeedback({});
     setShowDropdown(false);
-  }, [id_questao]);
+  }, [questionId]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -75,7 +86,7 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
   const handleAlternativeClick = (clickedLetter) => {
     if (answered) return;
     setAnswered(true);
-    const isCorrect = clickedLetter === resposta_letra;
+    const isCorrect = clickedLetter === respostaCorreta;
     setFeedback({
       [clickedLetter]: isCorrect ? 'correct-choice' : 'incorrect-choice',
     });
@@ -137,7 +148,7 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
   );
 
   return (
-    <div className={`question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`} id={id_questao} data-correct-answer={resposta_letra}>
+    <div className={`question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`} id={questionId} data-correct-answer={respostaCorreta}>
       
       <div className="question-header">
         <div className="question-tags">
@@ -157,7 +168,7 @@ function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
         {(alternativas || []).map(alt => {
           const altLetter = alt.letra;
           const choiceStatus = feedback[altLetter];
-          const isCorrectAnswer = altLetter === resposta_letra;
+          const isCorrectAnswer = altLetter === respostaCorreta;
           let icon = altLetter;
           let letterBoxClass = 'alternative-letter';
           let itemClass = 'alternative-item';

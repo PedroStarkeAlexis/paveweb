@@ -13,7 +13,7 @@ function AllQuestionsPage() {
       setError(null);
       try {
         // Busca o novo arquivo de prova
-        const response = await fetch(`/provas/pave-2024-e3.json`);
+  const response = await fetch(`/api/prova?name=pave-2024-e3`);
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Falha ao buscar a prova.');
         
