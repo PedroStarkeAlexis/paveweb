@@ -4,7 +4,6 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css'; // Import KaTeX CSS
-import './AlternativesStyle.css'; // Import new alternatives design
 import { useSavedQuestions } from '../../hooks/useSavedQuestions';
 import IconBookmark from '../icons/IconBookmark';
 import IconBookmarkFilled from '../icons/IconBookmarkFilled';
@@ -197,15 +196,7 @@ function QuestionLayoutInternal({ itemProva: questionData, isInsideCarousel = fa
           }
 
           return (
-            <div 
-              key={altLetter} 
-              className={itemClass} 
-              data-letter={altLetter} 
-              role="button" 
-              tabIndex={answered ? -1 : 0} 
-              onClick={() => handleAlternativeClick(altLetter)} 
-              onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter); }}
-            >
+            <div key={altLetter} className={itemClass} data-letter={altLetter} role="button" tabIndex={answered ? -1 : 0} onClick={() => handleAlternativeClick(altLetter)} onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter); }}>
               <span className={letterBoxClass}>{icon}</span>
               <div className="alternative-text">
                 <ReactMarkdown 
