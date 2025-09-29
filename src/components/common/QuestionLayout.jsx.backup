@@ -13,84 +13,35 @@ const markdownComponents = {
   blockquote: ({ ...props }) => <div className="question-reference" {...props} />
 };
 
-/**
- * Função auxiliar para detectar sintaxe Markdown
- * @param {string} text - Texto a ser verificado
- */
-function temSintaxeMarkdown(text) {
-  if (!text) return false;
-  
-  // Padrões comuns de Markdown
-  const patterns = [
-    /\*\*.*\*\*/,        // **bold**
-    /\*.*\*/,            // *italic*
-    /__.*__/,            // __bold__
-    /_.*_/,              // _italic_
-    /`.*`/,              // `code`
-    /^#+\s/m,            // # Headers
-    /^\s*[-*+]\s/m,      // - lista
-    /^\s*\d+\.\s/m,      // 1. lista numerada
-    /\[.*\]\(.*\)/,      // [link](url)
-    /^>/m,               // > blockquote
-    /```/,               // ```code block```
-    /~~.*~~/             // ~~strikethrough~~
-  ];
-  
-  return patterns.some(pattern => pattern.test(text));
-}
-
 const CorpoBloco = ({ bloco }) => {
   switch (bloco.tipo) {
     case 'texto':
     case 'texto_markdown':
-      const conteudo = bloco.conteudo_markdown || bloco.conteudo || '';
-      
-      // Se é texto_markdown ou contém marcadores markdown, processar com ReactMarkdown
-      if (bloco.tipo === 'texto_markdown' || temSintaxeMarkdown(conteudo)) {
-        return (
-          <div className="markdown-content">
-            <ReactMarkdown 
-              remarkPlugins={[remarkGfm, remarkMath]} 
-              rehypePlugins={[rehypeKatex]}
-              components={markdownComponents}
-            >
-              {conteudo}
-            </ReactMarkdown>
-          </div>
-        );
-      } else {
-        // Texto simples
-        return <p>{conteudo}</p>;
-      }
+      return (
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm, remarkMath]} 
+          rehypePlugins={[rehypeKatex]}
+          components={markdownComponents}
+        >
+          {bloco.conteudo_markdown || bloco.conteudo}
+        </ReactMarkdown>
+      );
     case 'imagem':
-      const imageUrl = bloco.url_imagem || bloco.url;
-      if (imageUrl === 'IMAGEURL' || !imageUrl) {
-        return (
-          <div className="context-image">
-            <div className="image-placeholder">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-              </svg>
-              <span>Placeholder de Imagem</span>
-            </div>
-            {(bloco.legenda_markdown || bloco.legenda) && (
-              <figcaption>{bloco.legenda_markdown || bloco.legenda}</figcaption>
-            )}
-          </div>
-        );
-      } else {
-        return (
-          <figure className="context-image">
-            <img 
-              src={imageUrl} 
-              alt={bloco.alt_text || 'Imagem da questão'} 
-            />
-            {(bloco.legenda_markdown || bloco.legenda) && (
-              <figcaption>{bloco.legenda_markdown || bloco.legenda}</figcaption>
-            )}
-          </figure>
-        );
-      }
+      return (
+        <figure className="context-block context-image">
+          <img 
+            src={bloco.url_imagem || bloco.url} 
+            alt={bloco.alt_text || bloco.legenda_markdown || 'Imagem de apoio da questão'} 
+          />
+          {(bloco.legenda_markdown || bloco.legenda) && (
+            <figcaption>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                {bloco.legenda_markdown || bloco.legenda}
+              </ReactMarkdown>
+            </figcaption>
+          )}
+        </figure>
+      );
     default:
       return null;
   }
@@ -207,13 +158,13 @@ function QuestionLayoutInternal({ itemProva: questionData, isInsideCarousel = fa
   return (
     <div className={`question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`} id={questionId} data-correct-answer={respostaCorreta}>
       
-      {menuComponent}
-
       <div className="question-header">
         <div className="question-tags">
           {tags.length > 0 ? tags : <span className="question-tag">Informações Gerais</span>}
         </div>
       </div>
+      
+      {menuComponent}
 
       <div className="question-body">
         {corpo_questao && corpo_questao.length > 0 && corpo_questao.map((bloco, index) => (
