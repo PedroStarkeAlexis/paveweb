@@ -51,7 +51,7 @@ useEffect(() => {
           <div className="no-results-message">Nenhuma questão encontrada no arquivo da prova.</div>
         )}
         {!isLoading && questions.length > 0 && (
-          questions.map(item => <QuestionLayout key={item.id_questao} itemProva={item} />)
+          questions.map(item => <QuestionLayout key={item.id} itemProva={item} />)
         )}
       </main>
     </div>

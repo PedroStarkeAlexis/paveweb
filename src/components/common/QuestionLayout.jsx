@@ -40,11 +40,12 @@ const CorpoBloco = ({ bloco }) => {
   }
 };
 
-function QuestionLayoutInternal({ itemProva, isInsideCarousel = false }) {
-  // Suporte para ambas as estruturas: nova (direta) e antiga (aninhada)
-  const isOldStructure = itemProva.dados_questao !== undefined;
-  const questionData = isOldStructure ? itemProva.dados_questao : itemProva;
-  const questionId = isOldStructure ? itemProva.id_questao : itemProva.id;
+function QuestionLayoutInternal({ itemProva: questionData, isInsideCarousel = false }) {
+  if (!questionData) {
+    return null; // Retorna nulo se a questão for inválida
+  }
+  
+  const questionId = questionData.id;
   
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
