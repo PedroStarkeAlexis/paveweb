@@ -12,9 +12,9 @@ function createBasicAuthHeader(user, password) {
 }
 
 async function fetchFromUploader(path, env) {
-  const baseUrl = normalizeBaseUrl(env.PAVE_UPLOADER_BASE_URL || env.PUBLIC_BUCKET_API_URL);
-  const adminPassword = env.PAVE_UPLOADER_ADMIN_PASSWORD;
-  const adminUser = env.PAVE_UPLOADER_ADMIN_USER || DEFAULT_ADMIN_USER;
+  const baseUrl = "https://pave-uploader.pedroalexis016.workers.dev";
+  const adminPassword = "admin123";
+  const adminUser = "admin";
 
   if (!baseUrl || !adminPassword) {
     throw new Error("Configuração do uploader ausente. Verifique as variáveis de ambiente.");
