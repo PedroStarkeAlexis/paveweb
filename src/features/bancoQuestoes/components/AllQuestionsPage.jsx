@@ -7,13 +7,22 @@ function AllQuestionsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  useEffect(() => {
+useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        // Busca o novo arquivo de prova
-  const response = await fetch(`/api/prova?name=pave-2024-e3`);
+        // 1. Buscar a lista de provas disponíveis
+        const listResponse = await fetch(`/api/prova`);
+        const listData = await listResponse.json();
+        if (!listResponse.ok) throw new Error(listData.error || 'Falha ao listar provas.');
+
+        // 2. Pegar a primeira prova da lista (ou a mais recente)
+        const provaName = listData.provas?.[0]?.name;
+        if (!provaName) throw new Error('Nenhuma prova encontrada no repositório.');
+
+        // 3. Buscar os dados da prova específica
+        const response = await fetch(`/api/prova?name=${encodeURIComponent(provaName)}`);
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Falha ao buscar a prova.');
         
@@ -26,9 +35,7 @@ function AllQuestionsPage() {
       }
     };
     fetchData();
-  }, []);
-
-  return (
+  }, []);  return (
     <div className="all-questions-page-container">
       <header className="all-questions-header">
         <div className="title-section">
