@@ -4,46 +4,9 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import { createQuestionGenerationPrompt } from "./prompt";
-import { createTextPreview } from "./filter";
+import { callGeminiAPI } from "./utils/ai"; // <<< IMPORTAÇÃO CENTRALIZADA
 
-// Helper function para chamar a API Gemini (inspirada em /api/ask)
-async function callGeminiAPI(
-  promptText,
-  genAIInstance,
-  modelName,
-  safetySettings
-) {
-  console.log(
-    `[LOG] Enviando prompt CRIAÇÃO DE QUESTÃO para Gemini (${createTextPreview(
-      promptText,
-      100
-    )}...).`
-  );
-  const model = genAIInstance.getGenerativeModel({ model: modelName });
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: promptText }] }],
-    safetySettings,
-  });
-  const response = result.response;
-  if (!response) {
-    throw new Error("Resposta da API Gemini inválida.");
-  }
-  if (response.promptFeedback?.blockReason) {
-    throw new Error(
-      `Bloqueado pela IA: ${response.promptFeedback.blockReason}`
-    );
-  }
-  const responseText = response.text
-    ? response.text()
-    : response.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  if (!responseText) {
-    throw new Error("A IA retornou texto vazio.");
-  }
-  console.log(
-    `[LOG] Resposta IA (Criação): ${createTextPreview(responseText, 150)}`
-  );
-  return responseText;
-}
+// A função local callGeminiAPI foi movida para /utils/ai.js e agora é importada.
 
 /**
  * Endpoint dedicado para a criação de questões pela IA.
@@ -64,7 +27,7 @@ export async function onRequestPost(context) {
 
     const geminiApiKey = env.GEMINI_API_KEY;
     const modelName =
-      userModel || env.MODEL_NAME || "gemini-2.5-flash-preview-05-20";
+      userModel || env.MODEL_NAME || "gemini-1.5-flash-latest";
 
     if (!geminiApiKey) {
       throw new Error("Variável de ambiente GEMINI_API_KEY não configurada.");
@@ -102,7 +65,6 @@ export async function onRequestPost(context) {
       },
     ];
 
-    // 1. Criar o prompt
     const generationPrompt = createQuestionGenerationPrompt(
       subject,
       topic,
@@ -110,15 +72,14 @@ export async function onRequestPost(context) {
       count
     );
 
-    // 2. Chamar a API da IA
     const aiResponseText = await callGeminiAPI(
       generationPrompt,
       genAI,
       modelName,
-      safetySettings
+      safetySettings,
+      "criação de questão"
     );
 
-    // 3. Processar a resposta
     const cleanedJsonString = aiResponseText
       .replace(/^```json\s*|```$/g, "")
       .trim();
@@ -132,7 +93,6 @@ export async function onRequestPost(context) {
       throw new Error("A IA não retornou um array de questões válido.");
     }
 
-    // 4. Validar e formatar as questões
     const validatedQuestions = aiResult.questions
       .map((qData, index) => {
         if (
@@ -150,12 +110,12 @@ export async function onRequestPost(context) {
         }
         return {
           ...qData,
-          id: `gen-${Date.now()}-${index}`, // Garante um ID único e rastreável
+          id: `gen-${Date.now()}-${index}`,
           materia: qData.materia || subject,
           topico: qData.topico || topic,
         };
       })
-      .filter(Boolean); // Remove nulos
+      .filter(Boolean);
 
     if (validatedQuestions.length === 0) {
       throw new Error("Formato das questões recebidas da IA é inválido.");
@@ -172,7 +132,6 @@ export async function onRequestPost(context) {
   } catch (error) {
     console.error(`[ERRO] ${functionName}:`, error);
     const errorMessage = error.message || "Ocorreu um erro desconhecido.";
-    // Tenta fornecer um erro mais útil para o frontend
     const userFriendlyError = errorMessage.includes("JSON")
       ? "Tive um problema ao processar a resposta da IA. O formato não era o esperado."
       : `A IA encontrou um problema: ${errorMessage}`;
