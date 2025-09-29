@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css'; // Import KaTeX CSS
 import { useSavedQuestions } from '../../hooks/useSavedQuestions';
 import IconBookmark from '../icons/IconBookmark';
 import IconBookmarkFilled from '../icons/IconBookmarkFilled';
@@ -15,7 +18,11 @@ const CorpoBloco = ({ bloco }) => {
     case 'texto':
     case 'texto_markdown':
       return (
-        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm, remarkMath]} 
+          rehypePlugins={[rehypeKatex]}
+          components={markdownComponents}
+        >
           {bloco.conteudo_markdown || bloco.conteudo}
         </ReactMarkdown>
       );
@@ -192,7 +199,11 @@ function QuestionLayoutInternal({ itemProva: questionData, isInsideCarousel = fa
             <div key={altLetter} className={itemClass} data-letter={altLetter} role="button" tabIndex={answered ? -1 : 0} onClick={() => handleAlternativeClick(altLetter)} onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleAlternativeClick(altLetter); }}>
               <span className={letterBoxClass}>{icon}</span>
               <div className="alternative-text">
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                  components={markdownComponents}
+                >
                   {typeof alt.texto === 'string' ? alt.texto : String(alt.texto || '')}
                 </ReactMarkdown>
               </div>

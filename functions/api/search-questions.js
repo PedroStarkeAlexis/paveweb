@@ -1,3 +1,5 @@
+import { fetchAllQuestions } from './utils/uploader';
+
 const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
 const DEFAULT_SEARCH_LIMIT = 10;
 const DEFAULT_TOP_K = 25; // Quantidade de resultados a pedir ao Vectorize
@@ -5,19 +7,18 @@ const MIN_SCORE_THRESHOLD = 0.70;
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const r2Bucket = env.QUESTOES_PAVE_BUCKET;
   const vectorIndex = env.QUESTIONS_INDEX;
   const ai = env.AI;
 
   console.log(`[search-questions] Recebida requisição: ${request.url}`);
 
-  if (!r2Bucket || !vectorIndex || !ai) {
+  if (!vectorIndex || !ai) {
     console.error(
-      "[search-questions] ERRO: Bindings R2, Vectorize ou AI não configurados."
+      "[search-questions] ERRO: Bindings Vectorize ou AI não configurados."
     );
     return new Response(
       JSON.stringify({
-        error: "Bindings R2, Vectorize ou AI não configurados.",
+        error: "Bindings Vectorize ou AI não configurados.",
       }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
@@ -44,23 +45,17 @@ export async function onRequestGet(context) {
     let allQuestionsData = null;
     let initialRelevantQuestions = [];
 
-    console.log("[search-questions] Carregando questoes.json do R2...");
-    const r2Object = await r2Bucket.get("questoes.json");
-    if (r2Object === null) {
+    console.log("[search-questions] Carregando todas as questões do uploader...");
+    allQuestionsData = await fetchAllQuestions(env);
+    
+    if (!Array.isArray(allQuestionsData) || allQuestionsData.length === 0) {
       console.error(
-        "[search-questions] ERRO: questoes.json não encontrado no R2."
+        "[search-questions] ERRO: Nenhuma questão foi carregada do uploader."
       );
-      throw new Error("questoes.json não encontrado no R2.");
-    }
-    allQuestionsData = await r2Object.json();
-    if (!Array.isArray(allQuestionsData)) {
-      console.error(
-        "[search-questions] ERRO: Formato de questoes.json inválido."
-      );
-      throw new Error("Formato de questoes.json inválido.");
+      throw new Error("Nenhuma questão encontrada no repositório de provas.");
     }
     console.log(
-      `[search-questions] ${allQuestionsData.length} questões carregadas do R2.`
+      `[search-questions] ${allQuestionsData.length} questões carregadas no total.`
     );
 
     if (searchQuery && searchQuery.trim() !== "") {

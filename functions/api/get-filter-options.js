@@ -1,61 +1,44 @@
 // functions/api/questions/filters.js
+import { fetchAllQuestions } from './utils/uploader';
 
 export async function onRequestGet(context) {
-  const { env } = context;
-  const r2Bucket = env.QUESTOES_PAVE_BUCKET;
+    const { env } = context;
 
-   if (!r2Bucket) {
-       return new Response(JSON.stringify({ error: 'Configuração interna do R2 faltando.' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
-   }
+    try {
+        console.log("[get-filter-options] Carregando todas as questões do uploader...");
+        const allQuestions = await fetchAllQuestions(env);
 
-   try {
-       const r2Object = await r2Bucket.get('questoes.json');
-       if (r2Object === null) {
-           return new Response(JSON.stringify({ error: 'Arquivo de questões não encontrado.' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
-       }
-       const allQuestionsData = await r2Object.json();
+        if (!allQuestions || allQuestions.length === 0) {
+            console.error("[get-filter-options] Nenhuma questão encontrada no uploader.");
+            return new Response(JSON.stringify({ anos: [], materias: [], etapas: [] }), {
+                status: 404,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+        console.log(`[get-filter-options] ${allQuestions.length} questões carregadas.`);
 
-       if (!Array.isArray(allQuestionsData)) {
-            return new Response(JSON.stringify({ error: 'Formato de dados inválido.' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
-       }
+        const anos = [...new Set(allQuestions.map(q => q.ano).filter(Boolean))].sort((a, b) => b - a);
+        const materias = [...new Set(allQuestions.map(q => q.materia).filter(Boolean))].sort();
+        const etapas = [...new Set(allQuestions.map(q => q.etapa).filter(Boolean))].sort();
 
-       const anos = new Set();
-       const materias = new Set();
-       const etapas = new Set();
-
-       allQuestionsData.forEach(q => {
-           if (q) {
-               if (q.ano) anos.add(q.ano);
-               if (q.materia) materias.add(q.materia);
-               if (q.etapa) etapas.add(q.etapa);
-           }
-       });
-
-       const responseBody = {
-           anos: Array.from(anos).sort((a, b) => b - a),
-           materias: Array.from(materias).sort(),
-           etapas: Array.from(etapas).sort((a, b) => a - b)
-       };
-
-       return new Response(JSON.stringify(responseBody), {
-           headers: {
-               'Content-Type': 'application/json',
-               'Cache-Control': 'public, max-age=3600'
-           },
-           status: 200
-       });
-
-   } catch (error) {
-       console.error(`[ERRO] /api/questions/filters:`, error.message, error.stack);
-       return new Response(JSON.stringify({ error: `Erro ao obter opções de filtro: ${error.message}` }), {
-           status: 500, headers: { 'Content-Type': 'application/json' },
-       });
-   }
+        return new Response(JSON.stringify({ anos, materias, etapas }), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 's-maxage=3600' // Cache por 1 hora
+            },
+        });
+    } catch (err) {
+        console.error("Erro ao buscar opções de filtro:", err);
+        return new Response(JSON.stringify({ error: 'Falha ao carregar opções de filtro.' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 }
 
 export async function onRequest(context) {
-  if (context.request.method === 'GET') {
-      return await onRequestGet(context);
-  }
-  return new Response(`Método ${context.request.method} não permitido. Use GET.`, { status: 405 });
+    if (context.request.method === 'GET') {
+        return await onRequestGet(context);
+    }
+    return new Response('Método não permitido', { status: 405 });
 }
