@@ -199,20 +199,22 @@
 .question-body p:last-of-type {
   margin-bottom: 0;
 }
+/* NOVA CLASSE PARA REFERÊNCIAS */
 .question-reference {
   font-size: 0.8em;
   color: var(--text-muted);
   text-align: right;
   margin-top: 15px;
-  margin-bottom: 10px;
+  margin-bottom: 10px; /* Adiciona margem inferior se não for o último elemento */
   line-height: 1.4;
-  border: none;
-  padding: 0;
+  border: none; /* Remove borda de blockquote padrão */
+  padding: 0; /* Remove padding de blockquote padrão */
 }
+/* Garante que a referência dentro de uma legenda também pegue o estilo */
 .context-block.context-image figcaption .question-reference {
   text-align: right;
   margin: 0;
-  font-size: 1em;
+  font-size: 1em; /* Tamanho relativo à legenda */
 }
 .question-body ul,
 .question-body ol {
@@ -226,28 +228,6 @@
 .question-body li p { margin-bottom: 0; }
 .question-body strong, .question-body b { font-weight: bold; }
 .question-body em, .question-body i { font-style: italic; }
-
-/* --- NOVOS ESTILOS PARA TABELAS --- */
-.question-body table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1em 0;
-  font-size: 0.9em;
-  border: 1px solid var(--border-primary);
-}
-.question-body th, .question-body td {
-  border: 1px solid var(--border-primary);
-  padding: 8px 12px;
-  text-align: left;
-}
-.question-body th {
-  background-color: var(--bg-tertiary);
-  font-weight: 600;
-}
-.question-body tbody tr:nth-child(even) {
-  background-color: var(--bg-secondary);
-}
-
 
 /* --- Seção: Alternativas --- */
 .alternatives-container {
@@ -361,10 +341,6 @@
 [data-theme="dark"] .dropdown-item svg { color: var(--text-secondary); }
 [data-theme="dark"] .question-body { color: var(--text-primary); }
 [data-theme="dark"] .question-reference { color: var(--text-muted); }
-[data-theme="dark"] .question-body table { border-color: var(--border-primary); }
-[data-theme="dark"] .question-body th, [data-theme="dark"] .question-body td { border-color: var(--border-primary); }
-[data-theme="dark"] .question-body th { background-color: #3a3a3a; }
-[data-theme="dark"] .question-body tbody tr:nth-child(even) { background-color: var(--bg-primary); }
 [data-theme="dark"] .alternative-item { border-color: transparent; background-color: var(--bg-primary); }
 [data-theme="dark"] .question-layout:not(.answered) .alternative-item:hover { background-color: rgba(255, 255, 255, 0.05); border-color: var(--border-secondary); }
 [data-theme="dark"] #question-bank-list .alternative-item:hover { background-color: var(--bg-primary); border-color: transparent; }
