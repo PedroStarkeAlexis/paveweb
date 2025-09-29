@@ -184,7 +184,7 @@
         },
         {
           "tipo": "imagem",
-          "url_imagem": "https://pub-c56e2db8f79c4a2f900f830887892b5d.r2.dev/images/pave/et324_img_002.png",
+          "url_imagem": "https://pub-c56e2db8f79c4a2f900f830887892b5d.r2.dev/images/pave/et324_img_002.jpeg",
           "alt_text": "Tabela com três colunas: Intensidade, Efeito e Causas. 1 a 3 mA: Percepção, formigamento. 3 a 10 mA: Eletrização, movimentos. 10 mA: Tetanização, contrações musculares. 25 mA: Parada Respiratória, corrente atravessa o cérebro. 25 a 30 mA: Asfixia, corrente atravessa o tórax. 60 a 75 mA: Fibrilação Ventricular, corrente atravessa o coração.",
           "legenda_markdown": "> Fonte: adaptado de https://manualdotrabalhoseguro.blogspot.com/2014/07/quais-sao-os-efeitos-do-choque-eletrico.html. Acesso em: 25/05/2024."
         },
@@ -971,7 +971,7 @@
         },
         {
           "tipo": "imagem",
-          "url_imagem": "https://pub-c56e2db8f79c4a2f900f830887892b5d.r2.dev/images/pave/et324_img_009.jpeg",
+          "url_imagem": "https://pub-c56e2db8f79c4a2f900f830887892b5d.r2.dev/images/pave/et324_img_009.png",
           "alt_text": "Gráfico de linha mostrando a variação da taxa de mortalidade infantil de 2006 a 2020, com picos e vales. Abaixo, uma tabela com os valores de 'Óbitos por mil nascidos vivos' para os anos de 2011 a 2020.",
           "legenda_markdown": "> Fonte: https://www.ibge.gov.br/cidades-e-estados/rs/pelotas.html. Acesso em: 06/03/2023.\n> Fonte: Autoria própria."
         },
@@ -1075,7 +1075,7 @@
         },
         {
           "tipo": "imagem",
-          "url_imagem": "https://pub-c56e2db8f79c4a2f900f830887892b5d.r2.dev/images/pave/et324_img_010.png",
+          "url_imagem": "https://pub-c56e2db8f79c4a2f900f830887892b5d.r2.dev/images/pave/et324_img_010.jpeg",
           "alt_text": "Tabela com duas colunas: 'Idade' e 'Número de mulheres'. As idades são: 25 anos (1 mulher), 30 anos (3 mulheres), 35 anos (5 mulheres), 40 anos (4 mulheres), Mais de 40 anos (2 mulheres).",
           "legenda_markdown": null
         },
@@ -1171,7 +1171,7 @@
         },
         {
           "tipo": "imagem",
-          "url_imagem": "https://pub-c56e2db8f79c4a2f900f830887892b5d.r2.dev/images/pave/et324_img_011.jpeg",
+          "url_imagem": "https://pub-c56e2db8f79c4a2f900f830887892b5d.r2.dev/images/pave/et324_img_011.png",
           "alt_text": "Tirinha de quatro quadros da Mafalda. No primeiro, ela caminha em um chão seco. No segundo, o chão começa a ficar molhado. No terceiro, o chão está inundado e ela parece confusa. No quarto, ela vê uma multidão de crianças chorando na frente de um prédio com a placa 'ESCUELA', criando um rio de lágrimas.",
           "legenda_markdown": "> Fonte: QUINO. **Toda a Mafalda**: da primeira à última tira. São Paulo: Martins Fontes, 2003. p. 24."
         },
