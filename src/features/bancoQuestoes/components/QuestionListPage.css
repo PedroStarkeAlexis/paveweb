@@ -2,8 +2,7 @@
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  /* height: 100%; <<< REMOVIDO: Esta era a causa do problema */
-  box-sizing: border-box;
+  /* height: 100%; */
 }
 
 .question-list-header {
@@ -31,49 +30,4 @@
   padding: 10px;
   border-radius: 6px;
   border: 1px solid var(--border-secondary);
-}
-
-.results-summary {
-  font-size: 0.9em;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-}
-
-.results-list {
-  /* flex-grow e overflow removidos, pois o scroll é gerenciado pelo pai */
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.pagination-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  padding-top: 30px;
-  border-top: 1px solid var(--border-primary);
-  margin-top: 20px; /* A margem superior agora empurra o rodapé para baixo */
-}
-
-.pagination-controls button {
-  padding: 8px 15px;
-  border: 1px solid var(--border-secondary);
-  background-color: var(--bg-primary);
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.pagination-controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-[data-theme="dark"] .pagination-controls {
-  border-top-color: var(--border-primary);
-}
-
-[data-theme="dark"] .pagination-controls button {
-  background-color: var(--bg-tertiary);
-  border-color: var(--border-primary);
 }
