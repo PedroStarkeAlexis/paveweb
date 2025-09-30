@@ -1,131 +1,157 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import QuestionLayout from '../../../components/common/QuestionLayout';
 import './QuestionListPage.css';
 
 function QuestionListPage() {
-  const { subject } = useParams();
+  const { subject, year } = useParams();
   const [questions, setQuestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, totalItems: 0 });
+  const [currentPage, setCurrentPage] = useState(1);
+  const questionsPerPage = 20;
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  // Determinar o tipo de filtro e o valor
+  const filterType = subject ? 'materia' : 'ano';
+  const filterValue = subject || year;
 
-  const parseFiltersFromURL = useCallback(() => {
-    const params = new URLSearchParams(location.search);
-    return {
-      ano: params.get('ano') || null,
-      page: parseInt(params.get('page') || '1', 10),
-    };
-  }, [location.search]);
-
-  const [filters, setFilters] = useState(parseFiltersFromURL);
-  const [filterOptions, setFilterOptions] = useState({ anos: [] });
-  
   useEffect(() => {
-    setFilters(parseFiltersFromURL());
-  }, [location.search, parseFiltersFromURL]);
-
-  const updateURL = useCallback((newFilters) => {
-    const params = new URLSearchParams();
-    if (newFilters.ano) params.set('ano', newFilters.ano);
-    if (newFilters.page > 1) params.set('page', newFilters.page);
-    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
-  }, [navigate, location.pathname]);
-
-  const fetchData = useCallback(async (currentFilters) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const params = new URLSearchParams({
-        page: currentFilters.page.toString(),
-        limit: '10',
-        materia: subject, // Matéria fixa da URL
-      });
-      if (currentFilters.ano) params.set('ano', currentFilters.ano);
+    const fetchQuestions = async () => {
+      setIsLoading(true);
+      setError(null);
       
-      const response = await fetch(`/api/search-questions?${params.toString()}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Falha ao buscar questões.');
-      
-      setQuestions(data.questions || []);
-      setPagination(data.pagination || { currentPage: 1, totalPages: 1, totalItems: 0 });
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [subject]);
-  
-  useEffect(() => {
-    fetchData(filters);
-  }, [filters, fetchData]);
-
-  useEffect(() => {
-    const fetchOptions = async () => {
       try {
-        const response = await fetch('/api/get-filter-options');
+        // Construir a query string baseada no filtro
+        const params = new URLSearchParams();
+        if (subject) {
+          params.append('materia', subject);
+        } else if (year) {
+          params.append('ano', year);
+        }
+
+        const response = await fetch(`/api/search-questions?${params.toString()}`);
+        if (!response.ok) {
+          throw new Error('Falha ao buscar questões');
+        }
+        
         const data = await response.json();
-        setFilterOptions({ anos: data.anos || [] });
+        setQuestions(data.questions || []);
       } catch (err) {
-        console.error("Erro ao buscar opções de filtro:", err);
+        console.error('Erro ao buscar questões:', err);
+        setError(err.message);
+        setQuestions([]);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchOptions();
-  }, []);
 
-  const handleFilterChange = (filterName, value) => {
-    updateURL({ [filterName]: value, page: 1 });
-  };
-  
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= pagination.totalPages) {
-      updateURL({ ...filters, page: newPage });
+    if (filterValue) {
+      fetchQuestions();
+      setCurrentPage(1); // Reset para primeira página ao mudar filtro
     }
+  }, [subject, year, filterValue]);
+
+  // Paginação
+  const indexOfLastQuestion = currentPage * questionsPerPage;
+  const indexOfFirstQuestion = indexOfLastQuestion - questionsPerPage;
+  const currentQuestions = questions.slice(indexOfFirstQuestion, indexOfLastQuestion);
+  const totalPages = Math.ceil(questions.length / questionsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Título dinâmico baseado no filtro
+  const pageTitle = subject 
+    ? `Questões de ${subject}` 
+    : year 
+    ? `Questões de ${year}` 
+    : 'Questões';
+
+  const pageDescription = subject
+    ? `Explore todas as questões disponíveis da matéria ${subject}`
+    : year
+    ? `Explore todas as questões do ano ${year}`
+    : 'Explore as questões disponíveis';
 
   return (
-    <div className="page-container">
+    <div className="question-list-page">
       <header className="question-list-header">
-        <h1>Questões de {subject}</h1>
-        <div className="filter-group">
-          <label htmlFor="filter-ano">Filtrar por Ano:</label>
-          <select
-            id="filter-ano"
-            name="ano"
-            value={filters.ano || 'todos'}
-            onChange={(e) => handleFilterChange('ano', e.target.value === 'todos' ? null : e.target.value)}
-          >
-            <option value="todos">Todos os anos</option>
-            {filterOptions.anos.map(ano => <option key={ano} value={ano}>{ano}</option>)}
-          </select>
-        </div>
+        <h1>{pageTitle}</h1>
+        <p>{pageDescription}</p>
+        {!isLoading && !error && questions.length > 0 && (
+          <div className="question-count">
+            {questions.length} {questions.length === 1 ? 'questão encontrada' : 'questões encontradas'}
+          </div>
+        )}
       </header>
 
-      <div className="results-summary">
-        Mostrando {questions.length} de {pagination.totalItems} questões
-      </div>
-      
-      <main className="results-list">
-        {isLoading && <div className="loading-message">Buscando questões...</div>}
-        {error && <div className="error-message">{error}</div>}
-        {!isLoading && !error && questions.length === 0 && (
-          <div className="no-results-message">Nenhuma questão encontrada.</div>
+      <main className="question-list-content">
+        {isLoading && (
+          <div className="loading-state">
+            <div className="loading-spinner"></div>
+            <p>Carregando questões...</p>
+          </div>
         )}
-        {!isLoading && questions.length > 0 && (
-          questions.map(q => <QuestionLayout key={q.id} questionData={q} />)
+
+        {error && (
+          <div className="error-state">
+            <div className="error-icon">⚠️</div>
+            <h2>Erro ao carregar questões</h2>
+            <p>{error}</p>
+            <button onClick={() => window.location.reload()} className="retry-button">
+              Tentar novamente
+            </button>
+          </div>
+        )}
+
+        {!isLoading && !error && questions.length === 0 && (
+          <div className="empty-state">
+            <div className="empty-icon">📭</div>
+            <h2>Nenhuma questão encontrada</h2>
+            <p>Não há questões disponíveis para este filtro no momento.</p>
+          </div>
+        )}
+
+        {!isLoading && !error && currentQuestions.length > 0 && (
+          <>
+            <div className="questions-list">
+              {currentQuestions.map((question, index) => (
+                <div key={question.id || `question-${indexOfFirstQuestion + index}`} className="question-item">
+                  <QuestionLayout itemProva={question} />
+                </div>
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="pagination">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="pagination-button"
+                  aria-label="Página anterior"
+                >
+                  ← Anterior
+                </button>
+
+                <div className="pagination-info">
+                  Página {currentPage} de {totalPages}
+                </div>
+
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="pagination-button"
+                  aria-label="Próxima página"
+                >
+                  Próxima →
+                </button>
+              </div>
+            )}
+          </>
         )}
       </main>
-
-      {!isLoading && pagination.totalPages > 1 && (
-        <div className="pagination-controls">
-          <button onClick={() => handlePageChange(pagination.currentPage - 1)} disabled={pagination.currentPage === 1}>Anterior</button>
-          <span>Página {pagination.currentPage} de {pagination.totalPages}</span>
-          <button onClick={() => handlePageChange(pagination.currentPage + 1)} disabled={pagination.currentPage === pagination.totalPages}>Próxima</button>
-        </div>
-      )}
     </div>
   );
 }

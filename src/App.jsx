@@ -4,10 +4,9 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 // --- Importar páginas/features ---
 import HomePage from './pages/HomePage';
 import ChatInterface from './features/chat/components/ChatInterface';
-import QuestionHubPage from './pages/QuestionHubPage'; // <<< NOVO HUB
-import AllQuestionsPage from './features/bancoQuestoes/components/AllQuestionsPage'; // <<< NOVA PÁGINA
-import SubjectSelectionPage from './features/bancoQuestoes/components/SubjectSelectionPage'; // <<< NOVA PÁGINA
-import QuestionListPage from './features/bancoQuestoes/components/QuestionListPage'; // <<< NOVA PÁGINA
+import QuestionHubPage from './pages/QuestionHubPage';
+import AllQuestionsPage from './features/bancoQuestoes/components/AllQuestionsPage';
+import QuestionListPage from './features/bancoQuestoes/components/QuestionListPage';
 import CreateQuestionPage from './pages/CreateQuestionPage';
 import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage';
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
@@ -289,9 +288,9 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/chat" element={<ChatInterface messages={messages} isLoading={isLoading} onSendMessage={handleSendMessage} />} />
                     <Route path="/banco-questoes" element={<QuestionHubPage />} />
-                    <Route path="/banco-questoes/todas" element={<AllQuestionsPage />} />
-                    <Route path="/banco-questoes/materias" element={<SubjectSelectionPage />} />
+                    <Route path="/banco-questoes/busca" element={<AllQuestionsPage />} />
                     <Route path="/banco-questoes/materia/:subject" element={<QuestionListPage />} />
+                    <Route path="/banco-questoes/ano/:year" element={<QuestionListPage />} />
                     <Route path="/calculadora" element={<CalculadoraPage />} />
                     <Route path="/criar-questao" element={<CreateQuestionPage />} />
                     <Route path="/gerador-flashcards" element={<FlashcardGeneratorPage />} />
