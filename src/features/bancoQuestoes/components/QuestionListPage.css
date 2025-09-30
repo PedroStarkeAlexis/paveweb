@@ -2,7 +2,7 @@
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Adicionado para garantir que o container ocupe a altura */
+  /* height: 100%; <<< REMOVIDO: Esta era a causa do problema */
   box-sizing: border-box;
 }
 
@@ -33,37 +33,17 @@
   border: 1px solid var(--border-secondary);
 }
 
-/* --- ESTILOS ADICIONADOS --- */
-
 .results-summary {
   font-size: 0.9em;
   color: var(--text-muted);
   margin-bottom: 20px;
-  flex-shrink: 0;
 }
 
 .results-list {
-  flex-grow: 1;
-  overflow-y: auto;
+  /* flex-grow e overflow removidos, pois o scroll é gerenciado pelo pai */
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding-right: 10px;
-  margin-right: -10px;
-}
-
-.results-list::-webkit-scrollbar {
-  width: 6px;
-}
-.results-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-.results-list::-webkit-scrollbar-thumb {
-  background-color: var(--border-secondary);
-  border-radius: 3px;
-}
-[data-theme="dark"] .results-list::-webkit-scrollbar-thumb {
-  background-color: var(--border-secondary);
 }
 
 .pagination-controls {
@@ -73,8 +53,7 @@
   gap: 15px;
   padding-top: 30px;
   border-top: 1px solid var(--border-primary);
-  margin-top: auto;
-  flex-shrink: 0;
+  margin-top: 20px; /* A margem superior agora empurra o rodapé para baixo */
 }
 
 .pagination-controls button {
