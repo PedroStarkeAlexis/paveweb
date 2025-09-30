@@ -46,108 +46,120 @@ function QuickAccessTab({ onSelectFilter }) {
     onSelectFilter({ ano });
   };
 
+  // Se está carregando, mostra apenas o loading centralizado
+  if (isLoading) {
+    return (
+      <div className="quick-access-content">
+        <div className="hub-loading-fullpage">
+          <div className="hub-loading-spinner"></div>
+          <p>Carregando conteúdo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Se houve erro, mostra apenas a mensagem de erro
+  if (error) {
+    return (
+      <div className="quick-access-content">
+        <div className="hub-error-fullpage">
+          <p>Erro ao carregar conteúdo: {error}</p>
+          <button onClick={() => window.location.reload()}>Tentar Novamente</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="quick-access-content">
       {/* Carrossel: Navegar por Matéria */}
       <section className="hub-carousel-section">
         <h2 className="hub-section-title">Navegar por Matéria</h2>
-        {isLoading && <div className="hub-loading">Carregando matérias...</div>}
-        {error && <div className="hub-error">Erro ao carregar: {error}</div>}
-        {!isLoading && !error && (
-          <div className="hub-carousel">
-            {filterOptions.materias.length === 0 ? (
-              <p className="hub-empty-message">Nenhuma matéria disponível</p>
-            ) : (
-              filterOptions.materias.map((materia, index) => (
-                <motion.div
-                  key={materia}
-                  className="hub-carousel-card"
-                  variants={cardVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover="hover"
-                  whileTap="tap"
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => handleMateriaClick(materia)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className="hub-carousel-link">
-                    <div className="hub-carousel-icon">📚</div>
-                    <h3>{materia}</h3>
-                  </div>
-                </motion.div>
-              ))
-            )}
-          </div>
-        )}
+        <div className="hub-carousel">
+          {filterOptions.materias.length === 0 ? (
+            <p className="hub-empty-message">Nenhuma matéria disponível</p>
+          ) : (
+            filterOptions.materias.map((materia, index) => (
+              <motion.div
+                key={materia}
+                className="hub-carousel-card"
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover="hover"
+                whileTap="tap"
+                transition={{ delay: index * 0.05 }}
+                onClick={() => handleMateriaClick(materia)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="hub-carousel-link">
+                  <div className="hub-carousel-icon">📚</div>
+                  <h3>{materia}</h3>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </div>
       </section>
 
       {/* Carrossel: Navegar por Etapa */}
       <section className="hub-carousel-section">
         <h2 className="hub-section-title">Navegar por Etapa</h2>
-        {isLoading && <div className="hub-loading">Carregando etapas...</div>}
-        {error && <div className="hub-error">Erro ao carregar: {error}</div>}
-        {!isLoading && !error && (
-          <div className="hub-carousel">
-            {filterOptions.etapas.length === 0 ? (
-              <p className="hub-empty-message">Nenhuma etapa disponível</p>
-            ) : (
-              filterOptions.etapas.map((etapa, index) => (
-                <motion.div
-                  key={etapa}
-                  className="hub-carousel-card"
-                  variants={cardVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover="hover"
-                  whileTap="tap"
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => handleEtapaClick(etapa)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className="hub-carousel-link">
-                    <div className="hub-carousel-icon">🎯</div>
-                    <h3>{etapa}</h3>
-                  </div>
-                </motion.div>
-              ))
-            )}
-          </div>
-        )}
+        <div className="hub-carousel">
+          {filterOptions.etapas.length === 0 ? (
+            <p className="hub-empty-message">Nenhuma etapa disponível</p>
+          ) : (
+            filterOptions.etapas.map((etapa, index) => (
+              <motion.div
+                key={etapa}
+                className="hub-carousel-card"
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover="hover"
+                whileTap="tap"
+                transition={{ delay: index * 0.05 }}
+                onClick={() => handleEtapaClick(etapa)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="hub-carousel-link">
+                  <div className="hub-carousel-icon">🎯</div>
+                  <h3>{etapa}</h3>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </div>
       </section>
 
       {/* Carrossel: Navegar por Ano */}
       <section className="hub-carousel-section">
         <h2 className="hub-section-title">Navegar por Ano</h2>
-        {isLoading && <div className="hub-loading">Carregando anos...</div>}
-        {error && <div className="hub-error">Erro ao carregar: {error}</div>}
-        {!isLoading && !error && (
-          <div className="hub-carousel">
-            {filterOptions.anos.length === 0 ? (
-              <p className="hub-empty-message">Nenhum ano disponível</p>
-            ) : (
-              filterOptions.anos.map((ano, index) => (
-                <motion.div
-                  key={ano}
-                  className="hub-carousel-card"
-                  variants={cardVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover="hover"
-                  whileTap="tap"
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => handleAnoClick(ano)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className="hub-carousel-link">
-                    <div className="hub-carousel-icon">📅</div>
-                    <h3>{ano}</h3>
-                  </div>
-                </motion.div>
-              ))
-            )}
-          </div>
-        )}
+        <div className="hub-carousel">
+          {filterOptions.anos.length === 0 ? (
+            <p className="hub-empty-message">Nenhum ano disponível</p>
+          ) : (
+            filterOptions.anos.map((ano, index) => (
+              <motion.div
+                key={ano}
+                className="hub-carousel-card"
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover="hover"
+                whileTap="tap"
+                transition={{ delay: index * 0.05 }}
+                onClick={() => handleAnoClick(ano)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="hub-carousel-link">
+                  <div className="hub-carousel-icon">📅</div>
+                  <h3>{ano}</h3>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </div>
       </section>
     </div>
   );
