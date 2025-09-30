@@ -5,7 +5,7 @@ import FilterModalMobile from './FilterModalMobile';
 import useWindowSize from '../../../hooks/useWindowSize';
 import './AllQuestionsPage.css';
 
-function AllQuestionsPage() {
+function AllQuestionsPage({ initialFilters = {} }) {
   const [questions, setQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -16,6 +16,13 @@ function AllQuestionsPage() {
   
   const { width } = useWindowSize();
   const isMobile = width < 768;
+
+  // Aplicar filtros iniciais quando recebidos
+  useEffect(() => {
+    if (Object.keys(initialFilters).length > 0) {
+      setFilters(prevFilters => ({ ...prevFilters, ...initialFilters }));
+    }
+  }, [initialFilters]);
 
   // Buscar opções de filtro ao montar o componente
   useEffect(() => {
