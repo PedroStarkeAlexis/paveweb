@@ -63,6 +63,10 @@
 
 .quick-access-content {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 48px;
+  padding-right: 48px;
 }
 
 
@@ -209,6 +213,14 @@
   .tab-button {
     padding: 10px 16px;
     font-size: 0.9em;
+  }
+
+  .quick-access-content {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    margin: 0;
+    width: 100%;
   }
 
   .hub-section-title {
