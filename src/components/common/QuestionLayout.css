@@ -77,6 +77,7 @@
   flex-wrap: wrap;
   align-items: center;
   min-width: 0;
+  gap: 8px; /* <<< SOLUÇÃO: Usa gap para espaçamento uniforme entre tags */
 }
 
 .question-tag {
@@ -86,13 +87,10 @@
   padding: 3px 8px;
   border-radius: 4px;
   white-space: nowrap;
-  margin-right: 8px;
-  margin-bottom: 8px;
+  /* margin-right e margin-bottom REMOVIDOS - gap no container cuida disso */
 }
 
-.question-tag:last-child {
-  margin-right: 0;
-}
+/* Regra :last-child REMOVIDA - não é mais necessária com gap */
 .question-tag.pave-tag {
   background-color: var(--brand-primary);
   color: #fff;
