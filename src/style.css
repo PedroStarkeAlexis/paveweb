@@ -579,11 +579,21 @@ code {
   border-bottom: 1px solid var(--border-primary);
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px; /* Gap entre elementos do header (tags container e menu) */
   border-radius: 8px 8px 0 0;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+/* Container das tags - CRÍTICO para o espaçamento funcionar! */
+.question-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px; /* Espaçamento entre as tags individuais */
+}
+
 .question-tag {
+  display: inline-block; /* CRÍTICO: Remove comportamento inline do span */
   background-color: #e5e7eb;
   color: var(--text-secondary);
   font-size: 0.8em;

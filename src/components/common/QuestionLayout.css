@@ -73,14 +73,15 @@
 }
 
 .question-tags {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
   min-width: 0;
-  gap: 8px; /* <<< SOLUÇÃO: Usa gap para espaçamento uniforme entre tags */
+  gap: 8px !important; /* <<< SOLUÇÃO COM !important: Garante prioridade máxima */
 }
 
 .question-tag {
+  display: inline-block; /* <<< CRÍTICO: Remove comportamento inline padrão do span */
   background-color: #e5e7eb;
   color: var(--text-secondary);
   font-size: 0.8em;
