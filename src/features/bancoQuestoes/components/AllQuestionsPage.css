@@ -1,97 +1,292 @@
-.all-questions-page-container {
-  padding: 30px 20px;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Questions</title>
+    <style>
+        :root {
+            --border-primary: #e0e0e0;
+            --border-secondary: #e0e0e0;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --bg-primary: #fff;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #333; /* For dark theme */
+        }
 
-.all-questions-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-primary);
-}
+        [data-theme="dark"] {
+            --border-primary: #444;
+            --border-secondary: #444;
+            --text-primary: #eee;
+            --text-secondary: #bbb;
+            --text-muted: #888;
+            --bg-primary: #222;
+            --bg-secondary: #333;
+            --bg-tertiary: #444;
+        }
 
-.all-questions-header .title-section h1 {
-  font-size: 1.8em;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
+        .all-questions-page-container {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box; /* Ensure padding is included in height */
+        }
 
-.all-questions-header .title-section p {
-  color: var(--text-secondary);
-}
+        .all-questions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-primary);
+        }
 
-.mobile-filter-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 15px;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-secondary);
-  border-radius: 8px;
-  font-size: 1em;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-.mobile-filter-button svg {
-  width: 18px;
-  height: 18px;
-}
+        .all-questions-header .title-section h1 {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
 
-.results-summary {
-  font-size: 0.9em;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-}
+        .all-questions-header .title-section p {
+            color: var(--text-secondary);
+        }
 
-.results-list {
-  flex-grow: 1;
-  overflow-y: auto; /* Scroll aqui! */
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding-right: 10px; /* Espaço para a scrollbar */
-  margin-right: -10px; /* Compensa o padding */
-}
-.results-list::-webkit-scrollbar { width: 6px; }
-.results-list::-webkit-scrollbar-track { background: transparent; }
-.results-list::-webkit-scrollbar-thumb {
-  background-color: var(--border-secondary);
-  border-radius: 3px;
-}
-[data-theme="dark"] .results-list::-webkit-scrollbar-thumb {
-  background-color: var(--border-secondary);
-}
+        .mobile-filter-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-secondary);
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer; /* Indicate it's clickable */
+        }
+        .mobile-filter-button svg {
+            width: 18px;
+            height: 18px;
+        }
 
+        .results-summary {
+            font-size: 0.9em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
 
-.pagination-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  padding-top: 30px;
-  border-top: 1px solid var(--border-primary);
-  margin-top: 20px;
-}
+        .results-list {
+            flex-grow: 1;
+            overflow-y: auto; /* Scroll here! */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-right: 10px; /* Space for the scrollbar */
+            margin-right: -10px; /* Compensate for padding */
+            box-sizing: border-box; /* Ensure padding is included */
+        }
 
-.pagination-controls button {
-  padding: 8px 15px;
-  border: 1px solid var(--border-secondary);
-  background-color: var(--bg-primary);
-  border-radius: 6px;
-}
-.pagination-controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+        /* Scrollbar styling */
+        .results-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .results-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .results-list::-webkit-scrollbar-thumb {
+            background-color: var(--border-secondary);
+            border-radius: 3px;
+        }
+        [data-theme="dark"] .results-list::-webkit-scrollbar-thumb {
+            background-color: var(--border-secondary);
+        }
 
-[data-theme="dark"] .pagination-controls {
-  border-top-color: var(--border-primary);
-}
-[data-theme="dark"] .pagination-controls button {
-  background-color: var(--bg-tertiary);
-  border-color: var(--border-primary);
-}
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-primary);
+            margin-top: 20px;
+        }
+
+        .pagination-controls button {
+            padding: 8px 15px;
+            border: 1px solid var(--border-secondary);
+            background-color: var(--bg-primary);
+            border-radius: 6px;
+            cursor: pointer; /* Indicate it's clickable */
+            transition: background-color 0.2s ease, border-color 0.2s ease; /* Smooth transitions */
+        }
+        .pagination-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pagination-controls button:hover:not(:disabled) {
+            background-color: var(--bg-secondary); /* Slight hover effect */
+        }
+
+        [data-theme="dark"] .pagination-controls {
+            border-top-color: var(--border-primary);
+        }
+        [data-theme="dark"] .pagination-controls button {
+            background-color: var(--bg-tertiary);
+            border-color: var(--border-primary);
+        }
+        [data-theme="dark"] .pagination-controls button:hover:not(:disabled) {
+            background-color: var(--bg-secondary); /* Slight hover effect for dark theme */
+        }
+    </style>
+</head>
+<body>
+    <div class="all-questions-page-container">
+        <header class="all-questions-header">
+            <div class="title-section">
+                <h1>All Questions</h1>
+                <p>Explore and find answers to your questions.</p>
+            </div>
+            <button class="mobile-filter-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 5H1v16a2 2 0 0 0 2 2h18v-2H5a2 2 0 0 0-2-2V5z"/>
+                    <path d="M19 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-4a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    <path d="M19 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-4a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    <path d="M11 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-4a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    <path d="M11 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-4a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                Filter
+            </button>
+        </header>
+
+        <div class="results-summary">
+            Showing 1-10 of 150 results
+        </div>
+
+        <div class="results-list">
+            <!-- Question items will be loaded here -->
+            <div class="question-item">Question 1</div>
+            <div class="question-item">Question 2</div>
+            <div class="question-item">Question 3</div>
+            <div class="question-item">Question 4</div>
+            <div class="question-item">Question 5</div>
+            <div class="question-item">Question 6</div>
+            <div class="question-item">Question 7</div>
+            <div class="question-item">Question 8</div>
+            <div class="question-item">Question 9</div>
+            <div class="question-item">Question 10</div>
+            <div class="question-item">Question 11</div>
+            <div class="question-item">Question 12</div>
+            <div class="question-item">Question 13</div>
+            <div class="question-item">Question 14</div>
+            <div class="question-item">Question 15</div>
+            <div class="question-item">Question 16</div>
+            <div class="question-item">Question 17</div>
+            <div class="question-item">Question 18</div>
+            <div class="question-item">Question 19</div>
+            <div class="question-item">Question 20</div>
+        </div>
+
+        <footer class="pagination-controls">
+            <button disabled>&lt; Previous</button>
+            <span>Page 1 of 15</span>
+            <button>Next &gt;</button>
+        </footer>
+    </div>
+
+    <!-- Example of how to toggle theme -->
+    <script>
+        // You can add JavaScript here to toggle the 'data-theme' attribute
+        // For example, to toggle between light and dark mode:
+        // document.documentElement.setAttribute('data-theme', 'dark'); // or 'light'
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Questions</title>
+    <style>
+        :root {
+            --border-primary: #e0e0e0;
+            --border-secondary: #e0e0e0;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --bg-primary: #fff;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #333; /* For dark theme */
+        }
+
+        [data-theme="dark"] {
+            --border-primary: #444;
+            --border-secondary: #444;
+            --text-primary: #eee;
+            --text-secondary: #bbb;
+            --text-muted: #888;
+            --bg-primary: #222;
+            --bg-secondary: #333;
+            --bg-tertiary: #444;
+        }
+
+        .all-questions-page-container {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box; /* Ensure padding is included in height */
+        }
+
+        .all-questions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .all-questions-header .title-section h1 {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .all-questions-header .title-section p {
+            color: var(--text-secondary);
+        }
+
+        .mobile-filter-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-secondary);
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer; /* Indicate it's clickable */
+        }
+        .mobile-filter-button svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .results-summary {
+            font-size: 0.9em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .results-list {
+            flex-grow: 1;
+            overflow-y: auto; /* Scroll here! */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-right: 1

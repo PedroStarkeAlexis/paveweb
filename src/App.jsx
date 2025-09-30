@@ -5,9 +5,9 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ChatInterface from './features/chat/components/ChatInterface';
 import QuestionHubPage from './pages/QuestionHubPage'; // <<< NOVO HUB
-import AllQuestionsPage from './features/bancoQuestoes/components/AllQuestionsPage'; // <<< NOVA PÁGINA
-import SubjectSelectionPage from './features/bancoQuestoes/components/SubjectSelectionPage'; // <<< NOVA PÁGINA
-import QuestionListPage from './features/bancoQuestoes/components/QuestionListPage'; // <<< NOVA PÁGINA
+import AllQuestionsPage from './features/bancoQuestoes/components/AllQuestionsPage'; // <<< PÁGINA DE BUSCA AVANÇADA
+import SubjectSelectionPage from './features/bancoQuestoes/components/SubjectSelectionPage'; // <<< PÁGINA DE SELEÇÃO
+import QuestionListPage from './features/bancoQuestoes/components/QuestionListPage'; // <<< PÁGINA DE LISTAGEM
 import CreateQuestionPage from './pages/CreateQuestionPage';
 import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage';
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
@@ -70,7 +70,7 @@ function NavLink({ to, icon: IconComponent, children, isFooter = false }) {
 
 
 // --- Constante para o Modelo Padrão ---
-const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash-preview-05-20';
+const DEFAULT_GEMINI_MODEL = 'gemini-1.5-flash-latest';
 const DEV_MODEL_STORAGE_KEY = 'dev_selected_gemini_model';
 
 // --- Componente Principal App ---

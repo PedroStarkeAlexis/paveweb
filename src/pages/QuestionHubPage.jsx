@@ -58,4 +58,4 @@ function QuestionHubPage() {
   );
 }
 
-export default QuestionHubPage;
+export default QuestionHubPage;
