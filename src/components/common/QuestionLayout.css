@@ -76,9 +76,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
   min-width: 0;
-  margin: -4px; /* Margem negativa para compensar o padding dos itens */
 }
 
 .question-tag {
@@ -88,7 +86,12 @@
   padding: 3px 8px;
   border-radius: 4px;
   white-space: nowrap;
-  margin: 4px; /* Margem individual para criar o espaçamento */
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.question-tag:last-child {
+  margin-right: 0;
 }
 .question-tag.pave-tag {
   background-color: var(--brand-primary);
