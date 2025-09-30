@@ -5,9 +5,9 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ChatInterface from './features/chat/components/ChatInterface';
 import QuestionHubPage from './pages/QuestionHubPage'; // <<< NOVO HUB
-import AllQuestionsPage from './features/bancoQuestoes/components/AllQuestionsPage'; // <<< NOVA PÁGINA
-import SubjectSelectionPage from './features/bancoQuestoes/components/SubjectSelectionPage'; // <<< NOVA PÁGINA
-import QuestionListPage from './features/bancoQuestoes/components/QuestionListPage'; // <<< NOVA PÁGINA
+import AllQuestionsPage from './features/bancoQuestoes/components/AllQuestionsPage'; // <<< PÁGINA DE BUSCA AVANÇADA
+import SubjectSelectionPage from './features/bancoQuestoes/components/SubjectSelectionPage'; // <<< PÁGINA DE SELEÇÃO
+import QuestionListPage from './features/bancoQuestoes/components/QuestionListPage'; // <<< PÁGINA DE LISTAGEM
 import CreateQuestionPage from './pages/CreateQuestionPage';
 import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage';
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
