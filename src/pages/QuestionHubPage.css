@@ -2,9 +2,8 @@
   display: flex;
   flex-direction: column;
   padding: 40px 20px;
-  max-width: 1400px;
-  margin: 0 auto;
   width: 100%;
+  min-height: 100vh;
   box-sizing: border-box;
 }
 
@@ -34,22 +33,23 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   margin-bottom: 50px;
   overflow: hidden;
+  width: 100%;
 }
 
 .hub-featured-link {
   display: flex;
   align-items: center;
-  padding: 32px;
-  gap: 24px;
+  padding: 40px;
+  gap: 32px;
   text-decoration: none;
   color: #ffffff;
 }
 
 .hub-featured-icon {
-  font-size: 3em;
+  font-size: 3.5em;
   background-color: rgba(255, 255, 255, 0.2);
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -72,42 +72,55 @@
 
 /* Seções de Carrossel */
 .hub-carousel-section {
-  margin-bottom: 50px;
+  margin-bottom: 60px;
 }
 
 .hub-section-title {
-  font-size: 1.6em;
+  font-size: 1.8em;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   padding-left: 8px;
 }
 
 .hub-carousel {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
-  overflow-x: auto;
   padding: 8px;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
-.hub-carousel::-webkit-scrollbar {
-  height: 8px;
-}
+/* Mobile: Volta para carrossel horizontal */
+@media (max-width: 768px) {
+  .hub-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    grid-template-columns: unset;
+  }
+  
+  .hub-carousel::-webkit-scrollbar {
+    height: 8px;
+  }
 
-.hub-carousel::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-  border-radius: 4px;
-}
+  .hub-carousel::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+  }
 
-.hub-carousel::-webkit-scrollbar-thumb {
-  background: var(--border-primary);
-  border-radius: 4px;
-}
+  .hub-carousel::-webkit-scrollbar-thumb {
+    background: var(--border-primary);
+    border-radius: 4px;
+  }
 
-.hub-carousel::-webkit-scrollbar-thumb:hover {
-  background: var(--text-tertiary);
+  .hub-carousel::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+  }
+  
+  .hub-carousel-card {
+    min-width: 160px;
+  }
 }
 
 .hub-carousel-card {
@@ -115,8 +128,8 @@
   border: 1px solid var(--border-primary);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  min-width: 200px;
   flex-shrink: 0;
+  width: 100%;
 }
 
 .hub-carousel-link {
@@ -197,10 +210,6 @@
     font-size: 1.3em;
   }
 
-  .hub-carousel-card {
-    min-width: 160px;
-  }
-
   .hub-carousel-link {
     height: 120px;
     padding: 16px;
@@ -212,5 +221,17 @@
 
   .hub-carousel-card h3 {
     font-size: 1em;
+  }
+}
+
+@media (min-width: 769px) {
+  .hub-carousel {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .hub-carousel {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
 }
