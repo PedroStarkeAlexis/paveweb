@@ -1,7 +1,7 @@
 import { fetchAllQuestions } from './utils/uploader';
 
 const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
-const DEFAULT_SEARCH_LIMIT = 10;
+const DEFAULT_SEARCH_LIMIT = 100;
 const DEFAULT_TOP_K = 25; // Quantidade de resultados a pedir ao Vectorize
 const MIN_SCORE_THRESHOLD = 0.70;
 
