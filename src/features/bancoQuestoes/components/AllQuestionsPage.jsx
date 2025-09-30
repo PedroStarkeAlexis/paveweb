@@ -55,6 +55,9 @@ function AllQuestionsPage({ initialFilters = {} }) {
       if (searchFilters.materia) params.append('materia', searchFilters.materia);
       if (searchFilters.ano) params.append('ano', searchFilters.ano);
       if (searchFilters.etapa) params.append('etapa', searchFilters.etapa);
+      
+      // Adicionar limite de 100 questões para evitar paginação
+      params.append('limit', '100');
 
       const response = await fetch(`/api/search-questions?${params.toString()}`);
       if (!response.ok) throw new Error('Falha ao buscar questões');

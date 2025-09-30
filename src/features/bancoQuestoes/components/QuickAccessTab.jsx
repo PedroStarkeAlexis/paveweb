@@ -9,7 +9,7 @@ const cardVariants = {
 };
 
 function QuickAccessTab({ onSelectFilter }) {
-  const [filterOptions, setFilterOptions] = useState({ materias: [], anos: [] });
+  const [filterOptions, setFilterOptions] = useState({ materias: [], anos: [], etapas: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,7 +21,8 @@ function QuickAccessTab({ onSelectFilter }) {
         const data = await response.json();
         setFilterOptions({
           materias: data.materias || [],
-          anos: data.anos || []
+          anos: data.anos || [],
+          etapas: data.etapas || []
         });
       } catch (err) {
         console.error('Erro ao buscar opções de filtro:', err);
@@ -35,6 +36,10 @@ function QuickAccessTab({ onSelectFilter }) {
 
   const handleMateriaClick = (materia) => {
     onSelectFilter({ materia });
+  };
+
+  const handleEtapaClick = (etapa) => {
+    onSelectFilter({ etapa });
   };
 
   const handleAnoClick = (ano) => {
@@ -69,6 +74,40 @@ function QuickAccessTab({ onSelectFilter }) {
                   <div className="hub-carousel-link">
                     <div className="hub-carousel-icon">📚</div>
                     <h3>{materia}</h3>
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </div>
+        )}
+      </section>
+
+      {/* Carrossel: Navegar por Etapa */}
+      <section className="hub-carousel-section">
+        <h2 className="hub-section-title">Navegar por Etapa</h2>
+        {isLoading && <div className="hub-loading">Carregando etapas...</div>}
+        {error && <div className="hub-error">Erro ao carregar: {error}</div>}
+        {!isLoading && !error && (
+          <div className="hub-carousel">
+            {filterOptions.etapas.length === 0 ? (
+              <p className="hub-empty-message">Nenhuma etapa disponível</p>
+            ) : (
+              filterOptions.etapas.map((etapa, index) => (
+                <motion.div
+                  key={etapa}
+                  className="hub-carousel-card"
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  whileHover="hover"
+                  whileTap="tap"
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => handleEtapaClick(etapa)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="hub-carousel-link">
+                    <div className="hub-carousel-icon">🎯</div>
+                    <h3>{etapa}</h3>
                   </div>
                 </motion.div>
               ))
