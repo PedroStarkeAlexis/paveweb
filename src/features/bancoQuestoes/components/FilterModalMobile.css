@@ -84,6 +84,21 @@
   color: var(--text-primary);
 }
 
+.filter-modal-form .form-group .search-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  font-size: 1em;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.filter-modal-form .form-group .search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
 .filter-modal-footer {
   padding: 20px;
   border-top: 1px solid var(--border-primary);
@@ -108,4 +123,8 @@
 [data-theme="dark"] .filter-modal-form .form-group select {
   background-color: var(--bg-primary);
   border-color: var(--border-primary);
-}
+}
+[data-theme="dark"] .filter-modal-form .form-group .search-input {
+  background-color: var(--bg-primary);
+  border-color: var(--border-primary);
+}

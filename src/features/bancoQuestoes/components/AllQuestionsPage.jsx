@@ -168,7 +168,7 @@ function AllQuestionsPage({ initialFilters = {} }) {
             className="mobile-filter-button" 
             onClick={() => setIsMobileFilterOpen(true)}
           >
-            🔍 Filtros
+            ☰ Busque por termo, assunto, prova...
           </button>
         )}
       </header>

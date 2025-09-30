@@ -8,9 +8,9 @@
 }
 
 .all-questions-header {
-  margin-bottom: 30px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border-primary);
+  margin-bottom: 20px;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .all-questions-header .title-section {
@@ -34,21 +34,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background-color: var(--accent-color);
-  color: white;
-  border: none;
+  gap: 10px;
+  padding: 14px 24px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
-  font-size: 1em;
+  font-size: 0.95em;
   font-weight: 500;
   cursor: pointer;
   width: 100%;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .mobile-filter-button:hover {
-  background-color: var(--accent-hover);
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+}
+
+.mobile-filter-button:active {
+  transform: scale(0.98);
 }
 
 .results-container {

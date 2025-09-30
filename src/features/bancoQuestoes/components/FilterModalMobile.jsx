@@ -13,9 +13,13 @@ function FilterModalMobile({ isOpen, onClose, initialFilters, onApplyFilters, op
     const { name, value } = e.target;
     setLocalFilters(prev => ({ ...prev, [name]: value === 'todos' ? null : value }));
   };
+
+  const handleQueryChange = (e) => {
+    setLocalFilters(prev => ({ ...prev, query: e.target.value }));
+  };
   
   const handleClear = () => {
-    setLocalFilters({ ano: null, materia: null, etapa: null });
+    setLocalFilters({ query: '', ano: null, materia: null, etapa: null });
   };
   
   const handleSubmit = (e) => {
@@ -50,6 +54,18 @@ function FilterModalMobile({ isOpen, onClose, initialFilters, onApplyFilters, op
             </header>
             <form className="filter-modal-form" onSubmit={handleSubmit}>
               <div className="form-group">
+                <label htmlFor="query-mobile">Buscar questões</label>
+                <input
+                  type="text"
+                  id="query-mobile"
+                  name="query"
+                  placeholder="Digite palavras-chave, assunto, tema..."
+                  value={localFilters.query || ''}
+                  onChange={handleQueryChange}
+                  className="search-input"
+                />
+              </div>
+              <div className="form-group">
                 <label htmlFor="materia-mobile">Disciplina</label>
                 <select id="materia-mobile" name="materia" value={localFilters.materia || 'todos'} onChange={handleSelectChange}>
                   <option value="todos">Todas as disciplinas</option>
@@ -72,7 +88,7 @@ function FilterModalMobile({ isOpen, onClose, initialFilters, onApplyFilters, op
                 </select>
               </div>
               <footer className="filter-modal-footer">
-                <button type="submit" className="apply-filters-button">Aplicar Filtros</button>
+                <button type="submit" className="apply-filters-button">Buscar Questões</button>
               </footer>
             </form>
           </motion.div>
