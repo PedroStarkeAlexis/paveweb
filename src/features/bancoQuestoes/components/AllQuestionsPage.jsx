@@ -150,10 +150,7 @@ function AllQuestionsPage({ initialFilters = {} }) {
   return (
     <div className="all-questions-page-container">
       <header className="all-questions-header">
-        <div className="title-section">
-          <h1>Busca Avançada</h1>
-          <p>Encontre questões usando filtros detalhados</p>
-        </div>
+       
 
         {!isMobile && (
           <FiltersDesktop 

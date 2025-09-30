@@ -14,10 +14,7 @@ function QuestionHubPage() {
 
   return (
     <div className="question-hub-container">
-      <header className="question-hub-header">
-        <h1>Banco de Questões</h1>
-        <p>Explore as questões do PAVE da maneira que preferir.</p>
-      </header>
+  
 
       <div className="tabs-container">
         <button

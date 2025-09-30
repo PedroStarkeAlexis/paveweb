@@ -5,7 +5,7 @@
   align-items: flex-end; /* Alinha labels e inputs */
   padding: 20px;
   background-color: var(--bg-secondary);
-  border-radius: 12px;
+  border-radius: 0 0 6px 6px;
   margin-bottom: 30px;
 }
 
@@ -46,4 +46,4 @@
 [data-theme="dark"] .filter-item select {
   background-color: #3a3a3a;
   border-color: var(--border-primary);
-}
+}
