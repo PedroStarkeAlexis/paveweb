@@ -138,7 +138,7 @@ export async function onRequestPost(context) {
           let highConfidenceMatches = [];
           try {
             console.log(`[LOG] ${functionName}: Iniciando busca vetorial para "${userQuery}"`);
-            const embeddingResponse = await aiBinding.run("@cf/baai/bge-base-en-v1.5", { text: [userQuery] });
+            const embeddingResponse = await aiBinding.run("@cf/baai/bge-m3", { text: [userQuery] });
             if (!embeddingResponse?.data?.[0]) throw new Error("Falha ao gerar embedding da query.");
             
             const queryVector = embeddingResponse.data[0];

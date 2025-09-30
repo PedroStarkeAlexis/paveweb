@@ -1,5 +1,7 @@
-// Modelo de embedding que usaremos (consistente com o índice e a busca)
-const EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5";
+import { fetchAllQuestions } from "./utils/uploader";
+
+// Modelo de embedding multilingual (suporta português e outros idiomas)
+const EMBEDDING_MODEL = "@cf/baai/bge-m3";
 
 async function generateEmbeddingsBatch(ai, texts) {
   if (!texts || texts.length === 0) return [];
@@ -22,14 +24,13 @@ export async function onRequestPost(context) {
     return new Response("Acesso não autorizado.", { status: 403 });
   }
 
-  const r2Bucket = env.QUESTOES_PAVE_BUCKET;
   const vectorIndex = env.QUESTIONS_INDEX;
   const ai = env.AI;
 
-  if (!r2Bucket || !vectorIndex || !ai) {
+  if (!vectorIndex || !ai) {
     return new Response(
       JSON.stringify({
-        error: "Bindings R2, Vectorize ou AI não configurados.",
+        error: "Bindings Vectorize ou AI não configurados.",
       }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
@@ -37,18 +38,14 @@ export async function onRequestPost(context) {
 
   try {
     console.log("Iniciando processo de indexação...");
-    const r2Object = await r2Bucket.get("questoes.json");
-    if (r2Object === null) {
+    
+    // Buscar questões via API do uploader (fonte unificada de dados)
+    const allQuestionsData = await fetchAllQuestions(env);
+    
+    if (!Array.isArray(allQuestionsData) || allQuestionsData.length === 0) {
       return new Response(
-        JSON.stringify({ error: "questoes.json não encontrado no R2." }),
-        { status: 404 }
-      );
-    }
-    const allQuestionsData = await r2Object.json();
-    if (!Array.isArray(allQuestionsData)) {
-      return new Response(
-        JSON.stringify({ error: "Formato de questoes.json inválido." }),
-        { status: 500 }
+        JSON.stringify({ error: "Nenhuma questão encontrada via API do uploader." }),
+        { status: 404, headers: { "Content-Type": "application/json" } }
       );
     }
     console.log(`Total de ${allQuestionsData.length} questões para processar.`);
