@@ -1,6 +1,379 @@
 import { createTextPreview } from "./filter"; // Certifique-se que está importado/definido
+import { Type } from "@google/genai";
 
 const DEFAULT_QUESTION_COUNT = 1;
+
+// ========================================
+// FASE 1: ROUTER DE INTENÇÕES (Structured Output)
+// ========================================
+
+/**
+ * Schema para o Router de Intenções.
+ * Define a estrutura JSON que o modelo deve retornar.
+ */
+export const INTENT_ROUTER_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    intent: {
+      type: Type.STRING,
+      description: "A intenção detectada do usuário",
+      enum: ["BUSCAR_QUESTAO", "CRIAR_QUESTAO", "CRIAR_FLASHCARDS", "INFO_PAVE", "CONVERSAR"],
+    },
+    entities: {
+      type: Type.OBJECT,
+      description: "Entidades extraídas da mensagem do usuário",
+      properties: {
+        materia: {
+          type: Type.STRING,
+          description: "Matéria mencionada (ex: História, Química, Biologia)",
+          nullable: true,
+        },
+        topico: {
+          type: Type.STRING,
+          description: "Tópico específico mencionado",
+          nullable: true,
+        },
+        ano: {
+          type: Type.INTEGER,
+          description: "Ano mencionado (ex: 2024)",
+          nullable: true,
+        },
+      },
+      nullable: true,
+    },
+    questionCount: {
+      type: Type.INTEGER,
+      description: "Número de questões solicitadas (se aplicável). Default: 1",
+      nullable: true,
+    },
+    reasoning: {
+      type: Type.STRING,
+      description: "Breve explicação sobre a decisão tomada",
+    },
+  },
+  required: ["intent", "reasoning"],
+  propertyOrdering: ["intent", "entities", "questionCount", "reasoning"],
+};
+
+/**
+ * Cria o prompt do Router de Intenções.
+ * Este é um prompt SIMPLES focado apenas em classificação.
+ */
+export function createIntentRouterPrompt(history, userQuery) {
+  return `Você é um assistente especialista em classificar intenções de usuários do PAVE UFPel.
+
+**Histórico da Conversa:**
+${JSON.stringify(history.slice(-5), null, 2)}
+
+**Última mensagem do usuário:**
+"${userQuery}"
+
+**Sua Tarefa:**
+Analise a mensagem do usuário e determine:
+
+1. **Intent (intenção principal):**
+   - BUSCAR_QUESTAO: Usuário quer ver questões EXISTENTES do banco de dados
+   - CRIAR_QUESTAO: Usuário pede explicitamente para GERAR/CRIAR novas questões
+   - CRIAR_FLASHCARDS: Usuário pede para criar flashcards de estudo
+   - INFO_PAVE: Usuário pergunta sobre o PAVE (regras, datas, funcionamento)
+   - CONVERSAR: Conversa geral, saudação, ou pergunta que não se encaixa nas anteriores
+
+2. **Entities (entidades):**
+   - materia: Nome da matéria mencionada (ex: "História", "Química")
+   - topico: Tópico específico (ex: "Guerra Fria", "Fotossíntese")
+   - ano: Ano mencionado (ex: 2024)
+
+3. **questionCount:** Se o usuário pedir MÚLTIPLAS questões (ex: "crie 3 questões", "várias questões"), extraia o número. Caso contrário, use null.
+
+**Regras Importantes:**
+- Se o usuário pedir "uma questão sobre X" SEM mencionar "criar" ou "gerar", classifique como BUSCAR_QUESTAO
+- Só classifique como CRIAR_QUESTAO se houver palavras como: "criar", "gerar", "fazer", "elaborar", "monte"
+- Para CRIAR_QUESTAO, se não houver número explícito, deixe questionCount como null (será tratado como 1)
+
+Responda com um objeto JSON seguindo o schema fornecido.`;
+}
+
+// ========================================
+// FASE 2: SCHEMAS PARA GERAÇÃO DE CONTEÚDO
+// ========================================
+
+/**
+ * Schema para uma alternativa de questão
+ */
+const ALTERNATIVE_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    letra: {
+      type: Type.STRING,
+      description: "Letra da alternativa (A, B, C, D ou E)",
+      enum: ["A", "B", "C", "D", "E"],
+    },
+    texto: {
+      type: Type.STRING,
+      description: "Texto completo da alternativa",
+    },
+  },
+  required: ["letra", "texto"],
+  propertyOrdering: ["letra", "texto"],
+};
+
+/**
+ * Schema para uma questão do PAVE
+ */
+const QUESTION_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    id: {
+      type: Type.STRING,
+      description: "ID temporário da questão gerada",
+    },
+    materia: {
+      type: Type.STRING,
+      description: "Matéria da questão",
+    },
+    topico: {
+      type: Type.STRING,
+      description: "Tópico específico da questão",
+    },
+    texto_questao: {
+      type: Type.STRING,
+      description: "Enunciado completo da questão (pode usar Markdown)",
+    },
+    alternativas: {
+      type: Type.ARRAY,
+      description: "Array com as 5 alternativas (A-E)",
+      items: ALTERNATIVE_SCHEMA,
+    },
+    resposta_letra: {
+      type: Type.STRING,
+      description: "Letra da alternativa correta",
+      enum: ["A", "B", "C", "D", "E"],
+    },
+    referencia: {
+      type: Type.STRING,
+      description: "Referência da questão (sempre 'Gerado por IA')",
+    },
+  },
+  required: ["id", "materia", "topico", "texto_questao", "alternativas", "resposta_letra", "referencia"],
+  propertyOrdering: ["id", "materia", "topico", "texto_questao", "alternativas", "resposta_letra", "referencia"],
+};
+
+/**
+ * Schema para resposta de geração de questões
+ */
+export const QUESTION_GENERATION_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    questions: {
+      type: Type.ARRAY,
+      description: "Array de questões geradas",
+      items: QUESTION_SCHEMA,
+    },
+  },
+  required: ["questions"],
+  propertyOrdering: ["questions"],
+};
+
+/**
+ * Schema para um flashcard
+ */
+const FLASHCARD_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    id: {
+      type: Type.STRING,
+      description: "ID temporário do flashcard",
+    },
+    term: {
+      type: Type.STRING,
+      description: "Termo ou conceito do flashcard",
+    },
+    definition: {
+      type: Type.STRING,
+      description: "Definição ou explicação do termo",
+    },
+  },
+  required: ["id", "term", "definition"],
+  propertyOrdering: ["id", "term", "definition"],
+};
+
+/**
+ * Schema para resposta de geração de flashcards
+ */
+export const FLASHCARD_GENERATION_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    flashcards: {
+      type: Type.ARRAY,
+      description: "Array de flashcards gerados",
+      items: FLASHCARD_SCHEMA,
+    },
+  },
+  required: ["flashcards"],
+  propertyOrdering: ["flashcards"],
+};
+
+/**
+ * Schema para re-ranking de questões
+ */
+export const QUESTION_RERANKING_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    selected_question_ids: {
+      type: Type.ARRAY,
+      description: "IDs das questões selecionadas como relevantes",
+      items: {
+        type: Type.STRING,
+      },
+    },
+    reasoning: {
+      type: Type.STRING,
+      description: "Breve explicação da seleção feita",
+    },
+  },
+  required: ["selected_question_ids"],
+  propertyOrdering: ["selected_question_ids", "reasoning"],
+};
+
+/**
+ * Cria o prompt para geração de questões (usado após o router detectar CRIAR_QUESTAO).
+ * @param {string} materia - A matéria da questão.
+ * @param {string} topico - O tópico específico.
+ * @param {number} count - Número de questões a gerar.
+ * @returns {string} O prompt.
+ */
+export function createQuestionGenerationPromptV2(materia, topico, count = 1) {
+  let subjectSpecificInstructions = '';
+  
+  switch (materia) {
+    case 'História':
+      subjectSpecificInstructions = 'A questão deve focar em contextos históricos, análise de períodos, causas e consequências de eventos. Se citar documentos, use o formato de citação em Markdown.';
+      break;
+    case 'Química':
+      subjectSpecificInstructions = 'A questão deve ser conceitual ou envolver cálculos simples. Use a formatação do Markdown para fórmulas químicas (ex: H₂O) e equações.';
+      break;
+    case 'Biologia':
+      subjectSpecificInstructions = 'A questão deve abordar processos biológicos, estruturas, funções ou conceitos ecológicos. Use negrito para destacar termos científicos chave.';
+      break;
+    case 'Física':
+      subjectSpecificInstructions = 'A questão pode envolver conceitos teóricos ou cálculos. Use Markdown para fórmulas e equações quando necessário.';
+      break;
+    case 'Matemática':
+      subjectSpecificInstructions = 'A questão deve testar raciocínio matemático. Use Markdown para fórmulas e expressões matemáticas.';
+      break;
+    default:
+      subjectSpecificInstructions = 'A questão deve ser clara, objetiva e bem formulada, seguindo o estilo do PAVE UFPel.';
+  }
+
+  return `Você é um especialista em elaborar questões para o PAVE UFPel.
+
+**Sua Tarefa:**
+Gere ${count} questão(ões) de múltipla escolha (A-E) com as seguintes especificações:
+
+**Matéria:** ${materia}
+**Tópico:** ${topico}
+**Quantidade:** ${count} questão(ões)
+
+**Instruções Específicas da Matéria:**
+${subjectSpecificInstructions}
+
+**Formato:**
+- Enunciado claro e objetivo
+- 5 alternativas (A, B, C, D, E)
+- Apenas UMA alternativa correta
+- Use Markdown para formatação quando apropriado
+- Estilo PAVE UFPel: questões que testem raciocínio e conhecimento
+
+**Importante:**
+- Cada questão deve ter um ID temporário único (ex: "gen-${Date.now()}-1")
+- O campo 'referencia' deve ser sempre "Gerado por IA"
+- Gere questões INÉDITAS e variadas
+
+Retorne um objeto JSON seguindo o schema fornecido.`;
+}
+
+/**
+ * Cria o prompt para geração de flashcards.
+ * @param {string} topico - O tópico para os flashcards.
+ * @param {number} count - Número de flashcards a gerar.
+ * @returns {string} O prompt.
+ */
+export function createFlashcardGenerationPrompt(topico, count = 5) {
+  return `Você é um especialista em criar materiais de estudo para o PAVE UFPel.
+
+**Sua Tarefa:**
+Crie ${count} flashcards de estudo sobre o seguinte tópico:
+
+**Tópico:** ${topico}
+
+**Instruções:**
+- Cada flashcard deve ter um TERMO/CONCEITO conciso e uma DEFINIÇÃO clara
+- As definições devem ser diretas, fáceis de memorizar, mas completas
+- Foque nos conceitos mais importantes do tópico
+- Varie entre termos, conceitos, processos e fatos relevantes
+- Mantenha um tom educativo e apropriado para estudantes
+
+**Formato:**
+- Cada flashcard deve ter um ID temporário único (ex: "fc-${Date.now()}-1")
+- O termo deve ser curto e direto
+- A definição deve ser clara e informativa (1-3 frases)
+
+Retorne um objeto JSON seguindo o schema fornecido.`;
+}
+
+/**
+ * Cria o prompt atualizado para re-ranking com structured output.
+ */
+export function createQuestionReRankingPromptV2(userQuery, candidateQuestions, entities) {
+  const MAX_CANDIDATES_FOR_RERANKING = 8;
+  const questionsForPrompt = candidateQuestions.slice(0, MAX_CANDIDATES_FOR_RERANKING);
+
+  if (questionsForPrompt.length === 0) return null;
+
+  const simplifiedQuestions = questionsForPrompt.map((q) => ({
+    id: q.id.toString(),
+    materia: q.materia || "N/A",
+    topico: q.topico || "N/A",
+    preview: createTextPreview(q.texto_questao, 150),
+  }));
+
+  let contextMessage = `Query do usuário: "${userQuery}"`;
+  if (entities) {
+    const entityParts = [];
+    if (entities.materia) entityParts.push(`Matéria: '${entities.materia}'`);
+    if (entities.topico) entityParts.push(`Tópico: '${entities.topico}'`);
+    if (entities.ano) entityParts.push(`Ano: '${entities.ano}'`);
+    if (entityParts.length > 0) {
+      contextMessage += `\nEntidades detectadas: ${entityParts.join(", ")}`;
+    }
+  }
+
+  return `Você é um especialista em selecionar questões relevantes do banco de dados do PAVE UFPel.
+
+**Contexto:**
+${contextMessage}
+
+**Questões Candidatas (pré-filtradas):**
+${JSON.stringify(simplifiedQuestions, null, 2)}
+
+**Sua Tarefa:**
+1. Analise a query do usuário e as entidades detectadas
+2. Compare com as questões candidatas fornecidas
+3. Selecione TODAS as questões que são relevantes para o pedido do usuário
+4. Você pode selecionar uma, várias ou nenhuma questão
+
+**Critérios de Seleção:**
+- Relevância com o tópico/matéria solicitados
+- Adequação ao contexto da pergunta
+- Se houver dúvida, INCLUA a questão (é melhor mostrar mais que menos)
+
+Retorne um objeto JSON com os IDs selecionados seguindo o schema fornecido.`;
+}
+
+// ========================================
+// PROMPTS ANTIGOS (mantidos para compatibilidade)
+// ========================================
+
 
 export function createAnalysisPrompt(history, userQuery) {
   const analysisPrompt = `

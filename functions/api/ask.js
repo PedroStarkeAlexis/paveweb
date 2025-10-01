@@ -1,29 +1,44 @@
+import { GoogleGenAI } from "@google/genai";
 import {
-  GoogleGenerativeAI,
   HarmCategory,
   HarmBlockThreshold,
-} from "@google/generative-ai";
-import { createAnalysisPrompt, createQuestionReRankingPrompt } from "./prompt";
-import { parseAiGeneratedQuestion, createTextPreview } from "./filter";
-import { fetchAllQuestions } from "./utils/uploader"; // <<< FONTE DE DADOS UNIFICADA
-import { callGeminiAPI } from "./utils/ai"; // <<< FUNÇÃO DA API CENTRALIZADA
+} from "@google/genai";
+import {
+  createIntentRouterPrompt,
+  INTENT_ROUTER_SCHEMA,
+  createQuestionGenerationPromptV2,
+  QUESTION_GENERATION_SCHEMA,
+  createFlashcardGenerationPrompt,
+  FLASHCARD_GENERATION_SCHEMA,
+  createQuestionReRankingPromptV2,
+  QUESTION_RERANKING_SCHEMA,
+} from "./prompt";
+import { createTextPreview } from "./filter";
+import { fetchAllQuestions } from "./utils/uploader";
+import { callGeminiAPI, extractTextFromResponse } from "./utils/ai";
 
+// Constantes
 const VECTORIZE_TOP_K = 15;
 const MIN_SCORE_THRESHOLD = 0.65;
-const MAX_CANDIDATES_FOR_RERANKING = 5;
+const MAX_CANDIDATES_FOR_RERANKING = 8;
 
+// Modelos otimizados
+const FAST_MODEL = "gemini-2.5-flash"; // Para tarefas rápidas (router, re-ranking)
+const CREATIVE_MODEL = "gemini-2.5-flash"; // Para criação de conteúdo
+
+/**
+ * Handler principal do endpoint /api/ask
+ */
 export async function onRequestPost(context) {
-  const functionName = "/api/ask (v17 - Refactor Data Source)"; // Nova versão
+  const functionName = "/api/ask (v2.0 - Router-Executor Pattern)";
   console.log(`[LOG] ${functionName}: Iniciando POST request`);
-  let allQuestionsData = null;
 
-  let requestData; // Declarado aqui para estar disponível no catch final
+  let requestData;
   try {
     const { request, env } = context;
     const geminiApiKey = env.GEMINI_API_KEY;
-    const vectorIndex = env.QUESTIONS_INDEX;
-    const aiBinding = env.AI;
 
+    // Validar request
     try {
       requestData = await request.json();
     } catch (e) {
@@ -33,19 +48,14 @@ export async function onRequestPost(context) {
       );
     }
 
-    const userPreferredModel = requestData?.modelName;
-    const modelName =
-      userPreferredModel || env.MODEL_NAME || "gemini-1.5-flash-latest";
-
+    // Validar bindings
     if (!env.GEMINI_API_KEY || !env.QUESTIONS_INDEX || !env.AI) {
       throw new Error(
         "Bindings GEMINI_API_KEY, QUESTIONS_INDEX ou AI não configurados."
       );
     }
-    console.log(
-      `[LOG] ${functionName}: Configs OK. Modelo a ser usado: ${modelName}`
-    );
 
+    // Extrair histórico e query
     const history = requestData?.history;
     if (!Array.isArray(history) || history.length === 0) {
       return new Response(
@@ -53,246 +63,543 @@ export async function onRequestPost(context) {
         { status: 400 }
       );
     }
+
     const lastUserMessage = history.findLast((m) => m.role === "user");
     const userQuery =
       typeof lastUserMessage?.parts?.[0]?.text === "string"
         ? lastUserMessage.parts[0].text.trim()
         : null;
+
     if (!userQuery) {
       return new Response(
         JSON.stringify({ error: "Query do usuário inválida no histórico." }),
         { status: 400 }
       );
     }
+
     console.log(`[LOG] ${functionName}: Query: "${userQuery}"`);
 
-    const genAI = new GoogleGenerativeAI(geminiApiKey);
+    // Inicializar cliente GenAI
+    const genAI = new GoogleGenAI({ apiKey: geminiApiKey });
+
     const safetySettings = [
-      { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
-      { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
-      { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
-      { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
     ];
 
-    const analysisPromptText = createAnalysisPrompt(history, userQuery);
-    let aiAnalysis;
+    // ============================================
+    // FASE 1: ROUTER DE INTENÇÕES
+    // ============================================
+    console.log(`[LOG] ${functionName}: FASE 1 - Chamando Router de Intenções`);
+
+    const routerPrompt = createIntentRouterPrompt(history, userQuery);
+    let routerResponse;
+
     try {
-      const aiAnalysisResponseText = await callGeminiAPI(
-        analysisPromptText,
-        genAI,
-        modelName,
+      routerResponse = await callGeminiAPI({
+        promptText: routerPrompt,
+        genAIInstance: genAI,
+        modelName: FAST_MODEL,
         safetySettings,
-        "análise"
-      );
-      const cleanedJsonString = aiAnalysisResponseText.replace(/^```json\s*|```$/g, "").trim();
-      aiAnalysis = JSON.parse(cleanedJsonString);
+        callType: "intent-router",
+        responseSchema: INTENT_ROUTER_SCHEMA,
+        responseMimeType: "application/json",
+      });
     } catch (error) {
-      console.error(`[ERRO] ${functionName}: Falha na ANÁLISE da API Gemini:`, error);
-      const commentary = `Desculpe, tive um problema ao processar seu pedido inicial: ${error.message}. Usando modelo: ${modelName}.`;
-      return new Response(JSON.stringify({ commentary, questions: [] }), { status: 503 });
+      console.error(
+        `[ERRO] ${functionName}: Falha no Router de Intenções:`,
+        error
+      );
+      return new Response(
+        JSON.stringify({
+          commentary: `Desculpe, tive um problema ao processar seu pedido: ${error.message}`,
+          questions: [],
+        }),
+        { status: 503 }
+      );
     }
 
-    let {
-      intent = "DESCONHECIDO",
-      entities = null,
-      generated_questions: generatedQuestionsFromAI = null,
-      responseText: responseTextForUser = null,
-      generated_flashcards: generatedFlashcardsFromAI = null,
-    } = aiAnalysis || {};
-    
-    let commentary = "";
-    let questionsToReturn = [];
-    let displayCard = null;
-    let flashcardsToReturn = [];
+    // Parsear resposta do router
+    let routerData;
+    try {
+      const routerText = extractTextFromResponse(routerResponse, "router");
+      routerData = JSON.parse(routerText);
+      console.log(
+        `[LOG] ${functionName}: Router detectou - Intent: ${routerData.intent}, Entities:`,
+        routerData.entities
+      );
+    } catch (error) {
+      console.error(
+        `[ERRO] ${functionName}: Falha ao parsear resposta do Router:`,
+        error
+      );
+      return new Response(
+        JSON.stringify({
+          commentary: "Não consegui entender a resposta interna. Tente reformular.",
+          questions: [],
+        }),
+        { status: 500 }
+      );
+    }
 
+    const { intent, entities, questionCount, reasoning } = routerData;
+
+    // ============================================
+    // FASE 2: EXECUTOR - Executar ação baseada no intent
+    // ============================================
     console.log(
-      `[LOG] ${functionName}: IA Parsed (análise) - Intent: ${intent}, Entities: ${JSON.stringify(entities)}, Generated Questions: ${generatedQuestionsFromAI?.length || 0}, Generated Flashcards: ${generatedFlashcardsFromAI?.length || 0}, ResponseText: "${createTextPreview(responseTextForUser, 30)}"`
+      `[LOG] ${functionName}: FASE 2 - Executando ação para intent: ${intent}`
     );
 
-    // Validações e lógica de fallback
-    if (intent === "CRIAR_QUESTAO" && (!Array.isArray(generatedQuestionsFromAI) || generatedQuestionsFromAI.length === 0) && !responseTextForUser) {
-      intent = "DESCONHECIDO"; commentary = "Pedi para gerar questão(ões), mas não consegui obter o conteúdo.";
-    }
-    if (intent === "CRIAR_FLASHCARDS" && (!Array.isArray(generatedFlashcardsFromAI) || generatedFlashcardsFromAI.length === 0) && !responseTextForUser) {
-      intent = "DESCONHECIDO"; commentary = "Pedi para gerar flashcards, mas não consegui obter o conteúdo.";
-    }
-    if ((intent === "CONVERSAR" || intent === "INFO_PAVE") && !responseTextForUser) {
-      intent = "DESCONHECIDO"; commentary = "Não consegui formular uma resposta para isso.";
-    }
+    let commentary = "";
+    let questionsToReturn = [];
+    let flashcardsToReturn = [];
+    let displayCard = null;
 
     switch (intent) {
       case "BUSCAR_QUESTAO":
-        try {
-          const isQueryTooVague = userQuery.toLowerCase().split(" ").length < 2 && !userQuery.toLowerCase().includes("pave");
-          if (isQueryTooVague) {
-            commentary = "Para te ajudar a encontrar questões, poderia me dar mais detalhes? Como a matéria ou o tópico. 😊";
-            break;
-          }
-
-          allQuestionsData = await fetchAllQuestions(env);
-          if (!Array.isArray(allQuestionsData) || allQuestionsData.length === 0) {
-            commentary = "Meu banco de questões parece estar vazio ou indisponível no momento.";
-            break;
-          }
-
-          let highConfidenceMatches = [];
-          try {
-            console.log(`[LOG] ${functionName}: Iniciando busca vetorial para "${userQuery}"`);
-            const embeddingResponse = await aiBinding.run("@cf/baai/bge-m3", { text: [userQuery] });
-            if (!embeddingResponse?.data?.[0]) throw new Error("Falha ao gerar embedding da query.");
-            
-            const queryVector = embeddingResponse.data[0];
-            const vectorQueryResult = await vectorIndex.query(queryVector, { topK: VECTORIZE_TOP_K });
-            
-            console.log(`[LOG] ${functionName}: Vectorize retornou ${vectorQueryResult.matches.length} correspondências.`);
-            if (vectorQueryResult.matches?.length > 0) {
-              highConfidenceMatches = vectorQueryResult.matches.filter(match => match.score >= MIN_SCORE_THRESHOLD);
-              console.log(`[LOG] ${functionName}: ${highConfidenceMatches.length} matches com score >= ${MIN_SCORE_THRESHOLD}.`);
-            }
-          } catch (vectorError) {
-            console.error(`[ERRO] ${functionName}: Falha na busca vetorial:`, vectorError);
-            commentary = "Tive um problema com a busca semântica. Não consigo encontrar questões agora.";
-            break;
-          }
-
-          let candidatesForReRanking = [];
-          if (highConfidenceMatches.length > 0) {
-            const candidateIds = highConfidenceMatches.map(match => match.id);
-            candidatesForReRanking = allQuestionsData.filter(q => candidateIds.includes(q.id.toString()));
-            console.log(`[LOG] ${functionName}: ${candidatesForReRanking.length} candidatas de alta confiança prontas para re-ranking.`);
-          } else {
-            console.log(`[LOG] ${functionName}: Nenhuma candidata de alta confiança para re-ranking.`);
-          }
-
-          if (candidatesForReRanking.length > 0) {
-            const reRankingPromptText = createQuestionReRankingPrompt(userQuery, candidatesForReRanking.slice(0, MAX_CANDIDATES_FOR_RERANKING), entities);
-            if (!reRankingPromptText) {
-              commentary = "Não consegui preparar as opções para escolher.";
-              break;
-            }
-            try {
-              const aiSelectionResponseText = await callGeminiAPI(reRankingPromptText, genAI, modelName, safetySettings, "re-ranking");
-              const cleanedSelectionJson = aiSelectionResponseText.replace(/^```json\s*|```$/g, "").trim();
-              const aiSelection = JSON.parse(cleanedSelectionJson);
-
-              if (aiSelection?.selected_question_ids?.length > 0) {
-                const questionIdsToFind = aiSelection.selected_question_ids.map(id => id.toString());
-                questionsToReturn = allQuestionsData.filter(q => questionIdsToFind.includes(q.id.toString()));
-                if (questionsToReturn.length > 0) {
-                  console.log(`[LOG] ${functionName}: IA selecionou ${questionsToReturn.length} questão(ões).`);
-                } else {
-                  commentary = `Selecionei referências (${questionIdsToFind.join(", ")}), mas não achei as questões completas.`;
-                  console.warn(`[WARN] ${functionName}: IA (re-ranking) retornou IDs não encontrados: ${questionIdsToFind.join(", ")}.`);
-                }
-              } else {
-                commentary = `Analisei as opções mais relevantes, mas nenhuma pareceu perfeita para "${createTextPreview(userQuery, 30)}".`;
-              }
-            } catch (selectionError) {
-              console.error(`[ERRO] ${functionName}: Falha no RE-RANKING:`, selectionError);
-              commentary = `Tive um problema ao selecionar a melhor questão. (Modelo: ${modelName})`;
-            }
-          } else {
-            commentary = `Não encontrei questões relevantes para "${createTextPreview(userQuery, 30)}". Gostaria que eu criasse uma?`;
-          }
-        } catch (error) {
-          console.error(`[ERRO] ${functionName}: Falha no fluxo BUSCAR_QUESTAO:`, error);
-          commentary = `Ocorreu um problema ao buscar as questões (${error.message}).`;
-        }
-        break;
-
-      case "CRIAR_FLASHCARDS":
-        if (Array.isArray(generatedFlashcardsFromAI) && generatedFlashcardsFromAI.length > 0) {
-          flashcardsToReturn = generatedFlashcardsFromAI
-            .map((fcData, index) => {
-              if (!fcData?.term || !fcData.definition) {
-                console.warn(`[WARN] ${functionName}: Objeto de flashcard inválido no índice ${index}:`, fcData);
-                return null;
-              }
-              return { ...fcData, id: `gen-fc-${Date.now()}-${index}` };
-            })
-            .filter(Boolean);
-
-          if (flashcardsToReturn.length > 0) {
-            commentary = responseTextForUser || (flashcardsToReturn.length > 1 ? "Certo! Preparei estes flashcards para você:" : "Certo! Preparei este flashcard para você:");
-          } else {
-            commentary = "Tentei criar os flashcards, mas os dados recebidos não estavam no formato esperado.";
-          }
-        } else if (responseTextForUser) {
-          commentary = `Recebi esta informação sobre flashcards: "${createTextPreview(responseTextForUser, 80)}" Mas não consegui formatá-los.`;
-        } else if (!commentary) {
-          commentary = "Deveria criar flashcards, mas não recebi os dados. 😥";
-        }
+        const searchResult = await handleSearchQuestion(
+          env,
+          genAI,
+          safetySettings,
+          userQuery,
+          entities
+        );
+        commentary = searchResult.commentary;
+        questionsToReturn = searchResult.questions;
         break;
 
       case "CRIAR_QUESTAO":
-        // NOTA: Questões geradas pela IA usam APENAS o formato legado (texto_questao + resposta_letra)
-        // O formato novo (corpo_questao + gabarito) é usado apenas para questões existentes no banco.
-        // Isso simplifica a geração pela IA e mantém a qualidade das questões criadas.
-        if (Array.isArray(generatedQuestionsFromAI) && generatedQuestionsFromAI.length > 0) {
-          questionsToReturn = generatedQuestionsFromAI
-            .map((qData, index) => {
-              // Validação simples: formato legado apenas (texto_questao + resposta_letra)
-              if (!qData?.texto_questao || !qData.alternativas || !qData.resposta_letra) {
-                console.warn(`[WARN] ${functionName}: Objeto de questão inválido no índice ${index}:`, qData);
-                return null;
-              }
-              
-              return {
-                ...qData,
-                id: `gen-${Date.now()}-${index}`,
-                referencia: qData.referencia || "Texto gerado por IA.",
-                materia: qData.materia || "Gerada por IA",
-                topico: qData.topico || "Gerado por IA",
-              };
-            })
-            .filter(Boolean);
+        const createResult = await handleCreateQuestion(
+          genAI,
+          safetySettings,
+          entities,
+          questionCount || 1
+        );
+        commentary = createResult.commentary;
+        questionsToReturn = createResult.questions;
+        break;
 
-          if (questionsToReturn.length > 0) {
-            commentary = responseTextForUser || (questionsToReturn.length > 1 ? "Certo! Elaborei estas questões para você:" : "Certo! Elaborei esta questão para você:");
-          } else {
-            commentary = "Tentei criar as questões, mas os dados recebidos não estavam no formato esperado.";
-          }
-        } else if (responseTextForUser) {
-          const parsedFallback = parseAiGeneratedQuestion(responseTextForUser);
-          if (parsedFallback) {
-            commentary = "Criei esta questão (formato alternativo):";
-            questionsToReturn = [parsedFallback];
-          } else {
-            commentary = `Tentei criar, mas o formato não veio como esperado: "${createTextPreview(responseTextForUser, 50)}"`;
-          }
-        } else if (!commentary) {
-          commentary = "Deveria criar uma ou mais questões, mas não recebi os dados. 😥";
-        }
+      case "CRIAR_FLASHCARDS":
+        const flashcardResult = await handleCreateFlashcards(
+          genAI,
+          safetySettings,
+          entities,
+          questionCount || 5
+        );
+        commentary = flashcardResult.commentary;
+        flashcardsToReturn = flashcardResult.flashcards;
         break;
 
       case "INFO_PAVE":
-        commentary = responseTextForUser;
+        commentary =
+          "Para informações detalhadas sobre o PAVE, consulte a **página de informações** ou o edital mais recente. Posso ajudar com questões específicas! 📚";
         displayCard = "pave_info_recommendation";
         break;
 
       case "CONVERSAR":
-        commentary = responseTextForUser;
+        commentary =
+          "Olá! 👋 Estou aqui para ajudar com questões do PAVE. Posso **buscar** questões existentes, **criar** novas questões, ou gerar **flashcards** de estudo. Como posso ajudar?";
         break;
 
-      case "DESCONHECIDO":
       default:
-        if (!commentary) {
-          commentary = "Não entendi bem seu pedido. Posso buscar ou criar questões do PAVE, ou conversar sobre o processo seletivo.";
-        }
-        break;
+        commentary =
+          "Não entendi bem seu pedido. Posso **buscar** questões existentes, **criar** novas questões, ou gerar **flashcards** de estudo. O que você gostaria?";
     }
 
-    console.log(`[LOG] ${functionName}: Retornando final. Comentário: "${createTextPreview(commentary, 50)}", Questões: ${questionsToReturn.length}, Flashcards: ${flashcardsToReturn.length}, DisplayCard: ${displayCard}`);
-    return new Response(JSON.stringify({ commentary: commentary || null, questions: questionsToReturn, flashcards: flashcardsToReturn, displayCard }), {
-      headers: { "Content-Type": "application/json" }, status: 200
-    });
+    // Retornar resposta final
+    console.log(
+      `[LOG] ${functionName}: Retornando - Commentary: "${createTextPreview(
+        commentary,
+        50
+      )}", Questões: ${questionsToReturn.length}, Flashcards: ${
+        flashcardsToReturn.length
+      }`
+    );
+
+    return new Response(
+      JSON.stringify({
+        commentary: commentary || null,
+        questions: questionsToReturn,
+        flashcards: flashcardsToReturn,
+        displayCard,
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 200,
+      }
+    );
   } catch (error) {
-    console.error(`[ERRO] ${functionName}: Erro GERAL INESPERADO:`, error, error.stack);
-    const currentModelName = requestData?.modelName || context.env.MODEL_NAME || "gemini-1.5-flash-latest";
-    const commentary = `Ocorreu um erro inesperado aqui do meu lado (modelo: ${currentModelName}): ${error.message}.`;
-    return new Response(JSON.stringify({ commentary, error: `Erro interno do servidor: ${error.message}` }), {
-      status: 500, headers: { "Content-Type": "application/json" }
+    console.error(
+      `[ERRO] ${functionName}: Erro GERAL INESPERADO:`,
+      error,
+      error.stack
+    );
+    return new Response(
+      JSON.stringify({
+        commentary: `Ocorreu um erro inesperado: ${error.message}`,
+        error: `Erro interno do servidor: ${error.message}`,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}
+
+// ============================================
+// HANDLERS PARA CADA TIPO DE INTENT
+// ============================================
+
+/**
+ * Handler para busca de questões
+ */
+async function handleSearchQuestion(env, genAI, safetySettings, userQuery, entities) {
+  const functionName = "handleSearchQuestion";
+  
+  try {
+    // Validação básica
+    const isQueryTooVague =
+      userQuery.toLowerCase().split(" ").length < 2 &&
+      !userQuery.toLowerCase().includes("pave");
+
+    if (isQueryTooVague) {
+      return {
+        commentary:
+          "Para te ajudar a encontrar questões, poderia me dar mais detalhes? Como a matéria ou o tópico. 😊",
+        questions: [],
+      };
+    }
+
+    // Buscar questões
+    const allQuestionsData = await fetchAllQuestions(env);
+    if (!Array.isArray(allQuestionsData) || allQuestionsData.length === 0) {
+      return {
+        commentary:
+          "Meu banco de questões parece estar vazio ou indisponível no momento.",
+        questions: [],
+      };
+    }
+
+    // Busca vetorial
+    let highConfidenceMatches = [];
+    try {
+      console.log(
+        `[LOG] ${functionName}: Iniciando busca vetorial para "${userQuery}"`
+      );
+      
+      const embeddingResponse = await env.AI.run("@cf/baai/bge-m3", {
+        text: [userQuery],
+      });
+      
+      if (!embeddingResponse?.data?.[0]) {
+        throw new Error("Falha ao gerar embedding da query.");
+      }
+
+      const queryVector = embeddingResponse.data[0];
+      const vectorQueryResult = await env.QUESTIONS_INDEX.query(queryVector, {
+        topK: VECTORIZE_TOP_K,
+      });
+
+      console.log(
+        `[LOG] ${functionName}: Vectorize retornou ${vectorQueryResult.matches.length} correspondências.`
+      );
+
+      if (vectorQueryResult.matches?.length > 0) {
+        highConfidenceMatches = vectorQueryResult.matches.filter(
+          (match) => match.score >= MIN_SCORE_THRESHOLD
+        );
+        console.log(
+          `[LOG] ${functionName}: ${highConfidenceMatches.length} matches com score >= ${MIN_SCORE_THRESHOLD}.`
+        );
+      }
+    } catch (vectorError) {
+      console.error(
+        `[ERRO] ${functionName}: Falha na busca vetorial:`,
+        vectorError
+      );
+      return {
+        commentary:
+          "Tive um problema com a busca semântica. Não consigo encontrar questões agora.",
+        questions: [],
+      };
+    }
+
+    // Preparar candidatas para re-ranking
+    if (highConfidenceMatches.length === 0) {
+      return {
+        commentary: `Não encontrei questões relevantes para "${createTextPreview(
+          userQuery,
+          30
+        )}". Gostaria que eu criasse uma?`,
+        questions: [],
+      };
+    }
+
+    const candidateIds = highConfidenceMatches.map((match) => match.id);
+    const candidatesForReRanking = allQuestionsData.filter((q) =>
+      candidateIds.includes(q.id.toString())
+    );
+
+    console.log(
+      `[LOG] ${functionName}: ${candidatesForReRanking.length} candidatas prontas para re-ranking.`
+    );
+
+    // Re-ranking com IA
+    const reRankingPrompt = createQuestionReRankingPromptV2(
+      userQuery,
+      candidatesForReRanking,
+      entities
+    );
+
+    if (!reRankingPrompt) {
+      return {
+        commentary: "Não consegui preparar as opções para escolher.",
+        questions: [],
+      };
+    }
+
+    try {
+      const reRankingResponse = await callGeminiAPI({
+        promptText: reRankingPrompt,
+        genAIInstance: genAI,
+        modelName: FAST_MODEL,
+        safetySettings,
+        callType: "re-ranking",
+        responseSchema: QUESTION_RERANKING_SCHEMA,
+        responseMimeType: "application/json",
+      });
+
+      const reRankingText = extractTextFromResponse(
+        reRankingResponse,
+        "re-ranking"
+      );
+      const reRankingData = JSON.parse(reRankingText);
+
+      if (reRankingData?.selected_question_ids?.length > 0) {
+        const selectedIds = reRankingData.selected_question_ids.map((id) =>
+          id.toString()
+        );
+        const selectedQuestions = allQuestionsData.filter((q) =>
+          selectedIds.includes(q.id.toString())
+        );
+
+        if (selectedQuestions.length > 0) {
+          console.log(
+            `[LOG] ${functionName}: IA selecionou ${selectedQuestions.length} questão(ões).`
+          );
+          return {
+            commentary:
+              selectedQuestions.length > 1
+                ? `Encontrei ${selectedQuestions.length} questões relevantes:`
+                : "Encontrei esta questão:",
+            questions: selectedQuestions,
+          };
+        } else {
+          return {
+            commentary: `Selecionei referências, mas não achei as questões completas.`,
+            questions: [],
+          };
+        }
+      } else {
+        return {
+          commentary: `Analisei as opções mais relevantes, mas nenhuma pareceu perfeita para "${createTextPreview(
+            userQuery,
+            30
+          )}". Gostaria que eu criasse uma?`,
+          questions: [],
+        };
+      }
+    } catch (reRankingError) {
+      console.error(
+        `[ERRO] ${functionName}: Falha no re-ranking:`,
+        reRankingError
+      );
+      return {
+        commentary: "Tive um problema ao selecionar a melhor questão.",
+        questions: [],
+      };
+    }
+  } catch (error) {
+    console.error(`[ERRO] ${functionName}: Erro geral:`, error);
+    return {
+      commentary: `Ocorreu um problema ao buscar questões: ${error.message}`,
+      questions: [],
+    };
+  }
+}
+
+/**
+ * Handler para criação de questões
+ */
+async function handleCreateQuestion(genAI, safetySettings, entities, count) {
+  const functionName = "handleCreateQuestion";
+
+  try {
+    const materia = entities?.materia || "Geral";
+    const topico = entities?.topico || "Conhecimentos Gerais";
+    const questionCount = Math.min(Math.max(count || 1, 1), 5); // Limitar entre 1 e 5
+
+    console.log(
+      `[LOG] ${functionName}: Gerando ${questionCount} questão(ões) sobre ${materia} - ${topico}`
+    );
+
+    const prompt = createQuestionGenerationPromptV2(
+      materia,
+      topico,
+      questionCount
+    );
+
+    const response = await callGeminiAPI({
+      promptText: prompt,
+      genAIInstance: genAI,
+      modelName: CREATIVE_MODEL,
+      safetySettings,
+      callType: "create-question",
+      responseSchema: QUESTION_GENERATION_SCHEMA,
+      responseMimeType: "application/json",
+      temperature: 0.9, // Mais criativo
+      maxOutputTokens: 2048,
     });
+
+    const responseText = extractTextFromResponse(response, "create-question");
+    const data = JSON.parse(responseText);
+
+    if (data?.questions && Array.isArray(data.questions) && data.questions.length > 0) {
+      // Validar e processar questões
+      const validQuestions = data.questions
+        .map((q, index) => {
+          if (
+            !q?.texto_questao ||
+            !q.alternativas ||
+            !q.resposta_letra
+          ) {
+            console.warn(
+              `[WARN] ${functionName}: Questão inválida no índice ${index}:`,
+              q
+            );
+            return null;
+          }
+
+          return {
+            ...q,
+            id: `gen-${Date.now()}-${index}`,
+            materia: q.materia || materia,
+            topico: q.topico || topico,
+            referencia: "Gerado por IA",
+          };
+        })
+        .filter(Boolean);
+
+      if (validQuestions.length > 0) {
+        return {
+          commentary:
+            validQuestions.length > 1
+              ? `Certo! Elaborei ${validQuestions.length} questões para você:`
+              : "Certo! Elaborei esta questão para você:",
+          questions: validQuestions,
+        };
+      }
+    }
+
+    return {
+      commentary:
+        "Tentei criar as questões, mas os dados não vieram no formato esperado. 😥",
+      questions: [],
+    };
+  } catch (error) {
+    console.error(`[ERRO] ${functionName}: Erro ao criar questão:`, error);
+    return {
+      commentary: `Não consegui criar a questão: ${error.message}`,
+      questions: [],
+    };
+  }
+}
+
+/**
+ * Handler para criação de flashcards
+ */
+async function handleCreateFlashcards(genAI, safetySettings, entities, count) {
+  const functionName = "handleCreateFlashcards";
+
+  try {
+    const topico = entities?.topico || "Conhecimentos Gerais do PAVE";
+    const flashcardCount = Math.min(Math.max(count || 5, 3), 10); // Limitar entre 3 e 10
+
+    console.log(
+      `[LOG] ${functionName}: Gerando ${flashcardCount} flashcards sobre ${topico}`
+    );
+
+    const prompt = createFlashcardGenerationPrompt(topico, flashcardCount);
+
+    const response = await callGeminiAPI({
+      promptText: prompt,
+      genAIInstance: genAI,
+      modelName: CREATIVE_MODEL,
+      safetySettings,
+      callType: "create-flashcards",
+      responseSchema: FLASHCARD_GENERATION_SCHEMA,
+      responseMimeType: "application/json",
+      temperature: 0.8,
+      maxOutputTokens: 1024,
+    });
+
+    const responseText = extractTextFromResponse(response, "create-flashcards");
+    const data = JSON.parse(responseText);
+
+    if (data?.flashcards && Array.isArray(data.flashcards) && data.flashcards.length > 0) {
+      // Validar e processar flashcards
+      const validFlashcards = data.flashcards
+        .map((fc, index) => {
+          if (!fc?.term || !fc.definition) {
+            console.warn(
+              `[WARN] ${functionName}: Flashcard inválido no índice ${index}:`,
+              fc
+            );
+            return null;
+          }
+
+          return {
+            ...fc,
+            id: `fc-${Date.now()}-${index}`,
+          };
+        })
+        .filter(Boolean);
+
+      if (validFlashcards.length > 0) {
+        return {
+          commentary: `Certo! Preparei ${validFlashcards.length} flashcards sobre **${topico}**:`,
+          flashcards: validFlashcards,
+        };
+      }
+    }
+
+    return {
+      commentary:
+        "Tentei criar os flashcards, mas os dados não vieram no formato esperado. 😥",
+      flashcards: [],
+    };
+  } catch (error) {
+    console.error(`[ERRO] ${functionName}: Erro ao criar flashcards:`, error);
+    return {
+      commentary: `Não consegui criar os flashcards: ${error.message}`,
+      flashcards: [],
+    };
   }
 }
 
@@ -301,6 +608,7 @@ export async function onRequest(context) {
     return await onRequestPost(context);
   }
   return new Response(`Método ${context.request.method} não permitido.`, {
-    status: 405, headers: { Allow: "POST" },
+    status: 405,
+    headers: { Allow: "POST" },
   });
 }
