@@ -546,23 +546,53 @@ async function handleCreateQuestion(genAI, safetySettings, entities, count) {
       // Validar e processar questões
       const validQuestions = data.questions
         .map((q, index) => {
+          // Normalizar: se a IA retornou apenas texto_questao (string), converte para corpo_questao
+          let normalized = { ...q };
+
+          // Se não houver alternativas no formato esperado, tentar mapear alternativas antigas
+          if (!Array.isArray(normalized.alternativas) && Array.isArray(normalized.alternativas)) {
+            // redundância intencional: placeholder para futuras regras
+          }
+
+          // Garantir que alternativas estejam no formato [{letra, texto}, ...]
+          if (normalized.alternativas && !Array.isArray(normalized.alternativas)) {
+            // Tentativa de normalização: se for um objeto com chaves A,B,.. transformamos
+            try {
+              const altsObj = normalized.alternativas;
+              const altsArr = Object.keys(altsObj).map((k) => ({ letra: k, texto: altsObj[k] }));
+              normalized.alternativas = altsArr;
+            } catch (e) {
+              // manter como está
+            }
+          }
+
+          // Se houver texto_questao e não houver corpo_questao, criar corpo_questao simples
+          if (typeof normalized.texto_questao === 'string' && (!Array.isArray(normalized.corpo_questao) || normalized.corpo_questao.length === 0)) {
+            normalized.corpo_questao = [
+              {
+                tipo: 'texto_markdown',
+                conteudo_markdown: normalized.texto_questao,
+              },
+            ];
+          }
+
           if (
-            !q?.texto_questao ||
-            !q.alternativas ||
-            !q.resposta_letra
+            !normalized?.corpo_questao ||
+            !normalized.alternativas ||
+            !normalized.resposta_letra
           ) {
             console.warn(
               `[WARN] ${functionName}: Questão inválida no índice ${index}:`,
-              q
+              normalized
             );
             return null;
           }
 
           return {
-            ...q,
+            ...normalized,
             id: `gen-${Date.now()}-${index}`,
-            materia: q.materia || materia,
-            topico: q.topico || topico,
+            materia: normalized.materia || materia,
+            topico: normalized.topico || topico,
             referencia: "Gerado por IA",
           };
         })
