@@ -40,9 +40,12 @@ export async function onRequestPost(context) {
     console.log("Iniciando processo de indexação...");
     
     // Buscar questões via API do uploader (fonte unificada de dados)
+    console.log("[DEBUG] Chamando fetchAllQuestions...");
     const allQuestionsData = await fetchAllQuestions(env);
+    console.log(`[DEBUG] fetchAllQuestions retornou: ${allQuestionsData ? allQuestionsData.length : 'null/undefined'} questões`);
     
     if (!Array.isArray(allQuestionsData) || allQuestionsData.length === 0) {
+      console.error("[ERROR] Nenhuma questão retornada. Array?", Array.isArray(allQuestionsData), "Length:", allQuestionsData?.length);
       return new Response(
         JSON.stringify({ error: "Nenhuma questão encontrada via API do uploader." }),
         { status: 404, headers: { "Content-Type": "application/json" } }
@@ -62,13 +65,18 @@ export async function onRequestPost(context) {
       // Processar corpo_questao (novo formato: array de objetos)
       let corpoTexto = "";
       if (Array.isArray(questao.corpo_questao)) {
+        console.log(`[DEBUG] Questão ${questao.id}: corpo_questao é array com ${questao.corpo_questao.length} itens`);
         corpoTexto = questao.corpo_questao
           .filter(item => item.tipo === "texto")
           .map(item => item.conteudo)
           .join(" ");
+        console.log(`[DEBUG] Questão ${questao.id}: texto extraído (primeiros 100 chars): "${corpoTexto.substring(0, 100)}..."`);
       } else if (questao.texto_questao) {
         // Fallback para formato antigo
+        console.log(`[DEBUG] Questão ${questao.id}: usando formato legado (texto_questao)`);
         corpoTexto = questao.texto_questao;
+      } else {
+        console.warn(`[WARN] Questão ${questao.id}: sem corpo_questao nem texto_questao`);
       }
 
       if (!corpoTexto.trim()) {
