@@ -119,6 +119,8 @@ export async function onRequestPost(context) {
         responseSchema: INTENT_ROUTER_SCHEMA,
         responseMimeType: "application/json",
       });
+      
+      console.log(`[LOG] ${functionName}: Router Response recebida:`, JSON.stringify(routerResponse, null, 2));
     } catch (error) {
       console.error(
         `[ERRO] ${functionName}: Falha no Router de Intenções:`,
@@ -137,15 +139,19 @@ export async function onRequestPost(context) {
     let routerData;
     try {
       const routerText = extractTextFromResponse(routerResponse, "router");
+      console.log(`[LOG] ${functionName}: Router Text extraído:`, routerText);
+      
       routerData = JSON.parse(routerText);
       console.log(
         `[LOG] ${functionName}: Router detectou - Intent: ${routerData.intent}, Entities:`,
-        routerData.entities
+        routerData.entities,
+        `QuestionCount: ${routerData.questionCount}`
       );
     } catch (error) {
       console.error(
         `[ERRO] ${functionName}: Falha ao parsear resposta do Router:`,
-        error
+        error,
+        `Response object:`, JSON.stringify(routerResponse, null, 2)
       );
       return new Response(
         JSON.stringify({
@@ -162,7 +168,7 @@ export async function onRequestPost(context) {
     // FASE 2: EXECUTOR - Executar ação baseada no intent
     // ============================================
     console.log(
-      `[LOG] ${functionName}: FASE 2 - Executando ação para intent: ${intent}`
+      `[LOG] ${functionName}: FASE 2 - Executando ação para intent: ${intent}, Reasoning: ${reasoning}`
     );
 
     let commentary = "";
@@ -449,6 +455,8 @@ async function handleSearchQuestion(env, genAI, safetySettings, userQuery, entit
  */
 async function handleCreateQuestion(genAI, safetySettings, entities, count) {
   const functionName = "handleCreateQuestion";
+  
+  console.log(`[LOG] ${functionName}: INICIANDO - entities:`, JSON.stringify(entities), `count: ${count}`);
 
   try {
     const materia = entities?.materia || "Geral";

@@ -74,9 +74,10 @@ export async function callGeminiAPI({
   }
 
   // Fazer a chamada usando a nova API
+  // A nova API aceita contents como string direta
   const response = await genAIInstance.models.generateContent({
     model: modelName,
-    contents: promptText,
+    contents: promptText, // String é aceita diretamente
     config: Object.keys(config).length > 0 ? config : undefined,
   });
 
@@ -113,10 +114,18 @@ export async function callGeminiAPI({
  * @returns {string} O texto extraído.
  */
 export function extractTextFromResponse(response, callType = "generica") {
-  const text = response.text;
+  // Tentar diferentes formas de acessar o texto
+  let text = response.text;
+  
+  // Se text não existir, tentar acessar de outras formas
+  if (!text) {
+    // Tentar acessar via candidates
+    text = response.candidates?.[0]?.content?.parts?.[0]?.text;
+  }
   
   if (!text || text.trim() === "") {
-    throw new Error(`A IA (${callType}) retornou texto vazio.`);
+    console.error(`[ERRO] extractTextFromResponse (${callType}): Estrutura da resposta:`, JSON.stringify(response, null, 2));
+    throw new Error(`A IA (${callType}) retornou texto vazio ou estrutura inesperada.`);
   }
   
   return text;
