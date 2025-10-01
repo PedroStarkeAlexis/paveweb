@@ -32,7 +32,7 @@ When modifying AI logic, always check `functions/api/prompt.js` first. The promp
     1.  Run the frontend with `npm run dev`.
     2.  Run the backend functions with `wrangler pages dev dist`.
     3.  You must copy `wrangler.toml.no` to `wrangler.toml` and configure the necessary Cloudflare bindings (`QUESTOES_PAVE_BUCKET`, `QUESTIONS_INDEX`, `AI`) and environment variables.
-
+    the user use github repository to deploy, deploy when commit 
 -   **Vector Search Indexing:** The search index is not updated automatically. After the source `questoes.json` file is updated, you must manually trigger the indexing process by sending a `POST` request to the `/api/index-questions` endpoint with the correct `X-Admin-Secret` header.
 
 ## Frontend Conventions
