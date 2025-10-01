@@ -19,11 +19,11 @@ import { callGeminiAPI, extractTextFromResponse } from "./utils/ai";
 
 // Constantes
 const VECTORIZE_TOP_K = 15;
-const MIN_SCORE_THRESHOLD = 0.65;
+const MIN_SCORE_THRESHOLD = 0.45; // Reduzido de 0.65 para 0.45 para ser mais permissivo
 const MAX_CANDIDATES_FOR_RERANKING = 8;
 
 // Modelos otimizados
-const FAST_MODEL = "gemini-2.5-flash"; // Para tarefas rápidas (router, re-ranking)
+const FAST_MODEL = "gemini-2.5-flash-lite"; // Para tarefas rápidas (router, re-ranking)
 const CREATIVE_MODEL = "gemini-2.5-flash"; // Para criação de conteúdo
 
 /**
@@ -273,6 +273,37 @@ export async function onRequestPost(context) {
 // ============================================
 
 /**
+ * Extrai termos de busca relevantes da query do usuário.
+ * Remove palavras de comando e mantém apenas os conceitos importantes.
+ */
+function extractSearchTerms(userQuery, entities) {
+  // Se temos entidades extraídas, use-as
+  if (entities) {
+    const terms = [];
+    if (entities.materia) terms.push(entities.materia);
+    if (entities.topico) terms.push(entities.topico);
+    if (terms.length > 0) {
+      return terms.join(" ");
+    }
+  }
+  
+  // Caso contrário, limpe a query removendo palavras de comando comuns
+  const stopWords = [
+    "mostra", "mostre", "me", "uma", "questao", "questão", "questoes", "questões",
+    "sobre", "do", "da", "de", "que", "fale", "fala", "falam", "falando",
+    "busca", "busque", "buscar", "procura", "procure", "procurar",
+    "encontra", "encontre", "encontrar", "acha", "ache", "achar",
+    "pega", "pegue", "pegar", "traz", "traga", "trazer", "ve", "vê",
+  ];
+  
+  const words = userQuery.toLowerCase()
+    .split(/\s+/)
+    .filter(word => !stopWords.includes(word) && word.length > 2);
+  
+  return words.join(" ") || userQuery; // Fallback para query original se ficar vazio
+}
+
+/**
  * Handler para busca de questões
  */
 async function handleSearchQuestion(env, genAI, safetySettings, userQuery, entities) {
@@ -305,12 +336,21 @@ async function handleSearchQuestion(env, genAI, safetySettings, userQuery, entit
     // Busca vetorial
     let highConfidenceMatches = [];
     try {
+      // Extrair termos de busca relevantes
+      const searchTerms = extractSearchTerms(userQuery, entities);
+      
       console.log(
-        `[LOG] ${functionName}: Iniciando busca vetorial para "${userQuery}"`
+        `[LOG] ${functionName}: Query original: "${userQuery}"`
+      );
+      console.log(
+        `[LOG] ${functionName}: Termos de busca extraídos: "${searchTerms}"`
+      );
+      console.log(
+        `[LOG] ${functionName}: Iniciando busca vetorial com termos: "${searchTerms}"`
       );
       
       const embeddingResponse = await env.AI.run("@cf/baai/bge-m3", {
-        text: [userQuery],
+        text: [searchTerms], // Usar termos limpos em vez da query completa
       });
       
       if (!embeddingResponse?.data?.[0]) {
