@@ -3,7 +3,7 @@ import { fetchAllQuestions } from './utils/uploader';
 const EMBEDDING_MODEL = "@cf/baai/bge-m3"; // Modelo multilíngue com 1024 dimensões
 const DEFAULT_SEARCH_LIMIT = 100;
 const DEFAULT_TOP_K = 25; // Quantidade de resultados a pedir ao Vectorize
-const MIN_SCORE_THRESHOLD = 0.70;
+const MIN_SCORE_THRESHOLD = 0.40; // Reduzido temporariamente para debug
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -91,6 +91,14 @@ export async function onRequestGet(context) {
       console.log(
         `[search-questions] Vectorize retornou ${vectorQueryResult.matches.length} correspondências.`
       );
+      
+      // DEBUG: Log todos os scores retornados
+      if (vectorQueryResult.matches && vectorQueryResult.matches.length > 0) {
+        console.log('[DEBUG] Scores de todas as correspondências:');
+        vectorQueryResult.matches.forEach((match, idx) => {
+          console.log(`  [${idx + 1}] ID: ${match.id}, Score: ${match.score.toFixed(4)}`);
+        });
+      }
 
       if (vectorQueryResult.matches && vectorQueryResult.matches.length > 0) {
         const highConfidenceMatches = vectorQueryResult.matches.filter(
