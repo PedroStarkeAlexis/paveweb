@@ -1,17 +1,10 @@
 import { removeAccents } from "./filter"; // Reutilizar função existente
+import { fetchAllQuestions } from "./utils/uploader.js"; // API externa
 
 const DEFAULT_LIMIT = 20; // Número de questões por página
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const r2Bucket = env.QUESTOES_PAVE_BUCKET;
-
-  if (!r2Bucket) {
-    return new Response(
-      JSON.stringify({ error: "Configuração interna do R2 faltando." }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
 
   try {
     const url = new URL(request.url);
@@ -34,22 +27,19 @@ export async function onRequestGet(context) {
       );
     }
 
-    // Buscar todas as questões do R2
-    const r2Object = await r2Bucket.get("questoes.json");
-    if (r2Object === null) {
-      return new Response(
-        JSON.stringify({ error: "Arquivo de questões não encontrado." }),
-        { status: 404, headers: { "Content-Type": "application/json" } }
-      );
-    }
-    const allQuestionsData = await r2Object.json();
-
+    // Buscar todas as questões da API externa
+    console.log('[DEBUG] Buscando questões via fetchAllQuestions...');
+    const allQuestionsData = await fetchAllQuestions(env);
+    
     if (!Array.isArray(allQuestionsData)) {
+      console.error('[ERROR] fetchAllQuestions não retornou array:', allQuestionsData);
       return new Response(
         JSON.stringify({ error: "Formato de dados inválido." }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
+    
+    console.log(`[DEBUG] Total de questões recebidas: ${allQuestionsData.length}`);
 
     // Filtrar no backend
     const filteredQuestions = allQuestionsData.filter((q) => {
