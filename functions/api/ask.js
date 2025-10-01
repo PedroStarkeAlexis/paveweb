@@ -406,7 +406,21 @@ async function handleSearchQuestion(env, genAI, safetySettings, userQuery, entit
       `[LOG] ${functionName}: ${candidatesForReRanking.length} candidatas prontas para re-ranking.`
     );
 
-    // Re-ranking com IA
+    // Se tiver apenas 1-2 candidatas, pular re-ranking e retornar direto
+    if (candidatesForReRanking.length <= 2) {
+      console.log(
+        `[LOG] ${functionName}: Poucas candidatas (${candidatesForReRanking.length}), pulando re-ranking.`
+      );
+      return {
+        commentary:
+          candidatesForReRanking.length === 1
+            ? "Encontrei esta questão:"
+            : `Encontrei ${candidatesForReRanking.length} questões relevantes:`,
+        questions: candidatesForReRanking,
+      };
+    }
+
+    // Re-ranking com IA (somente se tiver 3+ candidatas)
     const reRankingPrompt = createQuestionReRankingPromptV2(
       userQuery,
       candidatesForReRanking,
