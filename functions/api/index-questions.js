@@ -54,14 +54,42 @@ export async function onRequestPost(context) {
     const processedQuestionMetadatas = [];
 
     for (const questao of allQuestionsData) {
-      if (!questao || !questao.id || !questao.texto_questao) {
-        console.warn("Questão inválida ou sem ID/texto:", questao);
+      if (!questao || !questao.id) {
+        console.warn("Questão inválida ou sem ID:", questao);
         continue;
       }
 
-      let textToEmbed = `${questao.materia || ""} ${questao.topico || ""} ${
-        questao.texto_questao
-      }`;
+      // Processar corpo_questao (novo formato: array de objetos)
+      let corpoTexto = "";
+      if (Array.isArray(questao.corpo_questao)) {
+        corpoTexto = questao.corpo_questao
+          .filter(item => item.tipo === "texto")
+          .map(item => item.conteudo)
+          .join(" ");
+      } else if (questao.texto_questao) {
+        // Fallback para formato antigo
+        corpoTexto = questao.texto_questao;
+      }
+
+      if (!corpoTexto.trim()) {
+        console.warn("Questão sem corpo de texto:", questao.id);
+        continue;
+      }
+
+      // Incluir alternativas para enriquecer o contexto semântico
+      let alternativasTexto = "";
+      if (Array.isArray(questao.alternativas)) {
+        alternativasTexto = questao.alternativas
+          .map(alt => `${alt.letra}: ${alt.texto}`)
+          .join(" ");
+      }
+
+      // Incluir gabarito para melhor contexto
+      const gabarito = questao.gabarito || questao.resposta_letra || "";
+      const alternativaCorreta = questao.alternativas?.find(alt => alt.letra === gabarito);
+      const respostaCorreta = alternativaCorreta ? `Resposta correta: ${alternativaCorreta.texto}` : "";
+
+      let textToEmbed = `${questao.materia || ""} ${questao.topico || ""} ${corpoTexto} ${alternativasTexto} ${respostaCorreta}`;
       textToEmbed = textToEmbed.replace(/\s+/g, " ").trim();
 
       if (textToEmbed) {

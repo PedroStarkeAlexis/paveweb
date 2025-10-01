@@ -197,13 +197,18 @@ function App() {
                 }
             }
             if (data?.questions?.length > 0) {
-                if (data.questions.length > 1) {
-                    botResponses.push({ type: 'question_carousel', sender: 'bot', questionsData: data.questions.filter(q => q && q.alternativas && q.resposta_letra), id: `${botMessageIdBase}-carousel` });
-                } else {
-                    const q = data.questions[0];
-                    if (q && q.alternativas && q.resposta_letra) {
-                        botResponses.push({ type: 'question', sender: 'bot', questionData: q, id: `${botMessageIdBase}-q0` });
-                    }
+                // Filtro compatível com ambos formatos (novo: corpo_questao + gabarito, antigo: texto_questao + resposta_letra)
+                const validQuestions = data.questions.filter(q => {
+                    if (!q || !q.alternativas) return false;
+                    const hasGabarito = q.gabarito || q.resposta_letra;
+                    const hasCorpo = (Array.isArray(q.corpo_questao) && q.corpo_questao.length > 0) || q.texto_questao;
+                    return hasGabarito && hasCorpo;
+                });
+                
+                if (validQuestions.length > 1) {
+                    botResponses.push({ type: 'question_carousel', sender: 'bot', questionsData: validQuestions, id: `${botMessageIdBase}-carousel` });
+                } else if (validQuestions.length === 1) {
+                    botResponses.push({ type: 'question', sender: 'bot', questionData: validQuestions[0], id: `${botMessageIdBase}-q0` });
                 }
             }
             if (botResponses.length === 0 && response.ok && data?.displayCard !== "pave_info_recommendation") {

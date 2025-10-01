@@ -19,6 +19,7 @@ export function removeAccents(str) {
 /**
  * Tenta parsear texto que PODE conter uma questão, como um fallback.
  * MENOS ROBUSTO que pedir JSON direto para a IA.
+ * NOTA: Gera apenas formato legado (texto_questao + resposta_letra) para simplicidade.
  * @param {string} text - Texto que pode conter a questão.
  * @returns {object | null} Objeto de questão ou null.
  */
@@ -45,7 +46,7 @@ export function parseAiGeneratedQuestion(text) {
         return null;
       }
 
-      // Cria um objeto básico (sem matéria/tópico extraídos daqui)
+      // Cria um objeto básico (formato legado para geração de questões)
       return {
         id: `gen-fallback-${Date.now()}`,
         ano: null,

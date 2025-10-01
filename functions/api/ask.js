@@ -225,13 +225,18 @@ export async function onRequestPost(context) {
         break;
 
       case "CRIAR_QUESTAO":
+        // NOTA: Questões geradas pela IA usam APENAS o formato legado (texto_questao + resposta_letra)
+        // O formato novo (corpo_questao + gabarito) é usado apenas para questões existentes no banco.
+        // Isso simplifica a geração pela IA e mantém a qualidade das questões criadas.
         if (Array.isArray(generatedQuestionsFromAI) && generatedQuestionsFromAI.length > 0) {
           questionsToReturn = generatedQuestionsFromAI
             .map((qData, index) => {
+              // Validação simples: formato legado apenas (texto_questao + resposta_letra)
               if (!qData?.texto_questao || !qData.alternativas || !qData.resposta_letra) {
                 console.warn(`[WARN] ${functionName}: Objeto de questão inválido no índice ${index}:`, qData);
                 return null;
               }
+              
               return {
                 ...qData,
                 id: `gen-${Date.now()}-${index}`,

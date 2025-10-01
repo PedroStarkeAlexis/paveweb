@@ -10,7 +10,13 @@ const placeholderQuestion = {
   etapa: 1,
   materia: "Desenvolvimento",
   topico: "Placeholder",
-  texto_questao: "Esta é uma questão de exemplo para visualização em ambiente de desenvolvimento. Ela aparece quando não há questões salvas e o backend não está conectado.\n\nQual a principal vantagem de usar um placeholder como este?",
+  corpo_questao: [
+    {
+      tipo: "texto",
+      conteudo: "Esta é uma questão de exemplo para visualização em ambiente de desenvolvimento. Ela aparece quando não há questões salvas e o backend não está conectado.\n\nQual a principal vantagem de usar um placeholder como este?"
+    }
+  ],
+  texto_questao: "Esta é uma questão de exemplo para visualização em ambiente de desenvolvimento. Ela aparece quando não há questões salvas e o backend não está conectado.\n\nQual a principal vantagem de usar um placeholder como este?", // compatibilidade
   referencia: "Gerado localmente para desenvolvimento.",
   alternativas: [
     { letra: "A", texto: "Facilita a visualização do layout e estilo do componente." },
@@ -19,7 +25,8 @@ const placeholderQuestion = {
     { letra: "D", texto: "Substitui a necessidade de testes unitários." },
     { letra: "E", texto: "Não possui nenhuma vantagem." }
   ],
-  resposta_letra: "A"
+  gabarito: "A",
+  resposta_letra: "A" // compatibilidade
 };
 
 function SavedQuestionsPage() {
