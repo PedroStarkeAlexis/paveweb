@@ -1,6 +1,6 @@
 import { fetchAllQuestions } from "./utils/uploader";
 
-// Modelo de embedding multilingual (suporta português e outros idiomas)
+// Modelo de embedding multilingual (suporta português e outros idiomas) - 1024 dimensões
 const EMBEDDING_MODEL = "@cf/baai/bge-m3";
 
 async function generateEmbeddingsBatch(ai, texts) {
@@ -134,6 +134,23 @@ export async function onRequestPost(context) {
           payload: metadataPayload,
         });
       }
+    }
+
+    console.log(`[DEBUG] Loop concluído. Total de textos coletados: ${textsForEmbedding.length}`);
+    console.log(`[DEBUG] Total de metadados coletados: ${processedQuestionMetadatas.length}`);
+    
+    if (textsForEmbedding.length === 0) {
+      console.error("[ERROR] Nenhum texto foi coletado para embedding!");
+      return new Response(
+        JSON.stringify({ 
+          error: "Nenhum texto válido encontrado nas questões.",
+          debug: {
+            totalQuestionsReceived: allQuestionsData.length,
+            textsCollected: textsForEmbedding.length,
+          }
+        }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const batchSize = 50;
