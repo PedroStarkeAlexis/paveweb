@@ -107,7 +107,7 @@ function QuestionCarousel({ questionsData }) {
           >
             {currentQuestion && (
               // Passar uma prop para QuestionLayout para que ele não renderize sua borda/fundo
-              <QuestionLayout questionData={currentQuestion} isInsideCarousel={true} />
+              <QuestionLayout itemProva={currentQuestion} isInsideCarousel={true} />
             )}
           </motion.div>
         </AnimatePresence>

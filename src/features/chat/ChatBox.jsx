@@ -19,8 +19,8 @@ function ChatBox({ messages, isLoading }) {
     <div id="chat-box" className="chat-box" ref={chatBoxRef}>
       {messages.map((msg, index) => {
         if (msg.type === 'question' && msg.questionData) { // Adiciona verificação para questionData
-          // Renderiza componente de questão
-          return <QuestionLayout key={index} questionData={msg.questionData} />;
+          // Renderiza componente de questão - CORRIGIDO: itemProva em vez de questionData
+          return <QuestionLayout key={index} itemProva={msg.questionData} />;
         } else if (msg.type === 'text' && msg.content) { // Adiciona verificação para content
           // Renderiza mensagem de texto normal
           return <Message key={index} sender={msg.sender} text={msg.content} />;

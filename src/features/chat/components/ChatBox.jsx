@@ -23,7 +23,7 @@ function ChatBox({ messages, isLoading }) {
         if (msg.type === 'question_carousel' && msg.questionsData && msg.questionsData.length > 0) {
           return <QuestionCarousel key={msg.id || `carousel-${index}`} questionsData={msg.questionsData} />;
         } else if (msg.type === 'question' && msg.questionData) {
-          return <QuestionLayout key={msg.id || `q-${index}`} questionData={msg.questionData} />;
+          return <QuestionLayout key={msg.id || `q-${index}`} itemProva={msg.questionData} />;
         } else if (msg.type === 'text' && typeof msg.content === 'string') {
           return <Message key={msg.id || `msg-${index}`} sender={msg.sender} text={msg.content} />;
         } else if (msg.type === 'flashcard_display' && msg.flashcardsData && msg.flashcardsData.length > 0) { // NOVO: Condição para flashcards
