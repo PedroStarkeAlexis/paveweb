@@ -36,6 +36,26 @@ html {
   --success-primary: #10b981; /* Ajustado do verde */
   --success-secondary: #f0fdf4;
 
+  /* Variáveis para Calculadora - Design Flat/Duolingo */
+  --calculator-bg: #ffffff;
+  --calculator-text-primary: #1f2937;
+  --calculator-text-secondary: #6b7280;
+  --progress-bar-bg: #e5e7eb;
+  --progress-fill-color: #10a37f;
+  --accent-color: #10a37f;
+  --accent-bg: #10a37f;
+  --accent-text: #ffffff;
+  --accent-shadow: #0d8866;
+  --button-bg: #ffffff;
+  --button-text: #1f2937;
+  --button-shadow-color: #d1d5db;
+  --button-hover-bg: #f9fafb;
+  --button-selected-shadow: #10a37f;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus-border: #10a37f;
+  --input-text: #1f2937;
+
   color-scheme: light; /* Define o esquema de cores padrão */
   transition: color 0.3s ease, background-color 0.3s ease; /* Transi��ão global */
 }
@@ -830,6 +850,26 @@ code {
   --error-secondary: #871c1c; /* Fundo roxo escuro para erro */
   --success-primary: #34d399; /* Verde claro */
   --success-secondary: #064e3b; /* Fundo verde escuro para sucesso */
+
+  /* Variáveis para Calculadora - Dark Mode */
+  --calculator-bg: #1e1e1e;
+  --calculator-text-primary: #e0e0e0;
+  --calculator-text-secondary: #b0b0b0;
+  --progress-bar-bg: #444444;
+  --progress-fill-color: #10b981;
+  --accent-color: #10b981;
+  --accent-bg: #10b981;
+  --accent-text: #ffffff;
+  --accent-shadow: #0d8866;
+  --button-bg: #2c2c2c;
+  --button-text: #e0e0e0;
+  --button-shadow-color: #000000;
+  --button-hover-bg: #3a3a3a;
+  --button-selected-shadow: #10b981;
+  --input-bg: #2c2c2c;
+  --input-border: #444444;
+  --input-focus-border: #10b981;
+  --input-text: #e0e0e0;
 
   color-scheme: dark;
 }

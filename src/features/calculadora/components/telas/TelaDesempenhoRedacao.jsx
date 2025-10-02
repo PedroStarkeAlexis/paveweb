@@ -1,64 +1,66 @@
 // src/features/calculadora/components/telas/TelaDesempenhoRedacao.jsx
 import React from 'react';
 import { NOTA_MIN_REDAÇÃO, NOTA_MAX_REDAÇÃO } from '../../constants';
+import '../../styles/WizardButtons.css';
 import './TelaDesempenhoRedacao.css';
-import '../shared/NextStepButton.css'; // <<< Importar CSS do botão
 
-// <<< Recebe as novas props para o botão
 function TelaDesempenhoRedacao({ onChange, values, onNextStep, isNextStepDisabled, nextStepText }) {
   const { incluirRedacao, notaRedacao } = values;
 
   return (
     <div className="calc-tela-redacao">
-      {/* ... (Título, subtítulo, botões Sim/Não, input de nota sem alterações) ... */}
-      <h2 className="calc-tela-titulo">Deseja incluir a <strong>Redação</strong>?</h2>
-      <p className="calc-tela-subtitulo">Selecione "Sim" para incluir a nota estimada (0 a {NOTA_MAX_REDAÇÃO}) no cálculo.</p>
+      <h2 className="calc-tela-titulo">Deseja incluir a Redação?</h2>
+      <p className="calc-tela-subtitulo">
+        Selecione se deseja incluir a nota da redação no cálculo (0 a {NOTA_MAX_REDAÇÃO})
+      </p>
 
-      {/* Botões de Seleção Sim/Não */}
-      <div className="calc-redacao-botoes">
+      <div className="wizard-buttons-container">
         <button
-          className={`calc-botao-opcao ${incluirRedacao === true ? 'active' : ''}`}
+          className={`wizard-option-button ${incluirRedacao === true ? 'selected' : ''}`}
           onClick={() => onChange('incluirRedacao', true)}
         >
-          Sim
+          Sim, incluir Redação
         </button>
         <button
-          className={`calc-botao-opcao ${incluirRedacao === false ? 'active' : ''}`}
+          className={`wizard-option-button ${incluirRedacao === false ? 'selected' : ''}`}
           onClick={() => onChange('incluirRedacao', false)}
         >
-          Não
+          Não incluir
         </button>
+
+        {incluirRedacao === true && (
+          <div className="wizard-input-group" style={{ marginTop: '16px' }}>
+            <label htmlFor="notaRedacao" className="wizard-input-label">Qual foi sua nota?</label>
+            <input
+              type="number"
+              id="notaRedacao"
+              name="notaRedacao"
+              value={notaRedacao}
+              onChange={(e) => onChange('notaRedacao', e.target.value)}
+              min={NOTA_MIN_REDAÇÃO}
+              max={NOTA_MAX_REDAÇÃO}
+              step="0.1"
+              placeholder="Digite sua nota"
+              className="wizard-input-field"
+            />
+          </div>
+        )}
+
+        {incluirRedacao === false && (
+          <p style={{ 
+            fontSize: '0.9rem', 
+            color: 'var(--calculator-text-secondary)', 
+            textAlign: 'center',
+            marginTop: '16px'
+          }}>
+            A nota da redação não será considerada no cálculo.
+          </p>
+        )}
       </div>
 
-      {/* Input da Nota (Condicional) */}
-      {incluirRedacao === true && (
-        <div className="calc-redacao-input-container">
-          <label htmlFor="notaRedacao">Qual foi sua nota?</label>
-          <input
-            type="number"
-            id="notaRedacao"
-            name="notaRedacao"
-            value={notaRedacao}
-            onChange={(e) => onChange('notaRedacao', e.target.value)}
-            min={NOTA_MIN_REDAÇÃO}
-            max={NOTA_MAX_REDAÇÃO}
-            step="0.1"
-            placeholder="Sua nota"
-            className="calc-input-redacao"
-          />
-        </div>
-      )}
-
-      {/* Mensagem se escolher Não */}
-      {incluirRedacao === false && (
-        <p className="calc-redacao-info">Ok, a nota da redação não será considerada.</p>
-      )}
-
-
-      {/* <<< Adiciona o botão Próxima Etapa aqui >>> */}
-      <div className="calc-next-step-button-container">
+      <div style={{ marginTop: '32px', textAlign: 'center' }}>
         <button
-          className="calc-step-next-button" // <<< Usa a nova classe CSS
+          className="wizard-primary-button"
           onClick={onNextStep}
           disabled={isNextStepDisabled}
         >

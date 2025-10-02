@@ -1,9 +1,8 @@
 // src/features/calculadora/components/telas/TelaSelecaoCurso.jsx
 import React from 'react';
+import '../../styles/WizardButtons.css';
 import './TelaSelecaoCurso.css';
-import '../shared/NextStepButton.css'; // <<< Importar CSS do botão
 
-// <<< Recebe as novas props para o botão
 function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error, onNextStep, isNextStepDisabled, nextStepText }) {
 
   let selectContent;
@@ -21,44 +20,44 @@ function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error, onNe
           </option>
         ))}
         {(!cursos || cursos.length === 0) && !isLoading && !error && (
-          <option value="" disabled>Nenhum curso dispon��vel</option>
+          <option value="" disabled>Nenhum curso disponível</option>
         )}
       </>
     );
   }
 
-
   return (
     <div className="calc-tela-selecao-curso">
-      {/* ... (Título, subtítulo, select sem altera����es) ... */}
-      <h2 className="calc-tela-titulo">Qual <strong>curso</strong> você gostaria de ingressar?</h2>
+      <h2 className="calc-tela-titulo">Qual curso você gostaria de ingressar?</h2>
       <p className="calc-tela-subtitulo">Selecione o curso desejado na UFPel.</p>
 
-      <div className="calc-select-group">
-        <label htmlFor="cursoSelect">Curso</label>
-        <select
-          id="cursoSelect"
-          name="cursoId"
-          value={selectedId || ''}
-          onChange={onChange}
-          className="calc-select-dropdown"
-          disabled={isLoading || !!error} // Desabilita se carregando ou erro
-        >
-          {selectContent}
-        </select>
+      <div className="wizard-buttons-container">
+        <div className="wizard-input-group">
+          <label htmlFor="cursoSelect" className="wizard-input-label">Curso</label>
+          <select
+            id="cursoSelect"
+            name="cursoId"
+            value={selectedId || ''}
+            onChange={onChange}
+            className="wizard-select-field"
+            disabled={isLoading || !!error}
+          >
+            {selectContent}
+          </select>
+        </div>
+
+        {error && (
+          <p className="wizard-error-message" style={{ textAlign: 'center', marginTop: '16px' }}>
+            {error}
+          </p>
+        )}
       </div>
 
-      <div className="calc-select-feedback">
-        {/* Mostra erro se houver */}
-        {error && <p className="calc-error-message" style={{ textAlign: 'center' }}>{error}</p>}
-      </div>
-
-      {/* <<< Adiciona o botão Próxima Etapa aqui >>> */}
-      <div className="calc-next-step-button-container">
+      <div style={{ marginTop: '32px', textAlign: 'center' }}>
         <button
-          className="calc-step-next-button" // <<< Usa a nova classe CSS
+          className="wizard-primary-button"
           onClick={onNextStep}
-          disabled={isNextStepDisabled || isLoading || !!error} // Desabilita tamb��m se carregando ou erro
+          disabled={isNextStepDisabled || isLoading || !!error}
         >
           {nextStepText}
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>

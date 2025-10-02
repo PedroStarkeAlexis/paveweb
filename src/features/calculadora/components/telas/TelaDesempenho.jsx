@@ -1,7 +1,7 @@
 import React from 'react';
 import { TOTAL_QUESTOES } from '../../constants';
+import '../../styles/WizardButtons.css';
 import './TelaDesempenho.css';
-import '../shared/NextStepButton.css';
 
 function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isNextStepDisabled, nextStepText }) {
   const acertosKey = `acertosE${etapaNumero}`;
@@ -10,13 +10,14 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
 
   return (
     <div className="calc-tela-desempenho">
-      <h2 className="calc-tela-titulo">Como foi seu desempenho na <strong>Etapa {etapaNumero}</strong>?</h2>
-      <p className="calc-tela-subtitulo">Informe seus acertos e respostas ignoradas (I.R.).</p>
-      <p className="calc-max-info">(Máximo: {TOTAL_QUESTOES} questões - Acertos + I.R.)</p>
+      <h2 className="calc-tela-titulo">Como foi seu desempenho na Etapa {etapaNumero}?</h2>
+      <p className="calc-tela-subtitulo">
+        Informe seus acertos e respostas ignoradas (I.R.). Máximo: {TOTAL_QUESTOES} questões.
+      </p>
 
-      <div className="calc-input-group">
-        <div className="calc-input-item">
-          <label htmlFor={acertosKey}>Acertos</label>
+      <div className="wizard-buttons-container">
+        <div className="wizard-input-group">
+          <label htmlFor={acertosKey} className="wizard-input-label">Acertos</label>
           <input
             type="number"
             id={acertosKey}
@@ -28,12 +29,12 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
             placeholder="0"
             aria-invalid={!!errors[errorKey]}
             aria-describedby={errors[errorKey] ? `${errorKey}-error` : undefined}
-            className="calc-input-desempenho"
+            className={`wizard-input-field ${errors[errorKey] ? 'wizard-input-error' : ''}`}
           />
         </div>
 
-        <div className="calc-input-item">
-          <label htmlFor={ignoradasKey}>I.R.</label>
+        <div className="wizard-input-group">
+          <label htmlFor={ignoradasKey} className="wizard-input-label">I.R. (Ignoradas)</label>
           <input
             type="number"
             id={ignoradasKey}
@@ -45,20 +46,20 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
             placeholder="0"
             aria-invalid={!!errors[errorKey]}
             aria-describedby={errors[errorKey] ? `${errorKey}-error` : undefined}
-            className="calc-input-desempenho"
+            className={`wizard-input-field ${errors[errorKey] ? 'wizard-input-error' : ''}`}
           />
         </div>
+
+        {errors[errorKey] && (
+          <p id={`${errorKey}-error`} className="wizard-error-message" role="alert">
+            {errors[errorKey]}
+          </p>
+        )}
       </div>
 
-      {errors[errorKey] && (
-        <p id={`${errorKey}-error`} className="calc-error-message" role="alert">
-          {errors[errorKey]}
-        </p>
-      )}
-
-      <div className="calc-next-step-button-container">
+      <div style={{ marginTop: '32px', textAlign: 'center' }}>
         <button
-          className="calc-step-next-button"
+          className="wizard-primary-button"
           onClick={onNextStep}
           disabled={isNextStepDisabled}
         >

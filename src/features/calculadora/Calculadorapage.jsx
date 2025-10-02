@@ -10,9 +10,6 @@ import TelaDesempenhoRedacao from './components/telas/TelaDesempenhoRedacao';
 import TelaSelecaoCurso from './components/telas/TelaSelecaoCurso';
 import TelaResultado from './components/telas/TelaResultado';
 
-// --- COMPONENTES VISUAIS ---
-import Stepper from './components/Stepper';
-
 // --- UTILS, CONSTANTES, DATA, CSS ---
 import { WIZARD_STEPS } from './constants';
 import './styles/CalculadoraWizard.css';
@@ -91,16 +88,27 @@ function CalculadoraPage() {
     };
 
 
+    // Calcula o progresso (0-100%) baseado no passo atual
+    const calculateProgress = () => {
+        const totalSteps = etapasFlow.length;
+        const currentIndex = etapasFlow.indexOf(wizardStep);
+        if (currentIndex === -1 || totalSteps === 0) return 0;
+        return ((currentIndex + 1) / totalSteps) * 100;
+    };
+
     // --- RENDERIZAÇÃO PRINCIPAL DO WIZARD ---
     return (
         <div className="calc-wizard-container">
             {wizardStep !== WIZARD_STEPS.RESULTADO && wizardStep !== WIZARD_STEPS.SELECAO_ETAPAS && (
                 <div className="calc-wizard-header">
-                    <button onClick={handleEtapaAnterior} className="calc-wizard-back-button" aria-label="Etapa anterior">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" > <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /> </svg>
-                    </button>
-                    <Stepper currentStep={wizardStep} etapasFlow={etapasFlow} />
-                    <div style={{ width: '40px', flexShrink: 0 }}></div>
+                    <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${calculateProgress()}%` }}></div>
+                    </div>
+                    <div className="calc-wizard-back-wrapper">
+                        <button onClick={handleEtapaAnterior} className="calc-wizard-back-button" aria-label="Etapa anterior">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" > <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /> </svg>
+                        </button>
+                    </div>
                 </div>
             )}
             <div className="calc-wizard-content">
