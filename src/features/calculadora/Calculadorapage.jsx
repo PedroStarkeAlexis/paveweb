@@ -99,15 +99,13 @@ function CalculadoraPage() {
     // --- RENDERIZAÇÃO PRINCIPAL DO WIZARD ---
     return (
         <div className="calc-wizard-container">
-            {wizardStep !== WIZARD_STEPS.RESULTADO && wizardStep !== WIZARD_STEPS.SELECAO_ETAPAS && (
+            {wizardStep !== WIZARD_STEPS.RESULTADO && (
                 <div className="calc-wizard-header">
+                    <button onClick={handleEtapaAnterior} className="calc-wizard-back-button" aria-label="Etapa anterior">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" > <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /> </svg>
+                    </button>
                     <div className="progress-bar">
                         <div className="progress-fill" style={{ width: `${calculateProgress()}%` }}></div>
-                    </div>
-                    <div className="calc-wizard-back-wrapper">
-                        <button onClick={handleEtapaAnterior} className="calc-wizard-back-button" aria-label="Etapa anterior">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" > <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /> </svg>
-                        </button>
                     </div>
                 </div>
             )}
