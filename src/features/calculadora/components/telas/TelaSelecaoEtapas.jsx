@@ -1,5 +1,6 @@
 // src/features/calculadora/components/telas/TelaSelecaoEtapas.jsx
 import React, { useState } from 'react';
+import { triggerVibration } from '../../../../utils/vibration';
 import '../../styles/WizardButtons.css';
 import './TelaSelecaoEtapas.css';
 
@@ -7,6 +8,7 @@ function TelaSelecaoEtapas({ selectedEtapas, onSelectionChange, onNextStep, isNe
     const [localSelection, setLocalSelection] = useState(selectedEtapas || []);
 
     const handleToggleEtapa = (etapaNum) => {
+        triggerVibration(10); // Vibração curta de 10ms
         let newSelection;
         if (localSelection.includes(etapaNum)) {
             // Remover etapa
@@ -70,7 +72,10 @@ function TelaSelecaoEtapas({ selectedEtapas, onSelectionChange, onNextStep, isNe
             <div style={{ marginTop: '32px', textAlign: 'center' }}>
                 <button
                     className="wizard-primary-button"
-                    onClick={onNextStep}
+                    onClick={() => {
+                        triggerVibration(10);
+                        onNextStep();
+                    }}
                     disabled={isNextStepDisabled}
                     type="button"
                 >

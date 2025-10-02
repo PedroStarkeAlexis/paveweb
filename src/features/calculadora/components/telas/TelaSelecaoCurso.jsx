@@ -1,5 +1,6 @@
 // src/features/calculadora/components/telas/TelaSelecaoCurso.jsx
 import React from 'react';
+import { triggerVibration } from '../../../../utils/vibration';
 import '../../styles/WizardButtons.css';
 import './TelaSelecaoCurso.css';
 
@@ -56,7 +57,10 @@ function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error, onNe
       <div style={{ marginTop: '32px', textAlign: 'center' }}>
         <button
           className="wizard-primary-button"
-          onClick={onNextStep}
+          onClick={() => {
+            triggerVibration(10);
+            onNextStep();
+          }}
           disabled={isNextStepDisabled || isLoading || !!error}
         >
           {nextStepText}

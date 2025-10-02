@@ -1,6 +1,7 @@
 // src/features/calculadora/components/telas/TelaDesempenhoRedacao.jsx
 import React from 'react';
 import { NOTA_MIN_REDAÇÃO, NOTA_MAX_REDAÇÃO } from '../../constants';
+import { triggerVibration } from '../../../../utils/vibration';
 import '../../styles/WizardButtons.css';
 import './TelaDesempenhoRedacao.css';
 
@@ -17,13 +18,19 @@ function TelaDesempenhoRedacao({ onChange, values, onNextStep, isNextStepDisable
       <div className="wizard-buttons-container">
         <button
           className={`wizard-option-button ${incluirRedacao === true ? 'selected' : ''}`}
-          onClick={() => onChange('incluirRedacao', true)}
+          onClick={() => {
+            triggerVibration(10);
+            onChange('incluirRedacao', true);
+          }}
         >
           Sim, incluir Redação
         </button>
         <button
           className={`wizard-option-button ${incluirRedacao === false ? 'selected' : ''}`}
-          onClick={() => onChange('incluirRedacao', false)}
+          onClick={() => {
+            triggerVibration(10);
+            onChange('incluirRedacao', false);
+          }}
         >
           Não incluir
         </button>
@@ -61,7 +68,10 @@ function TelaDesempenhoRedacao({ onChange, values, onNextStep, isNextStepDisable
       <div style={{ marginTop: '32px', textAlign: 'center' }}>
         <button
           className="wizard-primary-button"
-          onClick={onNextStep}
+          onClick={() => {
+            triggerVibration(10);
+            onNextStep();
+          }}
           disabled={isNextStepDisabled}
         >
           {nextStepText}

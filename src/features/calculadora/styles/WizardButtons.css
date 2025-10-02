@@ -70,11 +70,12 @@
 
 /* --- Botão Primário (Avançar/Continuar) --- */
 .wizard-primary-button {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-width: 200px;
+    width: 100%;
+    max-width: 400px;
     padding: 16px 32px;
     font-size: 1.05rem;
     font-weight: 700;

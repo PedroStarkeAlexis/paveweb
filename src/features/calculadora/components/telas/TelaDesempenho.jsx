@@ -1,5 +1,6 @@
 import React from 'react';
 import { TOTAL_QUESTOES } from '../../constants';
+import { triggerVibration } from '../../../../utils/vibration';
 import '../../styles/WizardButtons.css';
 import './TelaDesempenho.css';
 
@@ -60,7 +61,10 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
       <div style={{ marginTop: '32px', textAlign: 'center' }}>
         <button
           className="wizard-primary-button"
-          onClick={onNextStep}
+          onClick={() => {
+            triggerVibration(10);
+            onNextStep();
+          }}
           disabled={isNextStepDisabled}
         >
           {nextStepText}
