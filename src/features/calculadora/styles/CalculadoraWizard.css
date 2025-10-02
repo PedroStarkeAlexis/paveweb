@@ -62,11 +62,11 @@
 
 /* Barra de Progresso - Estilo Flat ao Lado do Botão */
 .progress-bar {
-    height: 16px;
+    height: 24px;
     flex: 1;
     margin-right: 16px;
     background-color: var(--progress-bar-bg);
-    border-radius: 8px;
+    border-radius: 12px;
     position: relative;
     overflow: hidden;
 }
@@ -75,7 +75,7 @@
     height: 100%;
     background-color: var(--progress-fill-color);
     transition: width 0.3s ease;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 /* --- Container do Conteúdo para Animação --- */
