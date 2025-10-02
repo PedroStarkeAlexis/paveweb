@@ -36,6 +36,7 @@ export const ETAPA_VIEW_3 = 3; // Mantido
 
 // --- Constantes para o Fluxo do Wizard ---
 export const WIZARD_STEPS = {
+    SELECAO_ETAPAS: 0,
     ETAPA_1: 1,
     ETAPA_2: 2,
     ETAPA_3: 3,

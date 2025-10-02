@@ -5,9 +5,9 @@ import { WIZARD_STEPS } from '../constants';
 // Mapeamento de etapas do wizard para evitar hardcoding de números mágicos
 
 
-function Stepper({ currentStep }) {
-  // Definindo a ordem e o número total de passos ANTES do resultado
-  const stepsInFlow = [
+function Stepper({ currentStep, etapasFlow = [] }) {
+  // Usar o fluxo dinâmico se fornecido, caso contrário usar fluxo padrão
+  const stepsInFlow = etapasFlow.length > 0 ? etapasFlow : [
     WIZARD_STEPS.ETAPA_1,
     WIZARD_STEPS.ETAPA_2,
     WIZARD_STEPS.ETAPA_3,
@@ -16,8 +16,8 @@ function Stepper({ currentStep }) {
   ];
   const totalStepsInFlow = stepsInFlow.length;
 
-  // Não mostrar o stepper na tela de resultado
-  if (currentStep === WIZARD_STEPS.RESULTADO) {
+  // Não mostrar o stepper na tela de resultado ou seleção
+  if (currentStep === WIZARD_STEPS.RESULTADO || currentStep === WIZARD_STEPS.SELECAO_ETAPAS) {
     return null;
   }
 

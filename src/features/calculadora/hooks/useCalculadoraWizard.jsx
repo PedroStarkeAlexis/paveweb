@@ -12,7 +12,11 @@ import { calcularNotaEtapa, calcularNotaFinal, calcularChances } from '../utils/
 
 const useCalculadoraWizard = () => {
     // --- ESTADO DO WIZARD ---
-    const [wizardStep, setWizardStep] = useState(WIZARD_STEPS.ETAPA_1);
+    const [wizardStep, setWizardStep] = useState(WIZARD_STEPS.SELECAO_ETAPAS);
+    
+    // --- NOVO: Estado para etapas selecionadas e fluxo dinâmico ---
+    const [selectedEtapas, setSelectedEtapas] = useState([]);
+    const [etapasFlow, setEtapasFlow] = useState([]);
 
     // --- ESTADOS DOS DADOS ---
     const [desempenho, setDesempenho] = useState({
@@ -106,6 +110,28 @@ const useCalculadoraWizard = () => {
 
     const handleCursoChange = useCallback((event) => {
         setSelecaoCurso({ cursoId: event.target.value });
+    }, []);
+
+    // --- NOVO: Handler para seleção de etapas ---
+    const handleEtapasSelectionChange = useCallback((etapas) => {
+        setSelectedEtapas(etapas);
+        
+        // Construir o fluxo dinâmico baseado nas etapas selecionadas
+        const newFlow = [];
+        
+        // Adicionar etapas PAVE selecionadas em ordem
+        if (etapas.includes(1)) newFlow.push(WIZARD_STEPS.ETAPA_1);
+        if (etapas.includes(2)) newFlow.push(WIZARD_STEPS.ETAPA_2);
+        if (etapas.includes(3)) {
+            newFlow.push(WIZARD_STEPS.ETAPA_3);
+            // Se Etapa 3 foi selecionada, incluir tela de redação
+            newFlow.push(WIZARD_STEPS.REDACAO);
+        }
+        
+        // Adicionar tela de seleção de curso
+        newFlow.push(WIZARD_STEPS.CURSO);
+        
+        setEtapasFlow(newFlow);
     }, []);
 
     // <<< NOVO useEffect PARA BUSCAR CURSOS >>>
@@ -205,6 +231,11 @@ const useCalculadoraWizard = () => {
     const isCurrentWizardStepValid = useCallback(() => {
         const etapaPAVE = wizardStep;
         switch (wizardStep) {
+            case WIZARD_STEPS.SELECAO_ETAPAS:
+                // Pelo menos uma etapa deve estar selecionada e não pode ser apenas Etapa 3
+                if (selectedEtapas.length === 0) return false;
+                if (selectedEtapas.length === 1 && selectedEtapas[0] === 3) return false;
+                return true;
             case WIZARD_STEPS.ETAPA_1:
             case WIZARD_STEPS.ETAPA_2:
             case WIZARD_STEPS.ETAPA_3:
@@ -219,7 +250,7 @@ const useCalculadoraWizard = () => {
             default:
                 return true;
         }
-    }, [wizardStep, desempenho, selecaoCurso.cursoId, validationErrors, getKeysForEtapa]);
+    }, [wizardStep, desempenho, selecaoCurso.cursoId, validationErrors, getKeysForEtapa, selectedEtapas]);
 
     // --- NAVEGAÇÃO DO WIZARD ---
     const handleProximaEtapa = useCallback(() => {
@@ -227,28 +258,55 @@ const useCalculadoraWizard = () => {
             console.warn("Tentou avançar etapa inválida:", wizardStep);
             return;
         }
+        
+        // Se estamos na tela de seleção de etapas, navegar para a primeira etapa selecionada
+        if (wizardStep === WIZARD_STEPS.SELECAO_ETAPAS) {
+            if (etapasFlow.length > 0) {
+                setWizardStep(etapasFlow[0]);
+            }
+            return;
+        }
+        
+        // Se estamos na seleção de curso, calcular resultados e ir para resultado
         if (wizardStep === WIZARD_STEPS.CURSO) {
             calcularResultadosFinais();
             setWizardStep(WIZARD_STEPS.RESULTADO);
-        } else if (wizardStep < WIZARD_STEPS.RESULTADO) {
-            setWizardStep(prev => prev + 1);
+            return;
         }
-    }, [wizardStep, isCurrentWizardStepValid, calcularResultadosFinais]);
+        
+        // Navegação dinâmica baseada no fluxo
+        const currentIndex = etapasFlow.indexOf(wizardStep);
+        if (currentIndex !== -1 && currentIndex < etapasFlow.length - 1) {
+            setWizardStep(etapasFlow[currentIndex + 1]);
+        }
+    }, [wizardStep, isCurrentWizardStepValid, calcularResultadosFinais, etapasFlow]);
 
     const handleEtapaAnterior = useCallback(() => {
-        if (wizardStep > WIZARD_STEPS.ETAPA_1) {
-            const etapaAnteriorNum = wizardStep - 1;
-            setWizardStep(etapaAnteriorNum);
-            const { errorKey } = getKeysForEtapa(etapaAnteriorNum);
-            if (validationErrors[errorKey]) {
-                setValidationErrors(prev => {
-                    const newState = { ...prev };
-                    delete newState[errorKey];
-                    return newState;
-                });
+        // Se estamos na primeira etapa do fluxo, voltar para seleção
+        if (etapasFlow.length > 0 && wizardStep === etapasFlow[0]) {
+            setWizardStep(WIZARD_STEPS.SELECAO_ETAPAS);
+            return;
+        }
+        
+        // Navegação dinâmica baseada no fluxo
+        const currentIndex = etapasFlow.indexOf(wizardStep);
+        if (currentIndex > 0) {
+            const etapaAnterior = etapasFlow[currentIndex - 1];
+            setWizardStep(etapaAnterior);
+            
+            // Limpar erros de validação da etapa anterior se for uma etapa PAVE
+            if (etapaAnterior >= WIZARD_STEPS.ETAPA_1 && etapaAnterior <= WIZARD_STEPS.ETAPA_3) {
+                const { errorKey } = getKeysForEtapa(etapaAnterior);
+                if (validationErrors[errorKey]) {
+                    setValidationErrors(prev => {
+                        const newState = { ...prev };
+                        delete newState[errorKey];
+                        return newState;
+                    });
+                }
             }
         }
-    }, [wizardStep, getKeysForEtapa, validationErrors]);
+    }, [wizardStep, getKeysForEtapa, validationErrors, etapasFlow]);
 
     // Determinar texto e estado do botão Próxima Etapa para passar aos componentes filhos
     const isNextStepDisabled = !isCurrentWizardStepValid();
@@ -257,6 +315,9 @@ const useCalculadoraWizard = () => {
     return {
         wizardStep,
         setWizardStep,
+        selectedEtapas,
+        etapasFlow,
+        handleEtapasSelectionChange,
         desempenho,
         handleDesempenhoChange,
         handleRedacaoChange,
