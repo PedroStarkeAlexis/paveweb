@@ -269,8 +269,8 @@
 }
 
 [data-theme="dark"] .wizard-option-button.selected {
-    /* mantém o estado selecionado visual forte caso queira sobrescrever */
-    border-color: rgb(173, 239, 122);
-    box-shadow: 0 4px 0 rgb(173, 239, 122);
-    background-color: rgb(218, 255, 189);
+    /* mantém o estado selecionado visual forte usando variáveis */
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 0 var(--button-selected-shadow);
+    background-color: var(--button-bg);
 }
