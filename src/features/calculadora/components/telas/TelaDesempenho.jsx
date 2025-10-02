@@ -9,21 +9,22 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
   const ignoradasKey = `ignoradasE${etapaNumero}`;
   const errorKey = `etapa${etapaNumero}`;
 
-  const handleIncrement = (tipo) => {
-    const key = tipo === 'acertos' ? acertosKey : ignoradasKey;
-    const currentValue = parseInt(values[key]) || 0;
+  // Handler for increment/decrement buttons
+  const handleIncrement = (campo) => {
+    const key = campo === 'acertos' ? acertosKey : ignoradasKey;
+    const currentValue = parseInt(values[key], 10) || 0;
     if (currentValue < TOTAL_QUESTOES) {
-      onChange(etapaNumero, tipo, String(currentValue + 1));
-      triggerVibration();
+      triggerVibration(1);
+      onChange(etapaNumero, campo, String(currentValue + 1));
     }
   };
 
-  const handleDecrement = (tipo) => {
-    const key = tipo === 'acertos' ? acertosKey : ignoradasKey;
-    const currentValue = parseInt(values[key]) || 0;
+  const handleDecrement = (campo) => {
+    const key = campo === 'acertos' ? acertosKey : ignoradasKey;
+    const currentValue = parseInt(values[key], 10) || 0;
     if (currentValue > 0) {
-      onChange(etapaNumero, tipo, String(currentValue - 1));
-      triggerVibration();
+      triggerVibration(1);
+      onChange(etapaNumero, campo, String(currentValue - 1));
     }
   };
 
@@ -37,15 +38,14 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
       <div className="wizard-buttons-container">
         <div className="wizard-input-group">
           <label htmlFor={acertosKey} className="wizard-input-label">Acertos</label>
-          <div className="wizard-input-with-controls">
-            <button 
+          <div className="wizard-input-with-buttons">
+            <button
               type="button"
-              className="wizard-control-button wizard-control-minus"
+              className="wizard-stepper-button"
               onClick={() => handleDecrement('acertos')}
-              disabled={!values[acertosKey] || values[acertosKey] <= 0}
               aria-label="Diminuir acertos"
             >
-              <span>−</span>
+              −
             </button>
             <input
               type="number"
@@ -60,29 +60,27 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
               aria-describedby={errors[errorKey] ? `${errorKey}-error` : undefined}
               className={`wizard-input-field ${errors[errorKey] ? 'wizard-input-error' : ''}`}
             />
-            <button 
+            <button
               type="button"
-              className="wizard-control-button wizard-control-plus"
+              className="wizard-stepper-button"
               onClick={() => handleIncrement('acertos')}
-              disabled={values[acertosKey] >= TOTAL_QUESTOES}
               aria-label="Aumentar acertos"
             >
-              <span>+</span>
+              +
             </button>
           </div>
         </div>
 
         <div className="wizard-input-group">
           <label htmlFor={ignoradasKey} className="wizard-input-label">I.R. (Ignoradas)</label>
-          <div className="wizard-input-with-controls">
-            <button 
+          <div className="wizard-input-with-buttons">
+            <button
               type="button"
-              className="wizard-control-button wizard-control-minus"
+              className="wizard-stepper-button"
               onClick={() => handleDecrement('ignoradas')}
-              disabled={!values[ignoradasKey] || values[ignoradasKey] <= 0}
               aria-label="Diminuir ignoradas"
             >
-              <span>−</span>
+              −
             </button>
             <input
               type="number"
@@ -97,14 +95,13 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
               aria-describedby={errors[errorKey] ? `${errorKey}-error` : undefined}
               className={`wizard-input-field ${errors[errorKey] ? 'wizard-input-error' : ''}`}
             />
-            <button 
+            <button
               type="button"
-              className="wizard-control-button wizard-control-plus"
+              className="wizard-stepper-button"
               onClick={() => handleIncrement('ignoradas')}
-              disabled={values[ignoradasKey] >= TOTAL_QUESTOES}
               aria-label="Aumentar ignoradas"
             >
-              <span>+</span>
+              +
             </button>
           </div>
         </div>
