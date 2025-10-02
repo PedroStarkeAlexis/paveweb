@@ -62,7 +62,7 @@
 
 /* Barra de Progresso - Estilo Flat ao Lado do Botão */
 .progress-bar {
-    height: 24px;
+    height: 16px;
     flex: 1;
     margin-right: 16px;
     background-color: var(--progress-bar-bg);
