@@ -54,19 +54,7 @@ function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error, onNe
         )}
       </div>
 
-      <div style={{ marginTop: '32px', textAlign: 'center', padding: '0 16px', width: '100%' }}>
-        <button
-          className="wizard-primary-button"
-          onClick={() => {
-            triggerVibration(10);
-            onNextStep();
-          }}
-          disabled={isNextStepDisabled || isLoading || !!error}
-        >
-          {nextStepText}
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>
-        </button>
-      </div>
+      {/* Primary action button is rendered globally in CalculadoraPage to avoid duplication */}
     </div>
   );
 }

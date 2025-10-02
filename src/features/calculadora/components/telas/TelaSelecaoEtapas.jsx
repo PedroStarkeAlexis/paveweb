@@ -69,19 +69,7 @@ function TelaSelecaoEtapas({ selectedEtapas, onSelectionChange, onNextStep, isNe
                 )}
             </div>
 
-            <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center', padding: '0 16px', width: '100%' }}>
-                <button
-                    className="wizard-primary-button"
-                    onClick={() => {
-                        triggerVibration(10);
-                        onNextStep();
-                    }}
-                    disabled={isNextStepDisabled}
-                    type="button"
-                >
-                    Continuar
-                </button>
-            </div>
+            {/* Primary action button is rendered globally in CalculadoraPage to avoid duplication */}
         </div>
     );
 }

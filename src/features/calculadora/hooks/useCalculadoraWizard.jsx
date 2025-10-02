@@ -310,7 +310,10 @@ const useCalculadoraWizard = () => {
 
     // Determinar texto e estado do botão Próxima Etapa para passar aos componentes filhos
     const isNextStepDisabled = !isCurrentWizardStepValid();
-    const nextStepText = wizardStep === WIZARD_STEPS.CURSO ? 'Simular agora' : 'Próxima etapa';
+    // Preserve per-screen button texts: "Continuar" on selection screen, "Simular agora" on curso, otherwise "Próxima etapa"
+    let nextStepText = 'Próxima etapa';
+    if (wizardStep === WIZARD_STEPS.CURSO) nextStepText = 'Simular agora';
+    else if (wizardStep === WIZARD_STEPS.SELECAO_ETAPAS) nextStepText = 'Continuar';
 
     return {
         wizardStep,

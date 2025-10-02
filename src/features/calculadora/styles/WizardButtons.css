@@ -92,6 +92,27 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* Fixed primary action at bottom, above bottom navigation */
+:root {
+    --bottom-nav-height: 60px; /* fallback value; can be overridden globalmente */
+}
+
+.wizard-primary-action-fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--bottom-nav-height) + 12px); /* 12px gap above nav */
+    display: flex;
+    justify-content: center;
+    padding: 0 16px; /* small horizontal safe area */
+    z-index: 1200; /* above nav (nav z-index:1000) */
+}
+
+/* Ensure the main wizard content can't be hidden behind the fixed action */
+.calc-wizard-container.with-fixed-action {
+    padding-bottom: calc(var(--bottom-nav-height) + 84px); /* space for button + margin */
+}
+
 .wizard-primary-button:hover {
     opacity: 0.9;
 }

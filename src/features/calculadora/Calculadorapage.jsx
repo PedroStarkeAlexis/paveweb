@@ -98,7 +98,7 @@ function CalculadoraPage() {
 
     // --- RENDERIZAÇÃO PRINCIPAL DO WIZARD ---
     return (
-        <div className="calc-wizard-container">
+        <div className="calc-wizard-container with-fixed-action">
             {wizardStep !== WIZARD_STEPS.RESULTADO && (
                 <div className="calc-wizard-header">
                     <button onClick={handleEtapaAnterior} className="calc-wizard-back-button" aria-label="Etapa anterior">
@@ -130,6 +130,21 @@ function CalculadoraPage() {
                     </button>
                 )}
             </div>
+
+            {/* Fixed primary action button (Continuar / Próxima etapa) - rendered globally */}
+            {wizardStep !== WIZARD_STEPS.RESULTADO && (
+                <div className="wizard-primary-action-fixed">
+                    <button
+                        className="wizard-primary-button"
+                        onClick={handleProximaEtapa}
+                        disabled={isNextStepDisabled}
+                        type="button"
+                    >
+                        {nextStepText || 'Continuar'}
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
