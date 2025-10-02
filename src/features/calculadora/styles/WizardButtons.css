@@ -32,11 +32,11 @@
     font-weight: 600;
     color: var(--button-text);
     background-color: var(--button-bg);
-    border: 2px solid var(--input-border);
+    border: 2px solid rgb(230, 229, 229);
     border-radius: 16px;
     cursor: pointer;
-    box-shadow: 0 4px 0 var(--button-shadow-color);
-    transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.2s ease;
+    box-shadow: 0 4px 0 rgb(230, 229, 229);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.2s ease, border-color 0.2s ease;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
@@ -58,9 +58,9 @@
 
 /* Estado Selecionado */
 .wizard-option-button.selected {
-    border-color: var(--accent-color);
-    box-shadow: 0 4px 0 var(--button-selected-shadow);
-    background-color: var(--button-bg);
+    border-color: rgb(173, 239, 122);
+    box-shadow: 0 4px 0 rgb(173, 239, 122);
+    background-color: rgb(218, 255, 189);
 }
 
 .wizard-option-button.selected:active {
