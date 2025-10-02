@@ -43,6 +43,7 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
               type="button"
               className="wizard-stepper-button"
               onClick={() => handleDecrement('acertos')}
+              disabled={!values[acertosKey] || values[acertosKey] <= 0}
               aria-label="Diminuir acertos"
             >
               −
@@ -64,6 +65,7 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
               type="button"
               className="wizard-stepper-button"
               onClick={() => handleIncrement('acertos')}
+              disabled={values[acertosKey] >= TOTAL_QUESTOES}
               aria-label="Aumentar acertos"
             >
               +
@@ -78,6 +80,7 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
               type="button"
               className="wizard-stepper-button"
               onClick={() => handleDecrement('ignoradas')}
+              disabled={!values[ignoradasKey] || values[ignoradasKey] <= 0}
               aria-label="Diminuir ignoradas"
             >
               −
@@ -99,6 +102,7 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
               type="button"
               className="wizard-stepper-button"
               onClick={() => handleIncrement('ignoradas')}
+              disabled={values[ignoradasKey] >= TOTAL_QUESTOES}
               aria-label="Aumentar ignoradas"
             >
               +

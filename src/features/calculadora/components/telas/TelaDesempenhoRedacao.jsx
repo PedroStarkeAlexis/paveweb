@@ -56,15 +56,15 @@ function TelaDesempenhoRedacao({ onChange, values, onNextStep, isNextStepDisable
         {incluirRedacao === true && (
           <div className="wizard-input-group" style={{ marginTop: '16px' }}>
             <label htmlFor="notaRedacao" className="wizard-input-label">Qual foi sua nota?</label>
-            <div className="wizard-input-with-controls">
+            <div className="wizard-input-with-buttons">
               <button 
                 type="button"
-                className="wizard-control-button wizard-control-minus"
+                className="wizard-stepper-button"
                 onClick={handleDecrement}
                 disabled={!notaRedacao || notaRedacao <= NOTA_MIN_REDAÇÃO}
                 aria-label="Diminuir nota"
               >
-                <span>−</span>
+                −
               </button>
               <input
                 type="number"
@@ -80,12 +80,12 @@ function TelaDesempenhoRedacao({ onChange, values, onNextStep, isNextStepDisable
               />
               <button 
                 type="button"
-                className="wizard-control-button wizard-control-plus"
+                className="wizard-stepper-button"
                 onClick={handleIncrement}
                 disabled={notaRedacao >= NOTA_MAX_REDAÇÃO}
                 aria-label="Aumentar nota"
               >
-                <span>+</span>
+                +
               </button>
             </div>
           </div>
