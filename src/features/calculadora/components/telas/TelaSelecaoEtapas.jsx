@@ -8,7 +8,7 @@ function TelaSelecaoEtapas({ selectedEtapas, onSelectionChange, onNextStep, isNe
     const [localSelection, setLocalSelection] = useState(selectedEtapas || []);
 
     const handleToggleEtapa = (etapaNum) => {
-        triggerVibration(10); // Vibração curta de 10ms
+        triggerVibration(3); // Vibração curta de 10ms
         let newSelection;
         if (localSelection.includes(etapaNum)) {
             // Remover etapa
@@ -33,7 +33,7 @@ function TelaSelecaoEtapas({ selectedEtapas, onSelectionChange, onNextStep, isNe
                 Quais etapas do PAVE você já realizou?
             </h2>
             <p className="calc-tela-subtitulo">
-                Selecione as etapas que você deseja simular (até 3)
+                .
             </p>
 
             <div className="wizard-buttons-container">
@@ -59,7 +59,7 @@ function TelaSelecaoEtapas({ selectedEtapas, onSelectionChange, onNextStep, isNe
                     onClick={() => handleToggleEtapa(3)}
                     type="button"
                 >
-                    Etapa 3 (Redação)
+                    Etapa 3
                 </button>
 
                 {localSelection.length === 1 && localSelection[0] === 3 && (
@@ -69,7 +69,7 @@ function TelaSelecaoEtapas({ selectedEtapas, onSelectionChange, onNextStep, isNe
                 )}
             </div>
 
-            <div style={{ marginTop: '32px', textAlign: 'center' }}>
+            <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center', padding: '0 16px', width: '100%' }}>
                 <button
                     className="wizard-primary-button"
                     onClick={() => {

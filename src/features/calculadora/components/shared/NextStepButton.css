@@ -13,7 +13,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-width: 180px;
+  width: 100%;
+  max-width: 400px;
   padding: 12px 25px;
   font-size: 1.05em;
   background-color: var(--brand-primary);
@@ -57,7 +58,7 @@
   }
   .calc-step-next-button {
     width: 100%;
-    max-width: 350px; /* Limita largura em mobile se necessário */
+    max-width: 400px; /* Mesma largura que os inputs */
     padding: 14px 20px;
     font-size: 1em;
   }

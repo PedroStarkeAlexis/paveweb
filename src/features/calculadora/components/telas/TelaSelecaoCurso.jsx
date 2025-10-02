@@ -54,7 +54,7 @@ function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error, onNe
         )}
       </div>
 
-      <div style={{ marginTop: '32px', textAlign: 'center' }}>
+      <div style={{ marginTop: '32px', textAlign: 'center', padding: '0 16px', width: '100%' }}>
         <button
           className="wizard-primary-button"
           onClick={() => {

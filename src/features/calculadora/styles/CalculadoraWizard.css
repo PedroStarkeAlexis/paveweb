@@ -93,12 +93,16 @@
 
 .calc-wizard-footer {
     padding-top: 25px; margin-top: auto; 
-    text-align: center; transition: border-color 0.3s ease; flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    transition: border-color 0.3s ease; flex-shrink: 0;
 }
 
 .calc-wizard-next-button {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    min-width: 180px; padding: 12px 25px; font-size: 1.05em; background-color: var(--brand-primary);
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 25px; font-size: 1.05em; background-color: var(--brand-primary);
     color: white; border: none; border-radius: 8px; cursor: pointer;
     transition: background-color 0.2s ease, opacity 0.3s ease, transform 0.1s ease; font-weight: 500;
 }
@@ -135,7 +139,7 @@
         height: 20px;
     }
     .progress-bar {
-        height: 6px;
+        height: 14px;
     }
     .calc-wizard-content { padding: 24px 12px; min-height: 200px; }
     .calc-wizard-footer { padding-top: 15px; }
