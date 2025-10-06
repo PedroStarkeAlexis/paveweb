@@ -20,11 +20,8 @@ const materiaEmojiMap = {
   'Língua Portuguesa': '✍️',
   Matemática: '➗',
   Química: '⚗️',
-  Sociologia: '🏛️',
-  Economia: '💹',
-  Artes: '🎨',
-  'Informática': '💻',
-  'Filosofia e Sociologia': '🤝'
+  Sociologia: '👥',
+
 };
 
 function getEmojiForMateria(materia) {
@@ -185,8 +182,7 @@ function QuickAccessTab({ onSelectFilter }) {
                 style={{ cursor: 'pointer' }}
               >
                 <div className="hub-carousel-link">
-                  <div className="hub-carousel-icon">📅</div>
-                  <h3>{ano}</h3>
+                  <div className="hub-carousel-year" style={{ fontSize: 28, fontWeight: 700 }}>{ano}</div>
                 </div>
               </motion.div>
             ))
