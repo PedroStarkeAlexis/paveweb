@@ -1,6 +1,6 @@
 // src/features/calculadora/CalculadoraPage.jsx
 import React, { useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import useCalculadoraWizard from './hooks/useCalculadoraWizard';
 
 // --- COMPONENTES DAS TELAS ---
@@ -16,9 +16,9 @@ import './styles/CalculadoraWizard.css';
 
 // --- DEFINIÇÕES DA ANIMAÇÃO ---
 const slideVariants = {
-    hidden: { y: '50%', opacity: 0, transition: { type: 'tween', duration: 0.3, ease: 'easeOut' } },
-    visible: { y: 0, opacity: 1, transition: { type: 'tween', duration: 0.3, ease: 'easeOut' } },
-    exit: { y: '-50%', opacity: 0, position: 'absolute', width: '100%', transition: { type: 'tween', duration: 0.3, ease: 'easeIn' } }
+    hidden: { x: '100%', opacity: 0, transition: { type: 'tween', duration: 0.3, ease: 'easeOut' } },
+    visible: { x: 0, opacity: 1, transition: { type: 'tween', duration: 0.3, ease: 'easeOut' } },
+    exit: { x: '-100%', opacity: 0, position: 'absolute', width: '100%', transition: { type: 'tween', duration: 0.3, ease: 'easeIn' } }
 };
 
 
@@ -120,6 +120,21 @@ function CalculadoraPage() {
                         style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
                         {renderCurrentStep()}
+                        
+                        {/* Continue button now inside animated container */}
+                        {wizardStep !== WIZARD_STEPS.RESULTADO && (
+                            <div className="wizard-primary-action-fixed">
+                                <button
+                                    className="wizard-primary-button"
+                                    onClick={handleProximaEtapa}
+                                    disabled={isNextStepDisabled}
+                                    type="button"
+                                >
+                                    {nextStepText || 'Continuar'}
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>
+                                </button>
+                            </div>
+                        )}
                     </motion.div>
                 </AnimatePresence>
             </div>
@@ -130,21 +145,6 @@ function CalculadoraPage() {
                     </button>
                 )}
             </div>
-
-            {/* Fixed primary action button (Continuar / Próxima etapa) - rendered globally */}
-            {wizardStep !== WIZARD_STEPS.RESULTADO && (
-                <div className="wizard-primary-action-fixed">
-                    <button
-                        className="wizard-primary-button"
-                        onClick={handleProximaEtapa}
-                        disabled={isNextStepDisabled}
-                        type="button"
-                    >
-                        {nextStepText || 'Continuar'}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>
-                    </button>
-                </div>
-            )}
         </div>
     );
 }
