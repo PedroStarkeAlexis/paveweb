@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Importar motion
+import { motion } from 'motion/react'; // Importar motion
 import './HomePage.css';
 
 const IconWrapper = ({ children, label }) => (
