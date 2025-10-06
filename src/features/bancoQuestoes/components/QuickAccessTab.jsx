@@ -8,6 +8,38 @@ const cardVariants = {
   tap: { scale: 0.98 }
 };
 
+// Mapeamento de matérias para emojis — editar/adicionar conforme necessário
+const materiaEmojiMap = {
+  Biologia: '🧬',
+  Filosofia: '🧠',
+  Física: '⚛️',
+  Geografia: '🗺️',
+  História: '🏺',
+  'Literatura Brasileira': '📚',
+  'Língua Estrangeira': '🗣️',
+  'Língua Portuguesa': '✍️',
+  Matemática: '➗',
+  Química: '⚗️',
+  Sociologia: '🏛️',
+  Economia: '💹',
+  Artes: '🎨',
+  'Informática': '💻',
+  'Filosofia e Sociologia': '🤝'
+};
+
+function getEmojiForMateria(materia) {
+  if (!materia) return '📘';
+  // procura correspondência exata
+  if (materiaEmojiMap[materia]) return materiaEmojiMap[materia];
+  // procura correspondências parciais (ex: "Matemática Avançada" -> Matemática)
+  const lower = materia.toLowerCase();
+  for (const key of Object.keys(materiaEmojiMap)) {
+    if (lower.includes(key.toLowerCase())) return materiaEmojiMap[key];
+  }
+  // fallback aleatório/neutral
+  return '📚';
+}
+
 function QuickAccessTab({ onSelectFilter }) {
   const [filterOptions, setFilterOptions] = useState({ materias: [], anos: [], etapas: [] });
   const [isLoading, setIsLoading] = useState(true);
@@ -93,7 +125,7 @@ function QuickAccessTab({ onSelectFilter }) {
                 style={{ cursor: 'pointer' }}
               >
                 <div className="hub-carousel-link">
-                  <div className="hub-carousel-icon">📚</div>
+                  <div className="hub-carousel-icon">{getEmojiForMateria(materia)}</div>
                   <h3>{materia}</h3>
                 </div>
               </motion.div>
