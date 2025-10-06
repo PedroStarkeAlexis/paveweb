@@ -11,10 +11,10 @@ const cardVariants = {
 // Mapeamento de matérias para emojis — editar/adicionar conforme necessário
 const materiaEmojiMap = {
   Biologia: '🧬',
-  Filosofia: '🧠',
+  Filosofia: '🤔',
   Física: '⚛️',
   Geografia: '🗺️',
-  História: '🏺',
+  História: '🏛️',
   'Literatura Brasileira': '📚',
   'Língua Estrangeira': '🗣️',
   'Língua Portuguesa': '✍️',
@@ -35,6 +35,14 @@ function getEmojiForMateria(materia) {
   }
   // fallback aleatório/neutral
   return '📚';
+}
+
+function ordinalize(number) {
+  // recebe string ou número; tenta parse
+  const n = typeof number === 'number' ? number : parseInt(String(number).replace(/[^0-9]/g, ''), 10);
+  if (Number.isNaN(n)) return String(number);
+  // para português, 1ª, 2ª, 3ª, 4ª ... (todas no feminino 'etapa')
+  return `${n}ª`;
 }
 
 function QuickAccessTab({ onSelectFilter }) {
@@ -151,9 +159,9 @@ function QuickAccessTab({ onSelectFilter }) {
                 onClick={() => handleEtapaClick(etapa)}
                 style={{ cursor: 'pointer' }}
               >
-                <div className="hub-carousel-link">
-                  <div className="hub-carousel-icon">🎯</div>
-                  <h3>{etapa}</h3>
+                <div className="hub-carousel-link" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                  <div className="hub-carousel-ordinal" style={{ fontSize: 28, fontWeight: 700 }}>{ordinalize(etapa)}</div>
+                  <div className="hub-carousel-ordinal-label" style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Etapa</div>
                 </div>
               </motion.div>
             ))
