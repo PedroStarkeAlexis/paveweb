@@ -231,7 +231,7 @@ function App() {
     }, []);
 
     const bottomNavItems = [
-        { to: "/", icon: IconHome, label: "Início" },
+        // { to: "/", icon: IconHome, label: "Início" },
         { to: "/calculadora", icon: IconCalculator, label: "Calculadora" },
         { to: "/chat", icon: IconChat, label: "Chat IA" },
         { to: "/banco-questoes", icon: IconBook, label: "Questões" },
@@ -260,7 +260,7 @@ function App() {
                 </div>
                 <nav className="sidebar-nav">
                     <ul>
-                        {/* <NavLink to="/" icon={IconHome}>Início</NavLink> */}
+                        <NavLink to="/" icon={IconHome}>Início</NavLink>
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
                         <NavLink to="/chat" icon={IconChat}>Assistente IA</NavLink>
