@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import QuestionLayout from '../../../components/common/QuestionLayout';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import './QuestionCarousel.css';
 
 const IconChevronLeft = (props) => (

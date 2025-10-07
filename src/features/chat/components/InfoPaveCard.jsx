@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom'; // Renomeado para evitar conflito se houver
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import IconDocumentText from '../../../components/icons/IconDocumentText';
 import './InfoPaveCard.css'; // Usaremos este CSS atualizado
 
