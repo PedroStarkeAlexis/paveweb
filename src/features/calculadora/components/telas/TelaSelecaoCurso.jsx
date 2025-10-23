@@ -15,7 +15,7 @@ function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error, onNe
     const term = searchTerm.toLowerCase().trim();
     return cursos.filter(curso => 
       curso.nome.toLowerCase().includes(term) || 
-      curso.tipo.toLowerCase().includes(term)
+      (curso.tipo && curso.tipo.toLowerCase().includes(term))
     );
   }, [cursos, searchTerm]);
 
@@ -73,16 +73,16 @@ function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error, onNe
         ) : (
           <div className="curso-grid-container">
             <div className="curso-grid">
-              {sortedCursos.map((curso) => (
+              {sortedCursos.map((curso, index) => (
                 <button
-                  key={curso.id}
+                  key={`${curso.id}-${index}`}
                   className={`curso-card ${selectedId === curso.id ? 'selected' : ''}`}
                   onClick={() => handleCursoClick(curso.id)}
                   type="button"
                 >
                   <div className="curso-card-content">
                     <h3 className="curso-card-nome">{curso.nome}</h3>
-                    <span className="curso-card-turno">{curso.tipo}</span>
+                    <span className="curso-card-turno">{curso.tipo || 'N/D'}</span>
                   </div>
                   {selectedId === curso.id && (
                     <div className="curso-card-check">✓</div>
