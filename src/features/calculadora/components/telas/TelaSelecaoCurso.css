@@ -2,11 +2,289 @@
 
 .calc-tela-selecao-curso {
     width: 100%;
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* Estilos específicos da tela foram movidos para WizardButtons.css */
+/* Container Principal */
+.curso-selection-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 16px;
+}
+
+/* Campo de Busca */
+.curso-search-box {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.curso-search-input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1rem;
+    color: var(--input-text);
+    background-color: var(--input-bg);
+    border: 2px solid var(--input-border);
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.curso-search-input:focus {
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 3px rgba(16, 163, 127, 0.1);
+}
+
+.curso-search-input::placeholder {
+    color: var(--calculator-text-secondary);
+    opacity: 0.7;
+}
+
+.curso-search-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Container do Grid com Scroll */
+.curso-grid-container {
+    width: 100%;
+    max-height: 450px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-secondary) transparent;
+    border-radius: 8px;
+}
+
+.curso-grid-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.curso-grid-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.curso-grid-container::-webkit-scrollbar-thumb {
+    background-color: var(--border-secondary);
+    border-radius: 4px;
+}
+
+.curso-grid-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--border-primary);
+}
+
+/* Grid de Cursos */
+.curso-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+/* Card de Curso (Estilo Duolingo) */
+.curso-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 18px;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--button-text);
+    background-color: var(--button-bg);
+    border: 2px solid var(--input-border);
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 3px 0 var(--input-border);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.2s ease, border-color 0.2s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.curso-card:hover:not(.selected) {
+    background-color: var(--button-hover-bg);
+    border-color: var(--border-primary);
+}
+
+.curso-card:active {
+    transform: translateY(3px);
+    box-shadow: none;
+}
+
+/* Card Selecionado */
+.curso-card.selected {
+    border-color: var(--accent-color);
+    box-shadow: 0 3px 0 var(--accent-color);
+    background-color: rgba(16, 163, 127, 0.08);
+}
+
+[data-theme="dark"] .curso-card.selected {
+    background-color: rgba(16, 185, 129, 0.15);
+    border-color: var(--accent-color);
+}
+
+.curso-card.selected:active {
+    transform: translateY(3px);
+    box-shadow: none;
+}
+
+/* Conteúdo do Card */
+.curso-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.curso-card-nome {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--calculator-text-primary);
+    margin: 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.curso-card-turno {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--calculator-text-secondary);
+    text-transform: capitalize;
+}
+
+/* Check mark no card selecionado */
+.curso-card-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-left: 12px;
+}
+
+/* Estados de Loading/Error/Empty */
+.curso-loading,
+.curso-error,
+.curso-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--calculator-text-secondary);
+    min-height: 200px;
+}
+
+.curso-loading .hub-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--progress-bar-bg);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.curso-loading p,
+.curso-error p,
+.curso-empty p {
+    margin: 8px 0 0 0;
+    font-size: 0.95rem;
+    color: var(--calculator-text-secondary);
+}
+
+.curso-error p {
+    color: var(--error-primary);
+}
+
+/* Dark Mode */
+[data-theme="dark"] .curso-search-input {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+}
+
+[data-theme="dark"] .curso-card {
+    background-color: var(--button-bg);
+    border-color: var(--input-border);
+    box-shadow: 0 3px 0 var(--input-border);
+}
+
+[data-theme="dark"] .curso-card:hover:not(.selected) {
+    background-color: var(--button-hover-bg);
+}
+
+[data-theme="dark"] .curso-card:active {
+    box-shadow: none;
+}
+
+[data-theme="dark"] .curso-card.selected:active {
+    box-shadow: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .curso-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .curso-grid-container {
+        max-height: 400px;
+    }
+    
+    .curso-card {
+        padding: 14px 16px;
+    }
+    
+    .curso-card-nome {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .curso-selection-container {
+        padding: 0 12px;
+    }
+    
+    .curso-grid-container {
+        max-height: 350px;
+    }
+    
+    .curso-card {
+        padding: 12px 14px;
+    }
+    
+    .curso-card-nome {
+        font-size: 0.85rem;
+    }
+    
+    .curso-card-turno {
+        font-size: 0.75rem;
+    }
+}

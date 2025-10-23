@@ -31,7 +31,7 @@ function CourseInfoCard({ curso, chances }) {
         return <div className="calc-course-card error"><p>Informações do curso não disponíveis.</p></div>;
     }
 
-    const { nome = 'Curso não informado', notaCorte = null, turno = 'N/D' } = curso;
+    const { nome = 'Curso não informado', notaCorte = null } = curso;
     const chancesFormatadas = chances || 'Indeterminadas';
     const chancesClass = `chances-${chancesFormatadas.toLowerCase()}`;
 
@@ -53,10 +53,6 @@ function CourseInfoCard({ curso, chances }) {
                 <div className="calc-course-detail-item">
                     <span className="calc-detail-label"><IconCalendar /> Nota de Corte</span>
                     <span className="calc-detail-value">{notaCorte !== null ? notaCorte.toFixed(1) : 'N/D'}</span> {/* 1 decimal */}
-                </div>
-                <div className="calc-course-detail-item">
-                    <span className="calc-detail-label"><IconClock /> Turno</span>
-                    <span className="calc-detail-value">{turno}</span>
                 </div>
                 <div className="calc-course-detail-item">
                     <span className="calc-detail-label">Suas Chances</span>
