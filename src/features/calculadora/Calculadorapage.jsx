@@ -120,24 +120,24 @@ function CalculadoraPage() {
                         style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
                         {renderCurrentStep()}
+                        
+                        {/* Continue button now inside animated container */}
+                        {wizardStep !== WIZARD_STEPS.RESULTADO && (
+                            <div className="wizard-primary-action-fixed">
+                                <button
+                                    className="wizard-primary-button"
+                                    onClick={handleProximaEtapa}
+                                    disabled={isNextStepDisabled}
+                                    type="button"
+                                >
+                                    {nextStepText || 'Continuar'}
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>
+                                </button>
+                            </div>
+                        )}
                     </motion.div>
                 </AnimatePresence>
             </div>
-            
-            {/* Continue button now OUTSIDE animated container to prevent jumping */}
-            {wizardStep !== WIZARD_STEPS.RESULTADO && (
-                <div className="wizard-primary-action-fixed">
-                    <button
-                        className="wizard-primary-button"
-                        onClick={handleProximaEtapa}
-                        disabled={isNextStepDisabled}
-                        type="button"
-                    >
-                        {nextStepText || 'Continuar'}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /> </svg>
-                    </button>
-                </div>
-            )}
             <div className="calc-wizard-footer">
                 {wizardStep === WIZARD_STEPS.RESULTADO && (
                     <button className="calc-wizard-next-button" onClick={() => setWizardStep(WIZARD_STEPS.ETAPA_1)} >
