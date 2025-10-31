@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SavedQuestionsContext } from "../contexts/SavedQuestionsContext";
+import { SavedQuestionsContext } from "../contexts/SavedQuestionsContext.js";
 
 export const useSavedQuestions = () => {
   const context = useContext(SavedQuestionsContext);
