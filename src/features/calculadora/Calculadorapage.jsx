@@ -131,7 +131,7 @@ function CalculadoraPage() {
                 <div className="wizard-primary-action-fixed">
                     <button
                         className="wizard-primary-button"
-                        onClick={handleProximaEtapa}
+                        onClick={() => handleProximaEtapa(cursosDisponiveis)}
                         disabled={isNextStepDisabled}
                         type="button"
                     >

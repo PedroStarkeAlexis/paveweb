@@ -254,6 +254,7 @@ const useCalculadoraWizard = () => {
 
     // --- CALCULAR RESULTADOS FINAIS ---
     const calcularResultadosFinais = useCallback((cursosDisponiveis) => {
+        const listaCursos = Array.isArray(cursosDisponiveis) ? cursosDisponiveis : [];
         const notasCalculadas = state.resultados.notasEtapas;
         const incluirRedacaoFinal = state.desempenho.incluirRedacao;
         const notaRedacaoValida = incluirRedacaoFinal
@@ -264,7 +265,7 @@ const useCalculadoraWizard = () => {
         const notaFinalNum = parseFloat(notaFinalCalculada);
 
         // Busca informações do curso selecionado
-        const cursoInfo = cursosDisponiveis.find(c => c.id === state.selecaoCurso.cursoId) || null;
+        const cursoInfo = listaCursos.find(c => c.id === state.selecaoCurso.cursoId) || null;
         let chancesCalculadas = null;
         if (cursoInfo) {
             chancesCalculadas = calcularChances(notaFinalNum, cursoInfo.notaCorte);
