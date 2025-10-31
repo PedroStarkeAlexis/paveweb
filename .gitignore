@@ -39,9 +39,3 @@ Thumbs.db
 *.swo
 *.sublime-*
 
-# Old files
-README_OLD.md
-
-# Separate uploader project
-uploader/
-uploader.js
