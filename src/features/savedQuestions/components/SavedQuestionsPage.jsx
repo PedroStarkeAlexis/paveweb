@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSavedQuestions } from '../../../hooks/useSavedQuestions';
 import QuestionLayout from '../../../components/common/QuestionLayout';
+import QuestionList from '../../bancoQuestoes/components/QuestionList';
 import './SavedQuestionsPage.css'; // Criaremos este CSS
 
 // Objeto da questão de exemplo para desenvolvimento
@@ -92,9 +93,13 @@ function SavedQuestionsPage() {
       );
     }
     if (savedQuestionsData.length > 0) {
-      return savedQuestionsData.map((question) => (
-        <QuestionLayout key={question.id} questionData={question} />
-      ));
+      return (
+        <QuestionList
+          questions={savedQuestionsData}
+          containerClassName="saved-questions-items"
+          emptyMessage="Não foi possível encontrar questões salvas."
+        />
+      );
     }
     if (savedQuestionIds.length > 0 && !isLoading) {
       return <div className="saved-questions-message">Não foi possível encontrar os dados completos das questões salvas. Tente novamente mais tarde.</div>;

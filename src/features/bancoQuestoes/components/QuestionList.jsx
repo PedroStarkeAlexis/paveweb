@@ -1,17 +1,28 @@
 import React from 'react';
-import QuestionLayout from '../../../components/common/QuestionLayout'; // Caminho para pasta comum
+import QuestionLayout from '../../../components/common/QuestionLayout';
 
-function QuestionList({ questions }) { // Recebe a lista filtrada
+/**
+ * Componente reutilizável para renderizar uma lista de questões
+ * Centraliza a lógica de iteração e renderização de questões
+ * 
+ * @param {Object} props
+ * @param {Array} props.questions - Array de questões a serem renderizadas
+ * @param {string} [props.emptyMessage] - Mensagem customizada quando não há questões
+ * @param {string} [props.containerClassName] - Classe CSS customizada para o container
+ */
+function QuestionList({ questions, emptyMessage = 'Nenhuma questão encontrada.', containerClassName = 'question-list-container' }) {
     if (!questions || questions.length === 0) {
-        return <p className="no-results-message">Nenhuma questão encontrada com os filtros selecionados.</p>;
+        return <p className="no-results-message">{emptyMessage}</p>;
     }
 
     return (
-        // Pode voltar a usar um container simples ou o ID que tinha antes
-        <div className="question-list-container">
+        <div className={containerClassName}>
             {questions.map((question, index) => (
-                // Renderiza QuestionLayout para cada questão na lista filtrada
-                <QuestionLayout key={question.id || `q-${index}`} questionData={question} />
+                <QuestionLayout 
+                    key={question.id || `question-${index}`} 
+                    questionData={question} 
+                    itemProva={question} 
+                />
             ))}
         </div>
     );

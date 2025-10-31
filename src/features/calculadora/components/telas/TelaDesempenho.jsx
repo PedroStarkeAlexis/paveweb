@@ -1,6 +1,6 @@
 import React from 'react';
 import { TOTAL_QUESTOES } from '../../constants';
-import { triggerVibration } from '../../../../utils/vibration';
+import StepperInput from '../shared/StepperInput';
 import '../../styles/WizardButtons.css';
 import './TelaDesempenho.css';
 
@@ -9,22 +9,32 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
   const ignoradasKey = `ignoradasE${etapaNumero}`;
   const errorKey = `etapa${etapaNumero}`;
 
-  // Handler for increment/decrement buttons
-  const handleIncrement = (campo) => {
-    const key = campo === 'acertos' ? acertosKey : ignoradasKey;
-    const currentValue = parseInt(values[key], 10) || 0;
+  // Handlers for increment/decrement
+  const handleAcertosIncrement = () => {
+    const currentValue = parseInt(values[acertosKey], 10) || 0;
     if (currentValue < TOTAL_QUESTOES) {
-      triggerVibration(1);
-      onChange(etapaNumero, campo, String(currentValue + 1));
+      onChange(etapaNumero, 'acertos', String(currentValue + 1));
     }
   };
 
-  const handleDecrement = (campo) => {
-    const key = campo === 'acertos' ? acertosKey : ignoradasKey;
-    const currentValue = parseInt(values[key], 10) || 0;
+  const handleAcertosDecrement = () => {
+    const currentValue = parseInt(values[acertosKey], 10) || 0;
     if (currentValue > 0) {
-      triggerVibration(1);
-      onChange(etapaNumero, campo, String(currentValue - 1));
+      onChange(etapaNumero, 'acertos', String(currentValue - 1));
+    }
+  };
+
+  const handleIgnoradasIncrement = () => {
+    const currentValue = parseInt(values[ignoradasKey], 10) || 0;
+    if (currentValue < TOTAL_QUESTOES) {
+      onChange(etapaNumero, 'ignoradas', String(currentValue + 1));
+    }
+  };
+
+  const handleIgnoradasDecrement = () => {
+    const currentValue = parseInt(values[ignoradasKey], 10) || 0;
+    if (currentValue > 0) {
+      onChange(etapaNumero, 'ignoradas', String(currentValue - 1));
     }
   };
 
@@ -36,79 +46,33 @@ function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isN
       </p>
 
       <div className="wizard-buttons-container">
-        <div className="wizard-input-group">
-          <label htmlFor={acertosKey} className="wizard-input-label">Acertos</label>
-          <div className="wizard-input-with-buttons">
-            <button
-              type="button"
-              className="wizard-stepper-button"
-              onClick={() => handleDecrement('acertos')}
-              disabled={!values[acertosKey] || values[acertosKey] <= 0}
-              aria-label="Diminuir acertos"
-            >
-              −
-            </button>
-            <input
-              type="number"
-              id={acertosKey}
-              name={acertosKey}
-              value={values[acertosKey]}
-              onChange={(e) => onChange(etapaNumero, 'acertos', e.target.value)}
-              min="0"
-              max={TOTAL_QUESTOES}
-              placeholder="0"
-              aria-invalid={!!errors[errorKey]}
-              aria-describedby={errors[errorKey] ? `${errorKey}-error` : undefined}
-              className={`wizard-input-field ${errors[errorKey] ? 'wizard-input-error' : ''}`}
-            />
-            <button
-              type="button"
-              className="wizard-stepper-button"
-              onClick={() => handleIncrement('acertos')}
-              disabled={values[acertosKey] >= TOTAL_QUESTOES}
-              aria-label="Aumentar acertos"
-            >
-              +
-            </button>
-          </div>
-        </div>
+        <StepperInput
+          label="Acertos"
+          id={acertosKey}
+          name={acertosKey}
+          value={values[acertosKey]}
+          onChange={(e) => onChange(etapaNumero, 'acertos', e.target.value)}
+          onIncrement={handleAcertosIncrement}
+          onDecrement={handleAcertosDecrement}
+          min={0}
+          max={TOTAL_QUESTOES}
+          hasError={!!errors[errorKey]}
+          ariaDescribedBy={errors[errorKey] ? `${errorKey}-error` : undefined}
+        />
 
-        <div className="wizard-input-group">
-          <label htmlFor={ignoradasKey} className="wizard-input-label">I.R. (Ignoradas)</label>
-          <div className="wizard-input-with-buttons">
-            <button
-              type="button"
-              className="wizard-stepper-button"
-              onClick={() => handleDecrement('ignoradas')}
-              disabled={!values[ignoradasKey] || values[ignoradasKey] <= 0}
-              aria-label="Diminuir ignoradas"
-            >
-              −
-            </button>
-            <input
-              type="number"
-              id={ignoradasKey}
-              name={ignoradasKey}
-              value={values[ignoradasKey]}
-              onChange={(e) => onChange(etapaNumero, 'ignoradas', e.target.value)}
-              min="0"
-              max={TOTAL_QUESTOES}
-              placeholder="0"
-              aria-invalid={!!errors[errorKey]}
-              aria-describedby={errors[errorKey] ? `${errorKey}-error` : undefined}
-              className={`wizard-input-field ${errors[errorKey] ? 'wizard-input-error' : ''}`}
-            />
-            <button
-              type="button"
-              className="wizard-stepper-button"
-              onClick={() => handleIncrement('ignoradas')}
-              disabled={values[ignoradasKey] >= TOTAL_QUESTOES}
-              aria-label="Aumentar ignoradas"
-            >
-              +
-            </button>
-          </div>
-        </div>
+        <StepperInput
+          label="I.R. (Ignoradas)"
+          id={ignoradasKey}
+          name={ignoradasKey}
+          value={values[ignoradasKey]}
+          onChange={(e) => onChange(etapaNumero, 'ignoradas', e.target.value)}
+          onIncrement={handleIgnoradasIncrement}
+          onDecrement={handleIgnoradasDecrement}
+          min={0}
+          max={TOTAL_QUESTOES}
+          hasError={!!errors[errorKey]}
+          ariaDescribedBy={errors[errorKey] ? `${errorKey}-error` : undefined}
+        />
 
         {errors[errorKey] && (
           <p id={`${errorKey}-error`} className="wizard-error-message" role="alert">

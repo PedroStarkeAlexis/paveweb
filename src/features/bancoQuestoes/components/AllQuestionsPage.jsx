@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import QuestionLayout from '../../../components/common/QuestionLayout';
+import QuestionList from './QuestionList';
 import FiltersDesktop from './FiltersDesktop';
 import FilterModalMobile from './FilterModalMobile';
 import useWindowSize from '../../../hooks/useWindowSize';
+import useQuestionSearch from '../hooks/useQuestionSearch';
 import './AllQuestionsPage.css';
 
 function AllQuestionsPage({ initialFilters = {} }) {
-  const [questions, setQuestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [hasSearched, setHasSearched] = useState(false);
   const [filterOptions, setFilterOptions] = useState({ materias: [], anos: [], etapas: [] });
   const [filters, setFilters] = useState({ query: '', materia: null, ano: null, etapa: null });
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  
+  // Hook customizado para gerenciar a busca de questões
+  const { questions, isLoading, error, hasSearched, performSearch } = useQuestionSearch(filters);
   
   const { width } = useWindowSize();
   const isMobile = width < 768;
@@ -42,49 +42,6 @@ function AllQuestionsPage({ initialFilters = {} }) {
     };
     fetchFilterOptions();
   }, []);
-
-  // Função para realizar a busca
-  const performSearch = async (searchFilters) => {
-    setIsLoading(true);
-    setError(null);
-    setHasSearched(true);
-
-    try {
-      const params = new URLSearchParams();
-      if (searchFilters.query) params.append('query', searchFilters.query);
-      if (searchFilters.materia) params.append('materia', searchFilters.materia);
-      if (searchFilters.ano) params.append('ano', searchFilters.ano);
-      if (searchFilters.etapa) params.append('etapa', searchFilters.etapa);
-      
-      // Adicionar limite de 100 questões para evitar paginação
-      params.append('limit', '100');
-
-      const response = await fetch(`/api/search-questions?${params.toString()}`);
-      if (!response.ok) throw new Error('Falha ao buscar questões');
-      
-      const data = await response.json();
-      setQuestions(data.questions || []);
-    } catch (err) {
-      console.error('Erro ao buscar questões:', err);
-      setError(err.message);
-      setQuestions([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Disparar busca quando os filtros mudarem (mas apenas se houver algum filtro ativo)
-  useEffect(() => {
-    const hasActiveFilters = filters.query || filters.materia || filters.ano || filters.etapa;
-    
-    if (hasActiveFilters) {
-      const debounceTimer = setTimeout(() => {
-        performSearch(filters);
-      }, 500); // Debounce de 500ms para evitar muitas requisições
-
-      return () => clearTimeout(debounceTimer);
-    }
-  }, [filters]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
@@ -140,13 +97,11 @@ function AllQuestionsPage({ initialFilters = {} }) {
       <div className="results-summary">
         {questions.length} {questions.length === 1 ? 'questão encontrada' : 'questões encontradas'}
       </div>
-      <div className="questions-list">
-        {questions.map((question, index) => (
-          <div key={question.id || `question-${index}`} className="question-item">
-            <QuestionLayout itemProva={question} />
-          </div>
-        ))}
-      </div>
+      <QuestionList
+        questions={questions}
+        containerClassName="questions-list"
+        emptyMessage="Nenhuma questão encontrada com os filtros selecionados."
+      />
     </>
   );
 

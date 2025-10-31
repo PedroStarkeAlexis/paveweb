@@ -2,6 +2,7 @@
 import React from 'react';
 import { NOTA_MIN_REDAÇÃO, NOTA_MAX_REDAÇÃO } from '../../constants';
 import { triggerVibration } from '../../../../utils/vibration';
+import StepperInput from '../shared/StepperInput';
 import '../../styles/WizardButtons.css';
 import './TelaDesempenhoRedacao.css';
 
@@ -10,20 +11,14 @@ function TelaDesempenhoRedacao({ onChange, values, onNextStep, isNextStepDisable
 
   const handleIncrement = () => {
     const currentValue = parseFloat(notaRedacao) || 0;
-    if (currentValue < NOTA_MAX_REDAÇÃO) {
-      const newValue = Math.min(currentValue + 0.5, NOTA_MAX_REDAÇÃO);
-      onChange('notaRedacao', String(newValue));
-      triggerVibration();
-    }
+    const newValue = Math.min(currentValue + 0.5, NOTA_MAX_REDAÇÃO);
+    onChange('notaRedacao', String(newValue));
   };
 
   const handleDecrement = () => {
     const currentValue = parseFloat(notaRedacao) || 0;
-    if (currentValue > NOTA_MIN_REDAÇÃO) {
-      const newValue = Math.max(currentValue - 0.5, NOTA_MIN_REDAÇÃO);
-      onChange('notaRedacao', String(newValue));
-      triggerVibration();
-    }
+    const newValue = Math.max(currentValue - 0.5, NOTA_MIN_REDAÇÃO);
+    onChange('notaRedacao', String(newValue));
   };
 
   return (
@@ -54,41 +49,19 @@ function TelaDesempenhoRedacao({ onChange, values, onNextStep, isNextStepDisable
         </button>
 
         {incluirRedacao === true && (
-          <div className="wizard-input-group" style={{ marginTop: '16px' }}>
-            <label htmlFor="notaRedacao" className="wizard-input-label">Qual foi sua nota?</label>
-            <div className="wizard-input-with-buttons">
-              <button 
-                type="button"
-                className="wizard-stepper-button"
-                onClick={handleDecrement}
-                disabled={!notaRedacao || notaRedacao <= NOTA_MIN_REDAÇÃO}
-                aria-label="Diminuir nota"
-              >
-                −
-              </button>
-              <input
-                type="number"
-                id="notaRedacao"
-                name="notaRedacao"
-                value={notaRedacao}
-                onChange={(e) => onChange('notaRedacao', e.target.value)}
-                min={NOTA_MIN_REDAÇÃO}
-                max={NOTA_MAX_REDAÇÃO}
-                step="0.1"
-                placeholder="Digite sua nota"
-                className="wizard-input-field"
-              />
-              <button 
-                type="button"
-                className="wizard-stepper-button"
-                onClick={handleIncrement}
-                disabled={notaRedacao >= NOTA_MAX_REDAÇÃO}
-                aria-label="Aumentar nota"
-              >
-                +
-              </button>
-            </div>
-          </div>
+          <StepperInput
+            label="Qual foi sua nota?"
+            id="notaRedacao"
+            name="notaRedacao"
+            value={notaRedacao}
+            onChange={(e) => onChange('notaRedacao', e.target.value)}
+            onIncrement={handleIncrement}
+            onDecrement={handleDecrement}
+            min={NOTA_MIN_REDAÇÃO}
+            max={NOTA_MAX_REDAÇÃO}
+            step="0.1"
+            placeholder="Digite sua nota"
+          />
         )}
 
         {incluirRedacao === false && (

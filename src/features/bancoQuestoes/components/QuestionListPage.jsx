@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import QuestionLayout from '../../../components/common/QuestionLayout';
+import QuestionList from './QuestionList';
 import './QuestionListPage.css';
 
 function QuestionListPage() {
@@ -116,13 +116,11 @@ function QuestionListPage() {
 
         {!isLoading && !error && currentQuestions.length > 0 && (
           <>
-            <div className="questions-list">
-              {currentQuestions.map((question, index) => (
-                <div key={question.id || `question-${indexOfFirstQuestion + index}`} className="question-item">
-                  <QuestionLayout itemProva={question} />
-                </div>
-              ))}
-            </div>
+            <QuestionList
+              questions={currentQuestions}
+              containerClassName="questions-list"
+              emptyMessage="Nenhuma questão encontrada para este filtro."
+            />
 
             {totalPages > 1 && (
               <div className="pagination">
