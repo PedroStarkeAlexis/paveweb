@@ -1,28 +1,11 @@
 import { fetchAllQuestions } from './utils/uploader';
 
-const EMBEDDING_MODEL = "@cf/baai/bge-m3"; // Modelo multilíngue com 1024 dimensões
 const DEFAULT_SEARCH_LIMIT = 100;
-const DEFAULT_TOP_K = 25; // Quantidade de resultados a pedir ao Vectorize
-const MIN_SCORE_THRESHOLD = 0.40; // Reduzido temporariamente para debug
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const vectorIndex = env.QUESTIONS_INDEX;
-  const ai = env.AI;
 
   console.log(`[search-questions] Recebida requisição: ${request.url}`);
-
-  if (!vectorIndex || !ai) {
-    console.error(
-      "[search-questions] ERRO: Bindings Vectorize ou AI não configurados."
-    );
-    return new Response(
-      JSON.stringify({
-        error: "Bindings Vectorize ou AI não configurados.",
-      }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
 
   try {
     const url = new URL(request.url);
@@ -42,11 +25,8 @@ export async function onRequestGet(context) {
       `[search-questions] Parâmetros: query="${searchQuery}", materia="${filterMateria}", ano="${filterAnoStr}", etapa="${filterEtapaStr}", page=${page}, limit=${limit}`
     );
 
-    let allQuestionsData = null;
-    let initialRelevantQuestions = [];
-
     console.log("[search-questions] Carregando todas as questões do uploader...");
-    allQuestionsData = await fetchAllQuestions(env);
+    const allQuestionsData = await fetchAllQuestions(env);
     
     if (!Array.isArray(allQuestionsData) || allQuestionsData.length === 0) {
       console.error(
@@ -58,100 +38,53 @@ export async function onRequestGet(context) {
       `[search-questions] ${allQuestionsData.length} questões carregadas no total.`
     );
 
+    let filteredQuestions = allQuestionsData;
+
+    // Busca textual simples (case-insensitive)
     if (searchQuery && searchQuery.trim() !== "") {
       console.log(
-        `[search-questions] Modo: Busca Vetorial. Query: "${searchQuery.trim()}"`
+        `[search-questions] Aplicando busca textual para: "${searchQuery.trim()}"`
       );
-      const embeddingResponse = await ai.run(EMBEDDING_MODEL, {
-        text: [searchQuery.trim()],
-      });
-      if (!embeddingResponse.data || !embeddingResponse.data[0]) {
-        console.error(
-          "[search-questions] ERRO: Falha ao gerar embedding para a query."
-        );
-        throw new Error(
-          "Não foi possível gerar embedding para a query de busca."
-        );
-      }
-      const queryVector = embeddingResponse.data[0];
-      console.log(
-        `[search-questions] Embedding da query gerado (tamanho: ${queryVector.length}).`
-      );
-
-      const searchOptions = { topK: DEFAULT_TOP_K };
-      console.log(
-        `[search-questions] Opções da consulta Vectorize: ${JSON.stringify(
-          searchOptions
-        )}`
-      );
-      const vectorQueryResult = await vectorIndex.query(
-        queryVector,
-        searchOptions
-      );
-      console.log(
-        `[search-questions] Vectorize retornou ${vectorQueryResult.matches.length} correspondências.`
-      );
-      
-      // DEBUG: Log todos os scores retornados
-      if (vectorQueryResult.matches && vectorQueryResult.matches.length > 0) {
-        console.log('[DEBUG] Scores de todas as correspondências:');
-        vectorQueryResult.matches.forEach((match, idx) => {
-          console.log(`  [${idx + 1}] ID: ${match.id}, Score: ${match.score.toFixed(4)}`);
-        });
-      }
-
-      if (vectorQueryResult.matches && vectorQueryResult.matches.length > 0) {
-        const highConfidenceMatches = vectorQueryResult.matches.filter(
-          (match) => match.score >= MIN_SCORE_THRESHOLD
-        );
-        console.log(
-          `[search-questions] ${highConfidenceMatches.length} correspondências com score >= ${MIN_SCORE_THRESHOLD} (de ${vectorQueryResult.matches.length} iniciais).`
-        );
-
-        if (highConfidenceMatches.length > 0) {
-          const matchedQuestionIds = highConfidenceMatches.map(
-            (match) => match.id
-          );
-
-          console.log(
-            `[search-questions] IDs das questões de alta confiança: ${JSON.stringify(
-              matchedQuestionIds
-            )}`
-          );
-          initialRelevantQuestions = matchedQuestionIds
-            .map((id) =>
-              allQuestionsData.find((q) => q.id && q.id.toString() === id)
-            )
-            .filter(Boolean);
-          console.log(
-            `[search-questions] ${initialRelevantQuestions.length} questões completas (alta confiança) encontradas após mapeamento.`
-          );
-        } else {
-          console.log(
-            `[search-questions] Nenhuma correspondência do Vectorize atingiu o score mínimo de ${MIN_SCORE_THRESHOLD}.`
-          );
-          initialRelevantQuestions = [];
+      const queryLower = searchQuery.trim().toLowerCase();
+      filteredQuestions = filteredQuestions.filter((q) => {
+        if (!q || typeof q !== "object") return false;
+        
+        // Busca no corpo da questão
+        if (Array.isArray(q.corpo_questao)) {
+          const corpoText = q.corpo_questao.join(' ').toLowerCase();
+          if (corpoText.includes(queryLower)) return true;
         }
-      } else {
-        console.log("[search-questions] Nenhuma correspondência do Vectorize.");
-        initialRelevantQuestions = [];
-      }
-    } else {
+        
+        // Busca no texto da questão (formato antigo)
+        if (q.texto_questao && typeof q.texto_questao === 'string') {
+          if (q.texto_questao.toLowerCase().includes(queryLower)) return true;
+        }
+        
+        // Busca nas alternativas
+        if (q.alternativas && typeof q.alternativas === 'object') {
+          const alternativasText = Object.values(q.alternativas).join(' ').toLowerCase();
+          if (alternativasText.includes(queryLower)) return true;
+        }
+        
+        // Busca na matéria
+        if (q.materia && q.materia.toLowerCase().includes(queryLower)) return true;
+        
+        return false;
+      });
       console.log(
-        "[search-questions] Modo: Sem query de busca. Usando todas as questões do R2 como base para filtros."
+        `[search-questions] ${filteredQuestions.length} questões encontradas após busca textual.`
       );
-      initialRelevantQuestions = [...allQuestionsData];
     }
 
-    let filteredQuestions = initialRelevantQuestions;
+    // Aplicar filtros de matéria, ano e etapa
     const filterAnoNum = filterAnoStr ? parseInt(filterAnoStr) : null;
     const filterEtapaNum = filterEtapaStr ? parseInt(filterEtapaStr) : null;
 
     if (filterMateria || filterAnoNum || filterEtapaNum) {
       console.log(
-        "[search-questions] Aplicando filtros manuais (materia/ano/etapa)..."
+        "[search-questions] Aplicando filtros (materia/ano/etapa)..."
       );
-      filteredQuestions = initialRelevantQuestions.filter((q) => {
+      filteredQuestions = filteredQuestions.filter((q) => {
         if (!q || typeof q !== "object") return false;
         let match = true;
 
@@ -184,11 +117,7 @@ export async function onRequestGet(context) {
         return match;
       });
       console.log(
-        `[search-questions] ${filteredQuestions.length} questões após filtros manuais.`
-      );
-    } else {
-      console.log(
-        "[search-questions] Nenhum filtro manual (materia/ano/etapa) aplicado."
+        `[search-questions] ${filteredQuestions.length} questões após filtros.`
       );
     }
 

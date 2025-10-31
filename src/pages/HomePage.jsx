@@ -112,18 +112,6 @@ function HomePage() {
         animate="show"
       >
         <FeatureCard
-          to="/chat"
-          icon={<IconWrapper label="Assistente IA">💬</IconWrapper>}
-          title="Chat e Busca IA"
-          description="Converse com a IA sobre o PAVE ou use a busca inteligente para encontrar questões específicas."
-        />
-        <FeatureCard
-          to="/criar-questao"
-          icon={<IconWrapper label="Gerador de Questões IA">✨</IconWrapper>}
-          title="Gerador de Questões"
-          description="Crie questões inéditas sobre qualquer tópico ou matéria no estilo do PAVE."
-        />
-        <FeatureCard
           to="/banco-questoes"
           icon={<IconWrapper label="Banco de Questões">📚</IconWrapper>}
           title="Banco de Questões PAVE"
