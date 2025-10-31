@@ -69,6 +69,9 @@ export async function onRequestGet(context) {
         // Busca na matéria
         if (q.materia && q.materia.toLowerCase().includes(queryLower)) return true;
         
+        // Busca no tópico
+        if (q.topico && q.topico.toLowerCase().includes(queryLower)) return true;
+        
         return false;
       });
       console.log(
