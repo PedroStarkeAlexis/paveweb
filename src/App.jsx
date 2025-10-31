@@ -27,7 +27,7 @@ import IconDocumentText from './components/icons/IconDocumentText';
 import './style.css';
 import MoreMenu from './components/common/MoreMenu';
 // Importar o SavedQuestionsProvider
-import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext';
+import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext.jsx';
 
 // --- Componente NavLink (para Sidebar) ---
 function NavLink({ to, icon, children, isFooter = false }) {
