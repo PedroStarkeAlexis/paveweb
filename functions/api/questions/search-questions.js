@@ -1,4 +1,4 @@
-import { fetchAllQuestions } from './utils/uploader';
+import { fetchAllQuestions } from '../utils/uploader';
 
 const DEFAULT_SEARCH_LIMIT = 100;
 

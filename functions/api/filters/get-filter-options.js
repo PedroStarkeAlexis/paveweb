@@ -1,5 +1,5 @@
 // functions/api/questions/filters.js
-import { fetchAllQuestions } from './utils/uploader';
+import { fetchAllQuestions } from '../utils/uploader';
 
 export async function onRequestGet(context) {
     const { env } = context;
