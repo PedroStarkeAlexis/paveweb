@@ -5,6 +5,7 @@
     text-align: center;
     margin-top: 25px; /* Espaçamento acima */
     position: relative; /* Para posicionar o feedback */
+    z-index: 10; /* Garante que fica acima de outros elementos */
 }
 
 /* Botão Share */
@@ -71,9 +72,6 @@
 }
 
 /* Dark Mode */
-[data-theme="dark"] .calc-botao-share {
-    /* Estilos já usam variáveis que se adaptam */
-}
 [data-theme="dark"] .calc-copy-feedback.success {
    background-color: var(--success-secondary);
    color: var(--success-primary);

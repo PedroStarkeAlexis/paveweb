@@ -6,7 +6,7 @@
     flex-direction: column;
     align-items: center; /* Centraliza seções */
     gap: 40px; /* Espaço entre seções principais */
-    padding: 30px 10px; /* Padding vertical e um pouco horizontal */
+    padding: 30px 10px 120px 10px; /* Adiciona padding-bottom para mobile */
     box-sizing: border-box;
 }
 
@@ -93,6 +93,8 @@
     display: flex;
     justify-content: center;
     margin-top: 20px; /* Adiciona espaço acima do botão de compartilhar */
+    position: relative;
+    z-index: 10; /* Garante que fica acima de outros elementos */
     /* Estilos do botão em ShareButton.css */
 }
 
@@ -122,10 +124,13 @@
         padding: 25px;
     }
      .calc-resultado-tabela-wrapper { max-width: 100%; }
+     .calc-tela-resultado-renovado {
+        padding-bottom: 140px; /* Mais espaço no mobile */
+     }
 }
 
 @media (max-width: 480px) {
-     .calc-tela-resultado-renovado { padding: 20px 5px; gap: 30px; }
+     .calc-tela-resultado-renovado { padding: 20px 5px 160px 5px; gap: 30px; }
      .calc-resultado-feedback-msg { font-size: 1.15em; max-width: 95%; }
      .calc-resultado-hero-section { gap: 30px; }
      .calc-resultado-details-section { padding: 20px 15px; gap: 25px; margin-top: 0;}
