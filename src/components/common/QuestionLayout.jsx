@@ -49,12 +49,8 @@ const CorpoBloco = ({ bloco }) => {
 };
 
 function QuestionLayoutInternal({ itemProva: questionData, isInsideCarousel = false }) {
-  if (!questionData) {
-    return null; // Retorna nulo se a questão for inválida
-  }
-  
-  const questionId = questionData.id;
-  
+  const questionId = questionData?.id ?? null;
+
   const [answered, setAnswered] = useState(false);
   const [feedback, setFeedback] = useState({});
   const [showDropdown, setShowDropdown] = useState(false);
@@ -62,16 +58,20 @@ function QuestionLayoutInternal({ itemProva: questionData, isInsideCarousel = fa
   const { addSavedQuestion, removeSavedQuestion, isQuestionSaved } = useSavedQuestions();
 
   const {
-    ano = null, etapa = null, materia = "Indefinida", topico = "Indefinido",
-    corpo_questao = [], alternativas = [], 
-    gabarito = null, resposta_letra = null, // suporte para ambos os nomes
-    id = questionData?.id || questionId
-  } = questionData || {};
+    ano = null,
+    etapa = null,
+    materia = "Indefinida",
+    topico = "Indefinido",
+    corpo_questao = [],
+    alternativas = [],
+    gabarito = null,
+    resposta_letra = null,
+  } = questionData ?? {};
 
   // Use gabarito se disponível, senão resposta_letra para compatibilidade
-  const respostaCorreta = gabarito || resposta_letra;
+  const respostaCorreta = gabarito || resposta_letra || null;
 
-  const isCurrentlySaved = isQuestionSaved(id.toString());
+  const isCurrentlySaved = questionId ? isQuestionSaved(questionId.toString()) : false;
 
   useEffect(() => {
     setAnswered(false);
@@ -110,10 +110,11 @@ function QuestionLayoutInternal({ itemProva: questionData, isInsideCarousel = fa
 
   const handleSaveToggle = (e) => {
     e.stopPropagation();
+    if (!questionId) return;
     if (isCurrentlySaved) {
-      removeSavedQuestion(id.toString());
+      removeSavedQuestion(questionId.toString());
     } else {
-      addSavedQuestion(id.toString());
+      addSavedQuestion(questionId.toString());
     }
     setShowDropdown(false);
   };
@@ -155,6 +156,10 @@ function QuestionLayoutInternal({ itemProva: questionData, isInsideCarousel = fa
       )}
     </div>
   );
+
+  if (!questionData) {
+    return null;
+  }
 
   return (
     <div className={`question-layout ${answered ? 'answered' : ''} ${isInsideCarousel ? 'carousel-item-mode' : ''}`} id={questionId} data-correct-answer={respostaCorreta}>

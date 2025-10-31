@@ -1,8 +1,7 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { SavedQuestionsContext } from './SavedQuestionsContext.js';
 
 const SAVED_QUESTIONS_STORAGE_KEY = 'savedPaveQuestionIds';
-
-export const SavedQuestionsContext = createContext();
 
 export const SavedQuestionsProvider = ({ children }) => {
   const [savedQuestionIds, setSavedQuestionIds] = useState(() => {

@@ -1,6 +1,6 @@
 // src/features/calculadora/CalculadoraPage.jsx
-import React, { useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React from 'react';
+import { motion as Motion, AnimatePresence } from 'motion/react';
 import useCalculadoraWizard from './hooks/useCalculadoraWizard';
 import useCursos from './hooks/useCursos';
 
@@ -113,7 +113,7 @@ function CalculadoraPage() {
             )}
             <div className="calc-wizard-content">
                 <AnimatePresence mode='wait'>
-                    <motion.div
+                    <Motion.div
                         key={wizardStep}
                         variants={slideVariants}
                         initial="hidden"
@@ -122,7 +122,7 @@ function CalculadoraPage() {
                         style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
                     >
                         {renderCurrentStep()}
-                    </motion.div>
+                    </Motion.div>
                 </AnimatePresence>
             </div>
             

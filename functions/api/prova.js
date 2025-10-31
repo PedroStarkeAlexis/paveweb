@@ -1,8 +1,22 @@
 const DEFAULT_ADMIN_USER = "admin";
+const DEFAULT_ADMIN_PASSWORD = "admin123";
+const DEFAULT_BASE_URL = "https://pave-uploader.pedroalexis016.workers.dev";
 
 function normalizeBaseUrl(url) {
   if (!url) return null;
   return url.endsWith("/") ? url.slice(0, -1) : url;
+}
+
+function resolveUploaderConfig(env = {}) {
+  const baseUrl = normalizeBaseUrl(env.UPLOADER_BASE_URL) || DEFAULT_BASE_URL;
+  const adminPassword = env.UPLOADER_ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
+  const adminUser = env.UPLOADER_ADMIN_USER || DEFAULT_ADMIN_USER;
+
+  if (!baseUrl || !adminPassword || !adminUser) {
+    throw new Error("Configuração do uploader ausente. Verifique as variáveis de ambiente.");
+  }
+
+  return { baseUrl, adminUser, adminPassword };
 }
 
 function createBasicAuthHeader(user, password) {
@@ -12,13 +26,7 @@ function createBasicAuthHeader(user, password) {
 }
 
 async function fetchFromUploader(path, env) {
-  const baseUrl = "https://pave-uploader.pedroalexis016.workers.dev";
-  const adminPassword = "admin123";
-  const adminUser = "admin";
-
-  if (!baseUrl || !adminPassword) {
-    throw new Error("Configuração do uploader ausente. Verifique as variáveis de ambiente.");
-  }
+  const { baseUrl, adminUser, adminPassword } = resolveUploaderConfig(env);
 
   const headers = new Headers({
     Authorization: createBasicAuthHeader(adminUser, adminPassword),

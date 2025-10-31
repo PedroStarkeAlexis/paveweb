@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion as Motion, AnimatePresence } from 'motion/react';
 import './FilterModalMobile.css';
 
 function FilterModalMobile({ isOpen, onClose, initialFilters, onApplyFilters, options }) {
@@ -30,14 +30,14 @@ function FilterModalMobile({ isOpen, onClose, initialFilters, onApplyFilters, op
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+        <Motion.div
           className="filter-modal-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
         >
-          <motion.div
+          <Motion.div
             className="filter-modal-content"
             initial={{ y: '100%' }}
             animate={{ y: '0%' }}
@@ -91,8 +91,8 @@ function FilterModalMobile({ isOpen, onClose, initialFilters, onApplyFilters, op
                 <button type="submit" className="apply-filters-button">Buscar Questões</button>
               </footer>
             </form>
-          </motion.div>
-        </motion.div>
+          </Motion.div>
+        </Motion.div>
       )}
     </AnimatePresence>
   );

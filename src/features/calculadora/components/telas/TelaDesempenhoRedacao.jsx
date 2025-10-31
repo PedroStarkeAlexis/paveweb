@@ -6,7 +6,7 @@ import StepperInput from '../shared/StepperInput';
 import '../../styles/WizardButtons.css';
 import './TelaDesempenhoRedacao.css';
 
-function TelaDesempenhoRedacao({ onChange, values, onNextStep, isNextStepDisabled, nextStepText }) {
+function TelaDesempenhoRedacao({ onChange, values }) {
   const { incluirRedacao, notaRedacao } = values;
 
   const handleIncrement = () => {

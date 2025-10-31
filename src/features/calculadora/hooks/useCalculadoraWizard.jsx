@@ -247,10 +247,7 @@ const useCalculadoraWizard = () => {
         
         dispatch({ type: ACTION_TYPES.ATUALIZAR_NOTAS_ETAPAS, payload: novasNotasEtapas });
 
-    }, [state.desempenho.acertosE1, state.desempenho.ignoradasE1,
-    state.desempenho.acertosE2, state.desempenho.ignoradasE2,
-    state.desempenho.acertosE3, state.desempenho.ignoradasE3,
-        getKeysForEtapa, state.validationErrors]);
+    }, [state.desempenho, getKeysForEtapa, state.validationErrors]);
 
     // --- CALCULAR RESULTADOS FINAIS ---
     const calcularResultadosFinais = useCallback((cursosDisponiveis) => {
@@ -291,9 +288,10 @@ const useCalculadoraWizard = () => {
                 return true;
             case WIZARD_STEPS.ETAPA_1:
             case WIZARD_STEPS.ETAPA_2:
-            case WIZARD_STEPS.ETAPA_3:
+            case WIZARD_STEPS.ETAPA_3: {
                 const { errorKey } = getKeysForEtapa(etapaPAVE);
                 return !state.validationErrors[errorKey];
+            }
             case WIZARD_STEPS.REDACAO:
                 if (state.desempenho.incluirRedacao === null) return false;
                 if (state.desempenho.incluirRedacao && state.desempenho.notaRedacao === '') return false;

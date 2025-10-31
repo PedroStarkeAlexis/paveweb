@@ -22,7 +22,7 @@ const getFeedbackMessage = (chances, cursoNome) => {
     }
 };
 
-function TelaResultado({ resultados, onSimularNovamente }) {
+function TelaResultado({ resultados }) {
     const {
         notaFinal,
         cursoSelecionadoInfo,

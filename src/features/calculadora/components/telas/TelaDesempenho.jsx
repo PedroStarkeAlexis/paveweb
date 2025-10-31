@@ -4,7 +4,7 @@ import StepperInput from '../shared/StepperInput';
 import '../../styles/WizardButtons.css';
 import './TelaDesempenho.css';
 
-function TelaDesempenho({ etapaNumero, onChange, values, errors, onNextStep, isNextStepDisabled, nextStepText }) {
+function TelaDesempenho({ etapaNumero, onChange, values, errors }) {
   const acertosKey = `acertosE${etapaNumero}`;
   const ignoradasKey = `ignoradasE${etapaNumero}`;
   const errorKey = `etapa${etapaNumero}`;

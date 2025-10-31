@@ -1,3 +1,5 @@
+/* eslint-env jest */
+/* global describe, test, expect, jest */
 // src/utils/calculos.test.js
 import { calcularNotaEtapa, calcularNotaFinal, calcularPorcentagemEtapa } from './calculos';
 // Importa as constantes REAIS para usar nos testes

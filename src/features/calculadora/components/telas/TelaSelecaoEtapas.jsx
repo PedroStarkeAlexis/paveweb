@@ -4,7 +4,7 @@ import { triggerVibration } from '../../../../utils/vibration';
 import '../../styles/WizardButtons.css';
 import './TelaSelecaoEtapas.css';
 
-function TelaSelecaoEtapas({ selectedEtapas, onSelectionChange, onNextStep, isNextStepDisabled }) {
+function TelaSelecaoEtapas({ selectedEtapas, onSelectionChange }) {
     const [localSelection, setLocalSelection] = useState(selectedEtapas || []);
 
     const handleToggleEtapa = (etapaNum) => {

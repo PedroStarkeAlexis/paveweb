@@ -4,7 +4,7 @@ import { triggerVibration } from '../../../../utils/vibration';
 import '../../styles/WizardButtons.css';
 import './TelaSelecaoCurso.css';
 
-function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error, onNextStep, isNextStepDisabled, nextStepText }) {
+function TelaSelecaoCurso({ onChange, selectedId, cursos, isLoading, error }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Filtrar cursos baseado no termo de busca

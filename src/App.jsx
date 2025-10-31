@@ -30,22 +30,20 @@ import MoreMenu from './components/common/MoreMenu';
 import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext';
 
 // --- Componente NavLink (para Sidebar) ---
-function NavLink({ to, icon: IconComponent, children, isFooter = false }) {
+function NavLink({ to, icon, children, isFooter = false }) {
     const location = useLocation();
     // CORREÇÃO: Lógica de 'isActive' ajustada
     // Para a home ('/'), a correspondência deve ser exata. Para as outras, `startsWith` funciona bem.
     const isActive = !to.startsWith('http') && (to === '/' ? location.pathname === to : location.pathname.startsWith(to));
     const linkClass = isActive ? 'active' : '';
-
-    const Icon = isFooter ? 
-        <IconComponent className="sidebar-icon-footer" /> : 
-        <IconComponent className="sidebar-icon" />;
+    const iconClass = isFooter ? 'sidebar-icon-footer' : 'sidebar-icon';
+    const IconElement = icon ? React.createElement(icon, { className: iconClass }) : null;
 
     if (to.startsWith('http')) {
         return (
             <li>
                 <a href={to} target="_blank" rel="noopener noreferrer" className="external-link">
-                    {Icon}
+                    {IconElement}
                     <span className="nav-link-text">{children}</span>
                 </a>
             </li>
@@ -55,7 +53,7 @@ function NavLink({ to, icon: IconComponent, children, isFooter = false }) {
     return (
         <li>
             <Link to={to} className={linkClass}>
-                {Icon}
+                {IconElement}
                 <span className="nav-link-text">{children}</span>
             </Link>
         </li>

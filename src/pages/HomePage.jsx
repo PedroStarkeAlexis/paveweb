@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react'; // Importar motion
+import { motion as Motion } from 'motion/react'; // Importar motion
 import './HomePage.css';
 
 const IconWrapper = ({ children, label }) => (
@@ -50,7 +50,7 @@ const cardVariants = {
 const FeatureCard = ({ to, icon, title, description }) => {
   return (
     // Transformado em motion.div e aplicando as variantes
-    <motion.div
+    <Motion.div
       className="home-feature-card"
       variants={cardVariants}
       // initial, animate são herdados do pai se não especificados,
@@ -66,14 +66,14 @@ const FeatureCard = ({ to, icon, title, description }) => {
         <h3>{title}</h3>
         <p>{description}</p>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 };
 
 const ComingSoonCard = () => {
   return (
     // Também pode ser animado
-    <motion.div
+    <Motion.div
       className="home-coming-soon-card"
       variants={cardVariants} // Reutiliza as mesmas variantes ou cria novas se quiser um efeito diferente
       initial="hidden" // Animação individual para este card, já que não está no grid stagger
@@ -85,13 +85,13 @@ const ComingSoonCard = () => {
       </div>
       <h3>Novidades a Caminho!</h3>
       <p>Ainda mais ferramentas e recursos para facilitar seus estudos para o PAVE. Fique de olho!</p>
-    </motion.div>
+  </Motion.div>
   );
 };
 
 function HomePage() {
   return (
-    <motion.div // Container principal também pode ter uma animação de fade-in simples
+    <Motion.div // Container principal também pode ter uma animação de fade-in simples
       className="home-page-container-revised"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -105,7 +105,7 @@ function HomePage() {
       </header>
 
       {/* Aplicando variantes ao container da grade para o efeito dominó */}
-      <motion.main
+      <Motion.main
         className="home-features-grid-revised"
         variants={gridContainerVariants}
         initial="hidden"
@@ -123,12 +123,12 @@ function HomePage() {
           title="Calculadora de Nota PAVE"
           description="Simule sua nota final no PAVE e veja suas chances de aprovação no curso desejado."
         />
-      </motion.main>
+  </Motion.main>
 
       <section className="home-single-card-section">
         <ComingSoonCard />
       </section>
-    </motion.div>
+  </Motion.div>
   );
 }
 

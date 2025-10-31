@@ -10,8 +10,8 @@ export const triggerVibration = (duration = 5) => {
     if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
       navigator.vibrate(duration);
     }
-  } catch (err) {
+  } catch {
     // Falha silenciosamente em ambientes onde `navigator` não está disponível ou é restrito.
-    // console.warn("Vibration API is not supported or failed:", err);
+    // console.warn("Vibration API is not supported or failed.");
   }
 };

@@ -11,8 +11,6 @@ function QuestionListPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const questionsPerPage = 20;
 
-  // Determinar o tipo de filtro e o valor
-  const filterType = subject ? 'materia' : 'ano';
   const filterValue = subject || year;
 
   useEffect(() => {

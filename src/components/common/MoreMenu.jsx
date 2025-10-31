@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion as Motion, AnimatePresence } from 'motion/react';
 import './MoreMenu.css';
 import IconHelp from '../icons/IconHelp'; // Ícone para Ajuda
 import IconSun from '../icons/IconSun';   // Ícone Sol
@@ -62,7 +62,7 @@ function MoreMenu({ isOpen, onClose, items, isDarkMode, onToggleTheme }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+        <Motion.div
           className="more-menu-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -70,7 +70,7 @@ function MoreMenu({ isOpen, onClose, items, isDarkMode, onToggleTheme }) {
           onClick={handleClose}
           transition={{ duration: 0.2 }}
         >
-          <motion.div
+          <Motion.div
             className="more-menu-panel"
             initial={{ y: "100%" }}
             animate={{ y: "0%" }}
@@ -116,8 +116,8 @@ function MoreMenu({ isOpen, onClose, items, isDarkMode, onToggleTheme }) {
                 <span className="more-menu-item-label">Ajuda & Feedback</span>
               </a>
             </nav>
-          </motion.div>
-        </motion.div>
+          </Motion.div>
+        </Motion.div>
       )}
     </AnimatePresence>
   );

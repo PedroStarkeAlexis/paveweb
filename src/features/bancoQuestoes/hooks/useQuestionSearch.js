@@ -1,5 +1,5 @@
 // src/features/bancoQuestoes/hooks/useQuestionSearch.js
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 /**
  * Hook customizado para busca de questões com filtros e debounce
@@ -30,7 +30,7 @@ const useQuestionSearch = (filters = {}, debounceMs = 500) => {
    * Função para realizar a busca de questões
    * @param {Object} searchFilters - Filtros a serem aplicados na busca
    */
-  const performSearch = async (searchFilters) => {
+  const performSearch = useCallback(async (searchFilters) => {
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
@@ -57,7 +57,7 @@ const useQuestionSearch = (filters = {}, debounceMs = 500) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   // Disparar busca quando os filtros mudarem (com debounce)
   useEffect(() => {
@@ -70,8 +70,7 @@ const useQuestionSearch = (filters = {}, debounceMs = 500) => {
 
       return () => clearTimeout(debounceTimer);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, debounceMs]);
+  }, [filters, debounceMs, performSearch]);
 
   return {
     questions,

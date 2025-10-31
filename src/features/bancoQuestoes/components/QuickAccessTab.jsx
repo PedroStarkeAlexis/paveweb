@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion as Motion } from 'motion/react';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -117,7 +117,7 @@ function QuickAccessTab({ onSelectFilter }) {
             <p className="hub-empty-message">Nenhuma matéria disponível</p>
           ) : (
             filterOptions.materias.map((materia, index) => (
-              <motion.div
+              <Motion.div
                 key={materia}
                 className="hub-carousel-card"
                 variants={cardVariants}
@@ -133,7 +133,7 @@ function QuickAccessTab({ onSelectFilter }) {
                   <div className="hub-carousel-icon">{getEmojiForMateria(materia)}</div>
                   <h3>{materia}</h3>
                 </div>
-              </motion.div>
+              </Motion.div>
             ))
           )}
         </div>
@@ -147,7 +147,7 @@ function QuickAccessTab({ onSelectFilter }) {
             <p className="hub-empty-message">Nenhuma etapa disponível</p>
           ) : (
             filterOptions.etapas.map((etapa, index) => (
-              <motion.div
+              <Motion.div
                 key={etapa}
                 className="hub-carousel-card"
                 variants={cardVariants}
@@ -163,7 +163,7 @@ function QuickAccessTab({ onSelectFilter }) {
                   <div className="hub-carousel-ordinal" style={{ fontSize: 28, fontWeight: 700 }}>{ordinalize(etapa)}</div>
                   <div className="hub-carousel-ordinal-label" style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Etapa</div>
                 </div>
-              </motion.div>
+              </Motion.div>
             ))
           )}
         </div>
@@ -177,7 +177,7 @@ function QuickAccessTab({ onSelectFilter }) {
             <p className="hub-empty-message">Nenhum ano disponível</p>
           ) : (
             filterOptions.anos.map((ano, index) => (
-              <motion.div
+              <Motion.div
                 key={ano}
                 className="hub-carousel-card"
                 variants={cardVariants}
@@ -192,7 +192,7 @@ function QuickAccessTab({ onSelectFilter }) {
                 <div className="hub-carousel-link">
                   <div className="hub-carousel-year" style={{ fontSize: 28, fontWeight: 700 }}>{ano}</div>
                 </div>
-              </motion.div>
+              </Motion.div>
             ))
           )}
         </div>
