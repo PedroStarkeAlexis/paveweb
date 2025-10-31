@@ -38,7 +38,7 @@ function TabelaDetalhadaResultado({
 
   // Retorna apenas a tabela
   return (
-    <table className="calc-tabela-detalhada"> {/* Classe específica para a tabela */}
+  <table className="calc-tabela-detalhada">
       <thead>
            <tr>
                <th>Componente</th>
