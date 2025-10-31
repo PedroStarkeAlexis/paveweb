@@ -2,6 +2,7 @@
 import React, { useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import useCalculadoraWizard from './hooks/useCalculadoraWizard';
+import useCursos from './hooks/useCursos';
 
 // --- COMPONENTES DAS TELAS ---
 import TelaSelecaoEtapas from './components/telas/TelaSelecaoEtapas';
@@ -23,6 +24,7 @@ const slideVariants = {
 
 
 function CalculadoraPage() {
+    // Hook principal do wizard
     const {
         wizardStep,
         setWizardStep,
@@ -36,21 +38,21 @@ function CalculadoraPage() {
         handleCursoChange,
         resultados,
         validationErrors,
-        cursosDisponiveis,
-        loadingCursos,
-        errorCursos,
         handleProximaEtapa,
         handleEtapaAnterior,
         isNextStepDisabled,
         nextStepText,
     } = useCalculadoraWizard();
 
+    // Hook separado para buscar cursos
+    const { cursos: cursosDisponiveis, isLoading: loadingCursos, error: errorCursos } = useCursos();
+
 
     // --- RENDERIZAÇÃO CONDICIONAL DA TELA ATUAL ---
     const renderCurrentStep = () => {
         // Define as props comuns para o botão de próxima etapa, a ser renderizado por cada tela
         const nextStepProps = {
-            onNextStep: handleProximaEtapa,
+            onNextStep: () => handleProximaEtapa(cursosDisponiveis),
             isNextStepDisabled: isNextStepDisabled,
             nextStepText: nextStepText,
         };

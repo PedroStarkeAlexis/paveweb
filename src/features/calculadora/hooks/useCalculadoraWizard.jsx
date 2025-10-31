@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
 import {
     TOTAL_QUESTOES,
     NOTA_MIN_REDAÇÃO,
@@ -10,36 +10,122 @@ import {
 } from '../constants';
 import { calcularNotaEtapa, calcularNotaFinal, calcularChances } from '../utils/calculos';
 
-const useCalculadoraWizard = () => {
-    // --- ESTADO DO WIZARD ---
-    const [wizardStep, setWizardStep] = useState(WIZARD_STEPS.SELECAO_ETAPAS);
-    
-    // --- NOVO: Estado para etapas selecionadas e fluxo dinâmico ---
-    const [selectedEtapas, setSelectedEtapas] = useState([]);
-    const [etapasFlow, setEtapasFlow] = useState([]);
-
-    // --- ESTADOS DOS DADOS ---
-    const [desempenho, setDesempenho] = useState({
+// --- ESTADO INICIAL ---
+const initialState = {
+    wizardStep: WIZARD_STEPS.SELECAO_ETAPAS,
+    selectedEtapas: [],
+    etapasFlow: [],
+    desempenho: {
         acertosE1: '', ignoradasE1: '',
         acertosE2: '', ignoradasE2: '',
         acertosE3: '', ignoradasE3: '',
         notaRedacao: '', incluirRedacao: null,
-    });
-    const [selecaoCurso, setSelecaoCurso] = useState({ cursoId: '' });
-    const [resultados, setResultados] = useState({
+    },
+    selecaoCurso: { cursoId: '' },
+    resultados: {
         notasEtapas: { [ETAPA_VIEW_1]: 0, [ETAPA_VIEW_2]: 0, [ETAPA_VIEW_3]: 0 },
         notaFinal: null,
         cursoSelecionadoInfo: null,
         chances: null,
         incluirRedacao: null,
         notaRedacao: 0,
-    });
-    const [validationErrors, setValidationErrors] = useState({});
+    },
+    validationErrors: {},
+};
 
-    // <<< NOVO ESTADO PARA CURSOS >>>
-    const [cursosDisponiveis, setCursosDisponiveis] = useState([]);
-    const [loadingCursos, setLoadingCursos] = useState(true);
-    const [errorCursos, setErrorCursos] = useState(null);
+// --- TIPOS DE AÇÃO ---
+const ACTION_TYPES = {
+    SET_WIZARD_STEP: 'SET_WIZARD_STEP',
+    SET_SELECTED_ETAPAS: 'SET_SELECTED_ETAPAS',
+    UPDATE_DESEMPENHO: 'UPDATE_DESEMPENHO',
+    UPDATE_SELECAO_CURSO: 'UPDATE_SELECAO_CURSO',
+    UPDATE_RESULTADOS: 'UPDATE_RESULTADOS',
+    SET_VALIDATION_ERROR: 'SET_VALIDATION_ERROR',
+    CLEAR_VALIDATION_ERROR: 'CLEAR_VALIDATION_ERROR',
+    AVANCAR_ETAPA: 'AVANCAR_ETAPA',
+    VOLTAR_ETAPA: 'VOLTAR_ETAPA',
+    ATUALIZAR_NOTAS_ETAPAS: 'ATUALIZAR_NOTAS_ETAPAS',
+};
+
+// --- REDUCER ---
+const wizardReducer = (state, action) => {
+    switch (action.type) {
+        case ACTION_TYPES.SET_WIZARD_STEP:
+            return { ...state, wizardStep: action.payload };
+
+        case ACTION_TYPES.SET_SELECTED_ETAPAS: {
+            const { etapas, flow } = action.payload;
+            return {
+                ...state,
+                selectedEtapas: etapas,
+                etapasFlow: flow,
+            };
+        }
+
+        case ACTION_TYPES.UPDATE_DESEMPENHO:
+            return {
+                ...state,
+                desempenho: { ...state.desempenho, ...action.payload },
+            };
+
+        case ACTION_TYPES.UPDATE_SELECAO_CURSO:
+            return {
+                ...state,
+                selecaoCurso: action.payload,
+            };
+
+        case ACTION_TYPES.UPDATE_RESULTADOS:
+            return {
+                ...state,
+                resultados: { ...state.resultados, ...action.payload },
+            };
+
+        case ACTION_TYPES.SET_VALIDATION_ERROR:
+            return {
+                ...state,
+                validationErrors: { ...state.validationErrors, [action.payload.key]: action.payload.message },
+            };
+
+        case ACTION_TYPES.CLEAR_VALIDATION_ERROR: {
+            const newErrors = { ...state.validationErrors };
+            delete newErrors[action.payload];
+            return {
+                ...state,
+                validationErrors: newErrors,
+            };
+        }
+
+        case ACTION_TYPES.AVANCAR_ETAPA: {
+            const { nextStep, resultadosFinais } = action.payload;
+            const updates = { wizardStep: nextStep };
+            if (resultadosFinais) {
+                updates.resultados = { ...state.resultados, ...resultadosFinais };
+            }
+            return { ...state, ...updates };
+        }
+
+        case ACTION_TYPES.VOLTAR_ETAPA:
+            return {
+                ...state,
+                wizardStep: action.payload,
+            };
+
+        case ACTION_TYPES.ATUALIZAR_NOTAS_ETAPAS:
+            return {
+                ...state,
+                resultados: {
+                    ...state.resultados,
+                    notasEtapas: action.payload,
+                },
+            };
+
+        default:
+            return state;
+    }
+};
+
+const useCalculadoraWizard = () => {
+    const [state, dispatch] = useReducer(wizardReducer, initialState);
 
     // --- FUNÇÕES AUXILIARES ---
     const getKeysForEtapa = useCallback((etapaPAVE) => {
@@ -58,20 +144,18 @@ const useCalculadoraWizard = () => {
         const total = numAcertos + numIgnoradas;
 
         if (total > TOTAL_QUESTOES) {
-            setValidationErrors(prev => ({ ...prev, [errorKey]: `Soma excede ${TOTAL_QUESTOES}` }));
+            dispatch({
+                type: ACTION_TYPES.SET_VALIDATION_ERROR,
+                payload: { key: errorKey, message: `Soma excede ${TOTAL_QUESTOES}` }
+            });
             return false;
         } else {
-            setValidationErrors(prev => {
-                if (prev[errorKey]) {
-                    const newState = { ...prev };
-                    delete newState[errorKey];
-                    return newState;
-                }
-                return prev;
-            });
+            if (state.validationErrors[errorKey]) {
+                dispatch({ type: ACTION_TYPES.CLEAR_VALIDATION_ERROR, payload: errorKey });
+            }
             return true;
         }
-    }, [getKeysForEtapa]);
+    }, [getKeysForEtapa, state.validationErrors]);
 
     // --- HANDLERS DE INPUT ---
     const handleDesempenhoChange = useCallback((etapa, campo, value) => {
@@ -80,42 +164,49 @@ const useCalculadoraWizard = () => {
         const keyToUpdate = isAcertos ? acertosKey : ignoradasKey;
         const cleanValue = value === '' ? '' : Math.max(0, Math.min(TOTAL_QUESTOES, parseInt(value, 10) || 0));
 
-        const novoDesempenho = { ...desempenho, [keyToUpdate]: cleanValue };
-        setDesempenho(novoDesempenho);
+        const novoDesempenho = { ...state.desempenho, [keyToUpdate]: cleanValue };
+        dispatch({
+            type: ACTION_TYPES.UPDATE_DESEMPENHO,
+            payload: { [keyToUpdate]: cleanValue }
+        });
 
         const currentAcertos = isAcertos ? cleanValue : novoDesempenho[acertosKey];
         const currentIgnoradas = !isAcertos ? cleanValue : novoDesempenho[ignoradasKey];
         validateEtapaPAVE(etapa, currentAcertos, currentIgnoradas);
 
-    }, [desempenho, getKeysForEtapa, validateEtapaPAVE]);
+    }, [state.desempenho, getKeysForEtapa, validateEtapaPAVE]);
 
     const handleRedacaoChange = useCallback((campo, value) => {
-        setDesempenho(prev => {
-            const newState = { ...prev };
-            if (campo === 'incluirRedacao') {
-                newState.incluirRedacao = value;
-                if (!value) newState.notaRedacao = '';
-            } else if (campo === 'notaRedacao') {
-                if (value === '') { newState.notaRedacao = ''; }
-                else {
-                    const numRedacao = parseFloat(value);
-                    if (isNaN(numRedacao) && value !== '.' && value !== '-') { newState.notaRedacao = ''; }
-                    else if (numRedacao > NOTA_MAX_REDAÇÃO) { newState.notaRedacao = NOTA_MAX_REDAÇÃO.toString(); }
-                    else { newState.notaRedacao = value; }
+        const updates = {};
+        if (campo === 'incluirRedacao') {
+            updates.incluirRedacao = value;
+            if (!value) updates.notaRedacao = '';
+        } else if (campo === 'notaRedacao') {
+            if (value === '') {
+                updates.notaRedacao = '';
+            } else {
+                const numRedacao = parseFloat(value);
+                if (isNaN(numRedacao) && value !== '.' && value !== '-') {
+                    updates.notaRedacao = '';
+                } else if (numRedacao > NOTA_MAX_REDAÇÃO) {
+                    updates.notaRedacao = NOTA_MAX_REDAÇÃO.toString();
+                } else {
+                    updates.notaRedacao = value;
                 }
             }
-            return newState;
-        });
+        }
+        dispatch({ type: ACTION_TYPES.UPDATE_DESEMPENHO, payload: updates });
     }, []);
 
     const handleCursoChange = useCallback((event) => {
-        setSelecaoCurso({ cursoId: event.target.value });
+        dispatch({
+            type: ACTION_TYPES.UPDATE_SELECAO_CURSO,
+            payload: { cursoId: event.target.value }
+        });
     }, []);
 
     // --- NOVO: Handler para seleção de etapas ---
     const handleEtapasSelectionChange = useCallback((etapas) => {
-        setSelectedEtapas(etapas);
-        
         // Construir o fluxo dinâmico baseado nas etapas selecionadas
         const newFlow = [];
         
@@ -131,206 +222,180 @@ const useCalculadoraWizard = () => {
         // Adicionar tela de seleção de curso
         newFlow.push(WIZARD_STEPS.CURSO);
         
-        setEtapasFlow(newFlow);
+        dispatch({
+            type: ACTION_TYPES.SET_SELECTED_ETAPAS,
+            payload: { etapas, flow: newFlow }
+        });
     }, []);
-
-    // <<< NOVO useEffect PARA BUSCAR CURSOS >>>
-    useEffect(() => {
-        const fetchCursos = async () => {
-            setLoadingCursos(true);
-            setErrorCursos(null);
-            try {
-                // <<< USA A URL PÚBLICA DO R2 FORNECIDA >>>
-                const publicR2Url = 'https://pub-bb3996c786cd4543b2f53acdabbd9915.r2.dev/cursos.json';
-
-                console.log(`Buscando cursos de: ${publicR2Url}`);
-
-                const response = await fetch(publicR2Url, {
-                    cache: 'no-cache' // Evita cache durante testes
-                });
-
-                if (!response.ok) {
-                    console.error(`Erro ao carregar cursos: ${response.status} ${response.statusText}`);
-                    const errorBody = await response.text();
-                    console.error("Corpo da resposta de erro:", errorBody);
-                    throw new Error(`Erro ${response.status} ao buscar cursos.`);
-                }
-
-                const data = await response.json();
-                setCursosDisponiveis(Array.isArray(data) ? data : []);
-            } catch (error) {
-                console.error("Falha ao buscar/processar cursos.json do R2:", error);
-                setErrorCursos("Não foi possível carregar a lista de cursos.");
-                setCursosDisponiveis([]);
-            } finally {
-                setLoadingCursos(false);
-            }
-        };
-
-        fetchCursos();
-    }, []); // Roda apenas uma vez na montagem
 
     // --- Cálculo das Notas das Etapas ---
     useEffect(() => {
         const novasNotasEtapas = {};
-        let calculoValidoGeral = true; // Esta variável não está sendo usada para nada.
 
         for (let i = 1; i <= 3; i++) {
             const { acertosKey, ignoradasKey, errorKey } = getKeysForEtapa(i);
-            const numAcertos = parseInt(desempenho[acertosKey], 10) || 0;
-            const numIgnoradas = parseInt(desempenho[ignoradasKey], 10) || 0;
+            const numAcertos = parseInt(state.desempenho[acertosKey], 10) || 0;
+            const numIgnoradas = parseInt(state.desempenho[ignoradasKey], 10) || 0;
             const total = numAcertos + numIgnoradas;
 
-            if (total <= TOTAL_QUESTOES && !validationErrors[errorKey]) {
+            if (total <= TOTAL_QUESTOES && !state.validationErrors[errorKey]) {
                 novasNotasEtapas[ETAPA_VIEW_1 + i - 1] = calcularNotaEtapa(i, numAcertos, numIgnoradas);
             } else {
                 novasNotasEtapas[ETAPA_VIEW_1 + i - 1] = 0;
-                // A linha abaixo não é necessária, pois calculoValidoGeral não é usada.
-                // if (total > TOTAL_QUESTOES) { calculoValidoGeral = false; }
             }
         }
-        setResultados(prevResultados => ({
-            ...prevResultados,
-            notasEtapas: novasNotasEtapas
-        }));
+        
+        dispatch({ type: ACTION_TYPES.ATUALIZAR_NOTAS_ETAPAS, payload: novasNotasEtapas });
 
-    }, [desempenho.acertosE1, desempenho.ignoradasE1,
-    desempenho.acertosE2, desempenho.ignoradasE2,
-    desempenho.acertosE3, desempenho.ignoradasE3,
-        getKeysForEtapa, validationErrors]);
+    }, [state.desempenho.acertosE1, state.desempenho.ignoradasE1,
+    state.desempenho.acertosE2, state.desempenho.ignoradasE2,
+    state.desempenho.acertosE3, state.desempenho.ignoradasE3,
+        getKeysForEtapa, state.validationErrors]);
 
     // --- CALCULAR RESULTADOS FINAIS ---
-    const calcularResultadosFinais = useCallback(() => {
-        const notasCalculadas = resultados.notasEtapas;
-        const incluirRedacaoFinal = desempenho.incluirRedacao;
+    const calcularResultadosFinais = useCallback((cursosDisponiveis) => {
+        const notasCalculadas = state.resultados.notasEtapas;
+        const incluirRedacaoFinal = state.desempenho.incluirRedacao;
         const notaRedacaoValida = incluirRedacaoFinal
-            ? Math.max(NOTA_MIN_REDAÇÃO, Math.min(NOTA_MAX_REDAÇÃO, parseFloat(desempenho.notaRedacao) || 0))
+            ? Math.max(NOTA_MIN_REDAÇÃO, Math.min(NOTA_MAX_REDAÇÃO, parseFloat(state.desempenho.notaRedacao) || 0))
             : 0;
 
         const notaFinalCalculada = calcularNotaFinal(notasCalculadas, notaRedacaoValida, incluirRedacaoFinal);
         const notaFinalNum = parseFloat(notaFinalCalculada);
 
-        // <<< USA cursosDisponiveis DO ESTADO >>>
-        const cursoInfo = cursosDisponiveis.find(c => c.id === selecaoCurso.cursoId) || null;
+        // Busca informações do curso selecionado
+        const cursoInfo = cursosDisponiveis.find(c => c.id === state.selecaoCurso.cursoId) || null;
         let chancesCalculadas = null;
         if (cursoInfo) {
             chancesCalculadas = calcularChances(notaFinalNum, cursoInfo.notaCorte);
         }
 
-        setResultados(prevResultados => ({
-            ...prevResultados,
+        return {
             notaFinal: notaFinalNum,
             cursoSelecionadoInfo: cursoInfo,
             chances: chancesCalculadas,
             incluirRedacao: incluirRedacaoFinal,
             notaRedacao: notaRedacaoValida,
-        }));
-    }, [resultados.notasEtapas, desempenho.incluirRedacao, desempenho.notaRedacao, selecaoCurso.cursoId, cursosDisponiveis]);
+        };
+    }, [state.resultados.notasEtapas, state.desempenho.incluirRedacao, state.desempenho.notaRedacao, state.selecaoCurso.cursoId]);
 
     // --- Verifica se a etapa ATUAL do wizard é válida para avançar ---
     const isCurrentWizardStepValid = useCallback(() => {
-        const etapaPAVE = wizardStep;
-        switch (wizardStep) {
+        const etapaPAVE = state.wizardStep;
+        switch (state.wizardStep) {
             case WIZARD_STEPS.SELECAO_ETAPAS:
                 // Pelo menos uma etapa deve estar selecionada e não pode ser apenas Etapa 3
-                if (selectedEtapas.length === 0) return false;
-                if (selectedEtapas.length === 1 && selectedEtapas[0] === 3) return false;
+                if (state.selectedEtapas.length === 0) return false;
+                if (state.selectedEtapas.length === 1 && state.selectedEtapas[0] === 3) return false;
                 return true;
             case WIZARD_STEPS.ETAPA_1:
             case WIZARD_STEPS.ETAPA_2:
             case WIZARD_STEPS.ETAPA_3:
                 const { errorKey } = getKeysForEtapa(etapaPAVE);
-                return !validationErrors[errorKey];
+                return !state.validationErrors[errorKey];
             case WIZARD_STEPS.REDACAO:
-                if (desempenho.incluirRedacao === null) return false;
-                if (desempenho.incluirRedacao && desempenho.notaRedacao === '') return false;
+                if (state.desempenho.incluirRedacao === null) return false;
+                if (state.desempenho.incluirRedacao && state.desempenho.notaRedacao === '') return false;
                 return true;
             case WIZARD_STEPS.CURSO:
-                return !!selecaoCurso.cursoId;
+                return !!state.selecaoCurso.cursoId;
             default:
                 return true;
         }
-    }, [wizardStep, desempenho, selecaoCurso.cursoId, validationErrors, getKeysForEtapa, selectedEtapas]);
+    }, [state.wizardStep, state.desempenho, state.selecaoCurso.cursoId, state.validationErrors, getKeysForEtapa, state.selectedEtapas]);
 
     // --- NAVEGAÇÃO DO WIZARD ---
-    const handleProximaEtapa = useCallback(() => {
+    const handleProximaEtapa = useCallback((cursosDisponiveis = []) => {
         if (!isCurrentWizardStepValid()) {
-            console.warn("Tentou avançar etapa inválida:", wizardStep);
+            console.warn("Tentou avançar etapa inválida:", state.wizardStep);
             return;
         }
         
         // Se estamos na tela de seleção de etapas, navegar para a primeira etapa selecionada
-        if (wizardStep === WIZARD_STEPS.SELECAO_ETAPAS) {
-            if (etapasFlow.length > 0) {
-                setWizardStep(etapasFlow[0]);
+        if (state.wizardStep === WIZARD_STEPS.SELECAO_ETAPAS) {
+            if (state.etapasFlow.length > 0) {
+                dispatch({
+                    type: ACTION_TYPES.AVANCAR_ETAPA,
+                    payload: { nextStep: state.etapasFlow[0] }
+                });
             }
             return;
         }
         
         // Se estamos na seleção de curso, calcular resultados e ir para resultado
-        if (wizardStep === WIZARD_STEPS.CURSO) {
-            calcularResultadosFinais();
-            setWizardStep(WIZARD_STEPS.RESULTADO);
+        if (state.wizardStep === WIZARD_STEPS.CURSO) {
+            const resultadosFinais = calcularResultadosFinais(cursosDisponiveis);
+            dispatch({
+                type: ACTION_TYPES.AVANCAR_ETAPA,
+                payload: { nextStep: WIZARD_STEPS.RESULTADO, resultadosFinais }
+            });
             return;
         }
         
         // Navegação dinâmica baseada no fluxo
-        const currentIndex = etapasFlow.indexOf(wizardStep);
-        if (currentIndex !== -1 && currentIndex < etapasFlow.length - 1) {
-            setWizardStep(etapasFlow[currentIndex + 1]);
+        const currentIndex = state.etapasFlow.indexOf(state.wizardStep);
+        if (currentIndex !== -1 && currentIndex < state.etapasFlow.length - 1) {
+            dispatch({
+                type: ACTION_TYPES.AVANCAR_ETAPA,
+                payload: { nextStep: state.etapasFlow[currentIndex + 1] }
+            });
         }
-    }, [wizardStep, isCurrentWizardStepValid, calcularResultadosFinais, etapasFlow]);
+    }, [state.wizardStep, state.etapasFlow, isCurrentWizardStepValid, calcularResultadosFinais]);
 
     const handleEtapaAnterior = useCallback(() => {
         // Se estamos na primeira etapa do fluxo, voltar para seleção
-        if (etapasFlow.length > 0 && wizardStep === etapasFlow[0]) {
-            setWizardStep(WIZARD_STEPS.SELECAO_ETAPAS);
+        if (state.etapasFlow.length > 0 && state.wizardStep === state.etapasFlow[0]) {
+            dispatch({
+                type: ACTION_TYPES.VOLTAR_ETAPA,
+                payload: WIZARD_STEPS.SELECAO_ETAPAS
+            });
             return;
         }
         
         // Navegação dinâmica baseada no fluxo
-        const currentIndex = etapasFlow.indexOf(wizardStep);
+        const currentIndex = state.etapasFlow.indexOf(state.wizardStep);
         if (currentIndex > 0) {
-            const etapaAnterior = etapasFlow[currentIndex - 1];
-            setWizardStep(etapaAnterior);
+            const etapaAnterior = state.etapasFlow[currentIndex - 1];
+            dispatch({
+                type: ACTION_TYPES.VOLTAR_ETAPA,
+                payload: etapaAnterior
+            });
             
             // Limpar erros de validação da etapa anterior se for uma etapa PAVE
             if (etapaAnterior >= WIZARD_STEPS.ETAPA_1 && etapaAnterior <= WIZARD_STEPS.ETAPA_3) {
                 const { errorKey } = getKeysForEtapa(etapaAnterior);
-                if (validationErrors[errorKey]) {
-                    setValidationErrors(prev => {
-                        const newState = { ...prev };
-                        delete newState[errorKey];
-                        return newState;
-                    });
+                if (state.validationErrors[errorKey]) {
+                    dispatch({ type: ACTION_TYPES.CLEAR_VALIDATION_ERROR, payload: errorKey });
                 }
             }
         }
-    }, [wizardStep, getKeysForEtapa, validationErrors, etapasFlow]);
+    }, [state.wizardStep, state.etapasFlow, getKeysForEtapa, state.validationErrors]);
+
+    // Função auxiliar para permitir controle direto do wizard step (usada em casos especiais)
+    const setWizardStep = useCallback((step) => {
+        dispatch({ type: ACTION_TYPES.SET_WIZARD_STEP, payload: step });
+    }, []);
 
     // Determinar texto e estado do botão Próxima Etapa para passar aos componentes filhos
     const isNextStepDisabled = !isCurrentWizardStepValid();
     // Preserve per-screen button texts: "Continuar" on selection screen, "Simular agora" on curso, otherwise "Próxima etapa"
     let nextStepText = 'Próxima etapa';
-    if (wizardStep === WIZARD_STEPS.CURSO) nextStepText = 'Simular agora';
-    else if (wizardStep === WIZARD_STEPS.SELECAO_ETAPAS) nextStepText = 'Continuar';
+    if (state.wizardStep === WIZARD_STEPS.CURSO) nextStepText = 'Simular agora';
+    else if (state.wizardStep === WIZARD_STEPS.SELECAO_ETAPAS) nextStepText = 'Continuar';
 
     return {
-        wizardStep,
+        wizardStep: state.wizardStep,
         setWizardStep,
-        selectedEtapas,
-        etapasFlow,
+        selectedEtapas: state.selectedEtapas,
+        etapasFlow: state.etapasFlow,
         handleEtapasSelectionChange,
-        desempenho,
+        desempenho: state.desempenho,
         handleDesempenhoChange,
         handleRedacaoChange,
-        selecaoCurso,
+        selecaoCurso: state.selecaoCurso,
         handleCursoChange,
-        resultados,
-        validationErrors,
-        cursosDisponiveis,
-        loadingCursos,
-        errorCursos,
+        resultados: state.resultados,
+        validationErrors: state.validationErrors,
         handleProximaEtapa,
         handleEtapaAnterior,
         isNextStepDisabled,
