@@ -1,4 +1,4 @@
-// src/features/bancoQuestoes/hooks/useQuestionSearch.js
+// src/features/questions/hooks/useQuestionSearch.js
 import { useState, useEffect, useCallback } from 'react';
 
 /**

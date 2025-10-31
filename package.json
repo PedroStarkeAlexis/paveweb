@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "vite --config config/vite.config.js",
+  "build": "vite build --config config/vite.config.js",
+    "lint": "eslint . --config config/eslint.config.js",
+    "preview": "vite preview --config config/vite.config.js"
   },
   "dependencies": {
     "@google/genai": "^1.0.0",

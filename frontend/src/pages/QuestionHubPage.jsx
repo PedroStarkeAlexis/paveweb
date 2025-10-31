@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
-import QuickAccessTab from '../features/bancoQuestoes/components/QuickAccessTab';
-import AllQuestionsPage from '../features/bancoQuestoes/components/AllQuestionsPage';
+import QuickAccessTab from '../features/questions/components/QuickAccessTab';
+import AllQuestionsPage from '../features/questions/components/AllQuestionsPage';
 import './QuestionHubPage.css';
 
 function QuestionHubPage() {

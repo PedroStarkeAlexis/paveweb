@@ -1,51 +1,501 @@
-# .github/copilot-instructions.md
-# Central PAVE AI Coding Instructions
+# copilot-instructions.md
 
-This guide helps AI agents understand the architecture and conventions of the PAVE React application.
+```markdown
+<!-- copilot-instructions.md -->
 
-## Architecture Overview
+# Copilot Instructions - Central PAVE
 
-The project is a React frontend (`src/`) powered by a serverless backend using Cloudflare Pages Functions (`functions/api/`).
+Este arquivo contém instruções específicas para o GitHub Copilot ao trabalhar neste projeto. Seguir estas diretrizes ajuda a manter a consistência do código e acelera o desenvolvimento.
 
--   **Frontend:** A standard Vite + React application using `react-router-dom` for navigation. Key UI components are in `src/features` and `src/components/common`.
--   **Backend:** Cloudflare Functions handle all API logic. The main entry point for the AI chat is `functions/api/ask.js`.
--   **Data Source:** The single source of truth for all PAVE questions is a remote worker. Backend functions **must** use `fetchAllQuestions` from `functions/api/utils/uploader.js` to retrieve question data. Do not read from local JSON files like `public/questoes.json` in backend logic.
+## 📋 Visão Geral do Projeto
 
-## Core AI Logic & Data Flow
+Central PAVE é uma aplicação React + Cloudflare Pages para auxiliar estudantes do PAVE (UFPel) com:
+- Banco de questões de provas anteriores
+- Calculadora de nota PAVE
+- Sistema de questões salvas
+- Interface moderna e responsiva
 
-The main AI chat functionality in `functions/api/ask.js` follows a sophisticated two-step process. Understanding this is critical.
+**Stack Principal:**
+- **Frontend:** React 19, React Router, Vite
+- **Styling:** CSS Modules com variáveis CSS customizadas
+- **Animações:** Framer Motion (motion/react)
+- **Markdown:** react-markdown, rehype-katex, remark-gfm
+- **Backend:** Cloudflare Pages Functions (estrutura futura)
 
-1.  **Analysis Step:** An initial call is made to the Gemini API using the prompt from `createAnalysisPrompt` (`functions/api/prompt.js`). This call determines the user's `intent` (e.g., `BUSCAR_QUESTAO`, `CRIAR_QUESTAO`, `CONVERSAR`) and extracts entities. For creation intents, it also generates the question/flashcard content in this first step.
+## 🎯 Convenções de Código
 
-2.  **Execution Step:** Based on the `intent` from step 1:
-    -   **`BUSCAR_QUESTAO`**: A hybrid search is performed.
-        1.  **Vector Search:** A query embedding is generated using `@cf/baai/bge-m3` (multilingual model supporting Portuguese) and used to find the top candidates from a Cloudflare Vectorize index (`env.QUESTIONS_INDEX`).
-        2.  **AI Re-ranking:** The top candidates are sent to Gemini with `createQuestionReRankingPrompt` to select the most relevant questions.
-    -   **`CRIAR_QUESTAO` / `CRIAR_FLASHCARDS`**: The JSON content generated during the *Analysis Step* is parsed and returned to the user.
-    -   **`CONVERSAR` / `INFO_PAVE`**: The `responseText` from the *Analysis Step* is returned.
+### Estrutura de Arquivos
 
-When modifying AI logic, always check `functions/api/prompt.js` first. The prompts are very specific and require structured JSON output from the model.
+```
+frontend/src/
+├── components/         # Componentes reutilizáveis
+│   ├── common/        # Componentes compartilhados (QuestionLayout, etc)
+│   ├── icons/         # Componentes de ícones SVG
+│   └── layout/        # Componentes de layout (BottomNavBar, MoreMenu)
+├── features/          # Funcionalidades por domínio
+│   ├── calculadora/   # Feature da calculadora
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── styles/
+│   │   └── utils/
+│   ├── questions/     # Feature do banco de questões
+│   └── saved/         # Feature de questões salvas
+├── contexts/          # React Contexts
+├── hooks/             # Hooks customizados globais
+├── pages/             # Componentes de página
+├── styles/            # Estilos globais
+└── utils/             # Utilitários globais
+```
 
-## Developer Workflows
+### Nomenclatura
 
--   **Local Development:**
-    1.  Run the frontend with `npm run dev`.
-    2.  Run the backend functions with `wrangler pages dev dist`.
-    3.  You must copy `wrangler.toml.no` to `wrangler.toml` and configure the necessary Cloudflare bindings (`QUESTOES_PAVE_BUCKET`, `QUESTIONS_INDEX`, `AI`) and environment variables.
-    the user use github repository to deploy, deploy when commit 
--   **Vector Search Indexing:** The search index is not updated automatically. After the source `questoes.json` file is updated, you must manually trigger the indexing process by sending a `POST` request to the `/api/index-questions` endpoint with the correct `X-Admin-Secret` header.
+**Arquivos:**
+- Componentes: `PascalCase.jsx` (ex: `QuestionLayout.jsx`)
+- Estilos: `PascalCase.css` ou nome-do-componente.css (ex: `QuestionLayout.css`)
+- Hooks: `useCamelCase.js` (ex: `useWindowSize.js`)
+- Utilitários: `camelCase.js` (ex: `vibration.js`)
+- Constantes: `camelCase.js` ou `SCREAMING_SNAKE_CASE.js`
 
-## Frontend Conventions
+**Componentes e Funções:**
+- Componentes React: `PascalCase`
+- Funções/Hooks: `camelCase`
+- Constantes: `SCREAMING_SNAKE_CASE`
+- Variáveis: `camelCase`
 
--   **Styling:** All components should use the CSS variables defined in `src/style.css` for colors, backgrounds, and borders (e.g., `var(--brand-primary)`, `var(--bg-secondary)`). This ensures consistency with the light/dark theme.
--   **Displaying Questions:** Always use the `src/components/common/QuestionLayout.jsx` component to render questions. It handles answer feedback, saving, and consistent styling across the app (chat, question bank, saved questions).
--   **State Management:**
-    -   For saved questions, use the `useSavedQuestions` hook, which connects to the `SavedQuestionsContext`.
-    -   For other features, state is generally managed within the relevant feature directory (`src/features/*`) or passed down from `App.jsx`.
+### Imports
 
-### Key Files & Directories
--   `functions/api/ask.js`: The main AI chat orchestrator.
--   `functions/api/prompt.js`: Contains all core prompt engineering logic.
--   `functions/api/utils/uploader.js`: The unified function (`fetchAllQuestions`) for retrieving data.
--   `src/components/common/QuestionLayout.jsx`: The canonical component for displaying a question.
--   `src/style.css`: Defines the global design system and theme variables.
+**Ordem preferencial:**
+1. Bibliotecas externas (React, react-router-dom, etc)
+2. Componentes de outros features/pastas
+3. Componentes locais do mesmo feature
+4. Hooks customizados
+5. Utilitários e constantes
+6. Estilos CSS
+
+**Exemplo:**
+```javascript
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion as Motion } from 'motion/react';
+
+import QuestionLayout from '../../../components/common/QuestionLayout';
+import useQuestionSearch from '../hooks/useQuestionSearch';
+import { TOTAL_QUESTOES } from '../constants';
+
+import './QuestionListPage.css';
+```
+
+## 🎨 Padrões de Estilo
+
+### CSS Customizado
+
+**Use variáveis CSS para cores e temas:**
+```css
+/* ✅ BOM */
+.my-component {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+/* ❌ EVITE */
+.my-component {
+  background-color: #ffffff;
+  color: #1f2937;
+}
+```
+
+**Principais variáveis disponíveis:**
+```css
+/* Backgrounds */
+--bg-primary, --bg-secondary, --bg-tertiary
+
+/* Textos */
+--text-primary, --text-secondary, --text-muted
+
+/* Bordas */
+--border-primary, --border-secondary
+
+/* Marca */
+--brand-primary, --brand-primary-hover
+--brand-secondary, --brand-secondary-text
+
+/* Estados */
+--error-primary, --error-secondary
+--success-primary, --success-secondary
+```
+
+### Dark Mode
+
+**Sempre implemente suporte a dark mode:**
+```css
+/* Light mode (padrão) */
+.my-component {
+  background-color: var(--bg-primary);
+}
+
+/* Dark mode */
+[data-theme="dark"] .my-component {
+  background-color: var(--bg-tertiary);
+}
+```
+
+### Prefixos de Classe
+
+**Use prefixos específicos para evitar conflitos:**
+- Calculadora: `calc-`
+- Hub de questões: `hub-`
+- Componentes comuns: sem prefixo específico
+
+**Exemplo:**
+```css
+/* Calculadora */
+.calc-wizard-container { }
+.calc-tela-titulo { }
+
+/* Hub de Questões */
+.hub-carousel-section { }
+.hub-section-title { }
+
+/* Componentes Comuns */
+.question-layout { }
+.alternative-item { }
+```
+
+## 🔧 Padrões de Componentes React
+
+### Estrutura de Componente
+
+```javascript
+// QuestionListPage.jsx
+
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
+import QuestionList from './QuestionList';
+import './QuestionListPage.css';
+
+/**
+ * Página que exibe lista de questões filtradas por matéria ou ano
+ * @param {Object} props - Propriedades do componente
+ */
+function QuestionListPage() {
+  const { subject, year } = useParams();
+  const [questions, setQuestions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Lógica do componente...
+
+  return (
+    <div className="question-list-page">
+      {/* JSX do componente */}
+    </div>
+  );
+}
+
+export default QuestionListPage;
+```
+
+### Hooks Customizados
+
+```javascript
+// useQuestionSearch.js
+
+import { useState, useEffect, useCallback } from 'react';
+
+/**
+ * Hook customizado para busca de questões com filtros e debounce
+ * 
+ * @param {Object} filters - Objeto com os filtros de busca
+ * @param {number} [debounceMs=500] - Tempo de debounce em milissegundos
+ * 
+ * @returns {{
+ *   questions: Array,
+ *   isLoading: boolean,
+ *   error: string | null,
+ *   hasSearched: boolean
+ * }}
+ */
+const useQuestionSearch = (filters = {}, debounceMs = 500) => {
+  // Implementação do hook...
+
+  return {
+    questions,
+    isLoading,
+    error,
+    hasSearched
+  };
+};
+
+export default useQuestionSearch;
+```
+
+### Context e Provider
+
+```javascript
+// SavedQuestionsContext.jsx
+
+import React, { createContext, useState, useEffect } from 'react';
+
+export const SavedQuestionsContext = createContext();
+
+export const SavedQuestionsProvider = ({ children }) => {
+  const [savedQuestionIds, setSavedQuestionIds] = useState(() => {
+    // Inicialização com localStorage
+  });
+
+  // Lógica do provider...
+
+  const value = {
+    savedQuestionIds,
+    addSavedQuestion,
+    removeSavedQuestion,
+    isQuestionSaved
+  };
+
+  return (
+    <SavedQuestionsContext.Provider value={value}>
+      {children}
+    </SavedQuestionsContext.Provider>
+  );
+};
+```
+
+## 🎬 Animações com Framer Motion
+
+**Import correto:**
+```javascript
+import { motion as Motion, AnimatePresence } from 'motion/react';
+```
+
+**Padrões de uso:**
+```javascript
+// Animação simples de fade-in
+<Motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.3 }}
+>
+  {/* Conteúdo */}
+</Motion.div>
+
+// Com variants para efeitos mais complexos
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+  hover: { scale: 1.03 }
+};
+
+<Motion.div
+  variants={cardVariants}
+  initial="hidden"
+  animate="visible"
+  whileHover="hover"
+>
+  {/* Card animado */}
+</Motion.div>
+```
+
+## 📱 Responsividade
+
+**Breakpoints padrão:**
+- Desktop: > 768px
+- Tablet: 481px - 768px
+- Mobile: ≤ 480px
+
+**Padrão mobile-first:**
+```css
+/* Estilos base (mobile) */
+.my-component {
+  padding: 20px 15px;
+}
+
+/* Tablet */
+@media (min-width: 481px) {
+  .my-component {
+    padding: 30px 20px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .my-component {
+    padding: 40px 30px;
+  }
+}
+```
+
+## 🚫 Restrições Importantes
+
+### Browser Storage
+
+**NUNCA use localStorage ou sessionStorage em artifacts:**
+```javascript
+// ❌ PROIBIDO em artifacts
+localStorage.setItem('key', 'value');
+sessionStorage.getItem('key');
+
+// ✅ USE React state ou window.storage (API específica para artifacts)
+const [state, setState] = useState(initialValue);
+```
+
+### Bibliotecas Disponíveis
+
+**Imports permitidos:**
+```javascript
+// React e relacionados
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+// Animações
+import { motion as Motion } from 'motion/react';
+
+// Markdown
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+
+// Ícones (lucide-react se necessário)
+import { Camera } from 'lucide-react';
+```
+
+## 🎯 Features Específicas
+
+### Calculadora PAVE
+
+**Design System: Duolingo-style**
+- Botões com sombra: `box-shadow: 0 4px 0 color`
+- Efeito tátil no clique: `transform: translateY(4px)`
+- Cores vibrantes para seleção
+- Inputs com steppers customizados (+/-)
+
+**Constantes importantes:**
+```javascript
+import {
+  TOTAL_QUESTOES,      // 32
+  PONTOS_ACERTO_E1E2,  // 3.125
+  PESO_ETAPA_3,        // 3
+  WIZARD_STEPS         // Objeto com steps do wizard
+} from '../constants';
+```
+
+### Banco de Questões
+
+**Estrutura de Questão:**
+```javascript
+{
+  id: "unique-id",
+  ano: 2024,
+  etapa: 1,
+  materia: "História",
+  topico: "Brasil Colônia",
+  corpo_questao: [
+    { tipo: "texto", conteudo: "..." },
+    { tipo: "imagem", url_imagem: "...", legenda: "..." }
+  ],
+  alternativas: [
+    { letra: "A", texto: "..." },
+    // ...
+  ],
+  gabarito: "A"
+}
+```
+
+**Componente QuestionLayout:**
+- Usa `ReactMarkdown` para renderizar texto
+- Suporta KaTeX para fórmulas matemáticas
+- Sistema de feedback visual para respostas
+- Menu de contexto para salvar questões
+
+### Sistema de Salvamento
+
+**Context Provider:**
+```javascript
+import { useSavedQuestions } from '../hooks/useSavedQuestions';
+
+const { 
+  savedQuestionIds,
+  addSavedQuestion,
+  removeSavedQuestion,
+  isQuestionSaved 
+} = useSavedQuestions();
+```
+
+## 🔍 Padrões de API/Fetch
+
+**Estrutura de chamadas:**
+```javascript
+const fetchData = async () => {
+  setIsLoading(true);
+  setError(null);
+  
+  try {
+    const response = await fetch('/api/endpoint');
+    
+    if (!response.ok) {
+      throw new Error(`Erro ${response.status}`);
+    }
+    
+    const data = await response.json();
+    setData(data);
+  } catch (err) {
+    console.error('Erro:', err);
+    setError(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
+```
+
+## ✅ Checklist para Novos Componentes
+
+Ao criar um novo componente, certifique-se de:
+
+- [ ] Nome do arquivo em PascalCase.jsx
+- [ ] CSS correspondente criado (se necessário)
+- [ ] Imports organizados por categoria
+- [ ] JSDoc para props/funções principais
+- [ ] Suporte a dark mode implementado
+- [ ] Responsividade testada (mobile/tablet/desktop)
+- [ ] Estados de loading/error tratados
+- [ ] Acessibilidade básica (aria-labels)
+- [ ] Componente exportado como default
+- [ ] Sem uso de localStorage/sessionStorage em artifacts
+
+## 🐛 Debugging
+
+**Console logs úteis:**
+```javascript
+// Durante desenvolvimento
+console.log('Estado atual:', { isLoading, data, error });
+
+// Em produção, use console.error para erros
+console.error('Falha ao carregar dados:', error);
+
+// Evite console.log em produção (remova antes do commit)
+```
+
+## 📚 Recursos Úteis
+
+- **React Router:** Navegação com `<Link>` e `useNavigate()`
+- **Framer Motion:** [motion.dev](https://motion.dev)
+- **React Markdown:** Renderização de markdown com suporte a LaTeX
+- **KaTeX:** Renderização de fórmulas matemáticas
+
+## 🚀 Comandos Úteis
+
+```bash
+# Desenvolvimento
+npm run dev
+
+# Build para produção
+npm run build
+
+# Lint
+npm run lint
+
+# Preview da build
+npm run preview
+```
+

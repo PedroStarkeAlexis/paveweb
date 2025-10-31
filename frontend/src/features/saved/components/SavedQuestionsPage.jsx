@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSavedQuestions } from '../../../hooks/useSavedQuestions';
 import QuestionLayout from '../../../components/common/QuestionLayout';
-import QuestionList from '../../bancoQuestoes/components/QuestionList';
+import QuestionList from '../../questions/components/QuestionList';
 import './SavedQuestionsPage.css'; // Criaremos este CSS
 
 // Objeto da questão de exemplo para desenvolvimento

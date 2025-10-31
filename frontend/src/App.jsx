@@ -4,14 +4,14 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 // --- Importar páginas/features ---
 import HomePage from './pages/HomePage';
 import QuestionHubPage from './pages/QuestionHubPage';
-import AllQuestionsPage from './features/bancoQuestoes/components/AllQuestionsPage';
-import QuestionListPage from './features/bancoQuestoes/components/QuestionListPage';
-import SavedQuestionsPage from './features/savedQuestions/components/SavedQuestionsPage';
+import AllQuestionsPage from './features/questions/components/AllQuestionsPage';
+import QuestionListPage from './features/questions/components/QuestionListPage';
+import SavedQuestionsPage from './features/saved/components/SavedQuestionsPage';
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
 
 // --- Importar componentes comuns e hooks globais ---
 import useDarkModeToggle from './hooks/useDarkModeToggle';
-import BottomNavBar from './components/common/BottomNavBar';
+import BottomNavBar from './components/layout/BottomNavBar';
 
 // --- Importar Ícones SVG ---
 import IconHome from './components/icons/IconHome';
@@ -24,8 +24,8 @@ import IconSun from './components/icons/IconSun';
 import IconMoon from './components/icons/IconMoon';
 import IconDocumentText from './components/icons/IconDocumentText';
 // Importar CSS global principal
-import './style.css';
-import MoreMenu from './components/common/MoreMenu';
+import './styles/style.css';
+import MoreMenu from './components/layout/MoreMenu';
 // Importar o SavedQuestionsProvider
 import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext.jsx';
 

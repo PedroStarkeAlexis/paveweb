@@ -1053,7 +1053,7 @@ code {
   color: #fff;
 }
 
-/* src/style.css */
+/* src/styles/style.css */
 /* ... */
 
 .search-section {
@@ -1118,7 +1118,7 @@ code {
   background-color: #555;
   color: #aaa;
 }
-/* src/style.css */
+/* src/styles/style.css */
 
 /* ... (seus estilos existentes para .message, .bot-message, etc.) ... */
 

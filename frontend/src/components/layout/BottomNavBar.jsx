@@ -1,4 +1,4 @@
-// src/components/common/BottomNavBar.jsx
+// src/components/layout/BottomNavBar.jsx
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './BottomNavBar.css';

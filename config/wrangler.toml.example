@@ -1,0 +1,64 @@
+# O nome do seu projeto no Cloudflare Pages.
+# Este nome é usado para desenvolvimento local com `wrangler pages dev`.
+# Geralmente, corresponde ao nome do seu repositório ou ao nome que você deu no dashboard do Pages.
+name = "pave-react"
+
+# O diretório onde o Vite (ou seu builder) coloca os arquivos finais do build do frontend.
+# Para Vite, o padrão é "dist". Para Create React App, seria "build".
+pages_build_output_dir = "dist"
+
+# Define a compatibilidade do ambiente de execução do Worker.
+# Datas de compatibilidade ajudam a garantir que seu Worker se comporte de forma consistente
+# mesmo que haja atualizações no runtime da Cloudflare.
+# Use uma data recente. Você pode encontrar as datas na documentação do Cloudflare Workers.
+compatibility_date = "2024-05-01" # Exemplo, ajuste para uma data recente
+
+# --- Variáveis de Ambiente para Desenvolvimento Local (`wrangler pages dev`) ---
+# Estas variáveis NÃO são automaticamente enviadas para produção.
+# Para produção/preview, configure-as no Dashboard do Cloudflare Pages
+# (Settings > Environment Variables).
+[vars]
+# Se você ainda usa a API do Gemini diretamente em alguma função e precisa da chave:
+GEMINI_API_KEY = "AIzaSyAp4KK4sR4vLm1n9y-iHyt1KX0tq5Yv2ik"
+
+# Para diferenciar ambientes no código das suas funções, se necessário:
+CF_ENV = "development"
+
+# Segredo para proteger a função de indexação durante o desenvolvimento local:
+INDEXING_SECRET = "XSAASX"
+
+# Configuração do uploader/R2 utilizado para servir provas
+PAVE_UPLOADER_BASE_URL = "https://pave-uploader.pedroalexis016.workers.dev"
+PAVE_UPLOADER_ADMIN_USER = "admin"
+PAVE_UPLOADER_ADMIN_PASSWORD = "admin123"
+
+# --- Bindings de Recursos da Cloudflare ---
+# Estes bindings conectam suas funções aos serviços da Cloudflare.
+# Para `wrangler pages dev`, estas definições permitem o acesso local.
+# Para produção/preview, você DEVE configurar bindings correspondentes
+# no Dashboard do Cloudflare Pages (Settings > Functions > Bindings).
+
+# Binding para o seu R2 Bucket onde 'questoes.json' está armazenado.
+[[r2_buckets]]
+binding = "QUESTOES_PAVE_BUCKET"
+bucket_name = "chatbot-pave-questoes-2024" # Nome do bucket de produção
+# Binding para o seu índice do Vectorize.
+#[[vectorize]]
+#binding = "QUESTIONS_INDEX"     # Nome da variável em `env.QUESTIONS_INDEX`
+#index_name = "questions-index"  # Nome do índice que você criou no Vectorize
+
+# Binding para habilitar o Workers AI.
+[ai]
+binding = "AI"                  # Nome da variável em `env.AI`
+
+
+# --- Configurações de Build (Opcional, mas pode ser útil) ---
+# [build]
+# command = "npm run build" # O comando para construir seu frontend (Vite já faz isso por padrão com Pages)
+# watch_dir = "src"         # Diretório para observar mudanças no frontend durante `wrangler pages dev`
+
+# --- Configurações de Preview (Opcional) ---
+# Se você usa `wrangler pages dev` e quer simular um ambiente de preview
+# [preview]
+# port = 8788 # Porta para o servidor de preview local
+# ip = "localhost"
