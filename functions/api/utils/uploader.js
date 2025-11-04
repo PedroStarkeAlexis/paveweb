@@ -1,6 +1,6 @@
-const DEFAULT_ADMIN_USER = "admin";
-const DEFAULT_ADMIN_PASSWORD = "admin123";
-const DEFAULT_BASE_URL = "https://pave-uploader.pedroalexis016.workers.dev";
+const DEFAULT_ADMIN_USER = null;
+const DEFAULT_ADMIN_PASSWORD = null;
+const DEFAULT_BASE_URL = null;
 
 function normalizeBaseUrl(url) {
   if (!url) return null;
@@ -8,11 +8,18 @@ function normalizeBaseUrl(url) {
 }
 
 function resolveUploaderConfig(env = {}) {
-  return {
-    baseUrl: normalizeBaseUrl(env.UPLOADER_BASE_URL) || DEFAULT_BASE_URL,
-    adminPassword: env.UPLOADER_ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD,
-    adminUser: env.UPLOADER_ADMIN_USER || DEFAULT_ADMIN_USER,
-  };
+  const baseUrl =
+    normalizeBaseUrl(
+      env.PAVE_UPLOADER_BASE_URL || env.UPLOADER_BASE_URL || DEFAULT_BASE_URL
+    );
+  const adminPassword =
+    env.PAVE_UPLOADER_ADMIN_PASSWORD ||
+    env.UPLOADER_ADMIN_PASSWORD ||
+    DEFAULT_ADMIN_PASSWORD;
+  const adminUser =
+    env.PAVE_UPLOADER_ADMIN_USER || env.UPLOADER_ADMIN_USER || DEFAULT_ADMIN_USER;
+
+  return { baseUrl, adminPassword, adminUser };
 }
 
 function createBasicAuthHeader(user, password) {
@@ -30,7 +37,7 @@ function createBasicAuthHeader(user, password) {
 async function fetchFromUploader(path, env) {
   const { baseUrl, adminPassword, adminUser } = resolveUploaderConfig(env);
 
-  if (!baseUrl || !adminPassword) {
+  if (!baseUrl || !adminPassword || !adminUser) {
     throw new Error("Configuração do uploader ausente.");
   }
 

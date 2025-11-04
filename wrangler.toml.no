@@ -11,7 +11,7 @@ pages_build_output_dir = "dist"
 # Datas de compatibilidade ajudam a garantir que seu Worker se comporte de forma consistente
 # mesmo que haja atualizações no runtime da Cloudflare.
 # Use uma data recente. Você pode encontrar as datas na documentação do Cloudflare Workers.
-compatibility_date = "2024-05-01" # Exemplo, ajuste para uma data recente
+compatibility_date = "2025-01-01" # Ajuste para uma data recente compatível com o runtime
 
 # --- Variáveis de Ambiente para Desenvolvimento Local (`wrangler pages dev`) ---
 # Estas variáveis NÃO são automaticamente enviadas para produção.
@@ -19,18 +19,18 @@ compatibility_date = "2024-05-01" # Exemplo, ajuste para uma data recente
 # (Settings > Environment Variables).
 [vars]
 # Se você ainda usa a API do Gemini diretamente em alguma função e precisa da chave:
-GEMINI_API_KEY = "AIzaSyAp4KK4sR4vLm1n9y-iHyt1KX0tq5Yv2ik"
+GEMINI_API_KEY = "<your-gemini-api-key>"
 
 # Para diferenciar ambientes no código das suas funções, se necessário:
 CF_ENV = "development"
 
 # Segredo para proteger a função de indexação durante o desenvolvimento local:
-INDEXING_SECRET = "XSAASX"
+INDEXING_SECRET = "<your-local-indexing-secret>"
 
 # Configuração do uploader/R2 utilizado para servir provas
-PAVE_UPLOADER_BASE_URL = "https://pave-uploader.pedroalexis016.workers.dev"
-PAVE_UPLOADER_ADMIN_USER = "admin"
-PAVE_UPLOADER_ADMIN_PASSWORD = "admin123"
+PAVE_UPLOADER_BASE_URL = "https://example-uploader.your-domain.workers.dev"
+PAVE_UPLOADER_ADMIN_USER = "<uploader-admin-user>"
+PAVE_UPLOADER_ADMIN_PASSWORD = "<uploader-admin-password>"
 
 # --- Bindings de Recursos da Cloudflare ---
 # Estes bindings conectam suas funções aos serviços da Cloudflare.
@@ -41,7 +41,7 @@ PAVE_UPLOADER_ADMIN_PASSWORD = "admin123"
 # Binding para o seu R2 Bucket onde 'questoes.json' está armazenado.
 [[r2_buckets]]
 binding = "QUESTOES_PAVE_BUCKET"
-bucket_name = "chatbot-pave-questoes-2024" # Nome do bucket de produção
+bucket_name = "<your-r2-bucket-name>" # Nome do bucket configurado no R2
 # Binding para o seu índice do Vectorize.
 #[[vectorize]]
 #binding = "QUESTIONS_INDEX"     # Nome da variável em `env.QUESTIONS_INDEX`

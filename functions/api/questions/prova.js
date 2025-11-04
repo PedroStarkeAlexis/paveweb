@@ -1,6 +1,6 @@
-const DEFAULT_ADMIN_USER = "admin";
-const DEFAULT_ADMIN_PASSWORD = "admin123";
-const DEFAULT_BASE_URL = "https://pave-uploader.pedroalexis016.workers.dev";
+const DEFAULT_ADMIN_USER = null;
+const DEFAULT_ADMIN_PASSWORD = null;
+const DEFAULT_BASE_URL = null;
 
 function normalizeBaseUrl(url) {
   if (!url) return null;
@@ -8,12 +8,22 @@ function normalizeBaseUrl(url) {
 }
 
 function resolveUploaderConfig(env = {}) {
-  const baseUrl = normalizeBaseUrl(env.UPLOADER_BASE_URL) || DEFAULT_BASE_URL;
-  const adminPassword = env.UPLOADER_ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
-  const adminUser = env.UPLOADER_ADMIN_USER || DEFAULT_ADMIN_USER;
+  const baseUrl = normalizeBaseUrl(
+    env.PAVE_UPLOADER_BASE_URL || env.UPLOADER_BASE_URL || DEFAULT_BASE_URL
+  );
+  const adminPassword =
+    env.PAVE_UPLOADER_ADMIN_PASSWORD ||
+    env.UPLOADER_ADMIN_PASSWORD ||
+    DEFAULT_ADMIN_PASSWORD;
+  const adminUser =
+    env.PAVE_UPLOADER_ADMIN_USER ||
+    env.UPLOADER_ADMIN_USER ||
+    DEFAULT_ADMIN_USER;
 
   if (!baseUrl || !adminPassword || !adminUser) {
-    throw new Error("Configuração do uploader ausente. Verifique as variáveis de ambiente.");
+    throw new Error(
+      "Configuração do uploader ausente. Defina as variáveis de ambiente necessárias."
+    );
   }
 
   return { baseUrl, adminUser, adminPassword };
