@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
-
-// --- Importar páginas/features ---
 import HomePage from './pages/HomePage';
 import QuestionHubPage from './pages/QuestionHubPage';
 import AllQuestionsPage from './features/questions/components/AllQuestionsPage';
 import QuestionListPage from './features/questions/components/QuestionListPage';
 import SavedQuestionsPage from './features/saved/components/SavedQuestionsPage';
 import CalculadoraPage from './features/calculadora/Calculadorapage.jsx';
-
-// --- Importar componentes comuns e hooks globais ---
 import useDarkModeToggle from './hooks/useDarkModeToggle';
 import BottomNavBar from './components/layout/BottomNavBar';
-
-// --- Importar Ícones SVG ---
+import MoreMenu from './components/layout/MoreMenu';
+import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext.jsx';
 import IconHome from './components/icons/IconHome';
 import IconCalculator from './components/icons/IconCalculator';
 import IconBook from './components/icons/IconBook';
@@ -23,22 +19,25 @@ import IconEllipsisHorizontal from './components/icons/IconEllipsisHorizontal';
 import IconSun from './components/icons/IconSun';
 import IconMoon from './components/icons/IconMoon';
 import IconDocumentText from './components/icons/IconDocumentText';
-// Importar CSS global principal
 import './styles/style.css';
-import MoreMenu from './components/layout/MoreMenu';
-// Importar o SavedQuestionsProvider
-import { SavedQuestionsProvider } from './contexts/SavedQuestionsContext.jsx';
 
-// --- Componente NavLink (para Sidebar) ---
+/**
+ * Componente de link de navegação para a barra lateral.
+ * Ele se estiliza como "ativo" se a rota atual corresponder ao seu destino.
+ * @param {object} props - Propriedades do componente.
+ * @param {string} props.to - O caminho de destino do link.
+ * @param {React.ComponentType} props.icon - O componente de ícone a ser exibido.
+ * @param {React.ReactNode} props.children - O texto do link.
+ * @param {boolean} [props.isFooter=false] - Estilo alternativo para links no rodapé da sidebar.
+ */
 function NavLink({ to, icon, children, isFooter = false }) {
     const location = useLocation();
-    // CORREÇÃO: Lógica de 'isActive' ajustada
-    // Para a home ('/'), a correspondência deve ser exata. Para as outras, `startsWith` funciona bem.
     const isActive = !to.startsWith('http') && (to === '/' ? location.pathname === to : location.pathname.startsWith(to));
     const linkClass = isActive ? 'active' : '';
     const iconClass = isFooter ? 'sidebar-icon-footer' : 'sidebar-icon';
     const IconElement = icon ? React.createElement(icon, { className: iconClass }) : null;
 
+    // Se for um link externo, renderiza uma tag <a> normal.
     if (to.startsWith('http')) {
         return (
             <li>
@@ -50,6 +49,7 @@ function NavLink({ to, icon, children, isFooter = false }) {
         );
     }
 
+    // Para links internos, usa o componente <Link> do React Router.
     return (
         <li>
             <Link to={to} className={linkClass}>
@@ -60,27 +60,30 @@ function NavLink({ to, icon, children, isFooter = false }) {
     );
 }
 
-
-// --- Componente Principal App ---
+/**
+ * Componente principal da aplicação.
+ * Organiza a estrutura geral da página com a barra lateral (sidebar), o conteúdo principal,
+ * a barra de navegação inferior (mobile) e o menu "Mais". Também gerencia o estado do tema (claro/escuro)
+ * e define todas as rotas da aplicação.
+ */
 function App() {
-    // --- Estado do Tema ---
+    // Função para determinar o tema inicial com base nas preferências do usuário ou do sistema.
     const getInitialThemePreference = () => {
         if (typeof window !== 'undefined') {
             const storedPreference = localStorage.getItem('theme-preference');
-            if (storedPreference) {
-                return storedPreference === 'dark';
-            }
+            if (storedPreference) return storedPreference === 'dark';
             return window.matchMedia('(prefers-color-scheme: dark)').matches;
         }
         return false;
     };
-    const [darkMode, setDarkMode] = useState(getInitialThemePreference);
 
+    const [darkMode, setDarkMode] = useState(getInitialThemePreference);
     const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
 
-    // --- Hook e Lógica de Tema ---
+    // Hook customizado que aplica as classes e atributos de tema ao documento.
     useDarkModeToggle(darkMode, setDarkMode);
 
+    // Função para alternar o tema e salvar a preferência no localStorage.
     const handleThemeToggle = useCallback(() => {
         setDarkMode(prevMode => {
             const newMode = !prevMode;
@@ -91,36 +94,35 @@ function App() {
         });
     }, [setDarkMode]);
 
+    // Efeito que ouve mudanças no tema do sistema operacional do usuário.
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const matcher = window.matchMedia('(prefers-color-scheme: dark)');
             const listener = ({ matches: isDark }) => {
+                // Só muda o tema se o usuário não tiver uma preferência salva.
                 if (!localStorage.getItem('theme-preference')) {
                     setDarkMode(isDark);
                 }
             };
-            if (matcher.addEventListener) {
-                matcher.addEventListener('change', listener);
-                return () => matcher.removeEventListener('change', listener);
-            } else if (matcher.addListener) { // Legado
-                matcher.addListener(listener);
-                return () => matcher.removeListener(listener);
-            }
+            matcher.addEventListener('change', listener);
+            return () => matcher.removeEventListener('change', listener);
         }
     }, [setDarkMode]);
 
+    // Itens de navegação para a barra inferior (mobile).
     const bottomNavItems = [
-        // { to: "/", icon: IconHome, label: "Início" },
         { to: "/calculadora", icon: IconCalculator, label: "Calculadora" },
         { to: "/banco-questoes", icon: IconBook, label: "Questões" },
         { type: 'button', onClick: () => setIsMoreMenuOpen(true), icon: IconEllipsisHorizontal, label: "Mais" },
     ];
-    // CORREÇÃO: "Questões Salvas" adicionado ao menu mobile
+
+    // Itens para o menu "Mais" (mobile).
     const moreMenuItems = [
         { to: "/questoes-salvas", icon: IconBookmark, label: "Questões Salvas" },
         { to: "/informacoes-pave", icon: IconDocumentText, label: "Info PAVE" },
     ];
 
+    // Função para abrir o widget de ajuda da ferramenta Appzi (Não sei se vou manter).
     const handleAppziHelpClick = (e) => {
         e.preventDefault();
         if (window.appzi) {
@@ -141,12 +143,10 @@ function App() {
                         <NavLink to="/" icon={IconHome}>Início</NavLink>
                         <NavLink to="/calculadora" icon={IconCalculator}>Calculadora PAVE</NavLink>
                         <NavLink to="/banco-questoes" icon={IconBook}>Banco de Questões</NavLink>
-                        {/* CORREÇÃO: Link "Questões Salvas" removido daqui */}
                     </ul>
                 </nav>
                 <div className="sidebar-footer">
                     <ul>
-                        {/* CORREÇÃO: Link "Questões Salvas" adicionado ao footer */}
                         <NavLink to="/questoes-salvas" icon={IconBookmark} isFooter={true}>Questões Salvas</NavLink>
                         <li>
                             <a href="#" onClick={(e) => { e.preventDefault(); handleThemeToggle(); }}>
@@ -179,12 +179,15 @@ function App() {
             </main>
 
             <BottomNavBar items={bottomNavItems} />
-
             <MoreMenu isOpen={isMoreMenuOpen} onClose={() => setIsMoreMenuOpen(false)} items={moreMenuItems} isDarkMode={darkMode} onToggleTheme={handleThemeToggle} />
         </div>
     );
 }
 
+/**
+ * Componente "Wrapper" que envolve a aplicação principal com o SavedQuestionsProvider.
+ * Isso garante que qualquer componente dentro de App possa acessar o contexto de questões salvas.
+ */
 function AppWrapper() {
     return (
         <SavedQuestionsProvider>
